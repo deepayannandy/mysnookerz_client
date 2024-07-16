@@ -1,31 +1,30 @@
 'use client'
 
 // React Imports
-import { useRef, useState } from 'react'
 import type { SyntheticEvent } from 'react'
+import { useRef, useState } from 'react'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // Mui Imports
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import Grow from '@mui/material/Grow'
-import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
-import Popper from '@mui/material/Popper'
+import ButtonGroup from '@mui/material/ButtonGroup'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
+import Grow from '@mui/material/Grow'
 import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
-import ButtonGroup from '@mui/material/ButtonGroup'
-import ClickAwayListener from '@mui/material/ClickAwayListener'
+import Paper from '@mui/material/Paper'
+import Popper from '@mui/material/Popper'
 import { useTheme } from '@mui/material/styles'
 
 // Third Party Imports
 import type { ApexOptions } from 'apexcharts'
 
 // Styled Component Imports
-const AppReactApexCharts = dynamic(() => import('@/libs/styles/AppReactApexCharts'))
+import AppReactApexCharts from '../../../../libs/styles/AppReactApexCharts'
 
 // Style Imports
 import './styles.css'
@@ -108,14 +107,19 @@ const MonthButton = () => {
 
 const series = [
   {
-    name: 'Shipment',
-    type: 'column',
+    name: 'Sales',
+    type: 'line',
     data: [38, 45, 33, 38, 32, 48, 45, 40, 42, 37]
   },
   {
-    name: 'Delivery',
+    name: 'Profit',
     type: 'line',
     data: [23, 28, 23, 32, 25, 42, 32, 32, 26, 24]
+  },
+  {
+    name: 'Expense',
+    type: 'line',
+    data: [40, 58, 73, 32, 65, 22, 42, 52, 66, 44]
   }
 ]
 
@@ -136,7 +140,7 @@ const LogisticsShipmentStatistics = () => {
       }
     },
     markers: {
-      size: 5,
+      size: 4,
       colors: '#fff',
       strokeColors: 'var(--mui-palette-primary-main)',
       hover: {
@@ -146,8 +150,7 @@ const LogisticsShipmentStatistics = () => {
     },
     stroke: {
       curve: 'smooth',
-      width: [0, 3],
-      lineCap: 'round'
+      width: 3
     },
     legend: {
       show: true,
@@ -175,23 +178,23 @@ const LogisticsShipmentStatistics = () => {
       strokeDashArray: 8,
       borderColor: 'var(--mui-palette-divider)'
     },
-    colors: ['var(--mui-palette-warning-main)', 'var(--mui-palette-primary-main)'],
-    fill: {
-      opacity: [1, 1]
-    },
-    plotOptions: {
-      bar: {
-        columnWidth: '30%',
-        borderRadius: 4,
-        borderRadiusApplication: 'end'
-      }
-    },
+    colors: ['var(--mui-palette-warning-main)', 'var(--mui-palette-success-main)', 'var(--mui-palette-primary-main)'],
+    // fill: {
+    //   opacity: [1, 1]
+    // },
+    // plotOptions: {
+    //   // bar: {
+    //   //   columnWidth: '30%',
+    //   //   borderRadius: 4,
+    //   //   borderRadiusApplication: 'end'
+    //   // }
+    // },
     dataLabels: {
       enabled: false
     },
     xaxis: {
       tickAmount: 10,
-      categories: ['1 Jan', '2 Jan', '3 Jan', '4 Jan', '5 Jan', '6 Jan', '7 Jan', '8 Jan', '9 Jan', '10 Jan'],
+      categories: ['1 Jan', '2 Jan', '3 Jan', '4 Jan', '5 Jan', '9 Jan', '7 Jan', '8 Jan', '9 Jan', '10 Jan'],
       labels: {
         style: {
           colors: 'var(--mui-palette-text-disabled)',
@@ -214,13 +217,14 @@ const LogisticsShipmentStatistics = () => {
           fontSize: '13px',
           fontWeight: 400
         }
-      }
+      },
+      min: 10
     }
   }
 
   return (
     <Card>
-      <CardHeader title='Shipment Statistics' subheader='Total number of deliveries 23.8k' action={<MonthButton />} />
+      <CardHeader title='Sales Statistics' action={<MonthButton />} />
       <CardContent>
         <AppReactApexCharts
           id='shipment-statistics'

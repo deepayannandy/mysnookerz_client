@@ -1,16 +1,60 @@
 export type Customer = {
+  transactionId: string
+  registrationDate: string
+  customerName: string
+  email: string
+  city: string
+  country: string
+  subscription: string
+  coins: string
+  plan: string
+  expiringOn: string
+  status: string
+  actions?: string
   id: number
   customer: string
   customerId: string
-  email: string
-  country: string
   countryCode: string
   countryFlag?: string
   order: number
   totalSpent: number
   avatar: string
-  status?: string
   contact?: string
+}
+
+export type Client = {
+  transactionId: string
+  registrationDate: string
+  storeId: string
+  storeName: string
+  city: string
+  country: string
+  subscription: string
+  plan: string
+  expiringOn: string
+  status: string
+  actions?: string
+  id: number
+  customer: string
+  customerId: string
+  email: string
+  countryCode: string
+  countryFlag?: string
+  order: number
+  totalSpent: number
+  avatar: string
+  contact?: string
+}
+
+export type Device = {
+  id: number
+  serialNumber: string
+  activationDate: string
+  macId: string
+  ipAddress: string
+  storeId: string
+  warrantyDate: string
+  status: string
 }
 
 export type ReferralsType = {
@@ -70,6 +114,7 @@ export type OrderType = {
 export type ECommerceType = {
   products: ProductType[]
   orderData: OrderType[]
+  clientData: Client[]
   customerData: Customer[]
   reviews: ReviewType[]
   referrals: ReferralsType[]

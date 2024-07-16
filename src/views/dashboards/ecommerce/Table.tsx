@@ -4,21 +4,17 @@
 import { useState } from 'react'
 
 // Next Imports
-import Link from 'next/link'
 
 // MUI Imports
 import Card from '@mui/material/Card'
 import Typography from '@mui/material/Typography'
-import Chip from '@mui/material/Chip'
-import Tooltip from '@mui/material/Tooltip'
 
 // Third-party Imports
-import classnames from 'classnames'
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 
 // Type Imports
-import type { ThemeColor } from '@core/types'
 import type { InvoiceType } from '@/types/apps/invoiceTypes'
+import type { ThemeColor } from '@core/types'
 
 // Components Imports
 import CustomAvatar from '@core/components/mui/Avatar'
@@ -50,46 +46,46 @@ const invoiceStatusObj: InvoiceStatusObj = {
 }
 
 const columns = [
-  columnHelper.accessor('id', {
-    header: '#ID',
+  columnHelper.accessor('registrationId', {
+    header: 'Registration Id',
     cell: ({ row }) => (
       <Typography
-        component={Link}
-        href={`/apps/invoice/preview/${row.original.id}`}
+        // component={Link}
+        // href={`/apps/invoice/preview/${row.original.id}`}
         color='primary'
-      >{`#${row.original.id}`}</Typography>
+      >{`${row.original.registrationId}`}</Typography>
     )
   }),
-  columnHelper.accessor('invoiceStatus', {
-    header: 'Status',
-    cell: ({ row }) => (
-      <Tooltip
-        title={
-          <div>
-            <Typography variant='body2' component='span' className='text-inherit'>
-              {row.original.invoiceStatus}
-            </Typography>
-            <br />
-            <Typography variant='body2' component='span' className='text-inherit'>
-              Balance:
-            </Typography>{' '}
-            {row.original.balance}
-            <br />
-            <Typography variant='body2' component='span' className='text-inherit'>
-              Due Date:
-            </Typography>{' '}
-            {row.original.dueDate}
-          </div>
-        }
-      >
-        <CustomAvatar skin='light' color={invoiceStatusObj[row.original.invoiceStatus].color} size={28}>
-          <i className={classnames('text-base', invoiceStatusObj[row.original.invoiceStatus].icon)} />
-        </CustomAvatar>
-      </Tooltip>
-    )
-  }),
+  // columnHelper.accessor('invoiceStatus', {
+  //   header: 'Status',
+  //   cell: ({ row }) => (
+  //     <Tooltip
+  //       title={
+  //         <div>
+  //           <Typography variant='body2' component='span' className='text-inherit'>
+  //             {row.original.invoiceStatus}
+  //           </Typography>
+  //           <br />
+  //           <Typography variant='body2' component='span' className='text-inherit'>
+  //             Balance:
+  //           </Typography>{' '}
+  //           {row.original.balance}
+  //           <br />
+  //           <Typography variant='body2' component='span' className='text-inherit'>
+  //             Due Date:
+  //           </Typography>{' '}
+  //           {row.original.dueDate}
+  //         </div>
+  //       }
+  //     >
+  //       <CustomAvatar skin='light' color={invoiceStatusObj[row.original.invoiceStatus].color} size={28}>
+  //         <i className={classnames('text-base', invoiceStatusObj[row.original.invoiceStatus].icon)} />
+  //       </CustomAvatar>
+  //     </Tooltip>
+  //   )
+  // }),
   columnHelper.accessor('name', {
-    header: 'Client',
+    header: 'Client Name',
     cell: ({ row }) => (
       <div className='flex items-center gap-3'>
         {getAvatar({ avatar: row.original.avatar, name: row.original.name })}
@@ -102,20 +98,28 @@ const columns = [
       </div>
     )
   }),
-  columnHelper.accessor('total', {
-    header: 'Total',
-    cell: ({ row }) => <Typography>{`$${row.original.total}`}</Typography>
+  columnHelper.accessor('registrationDate', {
+    header: 'Registration Date',
+    cell: ({ row }) => <Typography>{`${row.original.registrationDate}`}</Typography>
   }),
-  columnHelper.accessor('balance', {
-    header: 'Balance',
-    cell: ({ row }) => {
-      return row.original.balance === 0 ? (
-        <Chip label='Paid' color='success' size='small' variant='tonal' />
-      ) : (
-        <Typography color='text.primary'>{row.original.balance}</Typography>
-      )
-    }
+  columnHelper.accessor('city', {
+    header: 'City',
+    cell: ({ row }) => <Typography>{`${row.original.city}`}</Typography>
+  }),
+  columnHelper.accessor('plan', {
+    header: 'Plan',
+    cell: ({ row }) => <Typography>{`${row.original.plan}`}</Typography>
   })
+  // columnHelper.accessor('balance', {
+  //   header: 'Balance',
+  //   cell: ({ row }) => {
+  //     return row.original.balance === 0 ? (
+  //       <Chip label='Paid' color='success' size='small' variant='tonal' />
+  //     ) : (
+  //       <Typography color='text.primary'>{row.original.balance}</Typography>
+  //     )
+  //   }
+  // })
 ]
 
 const getAvatar = (params: Pick<InvoiceType, 'avatar' | 'name'>) => {

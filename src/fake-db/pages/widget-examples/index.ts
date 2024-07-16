@@ -181,6 +181,7 @@ export const db: CardStatsType = {
       title: 'Ratings',
       trendNumber: '15.6%',
       chipColor: 'primary',
+      titleColor: 'primary',
       src: '/images/illustrations/characters/9.png',
       chipText: `Year of ${new Date().getFullYear()}`
     },
@@ -190,6 +191,7 @@ export const db: CardStatsType = {
       title: 'Sessions',
       trendNumber: '20%',
       chipText: 'Last Week',
+      titleColor: 'primary',
       src: '/images/illustrations/characters/10.png'
     },
     {
@@ -197,6 +199,7 @@ export const db: CardStatsType = {
       chipColor: 'info',
       title: 'Customers',
       trendNumber: '59%',
+      titleColor: 'primary',
       chipText: 'Daily Customers',
       src: '/images/illustrations/characters/11.png'
     },
@@ -205,6 +208,7 @@ export const db: CardStatsType = {
       trendNumber: '26%',
       chipColor: 'warning',
       title: 'Total Orders',
+      titleColor: 'primary',
       chipText: 'Last Month',
       src: '/images/illustrations/characters/12.png'
     }

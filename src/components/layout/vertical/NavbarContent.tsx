@@ -2,17 +2,17 @@
 import classnames from 'classnames'
 
 // Type Imports
-import type { ShortcutsType } from '@components/layout/shared/ShortcutsDropdown'
 import type { NotificationsType } from '@components/layout/shared/NotificationsDropdown'
+import type { ShortcutsType } from '@components/layout/shared/ShortcutsDropdown'
 
 // Component Imports
-import NavToggle from './NavToggle'
-import NavSearch from '@components/layout/shared/search'
 import LanguageDropdown from '@components/layout/shared/LanguageDropdown'
 import ModeDropdown from '@components/layout/shared/ModeDropdown'
-import ShortcutsDropdown from '@components/layout/shared/ShortcutsDropdown'
 import NotificationsDropdown from '@components/layout/shared/NotificationsDropdown'
+import NavSearch from '@components/layout/shared/search'
+import ShortcutsDropdown from '@components/layout/shared/ShortcutsDropdown'
 import UserDropdown from '@components/layout/shared/UserDropdown'
+import NavToggle from './NavToggle'
 
 // Util Imports
 import { verticalLayoutClasses } from '@layouts/utils/layoutClasses'
@@ -44,7 +44,7 @@ const shortcuts: ShortcutsType[] = [
     subtitle: 'Permissions'
   },
   {
-    url: '/dashboards/crm',
+    url: '/dashboards/dashboard',
     icon: 'ri-pie-chart-2-line',
     title: 'Dashboard',
     subtitle: 'User Dashboard'

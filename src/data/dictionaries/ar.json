@@ -1,5 +1,8 @@
 {
   "navigation": {
+    "client": "عميل",
+    "customer": "عميل",
+    "device": "جهاز",
     "dashboards": "لوحات القيادة",
     "crm": "إدارة علاقات العملاء",
     "analytics": "تحليلات",

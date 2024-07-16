@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
 
 // MUI Imports
+import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import TablePagination from '@mui/material/TablePagination'
@@ -33,7 +34,7 @@ import {
 import classnames from 'classnames'
 
 // Type Imports
-import type { Customer } from '@/types/apps/ecommerceTypes'
+import type { Client, Customer } from '@/types/apps/ecommerceTypes'
 import type { ThemeColor } from '@core/types'
 
 // Component Imports
@@ -44,6 +45,8 @@ import { getInitials } from '@/utils/getInitials'
 
 // Style Imports
 import OptionMenu from '@/@core/components/option-menu/index'
+import EditUserInfo from '@/components/dialogs/edit-user-info/index'
+import RenewSubscription from '@/components/dialogs/renew-membership/index'
 import tableStyles from '@core/styles/table.module.css'
 import Chip from '@mui/material/Chip'
 
@@ -91,7 +94,7 @@ export const statusChipColor: { [key: string]: StatusChipColorType } = {
   Dispatched: { color: 'warning' }
 }
 
-type ECommerceOrderTypeWithAction = Customer & {
+type ECommerceOrderTypeWithAction = Client & {
   action?: string
 }
 
@@ -140,11 +143,14 @@ const DebouncedInput = ({
 // Column Definitions
 const columnHelper = createColumnHelper<ECommerceOrderTypeWithAction>()
 
-const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
+const ClientListTable = ({ clientData }: { clientData: Client[] }) => {
   // States
+  const [customerUserOpen, setCustomerUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(customerData)
+  const [data, setData] = useState(clientData)
   const [globalFilter, setGlobalFilter] = useState('')
+  const [newRegistrationDialogOpen, setNewRegistrationDialogOpen] = useState(false)
+  const [renewSubscriptionDialogOpen, setRenewSubscriptionDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -181,25 +187,33 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
         header: 'Registration Date',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.registrationDate}</Typography>
       }),
-      columnHelper.accessor('customerName', {
-        header: 'Customer Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.customerName}</Typography>
+      columnHelper.accessor('storeId', {
+        header: 'Store Id',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeId}</Typography>
       }),
-      columnHelper.accessor('email', {
-        header: 'Email',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.email}</Typography>
-      }),
-      columnHelper.accessor('contact', {
-        header: 'Contact',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.contact}</Typography>
+      columnHelper.accessor('storeName', {
+        header: 'Store Name',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeName}</Typography>
       }),
       columnHelper.accessor('city', {
         header: 'City',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.city}</Typography>
       }),
-      columnHelper.accessor('coins', {
-        header: 'Coins',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.coins}</Typography>
+      columnHelper.accessor('contact', {
+        header: 'Contact',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.contact}</Typography>
+      }),
+      columnHelper.accessor('subscription', {
+        header: 'Subscription',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.subscription}</Typography>
+      }),
+      columnHelper.accessor('plan', {
+        header: 'Plan',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.plan}</Typography>
+      }),
+      columnHelper.accessor('expiringOn', {
+        header: 'Expiring On',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.expiringOn}</Typography>
       }),
       columnHelper.accessor('status', {
         header: 'Status',
@@ -291,7 +305,7 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
   )
 
   const table = useReactTable({
-    data: data as Customer[],
+    data: data as Client[],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter
@@ -342,6 +356,26 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
             onChange={value => setGlobalFilter(String(value))}
             placeholder='Search'
           /> */}
+          <div className='flex gap-x-4'>
+            {/* <Button variant='outlined' color='secondary' startIcon={<i className='ri-upload-2-line' />}>
+              Export
+            </Button> */}
+            <Button
+              variant='contained'
+              color='primary'
+              startIcon={<i className='ri-add-line' />}
+              onClick={() => setNewRegistrationDialogOpen(!newRegistrationDialogOpen)}
+            >
+              New Registration
+            </Button>
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={() => setRenewSubscriptionDialogOpen(!renewSubscriptionDialogOpen)}
+            >
+              Renew Subscription
+            </Button>
+          </div>
         </CardContent>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>
@@ -414,8 +448,16 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
+      <EditUserInfo open={newRegistrationDialogOpen} setOpen={setNewRegistrationDialogOpen} />
+      <RenewSubscription open={renewSubscriptionDialogOpen} setOpen={setRenewSubscriptionDialogOpen} />
+      {/* <AddCustomerDrawer
+        open={customerUserOpen}
+        handleClose={() => setCustomerUserOpen(!customerUserOpen)}
+        setData={setData}
+        clientData={data}
+      /> */}
     </>
   )
 }
 
-export default CustomerListTable
+export default ClientListTable

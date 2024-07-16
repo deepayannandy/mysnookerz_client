@@ -1,5 +1,8 @@
 {
   "navigation": {
+    "client": "Cliente",
+    "customer": "Consommateur",
+    "device": "Appareil",
     "dashboards": "Tableaux de bord",
     "crm": "GRC",
     "analytics": "Analytique",

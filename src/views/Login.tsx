@@ -108,6 +108,7 @@ const Login = ({ mode }: { mode: Mode }) => {
       })
 
       if (response && response.data) {
+        localStorage.setItem('token', response.data)
         const redirectURL = searchParams.get('redirectTo') ?? '/'
 
         router.replace(getLocalizedUrl(redirectURL, locale as Locale))

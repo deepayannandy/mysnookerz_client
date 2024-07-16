@@ -1,5 +1,8 @@
 {
   "navigation": {
+    "client": "Client",
+    "customer": "Customer",
+    "device": "Device",
     "dashboards": "Dashboards",
     "crm": "CRM",
     "analytics": "Analytics",

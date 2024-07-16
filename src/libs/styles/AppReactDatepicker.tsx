@@ -4,9 +4,9 @@
 import type { ComponentProps } from 'react'
 
 // MUI imports
+import type { BoxProps } from '@mui/material/Box'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
-import type { BoxProps } from '@mui/material/Box'
 
 // Third-party Imports
 import ReactDatePickerComponent from 'react-datepicker'

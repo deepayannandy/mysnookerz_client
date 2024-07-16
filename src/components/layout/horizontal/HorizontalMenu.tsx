@@ -2,33 +2,33 @@
 import { useParams } from 'next/navigation'
 
 // MUI Imports
-import { useTheme } from '@mui/material/styles'
 import Chip from '@mui/material/Chip'
+import { useTheme } from '@mui/material/styles'
 
 // Type Imports
 import type { getDictionary } from '@/utils/getDictionary'
 import type { VerticalMenuContextProps } from '@menu/components/vertical-menu/Menu'
 
 // Component Imports
-import HorizontalNav, { Menu, SubMenu, MenuItem } from '@menu/horizontal-menu'
+import HorizontalNav, { Menu, MenuItem, SubMenu } from '@menu/horizontal-menu'
 import VerticalNavContent from './VerticalNavContent'
 
 // import { GenerateHorizontalMenu } from '@components/GenerateMenu'
 
 // Hook Imports
-import useVerticalNav from '@menu/hooks/useVerticalNav'
 import { useSettings } from '@core/hooks/useSettings'
+import useVerticalNav from '@menu/hooks/useVerticalNav'
 
 // Styled Component Imports
 import StyledHorizontalNavExpandIcon from '@menu/styles/horizontal/StyledHorizontalNavExpandIcon'
 import StyledVerticalNavExpandIcon from '@menu/styles/vertical/StyledVerticalNavExpandIcon'
 
 // Style Imports
-import menuRootStyles from '@core/styles/horizontal/menuRootStyles'
 import menuItemStyles from '@core/styles/horizontal/menuItemStyles'
-import verticalNavigationCustomStyles from '@core/styles/vertical/navigationCustomStyles'
+import menuRootStyles from '@core/styles/horizontal/menuRootStyles'
 import verticalMenuItemStyles from '@core/styles/vertical/menuItemStyles'
 import verticalMenuSectionStyles from '@core/styles/vertical/menuSectionStyles'
+import verticalNavigationCustomStyles from '@core/styles/vertical/navigationCustomStyles'
 
 // Menu Data Imports
 // import menuData from '@/data/navigation/horizontalMenuData'
@@ -95,23 +95,22 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof 
         }}
       >
         <SubMenu label={dictionary['navigation'].dashboards} icon={<i className='ri-home-smile-line' />}>
-          <MenuItem href={`/${locale}/dashboards/crm`} icon={<i className='ri-pie-chart-2-line' />}>
-            {dictionary['navigation'].crm}
+          <MenuItem href={`/${locale}/dashboards/dashboard`} icon={<i className='ri-pie-chart-2-line' />}>
+            {dictionary['navigation'].dashboard}
           </MenuItem>
           <MenuItem href={`/${locale}/dashboards/analytics`} icon={<i className='ri-bar-chart-line' />}>
             {dictionary['navigation'].analytics}
           </MenuItem>
-          <MenuItem href={`/${locale}/dashboards/ecommerce`} icon={<i className='ri-shopping-bag-3-line' />}>
-            {dictionary['navigation'].eCommerce}
+          <MenuItem href={`/${locale}/dashboards/client`} icon={<i className='ri-shopping-bag-3-line' />}>
+            {dictionary['navigation'].client}
           </MenuItem>
-          <MenuItem href={`/${locale}/dashboards/academy`} icon={<i className='ri-graduation-cap-line' />}>
-            {dictionary['navigation'].academy}
+          <MenuItem href={`/${locale}/dashboards/customer`} icon={<i className='ri-car-line' />}>
+            {dictionary['navigation'].customer}
           </MenuItem>
-          <MenuItem href={`/${locale}/dashboards/logistics`} icon={<i className='ri-car-line' />}>
-            {dictionary['navigation'].logistics}
+          <MenuItem href={`/${locale}/dashboards/device`} icon={<i className='ri-graduation-cap-line' />}>
+            {dictionary['navigation'].device}
           </MenuItem>
         </SubMenu>
-
         <SubMenu label={dictionary['navigation'].apps} icon={<i className='ri-mail-open-line' />}>
           <SubMenu label={dictionary['navigation'].eCommerce} icon={<i className='ri-shopping-bag-3-line' />}>
             <MenuItem href={`/${locale}/apps/ecommerce/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>

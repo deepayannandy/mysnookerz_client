@@ -2,9 +2,9 @@
 import type { AvatarProps } from '@mui/material'
 
 // Type Imports
-import type { ThemeColor } from '@core/types'
-import type { OptionsMenuType } from '@core/components/option-menu/types'
 import type { CustomAvatarProps } from '@core/components/mui/Avatar'
+import type { OptionsMenuType } from '@core/components/option-menu/types'
+import type { ThemeColor } from '@core/types'
 
 export type CardStatsHorizontalWithAvatarProps = {
   stats: string
@@ -75,11 +75,12 @@ export type CardStatsVerticalProps = {
 }
 
 export type CardStatsCharacterProps = {
-  src: string
+  src?: string
   title: string
   stats: string
-  chipText: string
-  trendNumber: string
+  titleColor: string
+  chipText?: string
+  trendNumber?: string
   chipColor?: ThemeColor
   trend?: 'positive' | 'negative'
 }

@@ -6,26 +6,26 @@ import { useParams } from 'next/navigation'
 import classnames from 'classnames'
 
 // Type Imports
-import type { Locale } from '@configs/i18n'
-import type { ShortcutsType } from '@components/layout/shared/ShortcutsDropdown'
 import type { NotificationsType } from '@components/layout/shared/NotificationsDropdown'
+import type { ShortcutsType } from '@components/layout/shared/ShortcutsDropdown'
+import type { Locale } from '@configs/i18n'
 
 // Component Imports
-import NavToggle from './NavToggle'
-import Logo from '@components/layout/shared/Logo'
-import NavSearch from '@components/layout/shared/search'
 import LanguageDropdown from '@components/layout/shared/LanguageDropdown'
+import Logo from '@components/layout/shared/Logo'
 import ModeDropdown from '@components/layout/shared/ModeDropdown'
-import ShortcutsDropdown from '@components/layout/shared/ShortcutsDropdown'
 import NotificationsDropdown from '@components/layout/shared/NotificationsDropdown'
+import NavSearch from '@components/layout/shared/search'
+import ShortcutsDropdown from '@components/layout/shared/ShortcutsDropdown'
 import UserDropdown from '@components/layout/shared/UserDropdown'
+import NavToggle from './NavToggle'
 
 // Hook Imports
 import useHorizontalNav from '@menu/hooks/useHorizontalNav'
 
 // Util Imports
-import { horizontalLayoutClasses } from '@layouts/utils/layoutClasses'
 import { getLocalizedUrl } from '@/utils/i18n'
+import { horizontalLayoutClasses } from '@layouts/utils/layoutClasses'
 
 // Vars
 const shortcuts: ShortcutsType[] = [
@@ -54,7 +54,7 @@ const shortcuts: ShortcutsType[] = [
     subtitle: 'Permissions'
   },
   {
-    url: '/dashboards/crm',
+    url: '/dashboards/dashboard',
     icon: 'ri-pie-chart-2-line',
     title: 'Dashboard',
     subtitle: 'User Dashboard'

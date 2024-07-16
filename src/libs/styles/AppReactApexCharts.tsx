@@ -1,9 +1,9 @@
 'use client'
 
 // MUI Imports
+import type { BoxProps } from '@mui/material/Box'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
-import type { BoxProps } from '@mui/material/Box'
 
 // Third-party Imports
 import type { Props } from 'react-apexcharts'
@@ -112,6 +112,7 @@ const AppReactApexCharts = (props: ApexChartWrapperProps) => {
 
   return (
     <ApexChartWrapper {...boxProps}>
+      {/* @ts-expect-error Async Server Component */}
       <ReactApexcharts {...rest} />
     </ApexChartWrapper>
   )

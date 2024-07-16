@@ -12,13 +12,10 @@ import VerticalLayout from '@layouts/VerticalLayout'
 
 // Component Imports
 import AuthGuard from '@/hocs/AuthGuard'
-import HorizontalFooter from '@components/layout/horizontal/Footer'
 import Header from '@components/layout/horizontal/Header'
-import VerticalFooter from '@components/layout/vertical/Footer'
 import Navbar from '@components/layout/vertical/Navbar'
 import Navigation from '@components/layout/vertical/Navigation'
 import Providers from '@components/Providers'
-import Customizer from '@core/components/customizer'
 import ScrollToTop from '@core/components/scroll-to-top'
 
 // Config Imports
@@ -37,7 +34,6 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
 
   return (
     <Providers direction={direction}>
-      {/* @ts-expect-error Async Server Component */}
       <AuthGuard locale={params.lang}>
         <LayoutWrapper
           systemMode={systemMode}
@@ -45,15 +41,22 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
             <VerticalLayout
               navigation={<Navigation dictionary={dictionary} mode={mode} systemMode={systemMode} />}
               navbar={<Navbar />}
-              footer={<VerticalFooter />}
             >
               {children}
             </VerticalLayout>
+            // <VerticalLayout
+            //   navigation={<Navigation dictionary={dictionary} mode={mode} systemMode={systemMode} />}
+            //   navbar={<Navbar />}
+            //   footer={<VerticalFooter />}
+            // >
+            //   {children}
+            // </VerticalLayout>
           }
           horizontalLayout={
-            <HorizontalLayout header={<Header dictionary={dictionary} />} footer={<HorizontalFooter />}>
-              {children}
-            </HorizontalLayout>
+            <HorizontalLayout header={<Header dictionary={dictionary} />}>{children}</HorizontalLayout>
+            // <HorizontalLayout header={<Header dictionary={dictionary} />} footer={<HorizontalFooter />}>
+            //   {children}
+            // </HorizontalLayout>
           }
         />
         <ScrollToTop className='mui-fixed'>
@@ -64,8 +67,7 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
             <i className='ri-arrow-up-line' />
           </Button>
         </ScrollToTop>
-        {/* @ts-expect-error Async Server Component */}
-        <Customizer dir={direction} />
+        {/* <Customizer dir={direction} /> */}
       </AuthGuard>
     </Providers>
   )

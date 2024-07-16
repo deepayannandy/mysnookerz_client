@@ -33,7 +33,7 @@ import {
 import classnames from 'classnames'
 
 // Type Imports
-import type { Customer } from '@/types/apps/ecommerceTypes'
+import type { Customer, Device } from '@/types/apps/ecommerceTypes'
 import type { ThemeColor } from '@core/types'
 
 // Component Imports
@@ -65,7 +65,7 @@ type StatusChipColorType = {
   color: ThemeColor
 }
 
-type CustomerStatusType = {
+type DeviceStatusType = {
   [key: string]: {
     title: string
     color: ThemeColor
@@ -79,8 +79,9 @@ export const paymentStatus: { [key: number]: PayementStatusType } = {
   4: { text: 'Failed', color: 'error' }
 }
 
-const customerStatusObj: CustomerStatusType = {
+const deviceStatusObj: DeviceStatusType = {
   Active: { title: 'Active', color: 'success' },
+  Idle: { title: 'Idle', color: 'warning' },
   Inactive: { title: 'Inactive', color: 'error' }
 }
 
@@ -91,8 +92,8 @@ export const statusChipColor: { [key: string]: StatusChipColorType } = {
   Dispatched: { color: 'warning' }
 }
 
-type ECommerceOrderTypeWithAction = Customer & {
-  action?: string
+type ECommerceOrderTypeWithAction = Device & {
+  actions?: string
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -140,10 +141,10 @@ const DebouncedInput = ({
 // Column Definitions
 const columnHelper = createColumnHelper<ECommerceOrderTypeWithAction>()
 
-const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
+const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
   // States
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(customerData)
+  const [data, setData] = useState(deviceData)
   const [globalFilter, setGlobalFilter] = useState('')
 
   // Hooks
@@ -173,42 +174,34 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
       //     />
       //   )
       // },
-      columnHelper.accessor('transactionId', {
-        header: 'Transaction Id',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
+      columnHelper.accessor('serialNumber', {
+        header: 'Serial Number',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.serialNumber}</Typography>
       }),
-      columnHelper.accessor('registrationDate', {
-        header: 'Registration Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.registrationDate}</Typography>
+      columnHelper.accessor('activationDate', {
+        header: 'Activation Date',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.activationDate}</Typography>
       }),
-      columnHelper.accessor('customerName', {
-        header: 'Customer Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.customerName}</Typography>
+      columnHelper.accessor('macId', {
+        header: 'MAC Id',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.macId}</Typography>
       }),
-      columnHelper.accessor('email', {
-        header: 'Email',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.email}</Typography>
+      columnHelper.accessor('ipAddress', {
+        header: 'IP Address',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.ipAddress}</Typography>
       }),
-      columnHelper.accessor('contact', {
-        header: 'Contact',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.contact}</Typography>
-      }),
-      columnHelper.accessor('city', {
-        header: 'City',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.city}</Typography>
-      }),
-      columnHelper.accessor('coins', {
-        header: 'Coins',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.coins}</Typography>
+      columnHelper.accessor('warrantyDate', {
+        header: 'Warranty Date',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.warrantyDate}</Typography>
       }),
       columnHelper.accessor('status', {
         header: 'Status',
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             <Chip
-              label={customerStatusObj[row.original.status].title}
+              label={deviceStatusObj[row.original.status].title}
               variant='tonal'
-              color={customerStatusObj[row.original.status].color}
+              color={deviceStatusObj[row.original.status].color}
               size='small'
             />
           </div>
@@ -225,9 +218,14 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
               iconButtonProps={{ size: 'medium' }}
               iconClassName='text-textSecondary text-[22px]'
               options={[
+                {
+                  text: 'Activate',
+                  icon: 'ri-eye-line',
+                  menuItemProps: { className: 'gap-2' }
+                },
                 // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
                 {
-                  text: 'Delete',
+                  text: 'De-Activate',
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
@@ -291,7 +289,7 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
   )
 
   const table = useReactTable({
-    data: data as Customer[],
+    data: data as Device[],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter
@@ -418,4 +416,4 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
   )
 }
 
-export default CustomerListTable
+export default DeviceListTable

@@ -21,11 +21,11 @@ import { getEcommerceData } from '@/app/server/actions'
   return res.json()
 } */
 
-const CustomerListTablePage = async () => {
+const ClientsPage = async () => {
   // Vars
   const data = await getEcommerceData()
 
-  return <ClientListTable customerData={data?.customerData} />
+  return <ClientListTable clientData={data?.clientData} />
 }
 
-export default CustomerListTablePage
+export default ClientsPage

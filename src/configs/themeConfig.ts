@@ -20,7 +20,7 @@
 import type { ToastPosition } from 'react-toastify'
 
 // Type Imports
-import type { Mode, Skin, Layout, LayoutComponentPosition, LayoutComponentWidth } from '@core/types'
+import type { Layout, LayoutComponentPosition, LayoutComponentWidth, Mode, Skin } from '@core/types'
 
 type Navbar = {
   type: LayoutComponentPosition
@@ -55,7 +55,7 @@ export type Config = {
 
 const themeConfig: Config = {
   templateName: 'Materio',
-  homePageUrl: '/dashboards/crm',
+  homePageUrl: '/dashboards/dashboard',
   settingsCookieName: 'materio-mui-next-demo-1',
   mode: 'system', // 'system', 'light', 'dark'
   skin: 'default', // 'default', 'bordered'

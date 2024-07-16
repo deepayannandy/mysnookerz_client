@@ -11,37 +11,37 @@ type SearchData = {
 const data: SearchData[] = [
   {
     id: '1',
-    name: 'CRM',
-    url: '/dashboards/crm',
+    name: 'Dashboard',
+    url: '/dashboards/dashboard',
     icon: 'ri-pie-chart-2-line',
     section: 'Dashboards'
   },
   {
     id: '2',
-    name: 'Analytics Dashboard',
+    name: 'Analytics',
     url: '/dashboards/analytics',
     icon: 'ri-bar-chart-line',
     section: 'Dashboards'
   },
   {
     id: '3',
-    name: 'eCommerce Dashboard',
-    url: '/dashboards/ecommerce',
+    name: 'Client',
+    url: '/dashboards/client',
     icon: 'ri-shopping-cart-2-line',
     section: 'Dashboards'
   },
   {
     id: '4',
-    name: 'Academy Dashboard',
-    url: '/dashboards/academy',
-    icon: 'ri-book-open-line',
+    name: 'Customer',
+    url: '/dashboards/customer',
+    icon: 'ri-truck-line',
     section: 'Dashboards'
   },
   {
     id: '5',
-    name: 'Logistics Dashboard',
-    url: '/dashboards/logistics',
-    icon: 'ri-truck-line',
+    name: 'Device',
+    url: '/dashboards/device',
+    icon: 'ri-book-open-line',
     section: 'Dashboards'
   },
   {

@@ -30,20 +30,20 @@ const defaultSuggestions: DefaultSuggestionsType[] = [
         icon: 'ri-bar-chart-line'
       },
       {
-        label: 'CRM',
-        href: '/dashboards/crm',
+        label: 'Dashboard',
+        href: '/dashboards/dashboard',
         icon: 'ri-pie-chart-2-line'
       },
       {
         label: 'eCommerce',
-        href: '/dashboards/ecommerce',
+        href: '/dashboards/client',
         icon: 'ri-shopping-bag-3-line'
-      },
-      {
-        label: 'User List',
-        href: '/apps/user/list',
-        icon: 'ri-file-user-line'
       }
+      // {
+      //   label: 'User List',
+      //   href: '/apps/user/list',
+      //   icon: 'ri-file-user-line'
+      // }
     ]
   },
   {

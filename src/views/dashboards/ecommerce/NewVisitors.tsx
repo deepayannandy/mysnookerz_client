@@ -1,13 +1,12 @@
 'use client'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // MUI Imports
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 
 // Third-party Imports\
 import type { ApexOptions } from 'apexcharts'
@@ -16,9 +15,9 @@ import type { ApexOptions } from 'apexcharts'
 import { rgbaToHex } from '@/utils/rgbaToHex'
 
 // Styled Component Imports
-const AppReactApexCharts = dynamic(() => import('@/libs/styles/AppReactApexCharts'))
+import AppReactApexCharts from '../../../libs/styles/AppReactApexCharts'
 
-const NewVisitors = () => {
+const NewVisitors = ({ title, count, increment }: { title: string; count: number; increment: number }) => {
   // Hooks
   const theme = useTheme()
 
@@ -81,13 +80,12 @@ const NewVisitors = () => {
     <Card>
       <CardContent className='flex justify-between gap-x-5'>
         <div className='flex flex-col justify-between'>
-          <Typography variant='h5'>New Visitors</Typography>
+          <Typography variant='h5'>{title}</Typography>
           <div className='flex flex-col gap-2'>
-            <Typography>48% new visitors this week.</Typography>
             <div className='flex items-center'>
-              <Typography variant='h4'>12,480</Typography>
+              <Typography variant='h4'>{count}</Typography>
               <i className='ri-arrow-up-s-line text-success' />
-              <Typography color='success.main'>28</Typography>
+              <Typography color='success.main'>{increment}</Typography>
             </div>
           </div>
         </div>

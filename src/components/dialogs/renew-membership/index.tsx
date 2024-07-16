@@ -17,7 +17,12 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
 
-type EditUserInfoData = {
+type RenewSubscriptionData = {
+  plan?: string
+  amount?: string
+  discount?: string
+  netAmount?: string
+  paymentMethod?: string
   subscription?: string
   clientName?: string
   storeName?: string
@@ -38,14 +43,14 @@ type EditUserInfoData = {
   useAsBillingAddress?: boolean
 }
 
-type EditUserInfoProps = {
+type RenewSubscriptionProps = {
   open: boolean
   setOpen: (open: boolean) => void
-  data?: EditUserInfoData
+  data?: RenewSubscriptionData
 }
 
 // Vars
-const initialData: EditUserInfoProps['data'] = {
+const initialData: RenewSubscriptionProps['data'] = {
   firstName: 'Oliver',
   lastName: 'Queen',
   userName: 'oliverQueen',
@@ -66,19 +71,25 @@ const countries = ['Select Country', 'India', 'France', 'Russia', 'China', 'UK',
 
 const subscriptions = ['Entry', 'Lite', 'Premium']
 
-const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
+const plans = ['Monthly', 'Annual']
+
+const storeNames = ['Delight', 'Corner']
+
+const paymentMethods = ['UPI', 'CASH', 'CARD']
+
+const RenewSubscription = ({ open, setOpen, data }: RenewSubscriptionProps) => {
   // States
-  const [userData, setUserData] = useState<EditUserInfoProps['data']>(data || initialData)
+  const [subscriptionData, setSubscriptionData] = useState<RenewSubscriptionProps['data']>(data || initialData)
 
   const handleClose = () => {
     setOpen(false)
-    setUserData(data || initialData)
+    setSubscriptionData(data || initialData)
   }
 
   return (
     <Dialog fullWidth open={open} onClose={handleClose} maxWidth='md' scroll='body'>
       <DialogTitle variant='h4' className='flex gap-2 flex-col items-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
-        <div className='max-sm:is-[80%] max-sm:text-center'>New Registration</div>
+        <div className='max-sm:is-[80%] max-sm:text-center'>Renew Subscription</div>
         {/* <Typography component='span' className='flex flex-col text-center'>
           Updating user details will receive a privacy audit.
         </Typography> */}
@@ -91,15 +102,15 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
           <Grid container spacing={5}>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
-                <InputLabel>Country</InputLabel>
+                <InputLabel>Store Name</InputLabel>
                 <Select
-                  label='Country'
-                  value={userData?.country?.toLowerCase().replace(/\s+/g, '-')}
-                  onChange={e => setUserData({ ...userData, country: e.target.value as string })}
+                  label='Store Name'
+                  value={subscriptionData?.storeName?.toLowerCase().replace(/\s+/g, '-')}
+                  onChange={e => setSubscriptionData({ ...subscriptionData, storeName: e.target.value as string })}
                 >
-                  {countries.map((country, index) => (
-                    <MenuItem key={index} value={country.toLowerCase().replace(/\s+/g, '-')}>
-                      {country}
+                  {storeNames.map((storeName, index) => (
+                    <MenuItem key={index} value={storeName.toLowerCase().replace(/\s+/g, '-')}>
+                      {storeName}
                     </MenuItem>
                   ))}
                 </Select>
@@ -110,8 +121,8 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 <InputLabel>Subscription</InputLabel>
                 <Select
                   label='Subscription'
-                  value={userData?.subscription?.toLowerCase().replace(/\s+/g, '-')}
-                  onChange={e => setUserData({ ...userData, subscription: e.target.value as string })}
+                  value={subscriptionData?.subscription?.toLowerCase().replace(/\s+/g, '-')}
+                  onChange={e => setSubscriptionData({ ...subscriptionData, subscription: e.target.value as string })}
                 >
                   {subscriptions.map((subscription, index) => (
                     <MenuItem key={index} value={subscription.toLowerCase().replace(/\s+/g, '-')}>
@@ -122,84 +133,71 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
               </FormControl>
             </Grid>
             <Grid item xs={12} sm={6}>
+              <FormControl fullWidth>
+                <InputLabel>Plan</InputLabel>
+                <Select
+                  label='Plan'
+                  value={subscriptionData?.plan?.toLowerCase().replace(/\s+/g, '-')}
+                  onChange={e => setSubscriptionData({ ...subscriptionData, plan: e.target.value as string })}
+                >
+                  {plans.map((plan, index) => (
+                    <MenuItem key={index} value={plan.toLowerCase().replace(/\s+/g, '-')}>
+                      {plan}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label='Client Name'
-                placeholder='John'
-                value={userData?.clientName}
-                onChange={e => setUserData({ ...userData, clientName: e.target.value })}
+                label='Amount'
+                placeholder='Amount'
+                value={subscriptionData?.amount}
+                onChange={e => setSubscriptionData({ ...subscriptionData, amount: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label='Store Name'
-                placeholder='DelightAd'
-                value={userData?.storeName}
-                onChange={e => setUserData({ ...userData, storeName: e.target.value })}
+                label='Discount'
+                placeholder='Discount'
+                value={subscriptionData?.discount}
+                onChange={e => setSubscriptionData({ ...subscriptionData, discount: e.target.value })}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
-                label='Email'
-                placeholder='JohnDoe'
-                value={userData?.email}
-                onChange={e => setUserData({ ...userData, email: e.target.value })}
+                label='Net Amount'
+                placeholder='Net Amount'
+                value={subscriptionData?.netAmount}
+                onChange={e => setSubscriptionData({ ...subscriptionData, netAmount: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label='Contact'
-                placeholder='johnDoe@email.com'
-                value={userData?.contact}
-                onChange={e => setUserData({ ...userData, contact: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label='Address'
-                placeholder='johnDoe@email.com'
-                value={userData?.address}
-                onChange={e => setUserData({ ...userData, address: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label='Pincode'
-                placeholder='400001'
-                value={userData?.pincode}
-                onChange={e => setUserData({ ...userData, pincode: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label='City'
-                placeholder='Mumbai'
-                value={userData?.city}
-                onChange={e => setUserData({ ...userData, city: e.target.value })}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label='State'
-                placeholder='Maharastra'
-                value={userData?.state}
-                onChange={e => setUserData({ ...userData, state: e.target.value })}
-              />
+              <FormControl fullWidth>
+                <InputLabel>Payment Method</InputLabel>
+                <Select
+                  label='Payment Method'
+                  value={subscriptionData?.paymentMethod?.toLowerCase().replace(/\s+/g, '-')}
+                  onChange={e => setSubscriptionData({ ...subscriptionData, paymentMethod: e.target.value as string })}
+                >
+                  {paymentMethods.map((paymentMethod, index) => (
+                    <MenuItem key={index} value={paymentMethod.toLowerCase().replace(/\s+/g, '-')}>
+                      {paymentMethod}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
             {/* <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Status</InputLabel>
                 <Select
                   label='Status'
-                  value={userData?.status}
-                  onChange={e => setUserData({ ...userData, status: e.target.value as string })}
+                  value={subscriptionData?.status}
+                  onChange={e => setSubscriptionData({ ...subscriptionData, status: e.target.value as string })}
                 >
                   {status.map((status, index) => (
                     <MenuItem key={index} value={status.toLowerCase().replace(/\s+/g, '-')}>
@@ -214,8 +212,8 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 fullWidth
                 label='Tax ID'
                 placeholder='Tax-7490'
-                value={userData?.taxId}
-                onChange={e => setUserData({ ...userData, taxId: e.target.value })}
+                value={subscriptionData?.taxId}
+                onChange={e => setSubscriptionData({ ...subscriptionData, taxId: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -223,8 +221,8 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 fullWidth
                 label='Contact'
                 placeholder='+ 123 456 7890'
-                value={userData?.contact}
-                onChange={e => setUserData({ ...userData, contact: e.target.value })}
+                value={subscriptionData?.contact}
+                onChange={e => setSubscriptionData({ ...subscriptionData, contact: e.target.value })}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -233,8 +231,8 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 <Select
                   label='Language'
                   multiple
-                  value={userData?.language?.map(lang => lang.toLowerCase().replace(/\s+/g, '-')) || []}
-                  onChange={e => setUserData({ ...userData, language: e.target.value as string[] })}
+                  value={subscriptionData?.language?.map(lang => lang.toLowerCase().replace(/\s+/g, '-')) || []}
+                  onChange={e => setSubscriptionData({ ...subscriptionData, language: e.target.value as string[] })}
                   renderValue={selected => (
                     <div className='flex items-center gap-2 flex-wrap'>
                       {(selected as string[]).map(value => (
@@ -266,4 +264,4 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
   )
 }
 
-export default EditUserInfo
+export default RenewSubscription

@@ -1,16 +1,15 @@
 'use client'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // MUI Imports
-import Grid from '@mui/material/Grid'
-import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
+import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Grid from '@mui/material/Grid'
 import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 
 // Third Party Imports
 import type { ApexOptions } from 'apexcharts'
@@ -19,11 +18,11 @@ import type { ApexOptions } from 'apexcharts'
 import type { ThemeColor } from '@core/types'
 
 // Components Imports
-import OptionsMenu from '@core/components/option-menu'
 import CustomAvatar from '@core/components/mui/Avatar'
+import OptionsMenu from '@core/components/option-menu'
 
 // Styled Component Imports
-const AppReactApexCharts = dynamic(() => import('@/libs/styles/AppReactApexCharts'))
+import AppReactApexCharts from '../../../libs/styles/AppReactApexCharts'
 
 interface DataType {
   title: string

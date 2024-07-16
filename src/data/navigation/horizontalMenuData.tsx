@@ -10,9 +10,9 @@ const horizontalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>
     children: [
       // This is how you will normally render menu item
       {
-        label: dictionary['navigation'].crm,
+        label: dictionary['navigation'].dashboard,
         icon: 'ri-pie-chart-2-line',
-        href: '/dashboards/crm'
+        href: '/dashboards/dashboard'
       },
       {
         label: dictionary['navigation'].analytics,
@@ -20,19 +20,19 @@ const horizontalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>
         href: '/dashboards/analytics'
       },
       {
-        label: dictionary['navigation'].eCommerce,
+        label: dictionary['navigation'].client,
         icon: 'ri-shopping-bag-3-line',
-        href: '/dashboards/ecommerce'
+        href: '/dashboards/client'
       },
       {
-        label: dictionary['navigation'].academy,
-        icon: 'ri-graduation-cap-line',
-        href: '/dashboards/academy'
-      },
-      {
-        label: dictionary['navigation'].logistics,
+        label: dictionary['navigation'].customer,
         icon: 'ri-car-line',
-        href: '/dashboards/logistics'
+        href: '/dashboards/customer'
+      },
+      {
+        label: dictionary['navigation'].device,
+        icon: 'ri-graduation-cap-line',
+        href: '/dashboards/device'
       }
     ]
   },
