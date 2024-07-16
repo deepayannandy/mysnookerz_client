@@ -1,20 +1,19 @@
 'use client'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
-import CardContent from '@mui/material/CardContent'
 
 // Component Imports
-import { Tooltip, PieChart, Pie, Cell, ResponsiveContainer } from '@/libs/Recharts'
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from '@/libs/Recharts'
 
 // Styled Component Imports
-const AppRecharts = dynamic(() => import('@/libs/styles/AppRecharts'))
+import AppRecharts from '../../../libs/styles/AppRecharts'
 
 type LabelProp = {
   cx: number

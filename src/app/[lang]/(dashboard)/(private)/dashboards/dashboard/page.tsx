@@ -15,6 +15,7 @@ import TotalProfitStackedBar from '@/views/dashboards/ecommerce/TotalProfitStack
 import Table from '@views/dashboards/ecommerce/Table'
 
 import { getInvoiceData } from '@/app/server/actions'
+
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
  * ! `.env` file found at root of your project and also update the API endpoints like `/pages/widget-examples` in below example.
@@ -73,6 +74,7 @@ const DashboardDetails = async () => {
     count: 2054,
     increment: 23
   }
+
   const invoiceData = await getInvoiceData()
 
   return (
@@ -96,7 +98,7 @@ const DashboardDetails = async () => {
         <Vertical data={data.statsVertical} />
       </Grid> */}
       <Grid item xs={12}>
-        {/* @ts-expect-error Async Server Component */}
+        {/* @ts-ignore */}
         <Character data={statsCharacterData} />
       </Grid>
       <Grid item xs={12} md={6}>

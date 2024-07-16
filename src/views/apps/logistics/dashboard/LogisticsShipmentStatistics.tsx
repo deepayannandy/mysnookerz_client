@@ -179,6 +179,7 @@ const LogisticsShipmentStatistics = () => {
       borderColor: 'var(--mui-palette-divider)'
     },
     colors: ['var(--mui-palette-warning-main)', 'var(--mui-palette-success-main)', 'var(--mui-palette-primary-main)'],
+
     // fill: {
     //   opacity: [1, 1]
     // },

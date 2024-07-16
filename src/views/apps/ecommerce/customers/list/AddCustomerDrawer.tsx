@@ -3,21 +3,21 @@ import { useState } from 'react'
 
 // MUI Imports
 import Button from '@mui/material/Button'
-import Drawer from '@mui/material/Drawer'
 import Divider from '@mui/material/Divider'
+import Drawer from '@mui/material/Drawer'
 import FormControl from '@mui/material/FormControl'
+import FormHelperText from '@mui/material/FormHelperText'
 import IconButton from '@mui/material/IconButton'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Switch from '@mui/material/Switch'
 import TextField from '@mui/material/TextField'
-import FormHelperText from '@mui/material/FormHelperText'
 import Typography from '@mui/material/Typography'
 
 // Third-party Imports
+import { Controller, useForm } from 'react-hook-form'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-import { useForm, Controller } from 'react-hook-form'
 
 // Types Imports
 import type { Customer } from '@/types/apps/ecommerceTypes'
@@ -89,20 +89,20 @@ const AddCustomerDrawer = (props: Props) => {
   })
 
   const onSubmit = (data: FormValidateType) => {
-    const newData: Customer = {
-      id: (customerData?.length && customerData?.length + 1) || 1,
-      customer: data.fullName,
-      customerId: customerData?.[Math.floor(Math.random() * 100) + 1].customerId ?? '1',
-      email: data.email,
-      country: `${country[data.country].country}`,
-      countryCode: 'st',
-      countryFlag: `/images/cards/${data.country}.png`,
-      order: Math.floor(Math.random() * 1000) + 1,
-      totalSpent: Math.random() * (10000 - 500 + 1) + 500,
-      avatar: `/images/avatars/${Math.floor(Math.random() * 8) + 1}.png`
-    }
+    // const newData: Customer = {
+    //   id: (customerData?.length && customerData?.length + 1) || 1,
+    //   customer: data.fullName,
+    //   customerId: customerData?.[Math.floor(Math.random() * 100) + 1].customerId ?? '1',
+    //   email: data.email,
+    //   country: `${country[data.country].country}`,
+    //   countryCode: 'st',
+    //   countryFlag: `/images/cards/${data.country}.png`,
+    //   order: Math.floor(Math.random() * 1000) + 1,
+    //   totalSpent: Math.random() * (10000 - 500 + 1) + 500,
+    //   avatar: `/images/avatars/${Math.floor(Math.random() * 8) + 1}.png`
+    // }
 
-    setData([...(customerData ?? []), newData])
+    setData([...(customerData ?? [])])
     resetForm({ fullName: '', email: '', country: '' })
     setFormData(initialData)
     handleClose()

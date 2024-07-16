@@ -1,17 +1,14 @@
 'use client'
 
 // React Imports
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 // Next Imports
-import { useParams } from 'next/navigation'
 
 // MUI Imports
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import TablePagination from '@mui/material/TablePagination'
-import type { TextFieldProps } from '@mui/material/TextField'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 // Third-party Imports
@@ -32,20 +29,20 @@ import {
 } from '@tanstack/react-table'
 import classnames from 'classnames'
 
+import Chip from '@mui/material/Chip'
+
 // Type Imports
 import type { Customer } from '@/types/apps/ecommerceTypes'
 import type { ThemeColor } from '@core/types'
 
 // Component Imports
-import CustomAvatar from '@core/components/mui/Avatar'
 
 // Util Imports
-import { getInitials } from '@/utils/getInitials'
 
 // Style Imports
 import OptionMenu from '@/@core/components/option-menu/index'
+
 import tableStyles from '@core/styles/table.module.css'
-import Chip from '@mui/material/Chip'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -108,34 +105,34 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed
 }
 
-const DebouncedInput = ({
-  value: initialValue,
-  onChange,
-  debounce = 500,
-  ...props
-}: {
-  value: string | number
-  onChange: (value: string | number) => void
-  debounce?: number
-} & Omit<TextFieldProps, 'onChange'>) => {
-  // States
-  const [value, setValue] = useState(initialValue)
+// const DebouncedInput = ({
+//   value: initialValue,
+//   onChange,
+//   debounce = 500,
+//   ...props
+// }: {
+//   value: string | number
+//   onChange: (value: string | number) => void
+//   debounce?: number
+// } & Omit<TextFieldProps, 'onChange'>) => {
+//   // States
+//   const [value, setValue] = useState(initialValue)
 
-  useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
+//   useEffect(() => {
+//     setValue(initialValue)
+//   }, [initialValue])
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value)
-    }, debounce)
+//   useEffect(() => {
+//     const timeout = setTimeout(() => {
+//       onChange(value)
+//     }, debounce)
 
-    return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
+//     return () => clearTimeout(timeout)
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [value])
 
-  return <TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
-}
+//   return <TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
+// }
 
 // Column Definitions
 const columnHelper = createColumnHelper<ECommerceOrderTypeWithAction>()
@@ -147,7 +144,7 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
   const [globalFilter, setGlobalFilter] = useState('')
 
   // Hooks
-  const { lang: locale } = useParams()
+  //const { lang: locale } = useParams()
 
   const columns = useMemo<ColumnDef<ECommerceOrderTypeWithAction, any>[]>(
     () => [
@@ -234,6 +231,7 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
                     onClick: () => setData(data?.filter(product => product.id !== row.original.id))
                   }
                 }
+
                 // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
               ]}
             />
@@ -241,6 +239,7 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
         ),
         enableSorting: false
       })
+
       // columnHelper.accessor('customer', {
       //   header: 'Customers',
       //   cell: ({ row }) => (
@@ -319,19 +318,19 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
     getFacetedMinMaxValues: getFacetedMinMaxValues()
   })
 
-  const getAvatar = (params: Pick<Customer, 'avatar' | 'customer'>) => {
-    const { avatar, customer } = params
+  // const getAvatar = (params: Pick<Customer, 'avatar' | 'customer'>) => {
+  //   const { avatar, customer } = params
 
-    if (avatar) {
-      return <CustomAvatar src={avatar} skin='light' size={34} />
-    } else {
-      return (
-        <CustomAvatar skin='light' size={34}>
-          {getInitials(customer as string)}
-        </CustomAvatar>
-      )
-    }
-  }
+  //   if (avatar) {
+  //     return <CustomAvatar src={avatar} skin='light' size={34} />
+  //   } else {
+  //     return (
+  //       <CustomAvatar skin='light' size={34}>
+  //         {getInitials(customer as string)}
+  //       </CustomAvatar>
+  //     )
+  //   }
+  // }
 
   return (
     <>

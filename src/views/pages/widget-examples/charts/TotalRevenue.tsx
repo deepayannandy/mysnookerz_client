@@ -1,14 +1,13 @@
 'use client'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // MUI Imports
 import Card from '@mui/material/Card'
-import Divider from '@mui/material/Divider'
-import CardHeader from '@mui/material/CardHeader'
-import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Divider from '@mui/material/Divider'
+import Typography from '@mui/material/Typography'
 
 // Third Party Imports
 import type { ApexOptions } from 'apexcharts'
@@ -17,7 +16,7 @@ import type { ApexOptions } from 'apexcharts'
 import OptionsMenu from '@core/components/option-menu'
 
 // Styled Component Imports
-const AppReactApexCharts = dynamic(() => import('@/libs/styles/AppReactApexCharts'))
+import AppReactApexCharts from '../../../../libs/styles/AppReactApexCharts'
 
 const TotalRevenue = () => {
   const textSecondaryColor = 'var(--mui-palette-text-secondary)'

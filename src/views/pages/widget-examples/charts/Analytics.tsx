@@ -1,24 +1,23 @@
 'use client'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // MUI Imports
 import Card from '@mui/material/Card'
-import { useTheme } from '@mui/material/styles'
-import CardHeader from '@mui/material/CardHeader'
-import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 
 // Third Party Imports
-import classnames from 'classnames'
 import type { ApexOptions } from 'apexcharts'
+import classnames from 'classnames'
 
 // Components Imports
 import OptionsMenu from '@core/components/option-menu'
 
 // Styled Component Imports
-const AppReactApexCharts = dynamic(() => import('@/libs/styles/AppReactApexCharts'))
+import AppReactApexCharts from '../../../../libs/styles/AppReactApexCharts'
 
 type AnalyticsDataType = {
   title: string

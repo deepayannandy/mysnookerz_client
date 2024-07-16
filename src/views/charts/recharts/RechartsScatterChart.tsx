@@ -1,20 +1,19 @@
 'use client'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // MUI Imports
 import Card from '@mui/material/Card'
-import { useTheme } from '@mui/material/styles'
-import CardHeader from '@mui/material/CardHeader'
-import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 
 // Component Imports
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from '@/libs/Recharts'
+import { CartesianGrid, ResponsiveContainer, Scatter, ScatterChart, XAxis, YAxis } from '@/libs/Recharts'
 
 // Styled Component Imports
-const AppRecharts = dynamic(() => import('@/libs/styles/AppRecharts'))
+import AppRecharts from '../../../libs/styles/AppRecharts'
 
 // Vars
 const angularData = [

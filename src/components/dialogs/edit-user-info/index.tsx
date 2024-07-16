@@ -58,9 +58,9 @@ const initialData: EditUserInfoProps['data'] = {
   useAsBillingAddress: true
 }
 
-const status = ['Status', 'Active', 'Inactive', 'Suspended']
+// const status = ['Status', 'Active', 'Inactive', 'Suspended']
 
-const languages = ['English', 'Spanish', 'French', 'German', 'Hindi']
+// const languages = ['English', 'Spanish', 'French', 'German', 'Hindi']
 
 const countries = ['Select Country', 'India', 'France', 'Russia', 'China', 'UK', 'US']
 

@@ -107,6 +107,7 @@ export const db: InvoiceType[] = [
     balance: '$815',
     dueDate: `30 ${currentMonth} ${now.getFullYear()}`
   }
+
   // {
   //   id: '4992',
   //   issuedDate: `26 ${currentMonth} ${now.getFullYear()}`,

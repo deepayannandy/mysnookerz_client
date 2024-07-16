@@ -1,5 +1,9 @@
 'use client'
 
+// React Imports
+import type { SyntheticEvent } from 'react'
+import { useRef, useState } from 'react'
+
 // MUI Imports
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
@@ -21,10 +25,6 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 
 // Styled Component Imports
 import AppRecharts from '../../../libs/styles/AppRecharts'
-
-// React Imports
-import type { SyntheticEvent } from 'react'
-import { useRef, useState } from 'react'
 
 // Vars
 // let data = [

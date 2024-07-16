@@ -1,15 +1,3 @@
-/**
- * This is an advanced example for creating icon bundles for Iconify SVG Framework.
- *
- * It creates a bundle from:
- * - All SVG files in a directory.
- * - Custom JSON files.
- * - Iconify icon sets.
- * - SVG framework.
- *
- * This example uses Iconify Tools to import and clean up icons.
- * For Iconify Tools documentation visit https://docs.iconify.design/tools/tools2/
- */
 import { promises as fs } from 'node:fs'
 import { dirname, join } from 'node:path'
 
@@ -19,7 +7,7 @@ import type { IconifyJSON } from '@iconify/types'
 import { getIcons, getIconsCSS, stringToIcon } from '@iconify/utils'
 
 /**
- * Script configuration
+//  * Script configuration
  */
 interface BundleScriptCustomSVGConfig {
   // eslint-disable-next-line lines-around-comment

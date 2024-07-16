@@ -2,17 +2,16 @@
 import type { ReactElement } from 'react'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // Component Imports
 import Settings from '@views/apps/ecommerce/settings'
 
-const StoreDetailsTab = dynamic(() => import('@views/apps/ecommerce/settings/store-details'))
-const PaymentsTab = dynamic(() => import('@views/apps/ecommerce/settings/payments'))
-const CheckoutTab = dynamic(() => import('@views/apps/ecommerce/settings/checkout'))
-const ShippingDeliveryTab = dynamic(() => import('@views/apps/ecommerce/settings/ShippingDelivery'))
-const LocationsTab = dynamic(() => import('@views/apps/ecommerce/settings/locations'))
-const NotificationsTab = dynamic(() => import('@views/apps/ecommerce/settings/Notifications'))
+import CheckoutTab from '../../../../../../../views/apps/ecommerce/settings/checkout'
+import LocationsTab from '../../../../../../../views/apps/ecommerce/settings/locations'
+import NotificationsTab from '../../../../../../../views/apps/ecommerce/settings/Notifications'
+import PaymentsTab from '../../../../../../../views/apps/ecommerce/settings/payments'
+import ShippingDeliveryTab from '../../../../../../../views/apps/ecommerce/settings/ShippingDelivery'
+import StoreDetailsTab from '../../../../../../../views/apps/ecommerce/settings/store-details'
 
 // Vars
 const tabContentList = (): { [key: string]: ReactElement } => ({

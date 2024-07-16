@@ -4,14 +4,13 @@
 import type { ReactNode } from 'react'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // MUI Imports
-import Divider from '@mui/material/Divider'
 import Chip from '@mui/material/Chip'
+import Divider from '@mui/material/Divider'
+import { darken, lighten, useTheme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { lighten, darken, useTheme } from '@mui/material/styles'
 
 // Third-party Imports
 import type { ApexOptions } from 'apexcharts'
@@ -23,7 +22,7 @@ import type { ThemeColor } from '@core/types'
 import CustomAvatar from '@core/components/mui/Avatar'
 
 // Styled Component Imports
-const AppReactApexCharts = dynamic(() => import('@/libs/styles/AppReactApexCharts'))
+import AppReactApexCharts from '../../../../libs/styles/AppReactApexCharts'
 
 type DataType = {
   title: string

@@ -1,19 +1,18 @@
 'use client'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 //MUI Imports
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
 import { useTheme } from '@mui/material/styles'
+import Typography from '@mui/material/Typography'
 
 // Third-party Imports
 import type { ApexOptions } from 'apexcharts'
 
 // Styled Component Imports
-const AppReactApexCharts = dynamic(() => import('@/libs/styles/AppReactApexCharts'))
+import AppReactApexCharts from '../../../libs/styles/AppReactApexCharts'
 
 // Vars
 const series = [

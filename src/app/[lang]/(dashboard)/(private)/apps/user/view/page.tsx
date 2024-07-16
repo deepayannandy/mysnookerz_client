@@ -2,7 +2,6 @@
 import type { ReactElement } from 'react'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // MUI Imports
 import Grid from '@mui/material/Grid'
@@ -17,14 +16,15 @@ import UserRight from '@views/apps/user/view/user-right'
 // Data Imports
 import { getPricingData } from '@/app/server/actions'
 
-const OverViewTab = dynamic(() => import('@views/apps/user/view/user-right/overview'))
-const SecurityTab = dynamic(() => import('@views/apps/user/view/user-right/security'))
-const BillingPlans = dynamic(() => import('@views/apps/user/view/user-right/billing-plans'))
-const NotificationsTab = dynamic(() => import('@views/apps/user/view/user-right/notifications'))
-const ConnectionsTab = dynamic(() => import('@views/apps/user/view/user-right/connections'))
+import BillingPlans from '../../../../../../../views/apps/user/view/user-right/billing-plans'
+import ConnectionsTab from '../../../../../../../views/apps/user/view/user-right/connections'
+import NotificationsTab from '../../../../../../../views/apps/user/view/user-right/notifications'
+import OverViewTab from '../../../../../../../views/apps/user/view/user-right/overview'
+import SecurityTab from '../../../../../../../views/apps/user/view/user-right/security'
 
 // Vars
 const tabContentList = (data?: PricingPlanType[]): { [key: string]: ReactElement } => ({
+  //@ts-ignore
   overview: <OverViewTab />,
   security: <SecurityTab />,
   'billing-plans': <BillingPlans data={data} />,

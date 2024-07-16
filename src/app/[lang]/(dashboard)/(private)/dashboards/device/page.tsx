@@ -1,5 +1,6 @@
 // Component Imports
-import { Device } from '@/types/apps/ecommerceTypes'
+
+import type { Device } from '@/types/apps/ecommerceTypes'
 import DeviceListTable from '@/views/apps/ecommerce/customers/list/DeviceListTable'
 
 const deviceData: Device[] = [

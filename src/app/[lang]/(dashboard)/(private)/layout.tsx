@@ -44,6 +44,7 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
             >
               {children}
             </VerticalLayout>
+
             // <VerticalLayout
             //   navigation={<Navigation dictionary={dictionary} mode={mode} systemMode={systemMode} />}
             //   navbar={<Navbar />}
@@ -54,6 +55,7 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
           }
           horizontalLayout={
             <HorizontalLayout header={<Header dictionary={dictionary} />}>{children}</HorizontalLayout>
+
             // <HorizontalLayout header={<Header dictionary={dictionary} />} footer={<HorizontalFooter />}>
             //   {children}
             // </HorizontalLayout>

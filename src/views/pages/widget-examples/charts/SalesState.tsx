@@ -1,12 +1,11 @@
 'use client'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // MUI Imports
 import Card from '@mui/material/Card'
-import { useTheme } from '@mui/material/styles'
 import CardHeader from '@mui/material/CardHeader'
+import { useTheme } from '@mui/material/styles'
 
 // Third Party Imports
 import type { ApexOptions } from 'apexcharts'
@@ -15,7 +14,7 @@ import type { ApexOptions } from 'apexcharts'
 import OptionsMenu from '@core/components/option-menu'
 
 // Styled Component Imports
-const AppReactApexCharts = dynamic(() => import('@/libs/styles/AppReactApexCharts'))
+import AppReactApexCharts from '../../../../libs/styles/AppReactApexCharts'
 
 const SalesState = () => {
   // Hooks

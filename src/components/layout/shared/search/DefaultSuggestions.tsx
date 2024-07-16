@@ -39,6 +39,7 @@ const defaultSuggestions: DefaultSuggestionsType[] = [
         href: '/dashboards/client',
         icon: 'ri-shopping-bag-3-line'
       }
+
       // {
       //   label: 'User List',
       //   href: '/apps/user/list',

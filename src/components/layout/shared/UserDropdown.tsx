@@ -79,6 +79,7 @@ const UserDropdown = () => {
       const redirectURL = searchParams.get('redirectTo') ?? '/login'
 
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))
+
       //await signOut({ callbackUrl: process.env.NEXT_PUBLIC_APP_URL })
     } catch (error) {
       console.error(error)

@@ -14,7 +14,6 @@ import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '
 
 // Type Imports
 import type { InvoiceType } from '@/types/apps/invoiceTypes'
-import type { ThemeColor } from '@core/types'
 
 // Components Imports
 import CustomAvatar from '@core/components/mui/Avatar'
@@ -25,37 +24,32 @@ import { getInitials } from '@/utils/getInitials'
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
 
-type InvoiceStatusObj = {
-  [key: string]: {
-    icon: string
-    color: ThemeColor
-  }
-}
+// type InvoiceStatusObj = {
+//   [key: string]: {
+//     icon: string
+//     color: ThemeColor
+//   }
+// }
 
 // Column Definitions
 const columnHelper = createColumnHelper<InvoiceType>()
 
 // Vars
-const invoiceStatusObj: InvoiceStatusObj = {
-  Sent: { color: 'secondary', icon: 'ri-send-plane-2-line' },
-  Paid: { color: 'success', icon: 'ri-check-line' },
-  Draft: { color: 'primary', icon: 'ri-mail-line' },
-  'Partial Payment': { color: 'warning', icon: 'ri-pie-chart-2-line' },
-  'Past Due': { color: 'error', icon: 'ri-information-line' },
-  Downloaded: { color: 'info', icon: 'ri-arrow-down-line' }
-}
+// const invoiceStatusObj: InvoiceStatusObj = {
+//   Sent: { color: 'secondary', icon: 'ri-send-plane-2-line' },
+//   Paid: { color: 'success', icon: 'ri-check-line' },
+//   Draft: { color: 'primary', icon: 'ri-mail-line' },
+//   'Partial Payment': { color: 'warning', icon: 'ri-pie-chart-2-line' },
+//   'Past Due': { color: 'error', icon: 'ri-information-line' },
+//   Downloaded: { color: 'info', icon: 'ri-arrow-down-line' }
+// }
 
 const columns = [
   columnHelper.accessor('registrationId', {
     header: 'Registration Id',
-    cell: ({ row }) => (
-      <Typography
-        // component={Link}
-        // href={`/apps/invoice/preview/${row.original.id}`}
-        color='primary'
-      >{`${row.original.registrationId}`}</Typography>
-    )
+    cell: ({ row }) => <Typography color='primary'>{`${row.original.registrationId}`}</Typography>
   }),
+
   // columnHelper.accessor('invoiceStatus', {
   //   header: 'Status',
   //   cell: ({ row }) => (
@@ -110,6 +104,7 @@ const columns = [
     header: 'Plan',
     cell: ({ row }) => <Typography>{`${row.original.plan}`}</Typography>
   })
+
   // columnHelper.accessor('balance', {
   //   header: 'Balance',
   //   cell: ({ row }) => {

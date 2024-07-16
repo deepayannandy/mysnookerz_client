@@ -2,7 +2,6 @@
 import type { ReactElement } from 'react'
 
 // Next Imports
-import dynamic from 'next/dynamic'
 
 // MUI Imports
 import Grid from '@mui/material/Grid'
@@ -11,20 +10,18 @@ import Grid from '@mui/material/Grid'
 import type { Customer } from '@/types/apps/ecommerceTypes'
 
 // Component Imports
-import CustomerDetailsHeader from './CustomerDetailsHeader'
 import CustomerLeftOverview from './customer-left-overview'
 import CustomerRight from './customer-right'
+import CustomerDetailsHeader from './CustomerDetailsHeader'
 
-const OverViewTab = dynamic(() => import('@views/apps/ecommerce/customers/details/customer-right/overview'))
-const SecurityTab = dynamic(() => import('@views/apps/ecommerce/customers/details/customer-right/security'))
-const NotificationsTab = dynamic(() => import('@views/apps/ecommerce/customers/details/customer-right/notification'))
-
-const AddressBillingTab = dynamic(
-  () => import('@views/apps/ecommerce/customers/details/customer-right/address-billing')
-)
+import AddressBillingTab from '../../../../../views/apps/ecommerce/customers/details/customer-right/address-billing'
+import NotificationsTab from '../../../../../views/apps/ecommerce/customers/details/customer-right/notification'
+import OverViewTab from '../../../../../views/apps/ecommerce/customers/details/customer-right/overview'
+import SecurityTab from '../../../../../views/apps/ecommerce/customers/details/customer-right/security'
 
 // Vars
 const tabContentList = (): { [key: string]: ReactElement } => ({
+  //@ts-ignore
   overview: <OverViewTab />,
   security: <SecurityTab />,
   addressBilling: <AddressBillingTab />,

@@ -3971,6 +3971,7 @@ export const db: ECommerceType = {
       totalSpent: 1003.3,
       avatar: '/images/avatars/5.png'
     }
+
     // {
     //   id: 6,
     //   customer: 'Nester Fridd',

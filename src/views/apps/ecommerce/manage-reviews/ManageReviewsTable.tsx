@@ -8,8 +8,8 @@ import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
 // MUI Imports
-import Card from '@mui/material/Card'
 import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
 import Checkbox from '@mui/material/Checkbox'
 import Chip from '@mui/material/Chip'
 import FormControl from '@mui/material/FormControl'
@@ -17,27 +17,27 @@ import MenuItem from '@mui/material/MenuItem'
 import Rating from '@mui/material/Rating'
 import Select from '@mui/material/Select'
 import TablePagination from '@mui/material/TablePagination'
+import type { TextFieldProps } from '@mui/material/TextField'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import type { TextFieldProps } from '@mui/material/TextField'
 
 // Third-party Imports
-import classnames from 'classnames'
+import type { RankingInfo } from '@tanstack/match-sorter-utils'
 import { rankItem } from '@tanstack/match-sorter-utils'
+import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable,
-  getFilteredRowModel,
+  getFacetedMinMaxValues,
   getFacetedRowModel,
   getFacetedUniqueValues,
-  getFacetedMinMaxValues,
+  getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel
+  getSortedRowModel,
+  useReactTable
 } from '@tanstack/react-table'
-import type { ColumnDef, FilterFn } from '@tanstack/react-table'
-import type { RankingInfo } from '@tanstack/match-sorter-utils'
+import classnames from 'classnames'
 
 // Type Imports
 import type { ReviewType } from '@/types/apps/ecommerceTypes'
@@ -115,7 +115,7 @@ const ManageReviewsTable = ({ reviewsData }: { reviewsData?: ReviewType[] }) => 
   // States
   const [status, setStatus] = useState<ReviewType['status']>('All')
   const [rowSelection, setRowSelection] = useState({})
-  const [allData, setAllData] = useState(...[reviewsData])
+  const [allData, setAllData] = useState([...(reviewsData as ReviewType[])])
   const [data, setData] = useState(allData)
   const [globalFilter, setGlobalFilter] = useState('')
 
@@ -249,7 +249,7 @@ const ManageReviewsTable = ({ reviewsData }: { reviewsData?: ReviewType[] }) => 
                 text: 'Delete',
                 icon: 'ri-delete-bin-7-line',
                 menuItemProps: {
-                  onClick: () => setAllData(allData?.filter(review => review.id !== row.original.id)),
+                  onClick: () => setAllData(allData?.filter(review => review?.id !== row.original.id)),
                   className: 'flex items-center gap-2'
                 }
               }
@@ -264,7 +264,7 @@ const ManageReviewsTable = ({ reviewsData }: { reviewsData?: ReviewType[] }) => 
   )
 
   const table = useReactTable({
-    data: data as ReviewType[],
+    data: data as unknown as ReviewType[],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter
