@@ -41,9 +41,10 @@ import type { ThemeColor } from '@core/types'
 
 // Style Imports
 import OptionMenu from '@/@core/components/option-menu/index'
-import Link from '@/components/Link'
 
+import DeviceDetailsDialog from '@/components/dialogs/device-details-dialog'
 import tableStyles from '@core/styles/table.module.css'
+import { Button } from '@mui/material'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -144,8 +145,8 @@ const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState(deviceData)
   const [globalFilter, setGlobalFilter] = useState('')
-
-  //const [showDeviceDetails, setShowDeviceDetails] = useState(false)
+  const [showDeviceDetailsDialog, setShowDeviceDetailsDialog] = useState(false)
+  const [deviceDetailsData, setDeviceDetailsData] = useState({})
 
   // Hooks
   //const { lang: locale } = useParams()
@@ -185,7 +186,12 @@ const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
       columnHelper.accessor('macId', {
         header: 'MAC Id',
         cell: ({ row }) => (
-          <Typography component={Link} color='text.primary' className='font-medium hover:text-primary'>
+          <Typography
+            component={Button}
+            color='text.primary'
+            className='font-medium hover:text-primary'
+            onClick={() => handleDeviceDetails(row.original)}
+          >
             {row.original.macId}
           </Typography>
         )
@@ -338,6 +344,16 @@ const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
   //   }
   // }
 
+  const handleDeviceDetails = (rowData: Device) => {
+    setDeviceDetailsData({
+      macId: rowData.macId,
+      activationDate: rowData.activationDate,
+      warrantyExpiryDate: rowData.warrantyDate,
+      warrantyAvailingDate: rowData.warrantyAvailingDate
+    })
+    setShowDeviceDetailsDialog(!showDeviceDetailsDialog)
+  }
+
   return (
     <>
       <Card>
@@ -419,6 +435,12 @@ const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
+      <DeviceDetailsDialog
+        open={showDeviceDetailsDialog}
+        setOpen={setShowDeviceDetailsDialog}
+        deviceDetailData={deviceDetailsData}
+        setDeviceDetailsData={setDeviceDetailsData}
+      />
     </>
   )
 }

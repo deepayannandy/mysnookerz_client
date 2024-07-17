@@ -42,8 +42,6 @@ import AppRecharts from '../../../libs/styles/AppRecharts'
 //   { pv: 100, name: 'Dec' }
 // ]
 
-const monthOptions = ['Month', 'Year']
-
 //const yearOptions = ['2023', '2024']
 
 const CustomTooltip = (props: TooltipProps<any, any>) => {
@@ -139,10 +137,95 @@ const CustomTooltip = (props: TooltipProps<any, any>) => {
 //   )
 // }
 
+const MonthButton = ({ data, setData }: any) => {
+  // States
+  const [open, setOpen] = useState<boolean>(false)
+  const [selectedIndex, setSelectedIndex] = useState<number>(0)
+
+  // Refs
+  const anchorRef = useRef<HTMLDivElement | null>(null)
+
+  const monthOptions = ['Month', 'Year']
+
+  const handleMenuItemClick = (event: SyntheticEvent, index: number) => {
+    setSelectedIndex(index)
+    setOpen(false)
+    console.log({ index })
+    if (index === 1) {
+      setData([
+        { pv: 980, name: '2022' },
+        { pv: 200, name: '2023' },
+        { pv: 220, name: '2024' }
+      ])
+    } else {
+      setData([
+        { pv: 980, name: 'Jan' },
+        { pv: 200, name: 'Feb' },
+        { pv: 220, name: 'Mar' },
+        { pv: 180, name: 'Apr' },
+        { pv: 270, name: 'May' },
+        { pv: 250, name: 'Jun' },
+        { pv: 70, name: 'Jul' },
+        { pv: 90, name: 'Aug' },
+        { pv: 200, name: 'Sep' },
+        { pv: 150, name: 'Oct' },
+        { pv: 160, name: 'Nov' },
+        { pv: 100, name: 'Dec' }
+      ])
+    }
+  }
+
+  const handleToggle = () => {
+    setOpen(prevOpen => !prevOpen)
+  }
+
+  const handleClose = () => {
+    setOpen(false)
+  }
+
+  return (
+    <>
+      <ButtonGroup variant='outlined' ref={anchorRef} aria-label='split button' size='small'>
+        <Button>{monthOptions[selectedIndex]}</Button>
+        <Button
+          className='pli-0'
+          aria-haspopup='menu'
+          onClick={handleToggle}
+          aria-label='select merge strategy'
+          aria-expanded={open ? 'true' : undefined}
+          aria-controls={open ? 'split-button-menu' : undefined}
+        >
+          <i className='ri-arrow-down-s-line text-lg' />
+        </Button>
+      </ButtonGroup>
+      <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition placement='bottom-end'>
+        {({ TransitionProps, placement }) => (
+          <Grow {...TransitionProps} style={{ transformOrigin: placement === 'bottom-end' ? 'right top' : 'left top' }}>
+            <Paper className='shadow-lg'>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList id='split-button-menu'>
+                  {monthOptions.map((monthOption, index) => (
+                    <MenuItem
+                      key={monthOption}
+                      selected={index === selectedIndex}
+                      onClick={event => handleMenuItemClick(event, index)}
+                    >
+                      {monthOption}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
+    </>
+  )
+}
+
 const RechartsLineChart = ({ title }: { title: string }) => {
   // Hooks
   const theme = useTheme()
-
   const [data, setData] = useState<{ pv: number; name: string }[]>([
     { pv: 980, name: 'Jan' },
     { pv: 200, name: 'Feb' },
@@ -158,75 +241,6 @@ const RechartsLineChart = ({ title }: { title: string }) => {
     { pv: 100, name: 'Dec' }
   ])
 
-  const MonthButton = () => {
-    // States
-    const [open, setOpen] = useState<boolean>(false)
-    const [selectedIndex, setSelectedIndex] = useState<number>(0)
-
-    // Refs
-    const anchorRef = useRef<HTMLDivElement | null>(null)
-
-    const handleMenuItemClick = (event: SyntheticEvent, index: number) => {
-      setSelectedIndex(index)
-      setOpen(false)
-      setData([
-        { pv: 980, name: '2022' },
-        { pv: 200, name: '2023' },
-        { pv: 220, name: '2024' }
-      ])
-    }
-
-    const handleToggle = () => {
-      setOpen(prevOpen => !prevOpen)
-    }
-
-    const handleClose = () => {
-      setOpen(false)
-    }
-
-    return (
-      <>
-        <ButtonGroup variant='outlined' ref={anchorRef} aria-label='split button' size='small'>
-          <Button>{monthOptions[selectedIndex]}</Button>
-          <Button
-            className='pli-0'
-            aria-haspopup='menu'
-            onClick={handleToggle}
-            aria-label='select merge strategy'
-            aria-expanded={open ? 'true' : undefined}
-            aria-controls={open ? 'split-button-menu' : undefined}
-          >
-            <i className='ri-arrow-down-s-line text-lg' />
-          </Button>
-        </ButtonGroup>
-        <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition placement='bottom-end'>
-          {({ TransitionProps, placement }) => (
-            <Grow
-              {...TransitionProps}
-              style={{ transformOrigin: placement === 'bottom-end' ? 'right top' : 'left top' }}
-            >
-              <Paper className='shadow-lg'>
-                <ClickAwayListener onClickAway={handleClose}>
-                  <MenuList id='split-button-menu'>
-                    {monthOptions.map((monthOption, index) => (
-                      <MenuItem
-                        key={monthOption}
-                        selected={index === selectedIndex}
-                        onClick={event => handleMenuItemClick(event, index)}
-                      >
-                        {monthOption}
-                      </MenuItem>
-                    ))}
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
-      </>
-    )
-  }
-
   return (
     <Card>
       <CardHeader
@@ -237,7 +251,7 @@ const RechartsLineChart = ({ title }: { title: string }) => {
           '& .MuiCardHeader-action': { mb: 0 },
           '& .MuiCardHeader-content': { mb: [2, 0] }
         }}
-        action={<MonthButton />}
+        action={<MonthButton data={data} setData={setData} />}
       />
       <CardContent>
         <AppRecharts>

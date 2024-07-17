@@ -2,7 +2,6 @@
 import { useParams } from 'next/navigation'
 
 // MUI Imports
-import Chip from '@mui/material/Chip'
 import { useTheme } from '@mui/material/styles'
 
 // Third-party Imports
@@ -13,7 +12,7 @@ import type { getDictionary } from '@/utils/getDictionary'
 import type { VerticalMenuContextProps } from '@menu/components/vertical-menu/Menu'
 
 // Component Imports
-import { Menu, MenuItem, MenuSection, SubMenu } from '@menu/vertical-menu'
+import { Menu, MenuItem } from '@menu/vertical-menu'
 
 // import { GenerateVerticalMenu } from '@components/GenerateMenu'
 
@@ -82,7 +81,12 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='ri-circle-line' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <SubMenu
+        <MenuItem href={`/${locale}/dashboards/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
+        <MenuItem href={`/${locale}/dashboards/analytics`}>{dictionary['navigation'].analytics}</MenuItem>
+        <MenuItem href={`/${locale}/dashboards/client`}>{dictionary['navigation'].client}</MenuItem>
+        <MenuItem href={`/${locale}/dashboards/customer`}>{dictionary['navigation'].customer}</MenuItem>
+        <MenuItem href={`/${locale}/dashboards/device`}>{dictionary['navigation'].device}</MenuItem>
+        {/* <SubMenu
           label={dictionary['navigation'].dashboards}
           icon={<i className='ri-home-smile-line' />}
           suffix={<Chip label='5' size='small' color='error' />}
@@ -92,8 +96,8 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
           <MenuItem href={`/${locale}/dashboards/client`}>{dictionary['navigation'].client}</MenuItem>
           <MenuItem href={`/${locale}/dashboards/customer`}>{dictionary['navigation'].customer}</MenuItem>
           <MenuItem href={`/${locale}/dashboards/device`}>{dictionary['navigation'].device}</MenuItem>
-        </SubMenu>
-        <SubMenu label={dictionary['navigation'].frontPages} icon={<i className='ri-file-copy-line' />}>
+        </SubMenu> */}
+        {/* <SubMenu label={dictionary['navigation'].frontPages} icon={<i className='ri-file-copy-line' />}>
           <MenuItem href='/front-pages/landing-page' target='_blank'>
             {dictionary['navigation'].landing}
           </MenuItem>
@@ -389,7 +393,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             </SubMenu>
             <MenuItem disabled>{dictionary['navigation'].disabledMenu}</MenuItem>
           </SubMenu>
-        </MenuSection>
+        </MenuSection> */}
       </Menu>
       {/* <Menu
         popoutMenuOffset={{ mainAxis: 10 }}

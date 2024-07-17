@@ -54,6 +54,7 @@ export type Device = {
   ipAddress: string
   storeId: string
   warrantyDate: string
+  warrantyAvailingDate?: string
   status: string
 }
 
