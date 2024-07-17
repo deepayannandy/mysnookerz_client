@@ -89,20 +89,20 @@ const AddCustomerDrawer = (props: Props) => {
   })
 
   const onSubmit = (data: FormValidateType) => {
-    // const newData: Customer = {
-    //   id: (customerData?.length && customerData?.length + 1) || 1,
-    //   customer: data.fullName,
-    //   customerId: customerData?.[Math.floor(Math.random() * 100) + 1].customerId ?? '1',
-    //   email: data.email,
-    //   country: `${country[data.country].country}`,
-    //   countryCode: 'st',
-    //   countryFlag: `/images/cards/${data.country}.png`,
-    //   order: Math.floor(Math.random() * 1000) + 1,
-    //   totalSpent: Math.random() * (10000 - 500 + 1) + 500,
-    //   avatar: `/images/avatars/${Math.floor(Math.random() * 8) + 1}.png`
-    // }
+    const newData: any = {
+      id: (customerData?.length && customerData?.length + 1) || 1,
+      customer: data.fullName,
+      customerId: customerData?.[Math.floor(Math.random() * 100) + 1].customerId ?? '1',
+      email: data.email,
+      country: `${country[data.country].country}`,
+      countryCode: 'st',
+      countryFlag: `/images/cards/${data.country}.png`,
+      order: Math.floor(Math.random() * 1000) + 1,
+      totalSpent: Math.random() * (10000 - 500 + 1) + 500,
+      avatar: `/images/avatars/${Math.floor(Math.random() * 8) + 1}.png`
+    }
 
-    setData([...(customerData ?? [])])
+    setData([...(customerData ?? [newData])])
     resetForm({ fullName: '', email: '', country: '' })
     setFormData(initialData)
     handleClose()
