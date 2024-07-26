@@ -8,7 +8,6 @@ import type { Customer } from '@/types/apps/ecommerceTypes'
 import CustomerDetails from '@/views/apps/ecommerce/customers/details'
 
 // Data Imports
-import { getEcommerceData } from '@/app/server/actions'
 
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
@@ -30,9 +29,9 @@ import { getEcommerceData } from '@/app/server/actions'
 
 const CustomerDetailsPage = async ({ params }: { params: { id: string } }) => {
   // Vars
-  const data = await getEcommerceData()
+  const data: Customer[] = []
 
-  const filteredData = data?.customerData.filter((item: Customer) => item.customerId === params.id)[0]
+  const filteredData = data?.filter((item: Customer) => item.customerId === params.id)[0]
 
   if (!filteredData) {
     redirect('/not-found')
