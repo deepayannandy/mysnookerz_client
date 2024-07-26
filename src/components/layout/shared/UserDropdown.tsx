@@ -1,7 +1,8 @@
 'use client'
 
 // React Imports
-import { MouseEvent, useEffect, useRef, useState } from 'react'
+import type { MouseEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 // Next Imports
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
@@ -20,7 +21,8 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 
 // Third-party Imports
-import { useSession } from 'next-auth/react'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 // Type Imports
 import type { Locale } from '@configs/i18n'
@@ -30,8 +32,6 @@ import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
-import axios from 'axios'
-import { toast } from 'react-toastify'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -59,7 +59,6 @@ const UserDropdown = () => {
 
   // Hooks
   const router = useRouter()
-  const { data: session } = useSession()
   const { settings } = useSettings()
   const { lang: locale } = useParams()
   const searchParams = useSearchParams()
@@ -82,13 +81,10 @@ const UserDropdown = () => {
 
   const handleUserLogout = async () => {
     try {
-      // Sign out from the app
       localStorage.removeItem('token')
       const redirectURL = searchParams.get('redirectTo') ?? '/login'
 
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))
-
-      //await signOut({ callbackUrl: process.env.NEXT_PUBLIC_APP_URL })
     } catch (error) {
       toast.error((error as Error).message)
     }

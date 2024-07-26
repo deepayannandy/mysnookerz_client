@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from 'react'
 // Next Imports
 
 // MUI Imports
+import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import TablePagination from '@mui/material/TablePagination'
@@ -27,7 +28,10 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
+import axios from 'axios'
 import classnames from 'classnames'
+import { DateTime } from 'luxon'
+import { toast } from 'react-toastify'
 
 import Chip from '@mui/material/Chip'
 
@@ -44,10 +48,6 @@ import OptionMenu from '@/@core/components/option-menu/index'
 
 import DeviceDetailsDialog from '@/components/dialogs/device-details-dialog'
 import tableStyles from '@core/styles/table.module.css'
-import Button from '@mui/material/Button'
-import axios from 'axios'
-import { DateTime } from 'luxon'
-import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {

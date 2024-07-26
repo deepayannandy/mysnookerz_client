@@ -44,20 +44,6 @@ type EditUserInfoProps = {
   data?: EditUserInfoData
 }
 
-// Vars
-const initialData: EditUserInfoProps['data'] = {
-  firstName: 'Oliver',
-  lastName: 'Queen',
-  userName: 'oliverQueen',
-  billingEmail: 'oliverQueen@gmail.com',
-  status: 'status',
-  taxId: 'Tax-8894',
-  contact: '+ 1 609 933 4422',
-  language: ['english'],
-  country: '',
-  useAsBillingAddress: true
-}
-
 // const status = ['Status', 'Active', 'Inactive', 'Suspended']
 
 // const languages = ['English', 'Spanish', 'French', 'German', 'Hindi']

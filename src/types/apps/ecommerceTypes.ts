@@ -119,7 +119,7 @@ export type ECommerceType = {
   products: ProductType[]
   orderData: OrderType[]
   clientData: Client[]
-  customerData: Customer[]
+  customerData?: Customer[]
   reviews: ReviewType[]
   referrals: ReferralsType[]
 }

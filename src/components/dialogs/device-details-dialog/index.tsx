@@ -1,7 +1,8 @@
 'use client'
 
 // React Imports
-import { ReactNode, useState } from 'react'
+import type { ReactNode } from 'react'
+import { useState } from 'react'
 
 // MUI Imports
 import Button from '@mui/material/Button'
@@ -16,14 +17,14 @@ import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 
 // Third-party Imports
+import axios from 'axios'
 import classnames from 'classnames'
+import { DateTime } from 'luxon'
+import { toast } from 'react-toastify'
 
 // Component Imports
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import CustomAvatar from '@core/components/mui/Avatar'
-import axios from 'axios'
-import { DateTime } from 'luxon'
-import { toast } from 'react-toastify'
 
 // Config Imports
 
@@ -46,7 +47,7 @@ export type DeviceDetailsData = {
 type Options = {
   icon?: ReactNode
   title?: string
-  value?: string
+  key?: string
 }
 
 const DeviceDetailsDialog = ({
@@ -57,7 +58,7 @@ const DeviceDetailsDialog = ({
   getDeviceData
 }: DeviceDetailsDialogProps) => {
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [options, setOptions] = useState([
+  const options: Options[] = [
     {
       key: 'macId',
       icon: 'ri-mac-line',
@@ -73,7 +74,7 @@ const DeviceDetailsDialog = ({
       icon: 'ri-calendar-schedule-fill',
       title: 'Warranty Expiry Date'
     }
-  ])
+  ]
 
   const addWarrantyAvailingDate = async (date: Date) => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL

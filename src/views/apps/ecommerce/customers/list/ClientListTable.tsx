@@ -28,15 +28,13 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
+import axios from 'axios'
 import classnames from 'classnames'
+import { toast } from 'react-toastify'
 
 // Type Imports
 import type { Client } from '@/types/apps/ecommerceTypes'
 import type { ThemeColor } from '@core/types'
-
-// Component Imports
-
-// Util Imports
 
 // Style Imports
 import OptionMenu from '@/@core/components/option-menu/index'
@@ -44,8 +42,6 @@ import EditUserInfo from '@/components/dialogs/edit-user-info/index'
 import RenewSubscription from '@/components/dialogs/renew-membership/index'
 
 import tableStyles from '@core/styles/table.module.css'
-import axios from 'axios'
-import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -65,23 +61,11 @@ type StatusChipColorType = {
   color: ThemeColor
 }
 
-type CustomerStatusType = {
-  [key: string]: {
-    title: string
-    color: ThemeColor
-  }
-}
-
 export const paymentStatus: { [key: number]: PayementStatusType } = {
   1: { text: 'Paid', color: 'success' },
   2: { text: 'Pending', color: 'warning' },
   3: { text: 'Cancelled', color: 'secondary' },
   4: { text: 'Failed', color: 'error' }
-}
-
-const customerStatusObj: CustomerStatusType = {
-  Active: { title: 'Active', color: 'success' },
-  Inactive: { title: 'Inactive', color: 'error' }
 }
 
 export const statusChipColor: { [key: string]: StatusChipColorType } = {

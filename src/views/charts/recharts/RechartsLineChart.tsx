@@ -137,7 +137,7 @@ const CustomTooltip = (props: TooltipProps<any, any>) => {
 //   )
 // }
 
-const MonthButton = ({ data, setData }: any) => {
+const MonthButton = ({ setData }: any) => {
   // States
   const [open, setOpen] = useState<boolean>(false)
   const [selectedIndex, setSelectedIndex] = useState<number>(0)
@@ -251,7 +251,7 @@ const RechartsLineChart = ({ title }: { title: string }) => {
           '& .MuiCardHeader-action': { mb: 0 },
           '& .MuiCardHeader-content': { mb: [2, 0] }
         }}
-        action={<MonthButton data={data} setData={setData} />}
+        action={<MonthButton setData={setData} />}
       />
       <CardContent>
         <AppRecharts>

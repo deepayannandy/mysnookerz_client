@@ -27,7 +27,9 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
+import axios from 'axios'
 import classnames from 'classnames'
+import { toast } from 'react-toastify'
 
 import Chip from '@mui/material/Chip'
 
@@ -35,16 +37,10 @@ import Chip from '@mui/material/Chip'
 import type { Customer } from '@/types/apps/ecommerceTypes'
 import type { ThemeColor } from '@core/types'
 
-// Component Imports
-
-// Util Imports
-
 // Style Imports
 import OptionMenu from '@/@core/components/option-menu/index'
 
 import tableStyles from '@core/styles/table.module.css'
-import axios from 'axios'
-import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
