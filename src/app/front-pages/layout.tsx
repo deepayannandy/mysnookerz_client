@@ -8,9 +8,9 @@ import type { ChildrenType } from '@core/types'
 import { IntersectionProvider } from '@/contexts/intersectionContext'
 
 // Component Imports
+import FrontLayout from '@components/layout/front-pages'
 import Providers from '@components/Providers'
 import BlankLayout from '@layouts/BlankLayout'
-import FrontLayout from '@components/layout/front-pages'
 
 // Util Imports
 import { getSystemMode } from '@core/utils/serverHelpers'
@@ -22,9 +22,8 @@ import '@/app/globals.css'
 import '@assets/iconify-icons/generated-icons.css'
 
 export const metadata = {
-  title: 'Materio - Material Design Next.js Admin Template',
-  description:
-    'Materio - Material Design Next.js Admin Dashboard Template - is the most developer friendly & highly customizable Admin Dashboard Template based on MUI v5.'
+  title: 'Snooker',
+  description: 'My Snooker'
 }
 
 const Layout = ({ children }: ChildrenType) => {

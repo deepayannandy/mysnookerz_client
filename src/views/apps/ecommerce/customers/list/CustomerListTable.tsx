@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // Next Imports
 
@@ -43,6 +43,8 @@ import type { ThemeColor } from '@core/types'
 import OptionMenu from '@/@core/components/option-menu/index'
 
 import tableStyles from '@core/styles/table.module.css'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -88,7 +90,7 @@ export const statusChipColor: { [key: string]: StatusChipColorType } = {
   Dispatched: { color: 'warning' }
 }
 
-type ECommerceOrderTypeWithAction = Customer & {
+type CustomerTypeWithAction = Customer & {
   action?: string
 }
 
@@ -135,52 +137,47 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 // }
 
 // Column Definitions
-const columnHelper = createColumnHelper<ECommerceOrderTypeWithAction>()
+const columnHelper = createColumnHelper<CustomerTypeWithAction>()
 
-const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
+const CustomerListTable = () => {
   // States
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(customerData)
+  const [data, setData] = useState([] as CustomerTypeWithAction[])
   const [globalFilter, setGlobalFilter] = useState('')
 
   // Hooks
   //const { lang: locale } = useParams()
 
-  const columns = useMemo<ColumnDef<ECommerceOrderTypeWithAction, any>[]>(
+  const getCustomerData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/store/`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setData(response.data)
+      }
+    } catch (error: any) {
+      toast(error?.response?.data ?? error?.message)
+    }
+  }
+
+  useEffect(() => {
+    getCustomerData()
+  }, [])
+
+  const columns = useMemo<ColumnDef<CustomerTypeWithAction, any>[]>(
     () => [
-      // {
-      //   id: 'select',
-      //   header: ({ table }) => (
-      //     <Checkbox
-      //       {...{
-      //         checked: table.getIsAllRowsSelected(),
-      //         indeterminate: table.getIsSomeRowsSelected(),
-      //         onChange: table.getToggleAllRowsSelectedHandler()
-      //       }}
-      //     />
-      //   ),
-      //   cell: ({ row }) => (
-      //     <Checkbox
-      //       {...{
-      //         checked: row.getIsSelected(),
-      //         disabled: !row.getCanSelect(),
-      //         indeterminate: row.getIsSomeSelected(),
-      //         onChange: row.getToggleSelectedHandler()
-      //       }}
-      //     />
-      //   )
-      // },
       columnHelper.accessor('transactionId', {
         header: 'Transaction Id',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
       }),
-      columnHelper.accessor('registrationDate', {
+      columnHelper.accessor('onboarding', {
         header: 'Registration Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.registrationDate}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.onboarding}</Typography>
       }),
-      columnHelper.accessor('customerName', {
+      columnHelper.accessor('storeName', {
         header: 'Customer Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.customerName}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeName}</Typography>
       }),
       columnHelper.accessor('email', {
         header: 'Email',
@@ -190,9 +187,9 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
         header: 'Contact',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.contact}</Typography>
       }),
-      columnHelper.accessor('city', {
-        header: 'City',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.city}</Typography>
+      columnHelper.accessor('address', {
+        header: 'Address',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.address}</Typography>
       }),
       columnHelper.accessor('coins', {
         header: 'Coins',
@@ -203,9 +200,9 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             <Chip
-              label={customerStatusObj[row.original.status].title}
+              label={customerStatusObj[row.original.isActive ? 'Active' : 'Inactive'].title}
               variant='tonal'
-              color={customerStatusObj[row.original.status].color}
+              color={customerStatusObj[row.original.isActive ? 'Active' : 'Inactive'].color}
               size='small'
             />
           </div>
@@ -228,7 +225,7 @@ const CustomerListTable = ({ customerData }: { customerData: Customer[] }) => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => setData(data?.filter(product => product.id !== row.original.id))
+                    onClick: () => setData(data?.filter(product => product._id !== row.original._id))
                   }
                 }
 

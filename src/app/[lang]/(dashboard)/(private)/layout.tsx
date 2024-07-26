@@ -53,13 +53,7 @@ const Layout = async ({ children, params }: ChildrenType & { params: { lang: Loc
             //   {children}
             // </VerticalLayout>
           }
-          horizontalLayout={
-            <HorizontalLayout header={<Header dictionary={dictionary} />}>{children}</HorizontalLayout>
-
-            // <HorizontalLayout header={<Header dictionary={dictionary} />} footer={<HorizontalFooter />}>
-            //   {children}
-            // </HorizontalLayout>
-          }
+          horizontalLayout={<HorizontalLayout header={<Header dictionary={dictionary} />}>{children}</HorizontalLayout>}
         />
         <ScrollToTop className='mui-fixed'>
           <Button

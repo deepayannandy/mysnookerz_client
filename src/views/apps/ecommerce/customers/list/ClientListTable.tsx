@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // Next Imports
 
@@ -30,8 +30,6 @@ import {
 } from '@tanstack/react-table'
 import classnames from 'classnames'
 
-import Chip from '@mui/material/Chip'
-
 // Type Imports
 import type { Client } from '@/types/apps/ecommerceTypes'
 import type { ThemeColor } from '@core/types'
@@ -46,6 +44,8 @@ import EditUserInfo from '@/components/dialogs/edit-user-info/index'
 import RenewSubscription from '@/components/dialogs/renew-membership/index'
 
 import tableStyles from '@core/styles/table.module.css'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -140,17 +140,34 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 // Column Definitions
 const columnHelper = createColumnHelper<ECommerceOrderTypeWithAction>()
 
-const ClientListTable = ({ clientData }: { clientData: Client[] }) => {
+const ClientListTable = () => {
   // States
   //const [customerUserOpen, setCustomerUserOpen] = useState(false)
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(clientData)
+  const [data, setData] = useState([] as Client[])
   const [globalFilter, setGlobalFilter] = useState('')
   const [newRegistrationDialogOpen, setNewRegistrationDialogOpen] = useState(false)
   const [renewSubscriptionDialogOpen, setRenewSubscriptionDialogOpen] = useState(false)
 
   // Hooks
   //const { lang: locale } = useParams()
+
+  const getClientData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/client/`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setData(response.data)
+      }
+    } catch (error: any) {
+      toast(error?.response?.data ?? error?.message)
+    }
+  }
+
+  useEffect(() => {
+    getClientData()
+  }, [])
 
   const columns = useMemo<ColumnDef<ECommerceOrderTypeWithAction, any>[]>(
     () => [
@@ -188,9 +205,9 @@ const ClientListTable = ({ clientData }: { clientData: Client[] }) => {
         header: 'Store Id',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.storeId}</Typography>
       }),
-      columnHelper.accessor('storeName', {
+      columnHelper.accessor('fullName', {
         header: 'Store Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeName}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.fullName}</Typography>
       }),
       columnHelper.accessor('city', {
         header: 'City',
@@ -212,19 +229,19 @@ const ClientListTable = ({ clientData }: { clientData: Client[] }) => {
         header: 'Expiring On',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.expiringOn}</Typography>
       }),
-      columnHelper.accessor('status', {
-        header: 'Status',
-        cell: ({ row }) => (
-          <div className='flex items-center gap-3'>
-            <Chip
-              label={customerStatusObj[row.original.status].title}
-              variant='tonal'
-              color={customerStatusObj[row.original.status].color}
-              size='small'
-            />
-          </div>
-        )
-      }),
+      // columnHelper.accessor('status', {
+      //   header: 'Status',
+      //   cell: ({ row }) => (
+      //     <div className='flex items-center gap-3'>
+      //       <Chip
+      //         label={customerStatusObj[row.original.isActive ? 'Active' : 'Inactive'].title}
+      //         variant='tonal'
+      //         color={customerStatusObj[row.original.isActive ? 'Active' : 'Inactive'].color}
+      //         size='small'
+      //       />
+      //     </div>
+      //   )
+      // }),
       columnHelper.accessor('actions', {
         header: 'Actions',
         cell: ({ row }) => (

@@ -54,7 +54,7 @@ const initialData: EditUserInfoProps['data'] = {
   taxId: 'Tax-8894',
   contact: '+ 1 609 933 4422',
   language: ['english'],
-  country: 'US',
+  country: '',
   useAsBillingAddress: true
 }
 
@@ -62,17 +62,17 @@ const initialData: EditUserInfoProps['data'] = {
 
 // const languages = ['English', 'Spanish', 'French', 'German', 'Hindi']
 
-const countries = ['Select Country', 'India', 'France', 'Russia', 'China', 'UK', 'US']
+const countries = ['India']
 
-const subscriptions = ['Entry', 'Lite', 'Premium']
+const subscriptions = ['Starter', 'Standard', 'Ultimate', 'Enterprise']
 
 const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
   // States
-  const [userData, setUserData] = useState<EditUserInfoProps['data']>(data || initialData)
+  const [userData, setUserData] = useState<EditUserInfoProps['data']>(data)
 
   const handleClose = () => {
     setOpen(false)
-    setUserData(data || initialData)
+    setUserData(data)
   }
 
   return (

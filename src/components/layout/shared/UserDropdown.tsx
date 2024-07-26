@@ -1,8 +1,7 @@
 'use client'
 
 // React Imports
-import type { MouseEvent } from 'react'
-import { useRef, useState } from 'react'
+import { MouseEvent, useEffect, useRef, useState } from 'react'
 
 // Next Imports
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
@@ -14,7 +13,6 @@ import Button from '@mui/material/Button'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
 import Divider from '@mui/material/Divider'
 import Fade from '@mui/material/Fade'
-import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
 import Paper from '@mui/material/Paper'
 import Popper from '@mui/material/Popper'
@@ -32,6 +30,8 @@ import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -43,9 +43,16 @@ const BadgeContentSpan = styled('span')({
   boxShadow: '0 0 0 2px var(--mui-palette-background-paper)'
 })
 
+type UserDetailsType = {
+  fullName: string
+  profileImage: string
+  email: string
+}
+
 const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false)
+  const [userDetails, setUserDetails] = useState({} as UserDetailsType)
 
   // Refs
   const anchorRef = useRef<HTMLDivElement>(null)
@@ -76,18 +83,33 @@ const UserDropdown = () => {
   const handleUserLogout = async () => {
     try {
       // Sign out from the app
+      localStorage.removeItem('token')
       const redirectURL = searchParams.get('redirectTo') ?? '/login'
 
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))
 
       //await signOut({ callbackUrl: process.env.NEXT_PUBLIC_APP_URL })
     } catch (error) {
-      console.error(error)
-
-      // Show above error in a toast like following
-      // toastService.error((err as Error).message)
+      toast.error((error as Error).message)
     }
   }
+
+  const getUserDetails = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/user/`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setUserDetails(response.data[0])
+      }
+    } catch (error: any) {
+      toast(error?.response?.data ?? error?.message)
+    }
+  }
+
+  useEffect(() => {
+    getUserDetails()
+  }, [])
 
   return (
     <>
@@ -100,8 +122,8 @@ const UserDropdown = () => {
       >
         <Avatar
           ref={anchorRef}
-          alt={session?.user?.name || ''}
-          src={session?.user?.image || ''}
+          alt={userDetails.fullName || ''}
+          src={userDetails.profileImage || ''}
           onClick={handleDropdownOpen}
           className='cursor-pointer bs-[38px] is-[38px]'
         />
@@ -125,20 +147,20 @@ const UserDropdown = () => {
               <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
                 <MenuList>
                   <div className='flex items-center plb-2 pli-4 gap-2' tabIndex={-1}>
-                    <Avatar alt={session?.user?.name || ''} src={session?.user?.image || ''} />
+                    <Avatar alt={userDetails.fullName || ''} src={userDetails.profileImage || ''} />
                     <div className='flex items-start flex-col'>
                       <Typography className='font-medium' color='text.primary'>
-                        {session?.user?.name || ''}
+                        {userDetails.fullName || ''}
                       </Typography>
-                      <Typography variant='caption'>{session?.user?.email || ''}</Typography>
+                      <Typography variant='caption'>{userDetails.email || ''}</Typography>
                     </div>
                   </div>
                   <Divider className='mlb-1' />
-                  <MenuItem className='gap-3' onClick={e => handleDropdownClose(e, '/pages/user-profile')}>
+                  {/* <MenuItem className='gap-3' onClick={e => handleDropdownClose(e, '/pages/user-profile')}>
                     <i className='ri-user-3-line' />
                     <Typography color='text.primary'>My Profile</Typography>
-                  </MenuItem>
-                  <MenuItem className='gap-3' onClick={e => handleDropdownClose(e, '/pages/account-settings')}>
+                  </MenuItem> */}
+                  {/* <MenuItem className='gap-3' onClick={e => handleDropdownClose(e, '/pages/account-settings')}>
                     <i className='ri-settings-4-line' />
                     <Typography color='text.primary'>Settings</Typography>
                   </MenuItem>
@@ -149,7 +171,7 @@ const UserDropdown = () => {
                   <MenuItem className='gap-3' onClick={e => handleDropdownClose(e, '/pages/faq')}>
                     <i className='ri-question-line' />
                     <Typography color='text.primary'>FAQ</Typography>
-                  </MenuItem>
+                  </MenuItem> */}
                   <div className='flex items-center plb-2 pli-4'>
                     <Button
                       fullWidth

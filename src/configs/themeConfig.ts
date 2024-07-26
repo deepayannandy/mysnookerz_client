@@ -54,9 +54,9 @@ export type Config = {
 }
 
 const themeConfig: Config = {
-  templateName: 'Materio',
+  templateName: 'Snooker',
   homePageUrl: '/dashboards/dashboard',
-  settingsCookieName: 'materio-mui-next-demo-1',
+  settingsCookieName: 'my-snooker',
   mode: 'system', // 'system', 'light', 'dark'
   skin: 'default', // 'default', 'bordered'
   semiDark: false, // true, false

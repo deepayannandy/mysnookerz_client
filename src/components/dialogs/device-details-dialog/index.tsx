@@ -21,7 +21,9 @@ import classnames from 'classnames'
 // Component Imports
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import CustomAvatar from '@core/components/mui/Avatar'
+import axios from 'axios'
 import { DateTime } from 'luxon'
+import { toast } from 'react-toastify'
 
 // Config Imports
 
@@ -30,13 +32,15 @@ type DeviceDetailsDialogProps = {
   setOpen: (open: boolean) => void
   deviceDetailData: Partial<DeviceDetailsData>
   setDeviceDetailsData: (deviceDetail: Partial<DeviceDetailsData>) => void
+  getDeviceData: () => void
 }
 
 export type DeviceDetailsData = {
+  id: string
   macId: string
   activationDate: string
   warrantyExpiryDate: string
-  warrantyAvailingDate?: string
+  warrantyAvailingDate: string[]
 }
 
 type Options = {
@@ -45,7 +49,13 @@ type Options = {
   value?: string
 }
 
-const DeviceDetailsDialog = ({ open, setOpen, deviceDetailData, setDeviceDetailsData }: DeviceDetailsDialogProps) => {
+const DeviceDetailsDialog = ({
+  open,
+  setOpen,
+  deviceDetailData,
+  setDeviceDetailsData,
+  getDeviceData
+}: DeviceDetailsDialogProps) => {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [options, setOptions] = useState([
     {
@@ -62,13 +72,38 @@ const DeviceDetailsDialog = ({ open, setOpen, deviceDetailData, setDeviceDetails
       key: 'warrantyExpiryDate',
       icon: 'ri-calendar-schedule-fill',
       title: 'Warranty Expiry Date'
-    },
-    {
-      key: 'warrantyAvailingDate',
-      icon: 'ri-calendar-check-line',
-      title: 'Warranty Availing Date'
     }
   ])
+
+  const addWarrantyAvailingDate = async (date: Date) => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.patch(
+        `${apiBaseUrl}/devices/${deviceDetailData.id}`,
+        {
+          warrantyAvailingDate: date
+        },
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+
+      if (response && response.data) {
+        getDeviceData()
+      }
+    } catch (error: any) {
+      toast(error?.response?.data ?? error?.message)
+    }
+
+    setDeviceDetailsData({
+      ...deviceDetailData,
+      warrantyAvailingDate: [
+        ...(deviceDetailData.warrantyAvailingDate as string[]),
+        DateTime.fromJSDate(date).toFormat('dd LLL yyyy')
+      ]
+    })
+  }
 
   return (
     <Dialog fullWidth open={open} onClose={() => setOpen(false)} maxWidth='md' scroll='body'>
@@ -101,39 +136,75 @@ const DeviceDetailsDialog = ({ open, setOpen, deviceDetailData, setDeviceDetails
           ))}
         </Grid>
         <Divider className='mbs-6' />
-        {!deviceDetailData.warrantyAvailingDate ? (
-          <div className='flex flex-col gap-5'>
-            <div className='inline-flex flex-col gap-2 flex-wrap items-start'>
-              <Typography component={InputLabel} htmlFor='refer-email' className='inline-flex whitespace-break-spaces'>
-                Add warranty availing date
-              </Typography>
-              <div className='flex items-center is-full gap-4 flex-wrap sm:flex-nowrap'>
-                <AppReactDatepicker
-                  showYearDropdown
-                  showMonthDropdown
-                  selected={selectedDate}
-                  onChange={(date: Date) => setSelectedDate(date)}
-                  placeholderText='DD/MM/YYYY'
-                  customInput={<TextField fullWidth size='small' />}
-                />
-                <Button
-                  variant='contained'
-                  className='is-full sm:is-auto'
-                  onClick={() =>
-                    setDeviceDetailsData({
-                      ...deviceDetailData,
-                      warrantyAvailingDate: DateTime.fromJSDate(new Date(selectedDate)).toFormat('dd LLL yyyy')
-                    })
-                  }
-                >
-                  Add
-                </Button>
-              </div>
+        {/* <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 700 }} aria-label='customized table'>
+            <TableHead>Warranty Availing Dates</TableHead>
+            <TableBody>
+              {!deviceDetailData.warrantyAvailingDate?.length ? (
+                <tbody>
+                  <tr>
+                    <td>No data available</td>
+                  </tr>
+                </tbody>
+              ) : (
+                deviceDetailData.warrantyAvailingDate.map(row => (
+                  <tr key={row}>
+                    <td scope='row'>{row}</td>
+                  </tr>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer> */}
+        <table>
+          <thead>
+            <tr>
+              <th>Warranty Availing Dates</th>
+            </tr>
+          </thead>
+          {!deviceDetailData.warrantyAvailingDate?.length ? (
+            <tbody>
+              <tr>
+                <td>No data available</td>
+              </tr>
+            </tbody>
+          ) : (
+            <tbody>
+              {deviceDetailData.warrantyAvailingDate.map(row => {
+                return (
+                  <tr key={row}>
+                    <td key={row}>{row}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          )}
+        </table>
+        <Divider className='mbs-6' />
+        <div className='flex flex-col gap-5'>
+          <div className='inline-flex flex-col gap-2 flex-wrap items-start'>
+            <Typography component={InputLabel} htmlFor='refer-email' className='inline-flex whitespace-break-spaces'>
+              Add warranty availing date
+            </Typography>
+            <div className='flex items-center is-full gap-4 flex-wrap sm:flex-nowrap'>
+              <AppReactDatepicker
+                showYearDropdown
+                showMonthDropdown
+                selected={selectedDate}
+                onChange={(date: Date) => setSelectedDate(date)}
+                placeholderText='DD/MM/YYYY'
+                customInput={<TextField fullWidth size='small' />}
+              />
+              <Button
+                variant='contained'
+                className='is-full sm:is-auto'
+                onClick={() => addWarrantyAvailingDate(new Date(selectedDate))}
+              >
+                Add
+              </Button>
             </div>
           </div>
-        ) : (
-          <></>
-        )}
+        </div>
       </DialogContent>
     </Dialog>
   )

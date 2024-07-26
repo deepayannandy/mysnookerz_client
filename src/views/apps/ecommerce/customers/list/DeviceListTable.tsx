@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // Next Imports
 
@@ -44,7 +44,10 @@ import OptionMenu from '@/@core/components/option-menu/index'
 
 import DeviceDetailsDialog from '@/components/dialogs/device-details-dialog'
 import tableStyles from '@core/styles/table.module.css'
-import { Button } from '@mui/material'
+import Button from '@mui/material/Button'
+import axios from 'axios'
+import { DateTime } from 'luxon'
+import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -140,18 +143,56 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 // Column Definitions
 const columnHelper = createColumnHelper<ECommerceOrderTypeWithAction>()
 
-const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
+const DeviceListTable = () => {
   // States
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(deviceData)
+  const [data, setData] = useState([] as Device[])
   const [globalFilter, setGlobalFilter] = useState('')
   const [showDeviceDetailsDialog, setShowDeviceDetailsDialog] = useState(false)
   const [deviceDetailsData, setDeviceDetailsData] = useState({})
 
+  const getDeviceData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/devices/`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setData(response.data)
+      }
+    } catch (error: any) {
+      toast(error?.response?.data ?? error?.message)
+    }
+  }
+
+  useEffect(() => {
+    getDeviceData()
+  }, [])
+
+  const handleDeviceStatus = async (id: number, isActive: boolean) => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.patch(
+        `${apiBaseUrl}/devices/${id}`,
+        {
+          isActive
+        },
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+      if (response && response.data) {
+        await getDeviceData()
+      }
+    } catch (error: any) {
+      toast(error?.response?.data ?? error?.message)
+    }
+  }
+
   // Hooks
   //const { lang: locale } = useParams()
 
-  const columns = useMemo<ColumnDef<ECommerceOrderTypeWithAction, any>[]>(
+  const columns = useMemo<ColumnDef<Device, any>[]>(
     () => [
       // {
       //   id: 'select',
@@ -177,13 +218,13 @@ const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
       // },
       columnHelper.accessor('serialNumber', {
         header: 'Serial Number',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.serialNumber}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original._id}</Typography>
       }),
-      columnHelper.accessor('activationDate', {
+      columnHelper.accessor('onboarding', {
         header: 'Activation Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.activationDate}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.onboarding}</Typography>
       }),
-      columnHelper.accessor('macId', {
+      columnHelper.accessor('deviceId', {
         header: 'MAC Id',
         cell: ({ row }) => (
           <Typography
@@ -192,26 +233,26 @@ const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
             className='font-medium hover:text-primary'
             onClick={() => handleDeviceDetails(row.original)}
           >
-            {row.original.macId}
+            {row.original.deviceId}
           </Typography>
         )
       }),
-      columnHelper.accessor('ipAddress', {
-        header: 'IP Address',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.ipAddress}</Typography>
+      columnHelper.accessor('storeId', {
+        header: 'Store Id',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeId}</Typography>
       }),
-      columnHelper.accessor('warrantyDate', {
+      columnHelper.accessor('warrantyExpiryDate', {
         header: 'Warranty Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.warrantyDate}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.warrantyExpiryDate}</Typography>
       }),
-      columnHelper.accessor('status', {
+      columnHelper.accessor('isActive', {
         header: 'Status',
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             <Chip
-              label={deviceStatusObj[row.original.status].title}
+              label={deviceStatusObj[row.original.isActive ? 'Active' : 'Inactive'].title}
               variant='tonal'
-              color={deviceStatusObj[row.original.status].color}
+              color={deviceStatusObj[row.original.isActive ? 'Active' : 'Inactive'].color}
               size='small'
             />
           </div>
@@ -231,7 +272,7 @@ const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
                 {
                   text: 'Activate',
                   icon: 'ri-eye-line',
-                  menuItemProps: { className: 'gap-2' }
+                  menuItemProps: { className: 'gap-2', onClick: () => handleDeviceStatus(row.original._id, true) }
                 },
 
                 // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
@@ -240,7 +281,7 @@ const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => setData(data?.filter(product => product.id !== row.original.id))
+                    onClick: () => handleDeviceStatus(row.original._id, false)
                   }
                 }
 
@@ -345,11 +386,18 @@ const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
   // }
 
   const handleDeviceDetails = (rowData: Device) => {
+    const warrantyAvailingDate = rowData.warrantyAvailingDate?.map((date: string) =>
+      DateTime.fromISO(date).toFormat('dd LLL yyyy')
+    )
+
     setDeviceDetailsData({
-      macId: rowData.macId,
-      activationDate: rowData.activationDate,
-      warrantyExpiryDate: rowData.warrantyDate,
-      warrantyAvailingDate: rowData.warrantyAvailingDate
+      id: rowData._id,
+      macId: rowData.deviceId,
+      activationDate: rowData.onboarding ? DateTime.fromISO(rowData.onboarding).toFormat('dd LLL yyyy') : '',
+      warrantyExpiryDate: rowData.warrantyExpiryDate
+        ? DateTime.fromISO(rowData.warrantyExpiryDate).toFormat('dd LLL yyyy')
+        : '',
+      warrantyAvailingDate: warrantyAvailingDate?.length ? warrantyAvailingDate : []
     })
     setShowDeviceDetailsDialog(!showDeviceDetailsDialog)
   }
@@ -440,6 +488,7 @@ const DeviceListTable = ({ deviceData }: { deviceData: Device[] }) => {
         setOpen={setShowDeviceDetailsDialog}
         deviceDetailData={deviceDetailsData}
         setDeviceDetailsData={setDeviceDetailsData}
+        getDeviceData={getDeviceData}
       />
     </>
   )

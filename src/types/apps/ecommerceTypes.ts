@@ -1,9 +1,9 @@
 export type Customer = {
   transactionId: string
-  registrationDate: string
+  onboarding: string
   customerName: string
   email: string
-  city: string
+  address: string
   country: string
   subscription: string
   coins: string
@@ -11,7 +11,7 @@ export type Customer = {
   expiringOn: string
   status: string
   actions?: string
-  id: number
+  _id: string
   customer: string
   customerId: string
   countryCode: string
@@ -20,6 +20,8 @@ export type Customer = {
   totalSpent: number
   avatar: string
   contact?: string
+  storeName: string
+  isActive: boolean
 }
 
 export type Client = {
@@ -44,18 +46,19 @@ export type Client = {
   totalSpent: number
   avatar: string
   contact?: string
+  fullName: string
 }
 
 export type Device = {
-  id: number
+  _id: number
   serialNumber: string
-  activationDate: string
-  macId: string
+  onboarding: string
+  deviceId: string
   ipAddress: string
   storeId: string
-  warrantyDate: string
-  warrantyAvailingDate?: string
-  status: string
+  warrantyExpiryDate: string
+  warrantyAvailingDate?: string[]
+  isActive: boolean
 }
 
 export type ReferralsType = {
