@@ -10,7 +10,7 @@ import type { ChildrenType } from '@core/types'
 // Component Imports
 
 export default function AuthGuard({ children, locale }: ChildrenType & { locale: Locale }) {
-  const token = window.localStorage.getItem('token')
+  const token = localStorage.getItem('token')
 
   return <>{token ? children : <AuthRedirect lang={locale} />}</>
 }

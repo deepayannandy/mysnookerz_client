@@ -17,6 +17,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
 type EditUserInfoData = {
@@ -59,6 +60,10 @@ const EditUserInfo = ({ open, setOpen, getClientData, data }: EditUserInfoProps)
   // States
   const [userData, setUserData] = useState<EditUserInfoProps['data']>(data)
 
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
+
   const handleClose = () => {
     setOpen(false)
     setUserData(data)
@@ -77,6 +82,10 @@ const EditUserInfo = ({ open, setOpen, getClientData, data }: EditUserInfoProps)
         setOpen(false)
       }
     } catch (error: any) {
+      if (error?.response?.status === 400) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
   }

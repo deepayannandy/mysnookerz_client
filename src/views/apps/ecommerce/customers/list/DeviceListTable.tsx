@@ -48,6 +48,7 @@ import OptionMenu from '@/@core/components/option-menu/index'
 
 import DeviceDetailsDialog from '@/components/dialogs/device-details-dialog'
 import tableStyles from '@core/styles/table.module.css'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -151,6 +152,10 @@ const DeviceListTable = () => {
   const [showDeviceDetailsDialog, setShowDeviceDetailsDialog] = useState(false)
   const [deviceDetailsData, setDeviceDetailsData] = useState({})
 
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
+
   const getDeviceData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
@@ -160,6 +165,10 @@ const DeviceListTable = () => {
         setData(response.data)
       }
     } catch (error: any) {
+      if (error?.response?.status === 400) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
   }
@@ -185,6 +194,10 @@ const DeviceListTable = () => {
         await getDeviceData()
       }
     } catch (error: any) {
+      if (error?.response?.status === 400) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
   }

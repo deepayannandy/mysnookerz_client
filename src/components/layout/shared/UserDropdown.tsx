@@ -5,7 +5,7 @@ import type { MouseEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
 // Next Imports
-import { useParams, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 
 // MUI Imports
 import Avatar from '@mui/material/Avatar'
@@ -61,7 +61,7 @@ const UserDropdown = () => {
   const router = useRouter()
   const { settings } = useSettings()
   const { lang: locale } = useParams()
-  const searchParams = useSearchParams()
+  const pathname = usePathname()
 
   const handleDropdownOpen = () => {
     !open ? setOpen(true) : setOpen(false)
@@ -82,7 +82,7 @@ const UserDropdown = () => {
   const handleUserLogout = async () => {
     try {
       localStorage.removeItem('token')
-      const redirectURL = searchParams.get('redirectTo') ?? '/login'
+      const redirectURL = '/login'
 
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))
     } catch (error) {
@@ -99,6 +99,10 @@ const UserDropdown = () => {
         setUserDetails(response.data[0])
       }
     } catch (error: any) {
+      if (error?.response?.status === 400) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
   }

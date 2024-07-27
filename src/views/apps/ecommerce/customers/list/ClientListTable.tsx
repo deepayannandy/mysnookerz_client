@@ -42,6 +42,7 @@ import EditUserInfo from '@/components/dialogs/edit-user-info/index'
 import RenewSubscription from '@/components/dialogs/renew-membership/index'
 
 import tableStyles from '@core/styles/table.module.css'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -134,7 +135,9 @@ const ClientListTable = () => {
   const [renewSubscriptionDialogOpen, setRenewSubscriptionDialogOpen] = useState(false)
 
   // Hooks
-  //const { lang: locale } = useParams()
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
 
   const getClientData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -145,6 +148,10 @@ const ClientListTable = () => {
         setData(response.data)
       }
     } catch (error: any) {
+      if (error?.response?.status === 400) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
   }

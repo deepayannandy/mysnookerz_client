@@ -32,6 +32,7 @@ import Table from '@mui/material/Table'
 import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 
 // Config Imports
 
@@ -103,6 +104,10 @@ const DeviceDetailsDialog = ({
     }
   ]
 
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
+
   const addWarrantyAvailingDate = async (date: Date) => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
@@ -121,6 +126,10 @@ const DeviceDetailsDialog = ({
         getDeviceData()
       }
     } catch (error: any) {
+      if (error?.response?.status === 400) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
 
