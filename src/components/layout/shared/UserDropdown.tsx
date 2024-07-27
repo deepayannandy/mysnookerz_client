@@ -99,7 +99,7 @@ const UserDropdown = () => {
         setUserDetails(response.data[0])
       }
     } catch (error: any) {
-      toast(error?.response?.data ?? error?.message)
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
   }
 

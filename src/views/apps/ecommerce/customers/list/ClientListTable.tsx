@@ -145,7 +145,7 @@ const ClientListTable = () => {
         setData(response.data)
       }
     } catch (error: any) {
-      toast(error?.response?.data ?? error?.message)
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
   }
 
@@ -448,7 +448,11 @@ const ClientListTable = () => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
-      <EditUserInfo open={newRegistrationDialogOpen} setOpen={setNewRegistrationDialogOpen} />
+      <EditUserInfo
+        open={newRegistrationDialogOpen}
+        setOpen={setNewRegistrationDialogOpen}
+        getClientData={getClientData}
+      />
       <RenewSubscription open={renewSubscriptionDialogOpen} setOpen={setRenewSubscriptionDialogOpen} />
       {/* <AddCustomerDrawer
         open={customerUserOpen}

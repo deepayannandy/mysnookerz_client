@@ -166,7 +166,7 @@ const RenewSubscription = ({ open, setOpen, data }: RenewSubscriptionProps) => {
                 onChange={e => setSubscriptionData({ ...subscriptionData, discount: e.target.value })}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label='Net Amount'

@@ -25,6 +25,13 @@ import { toast } from 'react-toastify'
 // Component Imports
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import CustomAvatar from '@core/components/mui/Avatar'
+import { TableBody, TableHead } from '@mui/material'
+import Paper from '@mui/material/Paper'
+import { styled } from '@mui/material/styles'
+import Table from '@mui/material/Table'
+import TableCell, { tableCellClasses } from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableRow from '@mui/material/TableRow'
 
 // Config Imports
 
@@ -49,6 +56,26 @@ type Options = {
   title?: string
   key?: string
 }
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14
+  }
+}))
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0
+  }
+}))
 
 const DeviceDetailsDialog = ({
   open,
@@ -94,7 +121,7 @@ const DeviceDetailsDialog = ({
         getDeviceData()
       }
     } catch (error: any) {
-      toast(error?.response?.data ?? error?.message)
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
 
     setDeviceDetailsData({
@@ -157,30 +184,30 @@ const DeviceDetailsDialog = ({
             </TableBody>
           </Table>
         </TableContainer> */}
-        <table>
-          <thead>
-            <tr>
-              <th>Warranty Availing Dates</th>
-            </tr>
-          </thead>
-          {!deviceDetailData.warrantyAvailingDate?.length ? (
-            <tbody>
-              <tr>
-                <td>No data available</td>
-              </tr>
-            </tbody>
-          ) : (
-            <tbody>
-              {deviceDetailData.warrantyAvailingDate.map(row => {
-                return (
-                  <tr key={row}>
-                    <td key={row}>{row}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          )}
-        </table>
+        <div className='flex flex-col gap-2 text-center'>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 200 }} aria-label='customized table'>
+              <TableHead>
+                <TableCell align='center'>Warranty Availing Dates</TableCell>
+              </TableHead>
+              {!deviceDetailData.warrantyAvailingDate?.length ? (
+                <TableBody>
+                  <TableRow>No data available</TableRow>
+                </TableBody>
+              ) : (
+                <TableBody>
+                  {deviceDetailData.warrantyAvailingDate.map(row => (
+                    <StyledTableRow key={row}>
+                      <StyledTableCell component='th' scope='row' align='center'>
+                        {row}
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              )}
+            </Table>
+          </TableContainer>
+        </div>
         <Divider className='mbs-6' />
         <div className='flex flex-col gap-5'>
           <div className='inline-flex flex-col gap-2 flex-wrap items-start'>

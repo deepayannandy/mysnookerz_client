@@ -160,7 +160,7 @@ const DeviceListTable = () => {
         setData(response.data)
       }
     } catch (error: any) {
-      toast(error?.response?.data ?? error?.message)
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
   }
 
@@ -185,7 +185,7 @@ const DeviceListTable = () => {
         await getDeviceData()
       }
     } catch (error: any) {
-      toast(error?.response?.data ?? error?.message)
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
   }
 

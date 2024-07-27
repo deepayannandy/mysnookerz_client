@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 
 // MUI Imports
 import Button from '@mui/material/Button'
@@ -16,6 +16,8 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 type EditUserInfoData = {
   subscription?: string
@@ -42,6 +44,7 @@ type EditUserInfoProps = {
   open: boolean
   setOpen: (open: boolean) => void
   data?: EditUserInfoData
+  getClientData: () => void
 }
 
 // const status = ['Status', 'Active', 'Inactive', 'Suspended']
@@ -52,13 +55,30 @@ const countries = ['India']
 
 const subscriptions = ['Starter', 'Standard', 'Ultimate', 'Enterprise']
 
-const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
+const EditUserInfo = ({ open, setOpen, getClientData, data }: EditUserInfoProps) => {
   // States
   const [userData, setUserData] = useState<EditUserInfoProps['data']>(data)
 
   const handleClose = () => {
     setOpen(false)
     setUserData(data)
+  }
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const data = new FormData(event.currentTarget)
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    try {
+      const response = await axios.post(`${apiBaseUrl}/user/register`, data)
+
+      if (response && response.data) {
+        getClientData()
+        setOpen(false)
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+    }
   }
 
   return (
@@ -69,7 +89,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
           Updating user details will receive a privacy audit.
         </Typography> */}
       </DialogTitle>
-      <form onSubmit={e => e.preventDefault()}>
+      <form onSubmit={e => handleSubmit(e)}>
         <DialogContent className='overflow-visible pbs-0 sm:pli-16'>
           <IconButton onClick={handleClose} className='absolute block-start-4 inline-end-4'>
             <i className='ri-close-line text-textSecondary' />
@@ -125,7 +145,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 onChange={e => setUserData({ ...userData, storeName: e.target.value })}
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label='Email'
@@ -143,7 +163,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
                 onChange={e => setUserData({ ...userData, contact: e.target.value })}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 fullWidth
                 label='Address'
@@ -240,7 +260,7 @@ const EditUserInfo = ({ open, setOpen, data }: EditUserInfoProps) => {
           </Grid>
         </DialogContent>
         <DialogActions className='justify-center pbs-0 sm:pbe-16 sm:pli-16'>
-          <Button variant='contained' onClick={handleClose} type='submit'>
+          <Button variant='contained' type='submit'>
             Submit
           </Button>
           <Button variant='outlined' color='secondary' type='reset' onClick={handleClose}>
