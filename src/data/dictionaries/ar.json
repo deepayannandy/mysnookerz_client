@@ -1,5 +1,11 @@
 {
   "navigation": {
+    "staffMenu": "قائمة الموظفين",
+    "adminMenu": "قائمة المشرف",
+    "booking": "الحجز",
+    "history": "تاريخ",
+    "staff": "طاقم عمل",
+    "master": "يتقن",
     "client": "عميل",
     "customer": "عميل",
     "device": "جهاز",

@@ -1,5 +1,11 @@
 {
   "navigation": {
+    "staffMenu": "Menu du personnel",
+    "adminMenu": "Menu d'administration",
+    "booking": "Réservation",
+    "history": "Histoire",
+    "staff": "Personnel",
+    "master": "Maître",
     "client": "Cliente",
     "customer": "Consommateur",
     "device": "Appareil",

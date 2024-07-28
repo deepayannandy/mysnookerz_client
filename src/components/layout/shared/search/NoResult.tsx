@@ -19,18 +19,8 @@ type NoResultData = {
 
 const noResultData: NoResultData[] = [
   {
-    label: 'Analytics',
-    href: '/dashboards/analytics',
-    icon: 'ri-bar-chart-line'
-  },
-  {
-    label: 'User Profile',
-    href: '/pages/user-profile',
-    icon: 'ri-user-3-line'
-  },
-  {
     label: 'Dashboard',
-    href: '/dashboards/dashboard',
+    href: '/staff/dashboard',
     icon: 'ri-pie-chart-2-line'
   }
 ]
