@@ -1,7 +1,7 @@
-import CustomerListTable from '@/views/apps/ecommerce/customers/list/CustomerListTable'
+import CustomerListTable from '@/views/staff/customer/CustomerListTable'
 
-const CustomerDetails = async () => {
+const CustomerListPage = async () => {
   return <CustomerListTable />
 }
 
-export default CustomerDetails
+export default CustomerListPage

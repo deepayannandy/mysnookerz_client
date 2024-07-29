@@ -19,7 +19,6 @@ import Typography from '@mui/material/Typography'
 
 // Third-party Imports
 import { yupResolver } from '@hookform/resolvers/yup'
-import axios from 'axios'
 import classnames from 'classnames'
 import type { SubmitHandler } from 'react-hook-form'
 import { Controller, useForm } from 'react-hook-form'
@@ -100,28 +99,31 @@ const Login = ({ mode }: { mode: Mode }) => {
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    localStorage.setItem('token', 'abcsrradasdasdssdsdad')
+    const redirectURL = searchParams.get('redirectTo') ?? '/'
 
-    try {
-      const response = await axios.post(`${apiBaseUrl}/user/login`, {
-        userId: data.email,
-        password: data.password
-      })
+    router.replace(getLocalizedUrl(redirectURL, locale as Locale))
+    // try {
+    //   const response = await axios.post(`${apiBaseUrl}/user/login`, {
+    //     userId: data.email,
+    //     password: data.password
+    //   })
 
-      if (response && response.data) {
-        localStorage.setItem('token', response.data)
-        const redirectURL = searchParams.get('redirectTo') ?? '/'
+    //   if (response && response.data) {
+    //     localStorage.setItem('token', response.data)
+    //     const redirectURL = searchParams.get('redirectTo') ?? '/'
 
-        router.replace(getLocalizedUrl(redirectURL, locale as Locale))
-      } else if (response.status !== 200) {
-        if (response?.data?.error) {
-          const error = JSON.parse(response?.data?.error)
+    //     router.replace(getLocalizedUrl(redirectURL, locale as Locale))
+    //   } else if (response.status !== 200) {
+    //     if (response?.data?.error) {
+    //       const error = JSON.parse(response?.data?.error)
 
-          setErrorState(error)
-        }
-      }
-    } catch (error: any) {
-      setSeverError(error?.response?.data ?? error?.message)
-    }
+    //       setErrorState(error)
+    //     }
+    //   }
+    // } catch (error: any) {
+    //   setSeverError(error?.response?.data ?? error?.message)
+    // }
   }
 
   return (
