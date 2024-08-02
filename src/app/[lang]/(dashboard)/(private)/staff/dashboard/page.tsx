@@ -2,19 +2,12 @@
 import Grid from '@mui/material/Grid'
 
 // Type Imports
-import type { CardStatsCharacterProps } from '@/types/pages/widgetTypes'
 
 // Components Imports
-import Character from '@views/pages/widget-examples/statistics/Character'
 
 // Data Imports
-import LogisticsShipmentStatistics from '@/views/apps/logistics/dashboard/LogisticsShipmentStatistics'
-import WeeklySales from '@/views/dashboards/crm/WeeklySales'
-import NewVisitors from '@/views/dashboards/ecommerce/NewVisitors'
-import TotalProfitStackedBar from '@/views/dashboards/ecommerce/TotalProfitStackedBar'
-import Table from '@views/dashboards/ecommerce/Table'
 
-import { getInvoiceData } from '@/app/server/actions'
+import VerticalCard from '@/views/staff/dashboard/VerticalCard'
 
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
@@ -36,113 +29,39 @@ import { getInvoiceData } from '@/app/server/actions'
 
 const DashboardDetails = async () => {
   // Vars
-  const statsCharacterData: CardStatsCharacterProps[] = [
+  const data = [
     {
-      title: 'Total Clients',
-      stats: '13k',
-      titleColor: 'info.main',
-      src: '/images/illustrations/characters/9.png'
+      title: 'Today Game Sale',
+      stats: '862',
+      avatarColor: 'primary',
+      avatarIcon: 'ri-file-word-2-line'
     },
     {
-      title: 'New Clients',
-      stats: '24k',
-      titleColor: 'success.main',
-      src: '/images/illustrations/characters/10.png'
+      title: 'Today Food Sale',
+      stats: '250k',
+      avatarIcon: 'ri-pie-chart-2-line ',
+      avatarColor: 'secondary'
     },
     {
-      title: 'Expiring Clients',
-      stats: '28k',
-      titleColor: 'warning.main',
-      src: '/images/illustrations/characters/11.png'
+      title: 'Today Credit',
+      stats: '952k',
+      avatarColor: 'success',
+      avatarIcon: 'ri-money-dollar-circle-line'
     },
     {
-      title: 'Expired Clients',
-      stats: '42k',
-      titleColor: 'error.main',
-      src: '/images/illustrations/characters/12.png'
+      title: 'Today Profit',
+      stats: '440k',
+      avatarColor: 'error',
+      avatarIcon: 'ri-car-line'
     }
   ]
 
-  const totalCustomerData = {
-    title: 'Total Customers',
-    count: 20543,
-    increment: 34
-  }
-
-  const newCustomerData = {
-    title: 'New Customers',
-    count: 2054,
-    increment: 23
-  }
-
-  const invoiceData = await getInvoiceData()
-
   return (
     <Grid container spacing={6}>
-      {/* <Grid item xs={12}>
-        <Horizontal data={data.statsHorizontal} />
-      </Grid>
-      <Grid item xs={12}>
-        <LogisticsStatisticsCard data={data?.statsHorizontalWithBorder} />
-      </Grid>
-      <Grid item xs={12}>
-        <UserListCards />
-      </Grid>
-      <Grid item xs={12} md={8}>
-        <Transactions />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <TotalSales />
-      </Grid>
-      <Grid item xs={12}>
-        <Vertical data={data.statsVertical} />
-      </Grid> */}
       <Grid item xs={12}>
         {/* @ts-ignore */}
-        <Character data={statsCharacterData} />
+        <VerticalCard data={data} />
       </Grid>
-      <Grid item xs={12} md={6}>
-        <NewVisitors {...totalCustomerData} />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <NewVisitors {...newCustomerData} />
-      </Grid>
-      <Grid item xs={12}>
-        <TotalProfitStackedBar />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <LogisticsShipmentStatistics />
-      </Grid>
-      <Grid item xs={12} md={6}>
-        <WeeklySales />
-      </Grid>
-      <Grid item xs={12} lg={12} className='order-last lg:order-[unset]'>
-        <Table invoiceData={invoiceData.slice(0, 8)} />
-      </Grid>
-      {/* <Grid item xs={12}>
-        <HorizontalStatisticsCard data={data?.statsHorizontalWithAvatar} />
-      </Grid>
-      <Grid item xs={12}>
-        <CustomerStatisticsCard customerStatData={data?.customerStats} />
-      </Grid>
-      <Grid item xs={12} sm={4} xl={2}>
-        <LineChartWithShadow />
-      </Grid>
-      <Grid item xs={12} sm={4} xl={2}>
-        <BarChartWithNegativeValues />
-      </Grid>
-      <Grid item xs={12} sm={4} xl={2}>
-        <LineAreaChart />
-      </Grid>
-      <Grid item xs={12} sm={4} xl={2}>
-        <RadialBarChart />
-      </Grid>
-      <Grid item xs={12} sm={4} xl={2}>
-        <DistributedColumnChart />
-      </Grid>
-      <Grid item xs={12} sm={4} xl={2}>
-        <LineChart />
-      </Grid> */}
     </Grid>
   )
 }

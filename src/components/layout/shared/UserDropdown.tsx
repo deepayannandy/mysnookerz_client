@@ -108,7 +108,7 @@ const UserDropdown = () => {
   }
 
   useEffect(() => {
-    getUserDetails()
+    //getUserDetails()
   }, [])
 
   return (
