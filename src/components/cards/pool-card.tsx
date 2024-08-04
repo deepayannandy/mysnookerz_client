@@ -1,9 +1,25 @@
 import { Avatar, AvatarGroup, Button } from '@mui/material'
-import { purple } from '@mui/material/colors'
-import { useState } from 'react'
 import CountUpTimer from '../count-up-timer'
-const PoolCard = ({ avatars, timer, tableName }: { avatars: string[]; timer: string; tableName: string }) => {
-  const [running, setRunning] = useState(false)
+
+const PoolCard = ({
+  avatars,
+  timer,
+  tableName,
+  isTableActive,
+  startTable,
+  handleCheckout,
+  handleStart,
+  handleStop
+}: {
+  avatars: string[]
+  timer: string
+  tableName: string
+  isTableActive: boolean
+  startTable: boolean
+  handleCheckout: (tableName: string) => void
+  handleStart: (tableName: string) => void
+  handleStop: (tableName: string) => void
+}) => {
   return (
     <div className='relative'>
       <img className='size-full rotate-180' src={'/images/snooker-table/Snooker_table.png'} alt='' />
@@ -11,21 +27,40 @@ const PoolCard = ({ avatars, timer, tableName }: { avatars: string[]; timer: str
         <AvatarGroup
           max={4}
           sx={{
-            '& .MuiAvatar-root': { width: 28, height: 28, fontSize: 12, bgcolor: purple[800] }
+            '& .MuiAvatar-root': {
+              width: 28,
+              height: 28,
+              fontSize: 12,
+              bgcolor: 'primary'
+            }
           }}
         >
           {avatars.map(el => (
-            <Avatar alt='Remy Sharp' src='/static/images/avatar/1.jpg' />
+            <Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
           ))}
         </AvatarGroup>
         <h2 className=' text-center text-sm my-2'>{tableName}</h2>
 
-        <CountUpTimer startTime={timer} running={running}></CountUpTimer>
+        <CountUpTimer startTime={timer} running={startTable}></CountUpTimer>
 
-        <Button onClick={() => setRunning(!running)} className='text-white outline-white py-0 my-12'>
-          <span className={`${running ? 'ri-stop-fill' : 'ri-play-fill'}`}></span>
-          {running ? 'Stop' : 'Start'}
-        </Button>
+        {isTableActive ? (
+          startTable ? (
+            <Button onClick={() => handleStop(tableName)} className='text-white outline-white py-0 my-12'>
+              <span className='ri-stop-fill'></span>
+              Stop
+            </Button>
+          ) : (
+            <Button onClick={() => handleStart(tableName)} className='text-white outline-white py-0 my-12'>
+              <span className='ri-play-fill'></span>
+              Start
+            </Button>
+          )
+        ) : (
+          <Button onClick={() => handleCheckout(tableName)} className='text-white outline-white py-0 my-12'>
+            <span className='ri-bill-fill size-4'></span>
+            Checkout
+          </Button>
+        )}
       </div>
     </div>
   )
