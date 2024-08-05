@@ -1,4 +1,4 @@
-import ClientListTable from '@/views/apps/ecommerce/customers/list/ClientListTable'
+import StaffListTable from '@/views/admin/staff/StaffListTable'
 
 // Data Imports
 
@@ -20,8 +20,8 @@ import ClientListTable from '@/views/apps/ecommerce/customers/list/ClientListTab
   return res.json()
 } */
 
-const ClientsPage = async () => {
-  return <ClientListTable />
+const StaffPage = async () => {
+  return <StaffListTable />
 }
 
-export default ClientsPage
+export default StaffPage
