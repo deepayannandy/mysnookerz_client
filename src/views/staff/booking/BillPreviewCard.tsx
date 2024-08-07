@@ -30,7 +30,7 @@ export type CustomerInvoiceType = {
   subTotal: number
   tax: number
   total: number
-  discount?: number
+  discount?: number | null
   storeName: string
   city: string
   state: string
@@ -126,11 +126,13 @@ const BillPreviewCard = ({
                   <TextField
                     {...(isBelowMdScreen && { fullWidth: true })}
                     size='small'
-                    type='number'
+                    inputProps={{ type: 'number', min: 0 }}
                     placeholder='discount'
                     className='w-28'
                     value={data.discount}
-                    onChange={event => setData({ ...data, discount: Number(event.target.value) })}
+                    onChange={event =>
+                      setData({ ...data, discount: Number(event.target.value) ? Number(event.target.value) : null })
+                    }
                     InputProps={{ inputProps: { min: 0 } }}
                   />
                 </div>

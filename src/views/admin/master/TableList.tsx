@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 // Next Imports
 
@@ -26,21 +26,20 @@ import {
   getSortedRowModel,
   useReactTable
 } from '@tanstack/react-table'
-import axios from 'axios'
 import classnames from 'classnames'
-import { toast } from 'react-toastify'
 
 import Chip from '@mui/material/Chip'
 
 // Type Imports
-import type { Customer } from '@/types/apps/ecommerceTypes'
 import type { ThemeColor } from '@core/types'
 
 // Style Imports
 import OptionMenu from '@/@core/components/option-menu/index'
 
+import NewTableCreation from '@/components/dialogs/new-table-creation'
 import tableStyles from '@core/styles/table.module.css'
-import CardHeader from '@mui/material/CardHeader'
+import Button from '@mui/material/Button'
+import CardContent from '@mui/material/CardContent'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 
 declare module '@tanstack/table-core' {
@@ -52,43 +51,39 @@ declare module '@tanstack/table-core' {
   }
 }
 
-type PayementStatusType = {
-  text: string
-  color: ThemeColor
-}
-
-type StatusChipColorType = {
-  color: ThemeColor
-}
-
-type CustomerStatusType = {
+type TableStatusType = {
   [key: string]: {
     title: string
     color: ThemeColor
   }
 }
 
-export const paymentStatus: { [key: number]: PayementStatusType } = {
-  1: { text: 'Paid', color: 'success' },
-  2: { text: 'Pending', color: 'warning' },
-  3: { text: 'Cancelled', color: 'secondary' },
-  4: { text: 'Failed', color: 'error' }
-}
-
-const customerStatusObj: CustomerStatusType = {
+const customerStatusObj: TableStatusType = {
   Active: { title: 'Active', color: 'success' },
   Inactive: { title: 'Inactive', color: 'error' }
 }
 
-export const statusChipColor: { [key: string]: StatusChipColorType } = {
-  Delivered: { color: 'success' },
-  'Out for Delivery': { color: 'primary' },
-  'Ready to Pickup': { color: 'info' },
-  Dispatched: { color: 'warning' }
+type TableDataType = {
+  name: string
+  billingType: string
+  day: Partial<{
+    upToMinute: number | null
+    minimumCharge: number | null
+    perMinuteCharge: number | null
+  }>
+  night: Partial<{
+    upToMinute: number | null
+    minimumCharge: number | null
+    perMinuteCharge: number | null
+  }>
+  device: string
+  mode: string
+  isActive: boolean
 }
 
-type CustomerTypeWithAction = Customer & {
-  action?: string
+type TableTypeWithAction = TableDataType & {
+  status: string
+  actions?: string
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -134,69 +129,85 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 // }
 
 // Column Definitions
-const columnHelper = createColumnHelper<CustomerTypeWithAction>()
+const columnHelper = createColumnHelper<TableTypeWithAction>()
 
-const CustomerListTable = () => {
+const TableList = ({ tableData }: { tableData: TableDataType[] }) => {
   // States
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState([] as CustomerTypeWithAction[])
+  const [data, setData] = useState(tableData)
   const [globalFilter, setGlobalFilter] = useState('')
+  const [newTableCreationDialogOpen, setNewTableCreationDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
   const pathname = usePathname()
   const router = useRouter()
 
-  const getCustomerData = async () => {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    const token = localStorage.getItem('token')
-    try {
-      const response = await axios.get(`${apiBaseUrl}/store/`, { headers: { 'auth-token': token } })
-      if (response && response.data) {
-        setData(response.data)
-      }
-    } catch (error: any) {
-      if (error?.response?.status === 400) {
-        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-        return router.replace(redirectUrl)
-      }
-      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
-    }
-  }
+  //   const getCustomerData = async () => {
+  //     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+  //     const token = localStorage.getItem('token')
+  //     try {
+  //       const response = await axios.get(`${apiBaseUrl}/store/`, { headers: { 'auth-token': token } })
+  //       if (response && response.data) {
+  //         setData(response.data)
+  //       }
+  //     } catch (error: any) {
+  //       if (error?.response?.status === 400) {
+  //         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+  //         return router.replace(redirectUrl)
+  //       }
+  //       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+  //     }
+  //   }
 
-  useEffect(() => {
-    getCustomerData()
-  }, [])
+  //   useEffect(() => {
+  //     getCustomerData()
+  //   }, [])
 
-  const columns = useMemo<ColumnDef<CustomerTypeWithAction, any>[]>(
+  const columns = useMemo<ColumnDef<TableTypeWithAction, any>[]>(
     () => [
-      columnHelper.accessor('transactionId', {
-        header: 'Transaction Id',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
+      columnHelper.accessor('name', {
+        header: 'Name',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.name}</Typography>
       }),
-      columnHelper.accessor('onboarding', {
-        header: 'Registration Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.onboarding}</Typography>
+      columnHelper.accessor('billingType', {
+        header: 'Billing Type',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.billingType}</Typography>
       }),
-      columnHelper.accessor('storeName', {
-        header: 'Customer Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.storeName}</Typography>
+      columnHelper.accessor('day.upToMinute', {
+        header: 'Up To Minute (Day)',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.day.upToMinute}</Typography>
       }),
-      columnHelper.accessor('email', {
-        header: 'Email',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.email}</Typography>
+      columnHelper.accessor('day.minimumCharge', {
+        header: 'Minimum Charge (Day)',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.day.minimumCharge}</Typography>
       }),
-      columnHelper.accessor('contact', {
-        header: 'Contact',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.contact}</Typography>
+
+      columnHelper.accessor('day.perMinuteCharge', {
+        header: 'Per Minute Charge (Day)',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.day.perMinuteCharge}</Typography>
       }),
-      columnHelper.accessor('address', {
-        header: 'Address',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.address}</Typography>
+      columnHelper.accessor('night.upToMinute', {
+        header: 'Up To Minute (Night)',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.night.upToMinute}</Typography>
       }),
-      columnHelper.accessor('coins', {
-        header: 'Coins',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.coins}</Typography>
+      columnHelper.accessor('night.minimumCharge', {
+        header: 'Minimum Charge (Night)',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.night.minimumCharge}</Typography>
+      }),
+
+      columnHelper.accessor('night.perMinuteCharge', {
+        header: 'Per Minute Charge (Night)',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.night.perMinuteCharge}</Typography>
+      }),
+
+      columnHelper.accessor('device', {
+        header: 'Device',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.device}</Typography>
+      }),
+      columnHelper.accessor('mode', {
+        header: 'Mode',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.mode}</Typography>
       }),
       columnHelper.accessor('status', {
         header: 'Status',
@@ -228,7 +239,7 @@ const CustomerListTable = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => setData(data?.filter(product => product._id !== row.original._id))
+                    onClick: () => setData(data?.filter(product => product.name !== row.original.name))
                   }
                 }
 
@@ -245,7 +256,7 @@ const CustomerListTable = () => {
   )
 
   const table = useReactTable({
-    data: data as Customer[],
+    data: data as TableDataType[],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter
@@ -290,7 +301,19 @@ const CustomerListTable = () => {
   return (
     <>
       <Card>
-        <CardHeader title='Tables' className='flex-wrap gap-4' />
+        <CardContent className='flex justify-between flex-col items-start sm:flex-row sm:items-end gap-y-4'>
+          <Typography className='text-xl font-bold'>Tables</Typography>
+          <div className='flex gap-x-4'>
+            <Button
+              variant='contained'
+              color='primary'
+              startIcon={<i className='ri-add-line' />}
+              onClick={() => setNewTableCreationDialogOpen(!newTableCreationDialogOpen)}
+            >
+              New Registration
+            </Button>
+          </div>
+        </CardContent>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>
             <thead>
@@ -362,8 +385,9 @@ const CustomerListTable = () => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
+      <NewTableCreation open={newTableCreationDialogOpen} setOpen={setNewTableCreationDialogOpen} />
     </>
   )
 }
 
-export default CustomerListTable
+export default TableList

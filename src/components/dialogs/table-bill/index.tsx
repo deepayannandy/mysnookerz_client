@@ -56,7 +56,7 @@ const TableBill = ({ open, setOpen, tableName }: TableBillPropType) => {
   const router = useRouter()
 
   const handleClose = () => {
-    setData({ ...data, discount: 0, paymentMethod: '' })
+    setData({ ...data, discount: null, paymentMethod: '' })
     setOpen(false)
   }
 

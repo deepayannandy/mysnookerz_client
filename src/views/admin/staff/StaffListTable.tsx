@@ -33,12 +33,15 @@ import type { ThemeColor } from '@core/types'
 // Style Imports
 
 import NewStaffRegistration from '@/components/dialogs/ new-staff-registration'
+import { Locale } from '@/configs/i18n'
 import { StaffDataType } from '@/types/adminTypes'
 import { CustomerDataType } from '@/types/staffTypes'
+import { getLocalizedUrl } from '@/utils/i18n'
 import tableStyles from '@core/styles/table.module.css'
 import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
+import Link from 'next/link'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 
 declare module '@tanstack/table-core' {
@@ -169,8 +172,20 @@ const StaffListTable = () => {
       }),
       columnHelper.accessor('customerName', {
         header: 'Customer Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.customerName}</Typography>
+        cell: ({ row }) => (
+          <Typography
+            component={Link}
+            href={getLocalizedUrl(`admin/settings/account-settings/${row.original.customerName}`, locale as Locale)}
+            color='primary'
+          >
+            {row.original.customerName}
+          </Typography>
+        )
       }),
+      // columnHelper.accessor('customerName', {
+      //   header: 'Customer Name',
+      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.customerName}</Typography>
+      // }),
       columnHelper.accessor('description', {
         header: 'Description',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.description}</Typography>
