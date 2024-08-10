@@ -32,3 +32,21 @@ export type InvoiceType = {
   subscription: string
   amount: string
 }
+
+export type TableDataType = {
+  _id: string
+  tableName: string
+  gameTypes: string[]
+  minuteWiseRules: Partial<{
+    dayUptoMin: number | null
+    dayMinAmt: number | null
+    dayPerMin: number | null
+    nightUptoMin: number | null
+    nightMinAmt: number | null
+    nightPerMin: number | null
+  }>
+  deviceId: string
+  nodeID: string
+  isOccupied: boolean
+  isBooked: boolean
+}

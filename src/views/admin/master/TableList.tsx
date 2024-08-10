@@ -37,6 +37,7 @@ import type { ThemeColor } from '@core/types'
 import OptionMenu from '@/@core/components/option-menu/index'
 
 import NewTableCreation from '@/components/dialogs/new-table-creation'
+import { TableDataType } from '@/types/adminTypes'
 import tableStyles from '@core/styles/table.module.css'
 import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
@@ -64,24 +65,6 @@ const customerStatusObj: TableStatusType = {
   occupied: { title: 'Occupied', color: 'success' },
   booked: { title: 'Booked', color: 'primary' },
   idle: { title: 'Idle', color: 'error' }
-}
-
-type TableDataType = {
-  _id: string
-  tableName: string
-  gameTypes: string[]
-  minuteWiseRules: Partial<{
-    dayUptoMin: number | null
-    dayMinAmt: number | null
-    dayPerMin: number | null
-    nightUptoMin: number | null
-    nightMinAmt: number | null
-    nightPerMin: number | null
-  }>
-  deviceId: string
-  nodeID: string
-  isOccupied: boolean
-  isBooked: boolean
 }
 
 type TableTypeWithAction = TableDataType & {

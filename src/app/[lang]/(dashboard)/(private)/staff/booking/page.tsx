@@ -49,7 +49,7 @@ const BookingPage = () => {
           <PoolCard
             key={el.table}
             avatars={['1', '2', '3', '4', '5']}
-            timer={'2023-07-31T10:59:58Z'}
+            timer={'2023-07-31T00:00:00Z'}
             tableName={el.table}
             billingType={el.billingType}
             isTableActive={el.isTableActive}

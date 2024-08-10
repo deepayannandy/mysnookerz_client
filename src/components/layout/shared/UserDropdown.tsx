@@ -94,9 +94,12 @@ const UserDropdown = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/user/`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/user/whoAmI`, { headers: { 'auth-token': token } })
       if (response && response.data) {
-        setUserDetails(response.data[0])
+        if (response.data.storeId) {
+          localStorage.setItem('storeId', response.data.storeId)
+        }
+        setUserDetails(response.data)
       }
     } catch (error: any) {
       if (error?.response?.status === 400) {

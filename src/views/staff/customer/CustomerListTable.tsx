@@ -132,6 +132,23 @@ const CustomerListTable = () => {
     getCustomerData()
   }, [])
 
+  const deleteCustomer = async (customerId: string) => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.delete(`${apiBaseUrl}/customer/${customerId}`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        getCustomerData()
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
   const columns = useMemo<ColumnDef<CustomerDataWithAction, any>[]>(
     () => [
       columnHelper.accessor('_id', {
@@ -184,7 +201,7 @@ const CustomerListTable = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => setData(data?.filter(customer => customer._id !== row.original._id))
+                    onClick: () => deleteCustomer(row.original._id)
                   }
                 }
 
