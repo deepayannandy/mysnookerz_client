@@ -25,7 +25,7 @@ type NewStaffRegistrationDataType = {
   email: string
   profileImage?: string
   password: string
-  confirmPassword: string
+  confirmPassword?: string
 }
 
 type NewStaffRegistrationProps = {
@@ -78,10 +78,18 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData, data }: NewStaffReg
 
   const onSubmit = async (data: NewStaffRegistrationDataType) => {
     data.profileImage = '-'
+    const storeId = '667e3c007e2ed9e64a9136be'
+    const userDesignation = 'Staff'
+    const userStatus = true
+    delete data.confirmPassword
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.post(`${apiBaseUrl}/user/register`, data, { headers: { 'auth-token': token } })
+      const response = await axios.post(
+        `${apiBaseUrl}/user/register`,
+        { ...data, storeId, userDesignation, userStatus },
+        { headers: { 'auth-token': token } }
+      )
 
       if (response && response.data) {
         getStaffData()
