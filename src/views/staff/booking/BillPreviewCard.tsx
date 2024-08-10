@@ -11,6 +11,8 @@ import Typography from '@mui/material/Typography'
 import Logo from '@components/layout/shared/Logo'
 
 // Style Imports
+import { TableDataType } from '@/types/adminTypes'
+import { CustomerInvoiceType } from '@/types/staffTypes'
 import tableStyles from '@core/styles/table.module.css'
 import Avatar from '@mui/material/Avatar'
 import Chip from '@mui/material/Chip'
@@ -21,30 +23,18 @@ import TextField from '@mui/material/TextField'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { DateTime } from 'luxon'
 
-export type CustomerInvoiceType = {
-  customers: string[]
-  tableName: string
-  startTime: string
-  endTime: string
-  amountData: { timeDescription: string; total: number }[]
-  subTotal: number
-  tax: number
-  total: number
-  discount?: number | null
-  return?: number | null
-  storeName: string
-  city: string
-  state: string
-  country: string
-  paymentMethod?: string
-}
-
 const paymentMethods = ['CASH', 'UPI', 'CARD']
 
 const BillPreviewCard = ({
+  tableData,
+  inputData,
+  setInputData,
   data,
   setData
 }: {
+  tableData: TableDataType
+  inputData: { discount?: number | null; paymentMethod: string }
+  setInputData: (value: { discount?: number | null; paymentMethod: string }) => void
   data: CustomerInvoiceType
   setData: (value: CustomerInvoiceType) => void
 }) => {
@@ -61,17 +51,17 @@ const BillPreviewCard = ({
                   <div className='flex items-center'>
                     <Logo />
                   </div>
-                  <div>
+                  {/* <div>
                     <Typography color='text.primary'>{data.storeName}</Typography>
                     <Typography color='text.primary'>{`${data.city}, ${data.state}`}</Typography>
                     <Typography color='text.primary'>{data.country}</Typography>
-                  </div>
+                  </div> */}
                 </div>
                 <div className='flex flex-col gap-6'>
-                  <Typography variant='h5'>{`Invoice ${data.tableName}`}</Typography>
+                  <Typography variant='h5'>{`Invoice ${tableData.tableName}`}</Typography>
                   <div className='flex flex-col gap-1'>
-                    <Typography color='text.primary'>{`Start Time: ${DateTime.fromISO(data.startTime).toFormat('dd-MMM-yyyy HH:mm:ss a')}`}</Typography>
-                    <Typography color='text.primary'>{`End Time: ${DateTime.fromISO(data.endTime).toFormat('dd-MMM-yyyy HH:mm:ss a')}`}</Typography>
+                    <Typography color='text.primary'>{`Start Time: ${DateTime.fromISO(data.selectedTable?.gameData?.startTime).toFormat('dd-MMM-yyyy HH:mm:ss a')}`}</Typography>
+                    <Typography color='text.primary'>{`End Time: ${DateTime.fromISO(data.selectedTable?.gameData?.endTime).toFormat('dd-MMM-yyyy HH:mm:ss a')}`}</Typography>
                   </div>
                 </div>
               </div>
@@ -85,8 +75,13 @@ const BillPreviewCard = ({
                     Invoice To:
                   </Typography>
                   <div>
-                    {data.customers.map(el => (
-                      <Chip key={el} avatar={<Avatar>{el[0]}</Avatar>} label={el} variant='outlined' />
+                    {data.selectedTable?.gameData?.players?.map(player => (
+                      <Chip
+                        key={player.fullName}
+                        avatar={<Avatar>{player.fullName}</Avatar>}
+                        label={player.fullName}
+                        variant='outlined'
+                      />
                     ))}
                   </div>
                 </div>
@@ -98,18 +93,22 @@ const BillPreviewCard = ({
               <table className={tableStyles.table}>
                 <thead>
                   <tr className='border-be'>
-                    <th className='!bg-transparent'>Description</th>
-                    <th className='!bg-transparent'>Total</th>
+                    <th className='!bg-transparent'>Title</th>
+                    <th className='!bg-transparent'>Time</th>
+                    <th className='!bg-transparent'>Amount</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {data.amountData.map((item, index) => (
+                  {data.billBreakup?.map((item, index) => (
                     <tr key={index}>
                       <td>
-                        <Typography color='text.primary'>{item.timeDescription}</Typography>
+                        <Typography color='text.primary'>{item.title}</Typography>
                       </td>
                       <td>
-                        <Typography color='text.primary'>{item.total}</Typography>
+                        <Typography color='text.primary'>{item.time}</Typography>
+                      </td>
+                      <td>
+                        <Typography color='text.primary'>{item.amount}</Typography>
                       </td>
                     </tr>
                   ))}
@@ -120,7 +119,7 @@ const BillPreviewCard = ({
           <Grid item xs={12}>
             <div className='flex justify-between flex-col gap-y-4 sm:flex-row'>
               <div className='flex flex-col gap-1 order-2 sm:order-[unset]'>
-                <div className='flex items-center gap-4'>
+                {/* <div className='flex items-center gap-4'>
                   <Typography className='font-medium' color='text.primary'>
                     Return:
                   </Typography>
@@ -135,7 +134,7 @@ const BillPreviewCard = ({
                       setData({ ...data, return: Number(event.target.value) ? Number(event.target.value) : null })
                     }
                   />
-                </div>
+                </div> */}
                 <div className='flex items-center gap-4'>
                   <Typography className='font-medium' color='text.primary'>
                     Discount:
@@ -146,9 +145,12 @@ const BillPreviewCard = ({
                     inputProps={{ type: 'number', min: 0 }}
                     placeholder='Discount'
                     className='w-28'
-                    value={data.discount}
+                    value={inputData.discount}
                     onChange={event =>
-                      setData({ ...data, discount: Number(event.target.value) ? Number(event.target.value) : null })
+                      setInputData({
+                        ...inputData,
+                        discount: Number(event.target.value) ? Number(event.target.value) : null
+                      })
                     }
                   />
                 </div>
@@ -159,9 +161,9 @@ const BillPreviewCard = ({
                   <Select
                     className='is-1/2 min-is-[220px] sm:is-auto'
                     size='small'
-                    value={data.paymentMethod}
+                    value={inputData.paymentMethod}
                     onChange={e => {
-                      setData({ ...data, paymentMethod: e.target.value })
+                      setInputData({ ...data, paymentMethod: e.target.value })
                     }}
                   >
                     {paymentMethods.map((paymentMethod, index) => (
@@ -176,7 +178,7 @@ const BillPreviewCard = ({
                 <div className='flex items-center justify-between'>
                   <Typography>Subtotal:</Typography>
                   <Typography className='font-medium' color='text.primary'>
-                    ₹ {data.subTotal}
+                    ₹ {data.totalBillAmt}
                   </Typography>
                 </div>
                 {data.discount ? (
@@ -190,17 +192,18 @@ const BillPreviewCard = ({
                   <></>
                 )}
 
-                <div className='flex items-center justify-between'>
+                {/* <div className='flex items-center justify-between'>
                   <Typography>Tax:</Typography>
                   <Typography className='font-medium' color='text.primary'>
                     {data.tax}%
                   </Typography>
-                </div>
+                </div> */}
                 <Divider className='mlb-2' />
                 <div className='flex items-center justify-between'>
                   <Typography>Total:</Typography>
                   <Typography className='font-medium' color='text.primary'>
-                    ₹ {data.subTotal - (data.discount ?? 0) + (data.subTotal - (data.discount ?? 0) * data.tax) / 100}
+                    {/* + (data.totalBillAmt - (data.discount ?? 0) * data.tax) / 100} */}₹{' '}
+                    {data.totalBillAmt - (data.discount ?? 0)}
                   </Typography>
                 </div>
               </div>

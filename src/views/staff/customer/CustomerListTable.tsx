@@ -104,30 +104,6 @@ const CustomerListTable = () => {
     }
   }
 
-  // const customerData: CustomerDataType[] = [
-  //   {
-  //     customerId: '1232442',
-  //     customerName: 'Mrinal',
-  //     mobile: 6294346346,
-  //     rewards: 'RP 29',
-  //     credit: 50
-  //   },
-  //   {
-  //     customerId: '45532442',
-  //     customerName: 'Deep',
-  //     mobile: 7829434634,
-  //     rewards: 'RP 50',
-  //     credit: 30
-  //   },
-  //   {
-  //     customerId: '144232442',
-  //     customerName: 'Nandy',
-  //     mobile: 6295346346,
-  //     rewards: 'RP 49',
-  //     credit: 20
-  //   }
-  // ]
-
   useEffect(() => {
     getCustomerData()
   }, [])

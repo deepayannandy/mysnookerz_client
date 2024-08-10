@@ -37,3 +37,28 @@ export type VerticalCardStatsPropsType = {
   avatarSize?: number
   moreOptions?: OptionsMenuType
 }
+
+export type CustomerInvoiceType = {
+  timeDelta: number
+  selectedTable: {
+    gameData: {
+      startTime: string
+      endTime: string
+      players: {
+        fullName: string
+        customerId: string
+      }[]
+    }
+  }
+  billBreakup: { title: string; time: number; amount: number }[]
+  totalBillAmt: number
+  tax?: number
+  total: number
+  discount?: number | null
+  return?: number | null
+  // storeName: string
+  // city: string
+  // state: string
+  // country: string
+  paymentMethod?: string
+}

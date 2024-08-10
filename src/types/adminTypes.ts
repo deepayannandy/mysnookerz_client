@@ -36,6 +36,16 @@ export type InvoiceType = {
 export type TableDataType = {
   _id: string
   tableName: string
+
+  gameData: {
+    startTime: string
+    endTime: string
+    gameType: string
+    players: {
+      customerId?: string
+      fullName: string
+    }[]
+  }
   gameTypes: string[]
   minuteWiseRules: Partial<{
     dayUptoMin: number | null

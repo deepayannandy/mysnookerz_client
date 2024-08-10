@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const CountUpTimer = ({ startTime, running }: { startTime: string; running: boolean }) => {
+const CountUpTimer = ({ startTime, endTime, running }: { startTime: string; endTime?: string; running: boolean }) => {
   const [time, setTime] = useState(new Date(startTime))
 
   useEffect(() => {

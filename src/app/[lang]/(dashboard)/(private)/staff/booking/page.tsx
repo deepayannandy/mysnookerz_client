@@ -1,72 +1,94 @@
 'use client'
 import PoolCard from '@/components/cards/pool-card'
 import TableBill from '@/components/dialogs/table-bill'
+import { TableDataType } from '@/types/adminTypes'
 import StartTableDrawer from '@/views/staff/booking/StartTableDrawer'
-import { useState } from 'react'
-
-const data = [
-  { table: 'Table-1', isTableActive: false, startTable: false, billingType: 'Minute Billing' },
-  { table: 'Table-2', isTableActive: true, startTable: false, billingType: 'Minute Billing' },
-  { table: 'Table-3', isTableActive: true, startTable: false, billingType: 'Minute Billing' },
-  { table: 'Table-4', isTableActive: true, startTable: false, billingType: 'Minute Billing' },
-  { table: 'Table-5', isTableActive: true, startTable: false, billingType: 'Minute Billing' },
-  { table: 'Table-6', isTableActive: true, startTable: false, billingType: 'Minute Billing' }
-]
+import axios from 'axios'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 const BookingPage = () => {
   const [showBill, setShowBill] = useState(false)
   const [showStartForm, setShowStartForm] = useState(false)
-  const [tableName, setTableName] = useState('')
-  const [tableData, setTableData] = useState(data)
+  const [tableData, setTableData] = useState({} as TableDataType)
+  const [allTablesData, setAllTablesData] = useState([] as TableDataType[])
 
-  const handleCheckout = (tableName: string) => {
-    setTableName(tableName)
+  const getAllTablesData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/table`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setAllTablesData(response.data)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  useEffect(() => {
+    getAllTablesData()
+  }, [])
+
+  const handleCheckout = (tableData: TableDataType) => {
     setShowBill(true)
   }
 
-  const handleStart = (tableName: string) => {
-    setTableName(tableName)
+  const handleStart = (tableData: TableDataType) => {
+    setTableData(tableData)
     setShowStartForm(true)
   }
 
-  const handleStop = (tableName: string) => {
-    setTableName(tableName)
-    const data = tableData.map(tData => {
-      if (tData.table === tableName) {
-        tData.startTable = false
-        tData.isTableActive = false
+  const handleStop = async (tableData: TableDataType) => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.patch(
+        `${apiBaseUrl}/games/stopGame/${tableData._id}`,
+        {},
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+
+      if (response && response.data) {
+        getAllTablesData()
       }
-      return tData
-    })
-    setTableData(data)
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   console.log(redirectUrl)
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+    }
     setShowBill(true)
   }
 
   return (
     <>
       <div className='grid md:grid-cols-4 grid-cols-2 gap-4'>
-        {tableData.map(el => (
+        {allTablesData.map(tableData => (
           <PoolCard
-            key={el.table}
-            avatars={['1', '2', '3', '4', '5']}
-            timer={'2023-07-31T00:00:00Z'}
-            tableName={el.table}
-            billingType={el.billingType}
-            isTableActive={el.isTableActive}
-            startTable={el.startTable}
+            key={tableData.tableName}
+            tableData={tableData}
+            setTableData={setTableData}
             handleCheckout={handleCheckout}
             handleStart={handleStart}
             handleStop={handleStop}
           />
         ))}
       </div>
-      <TableBill open={showBill} setOpen={setShowBill} tableName={tableName} />
+      <TableBill open={showBill} setOpen={setShowBill} tableData={tableData} getAllTablesData={getAllTablesData} />
       <StartTableDrawer
         open={showStartForm}
         handleClose={() => setShowStartForm(!showStartForm)}
-        tableName={tableName}
         tableData={tableData}
-        setTableData={setTableData}
+        getAllTablesData={getAllTablesData}
       />
     </>
   )

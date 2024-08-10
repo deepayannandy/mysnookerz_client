@@ -1,26 +1,19 @@
+import { TableDataType } from '@/types/adminTypes'
 import { Avatar, AvatarGroup, Button } from '@mui/material'
 import CountUpTimer from '../count-up-timer'
 
 const PoolCard = ({
-  avatars,
-  timer,
-  tableName,
-  billingType,
-  isTableActive,
-  startTable,
+  tableData,
+  setTableData,
   handleCheckout,
   handleStart,
   handleStop
 }: {
-  avatars: string[]
-  timer: string
-  tableName: string
-  billingType: string
-  isTableActive: boolean
-  startTable: boolean
-  handleCheckout: (tableName: string) => void
-  handleStart: (tableName: string) => void
-  handleStop: (tableName: string) => void
+  tableData: TableDataType
+  setTableData: (value: TableDataType) => void
+  handleCheckout: (value: TableDataType) => void
+  handleStart: (value: TableDataType) => void
+  handleStop: (value: TableDataType) => void
 }) => {
   return (
     <div className='relative'>
@@ -34,9 +27,9 @@ const PoolCard = ({
           }}
           variant='outlined'
         /> */}
-        <h2 className='text-center text-sm my-2 text-white'>{tableName}</h2>
+        <h2 className='text-center text-sm my-2 text-white'>{tableData.tableName}</h2>
 
-        {billingType ? <h3 className=' text-sm text-white'>{billingType}</h3> : <></>}
+        {tableData.gameData?.gameType ? <h3 className=' text-sm text-white'>{tableData.gameData?.gameType}</h3> : <></>}
 
         <AvatarGroup
           max={4}
@@ -49,29 +42,41 @@ const PoolCard = ({
             }
           }}
         >
-          {avatars.map(el => (
-            <Avatar key={el} alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
-          ))}
+          {tableData.gameData?.players?.map(customer => <Avatar key={customer.fullName} alt={customer.fullName} />)}
         </AvatarGroup>
 
-        <CountUpTimer startTime={timer} running={startTable}></CountUpTimer>
+        {tableData.gameData?.startTime ? (
+          <CountUpTimer
+            startTime={tableData.gameData?.startTime}
+            endTime={tableData.gameData?.endTime}
+            running={tableData.isOccupied}
+          ></CountUpTimer>
+        ) : (
+          <></>
+        )}
 
-        {isTableActive ? (
-          startTable ? (
-            <Button onClick={() => handleStop(tableName)} className='text-white outline-white py-0 my-12'>
+        {tableData.isOccupied ? (
+          tableData.gameData?.endTime ? (
+            <Button
+              onClick={() => {
+                setTableData(tableData)
+                handleCheckout(tableData)
+              }}
+              className='text-white outline-white py-0 my-12'
+            >
+              <span className='ri-bill-fill size-4'></span>
+              Checkout
+            </Button>
+          ) : (
+            <Button onClick={() => handleStop(tableData)} className='text-white outline-white py-0 my-12'>
               <span className='ri-stop-fill'></span>
               Stop
             </Button>
-          ) : (
-            <Button onClick={() => handleStart(tableName)} className='text-white outline-white py-0 my-12'>
-              <span className='ri-play-fill'></span>
-              Start
-            </Button>
           )
         ) : (
-          <Button onClick={() => handleCheckout(tableName)} className='text-white outline-white py-0 my-12'>
-            <span className='ri-bill-fill size-4'></span>
-            Checkout
+          <Button onClick={() => handleStart(tableData)} className='text-white outline-white py-0 my-12'>
+            <span className='ri-play-fill'></span>
+            Start
           </Button>
         )}
       </div>
