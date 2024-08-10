@@ -20,9 +20,13 @@ const CountUpTimer = ({ startTime, running }: { startTime: string; running: bool
     return (
       <div>
         {' '}
-        <span className='border-2 rounded text-md p-1 text-center mx-2'>{hours}</span>:
-        <span className='border-2 rounded text-md p-1 text-center mx-2'>{minutes}</span>:
-        <span className='border-2 rounded text-md p-1 text-center mx-2'>{seconds}</span>
+        <span className='border-2 rounded text-md p-1 text-center mx-2 text-white border-slate-500'>{hours}</span>
+        <span className='text-slate-500'>:</span>
+        <span className='border-2 rounded text-md p-1 text-center mx-2 text-white border-slate-500'>
+          {minutes}
+        </span>{' '}
+        <span className='text-slate-500'>:</span>
+        <span className='border-2 rounded text-md p-1 text-center mx-2 text-white border-slate-500'>{seconds}</span>
       </div>
     )
   }

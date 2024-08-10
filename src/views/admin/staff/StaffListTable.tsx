@@ -32,17 +32,18 @@ import type { ThemeColor } from '@core/types'
 
 // Style Imports
 
+import CustomAvatar from '@/@core/components/mui/Avatar'
 import NewStaffRegistration from '@/components/dialogs/ new-staff-registration'
-import { Locale } from '@/configs/i18n'
 import { StaffDataType } from '@/types/adminTypes'
-import { CustomerDataType } from '@/types/staffTypes'
-import { getLocalizedUrl } from '@/utils/i18n'
+import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
 import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
-import Link from 'next/link'
+import axios from 'axios'
+import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -58,9 +59,8 @@ type StatusChipColorType = {
 }
 
 export const statusChipColor: { [key: string]: StatusChipColorType } = {
-  Paid: { color: 'success' },
-  Running: { color: 'primary' },
-  'Not Paid': { color: 'error' }
+  Active: { color: 'success' },
+  InActive: { color: 'error' }
 }
 
 type StaffDataWithAction = StaffDataType & {
@@ -84,7 +84,7 @@ const columnHelper = createColumnHelper<StaffDataWithAction>()
 
 const StaffListTable = () => {
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState([] as CustomerDataType[])
+  const [data, setData] = useState([] as StaffDataType[])
   const [globalFilter, setGlobalFilter] = useState('')
   const [newStaffRegistrationDialogOpen, setNewStaffRegistrationDialogOpen] = useState(false)
 
@@ -94,138 +94,80 @@ const StaffListTable = () => {
   const router = useRouter()
 
   const getStaffData = async () => {
-    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    // const token = localStorage.getItem('token')
-    // try {
-    //   const response = await axios.get(`${apiBaseUrl}/client/`, { headers: { 'auth-token': token } })
-    //   if (response && response.data) {
-    //     setData(response.data)
-    //   }
-    // } catch (error: any) {
-    //   if (error?.response?.status === 400) {
-    //     const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-    //     return router.replace(redirectUrl)
-    //   }
-    //   toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
-    // }
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/user/getMyStaffs`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setData(response.data)
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 400) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+    }
   }
 
-  const staffData: StaffDataType[] = [
-    {
-      date: '22 May 2024',
-      transactionId: 'T1412424242',
-      customerName: 'Abcd',
-      description: 'this is description',
-      start: '10:00 AM',
-      end: '12:00 PM',
-      time: '2 hours',
-      table: '1',
-      meals: 'affafsc',
-      discount: 300,
-      netPay: 4000,
-      status: 'Paid'
-    },
-    {
-      date: '12 May 2024',
-      transactionId: 'T1562424242',
-      customerName: 'Atdgs',
-      description: 'this is not description',
-      start: '11:00 AM',
-      end: '04:00 PM',
-      time: '5 hours',
-      table: '2',
-      meals: 'affaafsffsc',
-      discount: 5000,
-      netPay: 40000,
-      status: 'Not Paid'
-    },
-    {
-      date: '20 May 2024',
-      transactionId: 'T1562424242',
-      customerName: 'tarsa',
-      description: 'this was description',
-      start: '09:00 AM',
-      end: '12:00 PM',
-      time: '3 hours',
-      table: '3',
-      meals: 'affafafsc',
-      discount: 3000,
-      netPay: 8000,
-      status: 'Running'
-    }
-  ]
-
   useEffect(() => {
-    //getHistoryData()
-    setData(staffData)
+    getStaffData()
   }, [])
+
+  const getAvatar = (params: Pick<StaffDataType, 'profileImage' | 'fullName'>) => {
+    const { profileImage, fullName } = params
+
+    if (profileImage && profileImage !== '-') {
+      return <CustomAvatar src={profileImage} skin='light' size={34} />
+    } else {
+      return (
+        <CustomAvatar skin='light' size={34}>
+          {getInitials(fullName as string)}
+        </CustomAvatar>
+      )
+    }
+  }
 
   const columns = useMemo<ColumnDef<StaffDataWithAction, any>[]>(
     () => [
-      columnHelper.accessor('date', {
-        header: 'Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.date}</Typography>
-      }),
-      columnHelper.accessor('transactionId', {
-        header: 'Transaction ID',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
-      }),
-      columnHelper.accessor('customerName', {
-        header: 'Customer Name',
+      columnHelper.accessor('fullName', {
+        header: 'Name',
         cell: ({ row }) => (
-          <Typography
-            component={Link}
-            href={getLocalizedUrl(`admin/settings/account-settings/${row.original.customerName}`, locale as Locale)}
-            color='primary'
-          >
-            {row.original.customerName}
+          <div className='flex items-center gap-4'>
+            {getAvatar({ profileImage: row.original.profileImage, fullName: row.original.fullName })}
+            <div className='flex flex-col'>
+              <Typography className='font-medium' color='text.primary'>
+                {row.original.fullName}
+              </Typography>
+              {/* <Typography variant='body2'>{row.original.fu}</Typography> */}
+            </div>
+          </div>
+        )
+      }),
+      columnHelper.accessor('mobile', {
+        header: 'Mobile',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.mobile}</Typography>
+      }),
+      columnHelper.accessor('email', {
+        header: 'Email',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.email}</Typography>
+      }),
+      columnHelper.accessor('onBoardingDate', {
+        header: 'Boarding Date',
+        cell: ({ row }) => (
+          <Typography color='text.primary'>
+            {row.original.onBoardingDate ? DateTime.fromISO(row.original.onBoardingDate).toFormat('dd LLL yyyy') : ''}
           </Typography>
         )
       }),
-      // columnHelper.accessor('customerName', {
-      //   header: 'Customer Name',
-      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.customerName}</Typography>
-      // }),
-      columnHelper.accessor('description', {
-        header: 'Description',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.description}</Typography>
-      }),
-      columnHelper.accessor('start', {
-        header: 'Start',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.start}</Typography>
-      }),
-      columnHelper.accessor('end', {
-        header: 'End',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.end}</Typography>
-      }),
-      columnHelper.accessor('time', {
-        header: 'Time',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.time}</Typography>
-      }),
-      columnHelper.accessor('table', {
-        header: 'Table',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.table}</Typography>
-      }),
-      columnHelper.accessor('meals', {
-        header: 'Meals',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.meals}</Typography>
-      }),
-      columnHelper.accessor('discount', {
-        header: 'Discount',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.discount}</Typography>
-      }),
-      columnHelper.accessor('netPay', {
-        header: 'Net Pay',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.netPay}</Typography>
-      }),
-      columnHelper.accessor('status', {
+      columnHelper.accessor('userStatus', {
         header: 'Status',
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             <Chip
-              label={row.original.status}
+              label={row.original.userStatus ? 'Active' : 'In Active'}
               variant='tonal'
-              color={statusChipColor[row.original.status]?.color}
+              color={statusChipColor[row.original.userStatus ? 'Active' : 'Inactive']?.color}
               size='small'
             />
           </div>

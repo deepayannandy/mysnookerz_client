@@ -1,3 +1,5 @@
+import { InvoiceType } from '../adminTypes'
+
 export type InvoiceStatus = 'Paid' | string
 
 export type InvoiceLayoutProps = {
@@ -13,27 +15,27 @@ export type InvoiceClientType = {
   companyEmail: string
 }
 
-export type InvoiceType = {
-  registrationId: string
-  name: string
-  registrationDate: string
-  city: string
-  plan: string
-  id: string
-  total: number
-  avatar: string
-  service: string
-  dueDate: string
-  address: string
-  company: string
-  country: string
-  contact: string
-  avatarColor?: string
-  issuedDate: string
-  companyEmail: string
-  balance: string | number
-  invoiceStatus: InvoiceStatus
-}
+// export type InvoiceType = {
+//   registrationId: string
+//   name: string
+//   registrationDate: string
+//   city: string
+//   plan: string
+//   id: string
+//   total: number
+//   avatar: string
+//   service: string
+//   dueDate: string
+//   address: string
+//   company: string
+//   country: string
+//   contact: string
+//   avatarColor?: string
+//   issuedDate: string
+//   companyEmail: string
+//   balance: string | number
+//   invoiceStatus: InvoiceStatus
+// }
 
 export type InvoicePaymentType = {
   iban: string

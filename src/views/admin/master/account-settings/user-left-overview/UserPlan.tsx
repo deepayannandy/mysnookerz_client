@@ -1,15 +1,15 @@
 // MUI Imports
+import type { ButtonProps } from '@mui/material/Button'
+import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
-import Typography from '@mui/material/Typography'
 import LinearProgress from '@mui/material/LinearProgress'
-import Button from '@mui/material/Button'
-import type { ButtonProps } from '@mui/material/Button'
+import Typography from '@mui/material/Typography'
 
 // Component Imports
-import UpgradePlan from '@components/dialogs/upgrade-plan'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
+import UpgradePlan from '@components/dialogs/upgrade-plan'
 
 const UserPlan = () => {
   // Vars
@@ -36,7 +36,7 @@ const UserPlan = () => {
               </Typography>
             </div>
           </div>
-          <div className='flex flex-col gap-2'>
+          {/* <div className='flex flex-col gap-2'>
             <div className='flex items-center gap-2'>
               <i className='ri-circle-fill text-[10px] text-textSecondary' />
               <Typography component='span'>10 Users</Typography>
@@ -49,7 +49,7 @@ const UserPlan = () => {
               <i className='ri-circle-fill text-[10px] text-textSecondary' />
               <Typography component='span'>Basic Support</Typography>
             </div>
-          </div>
+          </div> */}
           <div className='flex flex-col gap-1'>
             <div className='flex items-center justify-between'>
               <Typography className='font-medium' color='text.primary'>

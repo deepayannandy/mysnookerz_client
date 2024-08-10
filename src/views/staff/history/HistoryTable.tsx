@@ -35,7 +35,9 @@ import type { ThemeColor } from '@core/types'
 import { HistoryDataType } from '@/types/staffTypes'
 import tableStyles from '@core/styles/table.module.css'
 import Chip from '@mui/material/Chip'
+import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -85,71 +87,70 @@ const HistoryTable = () => {
   const pathname = usePathname()
   const router = useRouter()
 
-  // const getHistoryData = async () => {
-  //   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-  //   const token = localStorage.getItem('token')
-  //   try {
-  //     const response = await axios.get(`${apiBaseUrl}/client/`, { headers: { 'auth-token': token } })
-  //     if (response && response.data) {
-  //       setData(response.data)
-  //     }
-  //   } catch (error: any) {
-  //     if (error?.response?.status === 400) {
-  //       const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-  //       return router.replace(redirectUrl)
-  //     }
-  //     toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
-  //   }
-  // }
-
-  const historyData: HistoryDataType[] = [
-    {
-      date: '22 May 2024',
-      transactionId: 'T1412424242',
-      customerName: 'Deepayan',
-      description: 'this is description',
-      start: '10:00 AM',
-      end: '12:00 PM',
-      time: '2 hours',
-      table: '1',
-      meals: 'affafsc',
-      discount: 300,
-      netPay: 4000,
-      status: 'Paid'
-    },
-    {
-      date: '12 May 2024',
-      transactionId: 'T1562424242',
-      customerName: 'Mrinal',
-      description: 'this is not description',
-      start: '11:00 AM',
-      end: '04:00 PM',
-      time: '5 hours',
-      table: '2',
-      meals: 'affaafsffsc',
-      discount: 5000,
-      netPay: 40000,
-      status: 'Not Paid'
-    },
-    {
-      date: '20 May 2024',
-      transactionId: 'T1562424242',
-      customerName: 'Deepayan Nandy',
-      description: 'this was description',
-      start: '09:00 AM',
-      end: '12:00 PM',
-      time: '3 hours',
-      table: '3',
-      meals: 'affafafsc',
-      discount: 3000,
-      netPay: 8000,
-      status: 'Running'
+  const getHistoryData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/history/`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setData(response.data)
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 400) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
-  ]
+  }
+
+  // const historyData: HistoryDataType[] = [
+  //   {
+  //     date: '22 May 2024',
+  //     transactionId: 'T1412424242',
+  //     customerName: 'Deepayan',
+  //     description: 'this is description',
+  //     start: '10:00 AM',
+  //     end: '12:00 PM',
+  //     time: '2 hours',
+  //     table: '1',
+  //     meals: 'affafsc',
+  //     discount: 300,
+  //     netPay: 4000,
+  //     status: 'Paid'
+  //   },
+  //   {
+  //     date: '12 May 2024',
+  //     transactionId: 'T1562424242',
+  //     customerName: 'Mrinal',
+  //     description: 'this is not description',
+  //     start: '11:00 AM',
+  //     end: '04:00 PM',
+  //     time: '5 hours',
+  //     table: '2',
+  //     meals: 'affaafsffsc',
+  //     discount: 5000,
+  //     netPay: 40000,
+  //     status: 'Not Paid'
+  //   },
+  //   {
+  //     date: '20 May 2024',
+  //     transactionId: 'T1562424242',
+  //     customerName: 'Deepayan Nandy',
+  //     description: 'this was description',
+  //     start: '09:00 AM',
+  //     end: '12:00 PM',
+  //     time: '3 hours',
+  //     table: '3',
+  //     meals: 'affafafsc',
+  //     discount: 3000,
+  //     netPay: 8000,
+  //     status: 'Running'
+  //   }
+  // ]
 
   useEffect(() => {
-    //getHistoryData()
-    setData(historyData)
+    getHistoryData()
   }, [])
 
   const columns = useMemo<ColumnDef<HistoryDataWithAction, any>[]>(

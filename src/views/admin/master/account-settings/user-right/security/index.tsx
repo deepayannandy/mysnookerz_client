@@ -3,8 +3,6 @@ import Grid from '@mui/material/Grid'
 
 // Component Imports
 import ChangePassword from './ChangePassword'
-import TwoStepVerification from './TwoStepVerification'
-import RecentDevice from './RecentDevice'
 
 const SecurityTab = () => {
   return (
@@ -12,12 +10,12 @@ const SecurityTab = () => {
       <Grid item xs={12}>
         <ChangePassword />
       </Grid>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <TwoStepVerification />
       </Grid>
       <Grid item xs={12}>
         <RecentDevice />
-      </Grid>
+      </Grid> */}
     </Grid>
   )
 }

@@ -11,8 +11,7 @@ import CustomAvatar from '@core/components/mui/Avatar'
 
 const CardStatVertical = (props: CardStatsVerticalProps) => {
   // Props
-  const { title, stats, avatarIcon, avatarColor, trendNumber, trend, subtitle, avatarSkin, avatarSize, moreOptions } =
-    props
+  const { title, stats, avatarIcon, avatarColor, trendNumber, trend, subtitle, avatarSkin, avatarSize } = props
 
   return (
     <Card className='bs-full'>

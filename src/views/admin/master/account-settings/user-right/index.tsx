@@ -1,14 +1,14 @@
 'use client'
 
 // React Imports
+import type { ReactElement, SyntheticEvent } from 'react'
 import { useState } from 'react'
-import type { SyntheticEvent, ReactElement } from 'react'
 
 // MUI Imports
-import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
 import TabPanel from '@mui/lab/TabPanel'
 import Grid from '@mui/material/Grid'
+import Tab from '@mui/material/Tab'
 
 // Component Imports
 import CustomTabList from '@core/components/mui/TabList'
@@ -37,11 +37,16 @@ const UserRight = ({ tabContentList }: { tabContentList: { [key: string]: ReactE
               />
               <Tab
                 icon={<i className='ri-notification-2-line' />}
-                value='notifications'
-                label='Notifications'
+                value='actions'
+                label='Actions'
                 iconPosition='start'
               />
-              <Tab icon={<i className='ri-link-m' />} value='connections' label='Connections' iconPosition='start' />
+              <Tab
+                icon={<i className='ri-link-m' />}
+                value='deviceControl'
+                label='Device Control'
+                iconPosition='start'
+              />
             </CustomTabList>
           </Grid>
           <Grid item xs={12}>

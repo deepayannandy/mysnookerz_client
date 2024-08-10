@@ -5,14 +5,12 @@ import type { MouseEvent } from 'react'
 import { useMemo, useState } from 'react'
 
 // Next Imports
-import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
 // MUI Imports
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
-import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import TablePagination from '@mui/material/TablePagination'
@@ -38,16 +36,13 @@ import {
 import classnames from 'classnames'
 
 // Type Imports
-import type { InvoiceType } from '@/types/apps/invoiceTypes'
-import type { Locale } from '@configs/i18n'
+import { InvoiceType } from '@/types/adminTypes'
 import type { ThemeColor } from '@core/types'
 
 // Component Imports
 import CustomAvatar from '@core/components/mui/Avatar'
-import OptionMenu from '@core/components/option-menu'
 
 // Util Imports
-import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -113,15 +108,17 @@ const InvoiceListTable = ({ invoiceData }: { invoiceData?: InvoiceType[] }) => {
 
   const columns = useMemo<ColumnDef<InvoiceTypeWithAction, any>[]>(
     () => [
-      columnHelper.accessor('id', {
-        header: '#',
-        cell: ({ row }) => (
-          <Typography
-            component={Link}
-            href={getLocalizedUrl(`/apps/invoice/preview/${row.original.id}`, locale as Locale)}
-            color='primary'
-          >{`#${row.original.id}`}</Typography>
-        )
+      columnHelper.accessor('issuedDate', {
+        header: 'Issued Date',
+        cell: ({ row }) => <Typography>{row.original.issuedDate}</Typography>
+      }),
+      columnHelper.accessor('subscription', {
+        header: 'Subscription',
+        cell: ({ row }) => <Typography>{`$${row.original.subscription}`}</Typography>
+      }),
+      columnHelper.accessor('amount', {
+        header: 'Amount',
+        cell: ({ row }) => <Typography>{`$${row.original.amount}`}</Typography>
       }),
       columnHelper.accessor('invoiceStatus', {
         header: 'Status',
@@ -150,58 +147,65 @@ const InvoiceListTable = ({ invoiceData }: { invoiceData?: InvoiceType[] }) => {
             </CustomAvatar>
           </Tooltip>
         )
-      }),
-      columnHelper.accessor('total', {
-        header: 'Total',
-        cell: ({ row }) => <Typography>{`$${row.original.total}`}</Typography>
-      }),
-      columnHelper.accessor('issuedDate', {
-        header: 'Issued Date',
-        cell: ({ row }) => <Typography>{row.original.issuedDate}</Typography>
-      }),
-      columnHelper.accessor('action', {
-        header: 'Action',
-        cell: ({ row }) => (
-          <div className='flex items-center'>
-            <IconButton onClick={() => setData(data?.filter(invoice => invoice.id !== row.original.id))}>
-              <i className='ri-delete-bin-7-line text-textSecondary' />
-            </IconButton>
-            <IconButton>
-              <Link
-                href={getLocalizedUrl(`/apps/invoice/preview/${row.original.id}`, locale as Locale)}
-                className='flex'
-              >
-                <i className='ri-eye-line text-textSecondary' />
-              </Link>
-            </IconButton>
-            <OptionMenu
-              iconButtonProps={{ size: 'medium' }}
-              iconClassName='text-textSecondary'
-              options={[
-                {
-                  text: 'Download',
-                  icon: 'ri-download-line',
-                  menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' }
-                },
-                {
-                  text: 'Edit',
-                  icon: 'ri-pencil-line',
-                  href: getLocalizedUrl(`/apps/invoice/edit/${row.original.id}`, locale as Locale),
-                  linkProps: {
-                    className: classnames('flex items-center bs-[40px] plb-2 pli-4 is-full gap-2 text-textSecondary')
-                  }
-                },
-                {
-                  text: 'Duplicate',
-                  icon: 'ri-file-copy-line',
-                  menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' }
-                }
-              ]}
-            />
-          </div>
-        ),
-        enableSorting: false
       })
+      // columnHelper.accessor('id', {
+      //   header: '#',
+      //   cell: ({ row }) => (
+      //     <Typography
+      //       component={Link}
+      //       href={getLocalizedUrl(`/apps/invoice/preview/${row.original.id}`, locale as Locale)}
+      //       color='primary'
+      //     >{`#${row.original.id}`}</Typography>
+      //   )
+      // }),
+      // columnHelper.accessor('total', {
+      //   header: 'Total',
+      //   cell: ({ row }) => <Typography>{`$${row.original.total}`}</Typography>
+      // }),
+
+      // columnHelper.accessor('action', {
+      //   header: 'Action',
+      //   cell: ({ row }) => (
+      //     <div className='flex items-center'>
+      //       <IconButton onClick={() => setData(data?.filter(invoice => invoice.id !== row.original.id))}>
+      //         <i className='ri-delete-bin-7-line text-textSecondary' />
+      //       </IconButton>
+      //       <IconButton>
+      //         <Link
+      //           href={getLocalizedUrl(`/apps/invoice/preview/${row.original.id}`, locale as Locale)}
+      //           className='flex'
+      //         >
+      //           <i className='ri-eye-line text-textSecondary' />
+      //         </Link>
+      //       </IconButton>
+      //       <OptionMenu
+      //         iconButtonProps={{ size: 'medium' }}
+      //         iconClassName='text-textSecondary'
+      //         options={[
+      //           {
+      //             text: 'Download',
+      //             icon: 'ri-download-line',
+      //             menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' }
+      //           },
+      //           {
+      //             text: 'Edit',
+      //             icon: 'ri-pencil-line',
+      //             href: getLocalizedUrl(`/apps/invoice/edit/${row.original.id}`, locale as Locale),
+      //             linkProps: {
+      //               className: classnames('flex items-center bs-[40px] plb-2 pli-4 is-full gap-2 text-textSecondary')
+      //             }
+      //           },
+      //           {
+      //             text: 'Duplicate',
+      //             icon: 'ri-file-copy-line',
+      //             menuItemProps: { className: 'flex items-center gap-2 text-textSecondary' }
+      //           }
+      //         ]}
+      //       />
+      //     </div>
+      //   ),
+      //   enableSorting: false
+      // })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
@@ -247,7 +251,7 @@ const InvoiceListTable = ({ invoiceData }: { invoiceData?: InvoiceType[] }) => {
   return (
     <Card>
       <CardHeader
-        title='Invoice List'
+        title='Billing'
         sx={{ '& .MuiCardHeader-action': { m: 0 } }}
         action={
           <>

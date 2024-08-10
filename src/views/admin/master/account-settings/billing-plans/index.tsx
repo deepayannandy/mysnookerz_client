@@ -2,13 +2,11 @@
 import Grid from '@mui/material/Grid'
 
 // Component Imports
-import CurrentPlan from './CurrentPlan'
 import Address from './Address'
-import PaymentMethod from './PaymentMethod'
-import InvoiceListTable from './InvoiceListTable'
+import CurrentPlan from './CurrentPlan'
 
 // Data Imports
-import { getPricingData, getInvoiceData } from '@/app/server/actions'
+import { getInvoiceData, getPricingData } from '@/app/server/actions'
 
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
@@ -49,15 +47,15 @@ const BillingPlans = async () => {
       <Grid item xs={12}>
         <CurrentPlan data={data} />
       </Grid>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <PaymentMethod />
-      </Grid>
+      </Grid> */}
       <Grid item xs={12}>
         <Address />
       </Grid>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <InvoiceListTable invoiceData={invoiceData} />
-      </Grid>
+      </Grid> */}
     </Grid>
   )
 }

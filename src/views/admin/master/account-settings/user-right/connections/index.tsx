@@ -1,16 +1,14 @@
 // Next Imports
-import Link from 'next/link'
 
 // MUI Imports
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
 import Switch from '@mui/material/Switch'
+import Typography from '@mui/material/Typography'
 
 // Component Imports
-import CustomIconButton from '@core/components/mui/IconButton'
 
 type ConnectedAccountsType = {
   title: string
@@ -120,7 +118,7 @@ const ConnectionsTab = () => {
           </CardContent>
         </Card>
       </Grid>
-      <Grid item xs={12}>
+      {/* <Grid item xs={12}>
         <Card>
           <CardHeader title='Social Accounts' subheader='Display content from social accounts on your site' />
           <CardContent className='flex flex-col gap-4'>
@@ -148,7 +146,7 @@ const ConnectionsTab = () => {
             ))}
           </CardContent>
         </Card>
-      </Grid>
+      </Grid> */}
     </Grid>
   )
 }

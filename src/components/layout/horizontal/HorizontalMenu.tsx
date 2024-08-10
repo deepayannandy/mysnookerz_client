@@ -23,6 +23,7 @@ import StyledHorizontalNavExpandIcon from '@menu/styles/horizontal/StyledHorizon
 import StyledVerticalNavExpandIcon from '@menu/styles/vertical/StyledVerticalNavExpandIcon'
 
 // Style Imports
+import MenuSection from '@/@menu/components/vertical-menu/MenuSection'
 import menuItemStyles from '@core/styles/horizontal/menuItemStyles'
 import menuRootStyles from '@core/styles/horizontal/menuRootStyles'
 import verticalMenuItemStyles from '@core/styles/vertical/menuItemStyles'
@@ -93,7 +94,7 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof 
           menuSectionStyles: verticalMenuSectionStyles(verticalNavOptions, theme)
         }}
       >
-        <SubMenu label={dictionary['navigation'].staffMenu} icon={<i className='ri-home-smile-line' />}>
+        <MenuSection label={dictionary['navigation'].staffMenu}>
           <MenuItem href={`/${locale}/staff/dashboard`} icon={<i className='ri-pie-chart-2-line' />}>
             {dictionary['navigation'].dashboard}
           </MenuItem>
@@ -106,8 +107,8 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof 
           <MenuItem href={`/${locale}/staff/customer`} icon={<i className='ri-car-line' />}>
             {dictionary['navigation'].customer}
           </MenuItem>
-        </SubMenu>
-        <SubMenu label={dictionary['navigation'].adminMenu} icon={<i className='ri-mail-open-line' />}>
+        </MenuSection>
+        <MenuSection label={dictionary['navigation'].adminMenu}>
           <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
           <SubMenu label={dictionary['navigation'].settings} icon={<i className='ri-shopping-bag-3-line' />}>
             <MenuItem href={`/${locale}/admin/settings/master`}>{dictionary['navigation'].master}</MenuItem>
@@ -115,7 +116,7 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof 
               {dictionary['navigation'].accountSettings}
             </MenuItem>
           </SubMenu>
-        </SubMenu>
+        </MenuSection>
       </Menu>
     </HorizontalNav>
   )

@@ -18,18 +18,11 @@ export type HistoryDataType = {
 }
 
 export type CustomerDataType = {
-  date: string
-  transactionId: string
-  customerName: string
-  description: string
-  start: string
-  end: string
-  time: string
-  table: string
-  meals: string
-  discount: number
-  netPay: number
-  status: string
+  _id: string
+  fullName: string
+  contact: number
+  rewards: string
+  credit: number
 }
 
 export type VerticalCardStatsPropsType = {

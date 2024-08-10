@@ -12,7 +12,7 @@ import type { getDictionary } from '@/utils/getDictionary'
 import type { VerticalMenuContextProps } from '@menu/components/vertical-menu/Menu'
 
 // Component Imports
-import { Menu, MenuItem, SubMenu } from '@menu/vertical-menu'
+import { Menu, MenuItem, MenuSection } from '@menu/vertical-menu'
 
 // import { GenerateVerticalMenu } from '@components/GenerateMenu'
 
@@ -81,21 +81,22 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='ri-circle-line' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <SubMenu label={dictionary['navigation'].staffMenu} icon={<i className='ri-home-smile-line' />}>
+        <MenuSection label={dictionary['navigation'].staffMenu}>
           <MenuItem href={`/${locale}/staff/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
           <MenuItem href={`/${locale}/staff/booking`}>{dictionary['navigation'].booking}</MenuItem>
           <MenuItem href={`/${locale}/staff/history`}>{dictionary['navigation'].history}</MenuItem>
           <MenuItem href={`/${locale}/staff/customer`}>{dictionary['navigation'].customer}</MenuItem>
-        </SubMenu>
-        <SubMenu label={dictionary['navigation'].adminMenu} icon={<i className='ri-mail-open-line' />}>
+        </MenuSection>
+        <MenuSection label={dictionary['navigation'].adminMenu}>
           <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
-          <SubMenu label={dictionary['navigation'].settings} icon={<i className='ri-shopping-bag-3-line' />}>
+          <MenuSection label={dictionary['navigation'].settings}>
+            {/* <SubMenu label={dictionary['navigation'].settings} icon={<i className='ri-shopping-bag-3-line' />}> */}
             <MenuItem href={`/${locale}/admin/settings/master`}>{dictionary['navigation'].master}</MenuItem>
             <MenuItem href={`/${locale}/admin/settings/account-settings`}>
               {dictionary['navigation'].accountSettings}
             </MenuItem>
-          </SubMenu>
-        </SubMenu>
+          </MenuSection>
+        </MenuSection>
       </Menu>
     </ScrollWrapper>
   )

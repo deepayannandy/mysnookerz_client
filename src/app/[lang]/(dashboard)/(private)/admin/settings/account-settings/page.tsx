@@ -28,8 +28,8 @@ const tabContentList = (data?: PricingPlanType[]): { [key: string]: ReactElement
   security: <SecurityTab />,
   // @ts-ignore
   'billing-plans': <BillingPlans data={data} />,
-  notifications: <NotificationsTab />,
-  connections: <ConnectionsTab />
+  actions: <NotificationsTab />,
+  deviceControl: <ConnectionsTab />
 })
 
 /**

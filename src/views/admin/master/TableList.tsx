@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // Next Imports
 
@@ -40,7 +40,9 @@ import NewTableCreation from '@/components/dialogs/new-table-creation'
 import tableStyles from '@core/styles/table.module.css'
 import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
+import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -59,26 +61,27 @@ type TableStatusType = {
 }
 
 const customerStatusObj: TableStatusType = {
-  Active: { title: 'Active', color: 'success' },
-  Inactive: { title: 'Inactive', color: 'error' }
+  occupied: { title: 'Occupied', color: 'success' },
+  booked: { title: 'Booked', color: 'primary' },
+  idle: { title: 'Idle', color: 'error' }
 }
 
 type TableDataType = {
-  name: string
-  billingType: string
-  day: Partial<{
-    upToMinute: number | null
-    minimumCharge: number | null
-    perMinuteCharge: number | null
+  _id: string
+  tableName: string
+  gameTypes: string[]
+  minuteWiseRules: Partial<{
+    dayUptoMin: number | null
+    dayMinAmt: number | null
+    dayPerMin: number | null
+    nightUptoMin: number | null
+    nightMinAmt: number | null
+    nightPerMin: number | null
   }>
-  night: Partial<{
-    upToMinute: number | null
-    minimumCharge: number | null
-    perMinuteCharge: number | null
-  }>
-  device: string
-  mode: string
-  isActive: boolean
+  deviceId: string
+  nodeID: string
+  isOccupied: boolean
+  isBooked: boolean
 }
 
 type TableTypeWithAction = TableDataType & {
@@ -131,92 +134,71 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 // Column Definitions
 const columnHelper = createColumnHelper<TableTypeWithAction>()
 
-const TableList = ({ tableData }: { tableData: TableDataType[] }) => {
+const TableList = () => {
   // States
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(tableData)
+  const [data, setData] = useState([] as TableDataType[])
   const [globalFilter, setGlobalFilter] = useState('')
   const [newTableCreationDialogOpen, setNewTableCreationDialogOpen] = useState(false)
 
-  // Hooks
+  //Hooks
   const { lang: locale } = useParams()
   const pathname = usePathname()
   const router = useRouter()
 
-  //   const getCustomerData = async () => {
-  //     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-  //     const token = localStorage.getItem('token')
-  //     try {
-  //       const response = await axios.get(`${apiBaseUrl}/store/`, { headers: { 'auth-token': token } })
-  //       if (response && response.data) {
-  //         setData(response.data)
-  //       }
-  //     } catch (error: any) {
-  //       if (error?.response?.status === 400) {
-  //         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-  //         return router.replace(redirectUrl)
-  //       }
-  //       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
-  //     }
-  //   }
+  const getTableData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/table`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setData(response.data)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+    }
+  }
 
-  //   useEffect(() => {
-  //     getCustomerData()
-  //   }, [])
+  useEffect(() => {
+    getTableData()
+  }, [])
 
   const columns = useMemo<ColumnDef<TableTypeWithAction, any>[]>(
     () => [
-      columnHelper.accessor('name', {
+      columnHelper.accessor('tableName', {
         header: 'Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.name}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.tableName}</Typography>
       }),
-      columnHelper.accessor('billingType', {
-        header: 'Billing Type',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.billingType}</Typography>
+      columnHelper.accessor('gameTypes', {
+        header: 'Billing Types',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.gameTypes?.join(',')}</Typography>
       }),
-      columnHelper.accessor('day.upToMinute', {
-        header: 'Up To Minute (Day)',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.day.upToMinute}</Typography>
-      }),
-      columnHelper.accessor('day.minimumCharge', {
-        header: 'Minimum Charge (Day)',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.day.minimumCharge}</Typography>
-      }),
-
-      columnHelper.accessor('day.perMinuteCharge', {
-        header: 'Per Minute Charge (Day)',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.day.perMinuteCharge}</Typography>
-      }),
-      columnHelper.accessor('night.upToMinute', {
-        header: 'Up To Minute (Night)',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.night.upToMinute}</Typography>
-      }),
-      columnHelper.accessor('night.minimumCharge', {
-        header: 'Minimum Charge (Night)',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.night.minimumCharge}</Typography>
-      }),
-
-      columnHelper.accessor('night.perMinuteCharge', {
-        header: 'Per Minute Charge (Night)',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.night.perMinuteCharge}</Typography>
-      }),
-
-      columnHelper.accessor('device', {
+      columnHelper.accessor('deviceId', {
         header: 'Device',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.device}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.deviceId}</Typography>
       }),
-      columnHelper.accessor('mode', {
-        header: 'Mode',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.mode}</Typography>
+      columnHelper.accessor('nodeID', {
+        header: 'Node',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.nodeID}</Typography>
       }),
       columnHelper.accessor('status', {
         header: 'Status',
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             <Chip
-              label={customerStatusObj[row.original.isActive ? 'Active' : 'Inactive'].title}
+              label={
+                customerStatusObj[row.original.isOccupied ? 'occupied' : row.original.isBooked ? 'booked' : 'idle']
+                  ?.title
+              }
               variant='tonal'
-              color={customerStatusObj[row.original.isActive ? 'Active' : 'Inactive'].color}
+              color={
+                customerStatusObj[row.original.isOccupied ? 'occupied' : row.original.isBooked ? 'booked' : 'idle']
+                  ?.color
+              }
               size='small'
             />
           </div>
@@ -239,7 +221,7 @@ const TableList = ({ tableData }: { tableData: TableDataType[] }) => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => setData(data?.filter(product => product.name !== row.original.name))
+                    onClick: () => setData(data?.filter(table => table._id !== row.original._id))
                   }
                 }
 
@@ -385,7 +367,11 @@ const TableList = ({ tableData }: { tableData: TableDataType[] }) => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
-      <NewTableCreation open={newTableCreationDialogOpen} setOpen={setNewTableCreationDialogOpen} />
+      <NewTableCreation
+        open={newTableCreationDialogOpen}
+        setOpen={setNewTableCreationDialogOpen}
+        getTableData={getTableData}
+      />
     </>
   )
 }

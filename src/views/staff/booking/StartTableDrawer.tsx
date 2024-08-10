@@ -27,12 +27,14 @@ type Props = {
     table: string
     isTableActive: boolean
     startTable: boolean
+    billingType: string
   }[]
   setTableData: (
     value: {
       table: string
       isTableActive: boolean
       startTable: boolean
+      billingType: string
     }[]
   ) => void
 }

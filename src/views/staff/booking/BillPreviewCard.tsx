@@ -31,6 +31,7 @@ export type CustomerInvoiceType = {
   tax: number
   total: number
   discount?: number | null
+  return?: number | null
   storeName: string
   city: string
   state: string
@@ -85,7 +86,7 @@ const BillPreviewCard = ({
                   </Typography>
                   <div>
                     {data.customers.map(el => (
-                      <Chip avatar={<Avatar>{el[0]}</Avatar>} label={el} variant='outlined' />
+                      <Chip key={el} avatar={<Avatar>{el[0]}</Avatar>} label={el} variant='outlined' />
                     ))}
                   </div>
                 </div>
@@ -121,19 +122,34 @@ const BillPreviewCard = ({
               <div className='flex flex-col gap-1 order-2 sm:order-[unset]'>
                 <div className='flex items-center gap-4'>
                   <Typography className='font-medium' color='text.primary'>
+                    Return:
+                  </Typography>
+                  <TextField
+                    {...(isBelowMdScreen && { fullWidth: true })}
+                    size='small'
+                    inputProps={{ type: 'number', min: 0 }}
+                    placeholder='Return'
+                    className='w-28'
+                    value={data.return}
+                    onChange={event =>
+                      setData({ ...data, return: Number(event.target.value) ? Number(event.target.value) : null })
+                    }
+                  />
+                </div>
+                <div className='flex items-center gap-4'>
+                  <Typography className='font-medium' color='text.primary'>
                     Discount:
                   </Typography>
                   <TextField
                     {...(isBelowMdScreen && { fullWidth: true })}
                     size='small'
                     inputProps={{ type: 'number', min: 0 }}
-                    placeholder='discount'
+                    placeholder='Discount'
                     className='w-28'
                     value={data.discount}
                     onChange={event =>
                       setData({ ...data, discount: Number(event.target.value) ? Number(event.target.value) : null })
                     }
-                    InputProps={{ inputProps: { min: 0 } }}
                   />
                 </div>
                 <div className='flex items-center gap-4'>

@@ -41,6 +41,7 @@ import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
+import axios from 'axios'
 
 type ErrorType = {
   message: string[]
@@ -80,7 +81,7 @@ const Login = ({ mode }: { mode: Mode }) => {
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: 'deepayan.622@gmail.com',
+      email: 'dny@gmail.com',
       password: 'test@6622'
     }
   })
@@ -99,31 +100,28 @@ const Login = ({ mode }: { mode: Mode }) => {
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    localStorage.setItem('token', 'abcsrradasdasdssdsdad')
-    const redirectURL = searchParams.get('redirectTo') ?? '/'
 
-    router.replace(getLocalizedUrl(redirectURL, locale as Locale))
-    // try {
-    //   const response = await axios.post(`${apiBaseUrl}/user/login`, {
-    //     userId: data.email,
-    //     password: data.password
-    //   })
+    try {
+      const response = await axios.post(`${apiBaseUrl}/user/clientLogin`, {
+        userId: data.email,
+        password: data.password
+      })
 
-    //   if (response && response.data) {
-    //     localStorage.setItem('token', response.data)
-    //     const redirectURL = searchParams.get('redirectTo') ?? '/'
+      if (response && response.data) {
+        localStorage.setItem('token', response.data)
+        const redirectURL = searchParams.get('redirectTo') ?? '/'
 
-    //     router.replace(getLocalizedUrl(redirectURL, locale as Locale))
-    //   } else if (response.status !== 200) {
-    //     if (response?.data?.error) {
-    //       const error = JSON.parse(response?.data?.error)
+        router.replace(getLocalizedUrl(redirectURL, locale as Locale))
+      } else if (response.status !== 200) {
+        if (response?.data?.error) {
+          const error = JSON.parse(response?.data?.error)
 
-    //       setErrorState(error)
-    //     }
-    //   }
-    // } catch (error: any) {
-    //   setSeverError(error?.response?.data ?? error?.message)
-    // }
+          setErrorState(error)
+        }
+      }
+    } catch (error: any) {
+      setSeverError(error?.response?.data ?? error?.message)
+    }
   }
 
   return (

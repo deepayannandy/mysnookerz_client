@@ -1,10 +1,11 @@
-import { Avatar, AvatarGroup, Button } from '@mui/material'
+import { Avatar, AvatarGroup, Button, TextField } from '@mui/material'
 import CountUpTimer from '../count-up-timer'
 
 const PoolCard = ({
   avatars,
   timer,
   tableName,
+  billingType,
   isTableActive,
   startTable,
   handleCheckout,
@@ -14,6 +15,7 @@ const PoolCard = ({
   avatars: string[]
   timer: string
   tableName: string
+  billingType: string
   isTableActive: boolean
   startTable: boolean
   handleCheckout: (tableName: string) => void
@@ -23,7 +25,16 @@ const PoolCard = ({
   return (
     <div className='relative'>
       <img className='size-full rotate-180' src={'/images/snooker-table/Snooker_table.png'} alt='' />
-      <div className='absolute flex flex-col justify-end items-center bottom-0 h-2/3 bg-gradient-to-t from-secondary w-full rounded px-6'>
+      <div className='absolute flex flex-col justify-end items-center bottom-0 h-2/3 bg-gradient-to-t from-backdrop w-full rounded px-6'>
+        {/* <TextField className='text-white' disabled label='Billing Type' value={billingType} /> */}
+        <TextField
+          label='Billing Type'
+          defaultValue={billingType}
+          InputProps={{
+            readOnly: true
+          }}
+          variant='outlined'
+        />
         <AvatarGroup
           max={4}
           sx={{
@@ -36,10 +47,10 @@ const PoolCard = ({
           }}
         >
           {avatars.map(el => (
-            <Avatar alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
+            <Avatar key={el} alt='Remy Sharp' src='/static/images/avatar/2.jpg' />
           ))}
         </AvatarGroup>
-        <h2 className=' text-center text-sm my-2'>{tableName}</h2>
+        <h2 className='text-center text-sm my-2 text-white'>{tableName}</h2>
 
         <CountUpTimer startTime={timer} running={startTable}></CountUpTimer>
 

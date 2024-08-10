@@ -32,10 +32,12 @@ import type { ThemeColor } from '@core/types'
 
 // Style Imports
 
+import OptionMenu from '@/@core/components/option-menu'
 import { CustomerDataType } from '@/types/staffTypes'
 import tableStyles from '@core/styles/table.module.css'
-import Chip from '@mui/material/Chip'
+import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -57,7 +59,7 @@ export const statusChipColor: { [key: string]: StatusChipColorType } = {
 }
 
 type CustomerDataWithAction = CustomerDataType & {
-  action?: string
+  actions?: string
 }
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
@@ -85,131 +87,113 @@ const CustomerListTable = () => {
   const pathname = usePathname()
   const router = useRouter()
 
-  // const getCustomerData = async () => {
-  //   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-  //   const token = localStorage.getItem('token')
-  //   try {
-  //     const response = await axios.get(`${apiBaseUrl}/client/`, { headers: { 'auth-token': token } })
-  //     if (response && response.data) {
-  //       setData(response.data)
-  //     }
-  //   } catch (error: any) {
-  //     if (error?.response?.status === 400) {
-  //       const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-  //       return router.replace(redirectUrl)
-  //     }
-  //     toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
-  //   }
-  // }
-
-  const customerData: CustomerDataType[] = [
-    {
-      date: '22 May 2024',
-      transactionId: 'T1412424242',
-      customerName: 'Abcd',
-      description: 'this is description',
-      start: '10:00 AM',
-      end: '12:00 PM',
-      time: '2 hours',
-      table: '1',
-      meals: 'affafsc',
-      discount: 300,
-      netPay: 4000,
-      status: 'Paid'
-    },
-    {
-      date: '12 May 2024',
-      transactionId: 'T1562424242',
-      customerName: 'Atdgs',
-      description: 'this is not description',
-      start: '11:00 AM',
-      end: '04:00 PM',
-      time: '5 hours',
-      table: '2',
-      meals: 'affaafsffsc',
-      discount: 5000,
-      netPay: 40000,
-      status: 'Not Paid'
-    },
-    {
-      date: '20 May 2024',
-      transactionId: 'T1562424242',
-      customerName: 'tarsa',
-      description: 'this was description',
-      start: '09:00 AM',
-      end: '12:00 PM',
-      time: '3 hours',
-      table: '3',
-      meals: 'affafafsc',
-      discount: 3000,
-      netPay: 8000,
-      status: 'Running'
+  const getCustomerData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/customer/myCustomers`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setData(response.data)
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 400) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
-  ]
+  }
+
+  // const customerData: CustomerDataType[] = [
+  //   {
+  //     customerId: '1232442',
+  //     customerName: 'Mrinal',
+  //     mobile: 6294346346,
+  //     rewards: 'RP 29',
+  //     credit: 50
+  //   },
+  //   {
+  //     customerId: '45532442',
+  //     customerName: 'Deep',
+  //     mobile: 7829434634,
+  //     rewards: 'RP 50',
+  //     credit: 30
+  //   },
+  //   {
+  //     customerId: '144232442',
+  //     customerName: 'Nandy',
+  //     mobile: 6295346346,
+  //     rewards: 'RP 49',
+  //     credit: 20
+  //   }
+  // ]
 
   useEffect(() => {
-    //getHistoryData()
-    setData(customerData)
+    getCustomerData()
   }, [])
 
   const columns = useMemo<ColumnDef<CustomerDataWithAction, any>[]>(
     () => [
-      columnHelper.accessor('date', {
-        header: 'Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.date}</Typography>
+      columnHelper.accessor('_id', {
+        header: 'Customer Id',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original._id}</Typography>
       }),
-      columnHelper.accessor('transactionId', {
-        header: 'Transaction ID',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
-      }),
-      columnHelper.accessor('customerName', {
+      columnHelper.accessor('fullName', {
         header: 'Customer Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.customerName}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.fullName}</Typography>
       }),
-      columnHelper.accessor('description', {
-        header: 'Description',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.description}</Typography>
+      columnHelper.accessor('contact', {
+        header: 'Mobile',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.contact}</Typography>
       }),
-      columnHelper.accessor('start', {
-        header: 'Start',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.start}</Typography>
+      columnHelper.accessor('rewards', {
+        header: 'Rewards',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.rewards}</Typography>
       }),
-      columnHelper.accessor('end', {
-        header: 'End',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.end}</Typography>
+      columnHelper.accessor('credit', {
+        header: 'Credit',
+        cell: ({ row }) => <Typography color='text.primary'>{`₹ ${row.original.credit}`}</Typography>
       }),
-      columnHelper.accessor('time', {
-        header: 'Time',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.time}</Typography>
-      }),
-      columnHelper.accessor('table', {
-        header: 'Table',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.table}</Typography>
-      }),
-      columnHelper.accessor('meals', {
-        header: 'Meals',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.meals}</Typography>
-      }),
-      columnHelper.accessor('discount', {
-        header: 'Discount',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.discount}</Typography>
-      }),
-      columnHelper.accessor('netPay', {
-        header: 'Net Pay',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.netPay}</Typography>
-      }),
-      columnHelper.accessor('status', {
-        header: 'Status',
+      // columnHelper.accessor('status', {
+      //   header: 'Status',
+      //   cell: ({ row }) => (
+      //     <div className='flex items-center gap-3'>
+      //       <Chip
+      //         label={row.original.status}
+      //         variant='tonal'
+      //         color={statusChipColor[row.original.status]?.color}
+      //         size='small'
+      //       />
+      //     </div>
+      //   )
+      // }),
+      columnHelper.accessor('actions', {
+        header: 'Actions',
         cell: ({ row }) => (
-          <div className='flex items-center gap-3'>
-            <Chip
-              label={row.original.status}
-              variant='tonal'
-              color={statusChipColor[row.original.status]?.color}
-              size='small'
+          <div className='flex items-center'>
+            {/* <IconButton size='small'>
+              <i className='ri-edit-box-line text-[22px] text-textSecondary' />
+            </IconButton> */}
+            <OptionMenu
+              iconButtonProps={{ size: 'medium' }}
+              iconClassName='text-textSecondary text-[22px]'
+              options={[
+                // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
+                {
+                  text: 'Delete',
+                  icon: 'ri-delete-bin-7-line',
+                  menuItemProps: {
+                    className: 'gap-2',
+                    onClick: () => setData(data?.filter(customer => customer._id !== row.original._id))
+                  }
+                }
+
+                // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
+              ]}
             />
           </div>
-        )
+        ),
+        enableSorting: false
       })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps

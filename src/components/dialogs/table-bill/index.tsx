@@ -12,7 +12,6 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
-import { useParams, usePathname, useRouter } from 'next/navigation'
 
 type TableBillPropType = {
   open: boolean
@@ -46,14 +45,14 @@ const invoiceData: CustomerInvoiceType = {
   country: 'INDIA'
 }
 
-const TableBill = ({ open, setOpen, tableName }: TableBillPropType) => {
+const TableBill = ({ open, setOpen }: TableBillPropType) => {
   // States
   //const [userData, setUserData] = useState<EditUserInfoProps['data']>(data)
   const [data, setData] = useState(invoiceData)
 
-  const { lang: locale } = useParams()
-  const pathname = usePathname()
-  const router = useRouter()
+  // const { lang: locale } = useParams()
+  // const pathname = usePathname()
+  // const router = useRouter()
 
   const handleClose = () => {
     setData({ ...data, discount: null, paymentMethod: '' })
