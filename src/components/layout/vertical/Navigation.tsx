@@ -12,17 +12,17 @@ import { styled, useColorScheme, useTheme } from '@mui/material/styles'
 
 // Type Imports
 import type { getDictionary } from '@/utils/getDictionary'
-import type { Mode, SystemMode } from '@core/types'
 import type { Locale } from '@configs/i18n'
+import type { Mode, SystemMode } from '@core/types'
 
 // Component Imports
-import VerticalNav, { NavHeader, NavCollapseIcons } from '@menu/vertical-menu'
-import VerticalMenu from './VerticalMenu'
 import Logo from '@components/layout/shared/Logo'
+import VerticalNav, { NavCollapseIcons, NavHeader } from '@menu/vertical-menu'
+import VerticalMenu from './VerticalMenu'
 
 // Hook Imports
-import useVerticalNav from '@menu/hooks/useVerticalNav'
 import { useSettings } from '@core/hooks/useSettings'
+import useVerticalNav from '@menu/hooks/useVerticalNav'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
@@ -64,6 +64,7 @@ const Navigation = (props: Props) => {
   const { lang: locale } = useParams()
   const { mode: muiMode, systemMode: muiSystemMode } = useColorScheme()
   const theme = useTheme()
+  const userDesignation = localStorage.getItem('userDesignation')
 
   // Refs
   const shadowRef = useRef(null)
@@ -135,7 +136,7 @@ const Navigation = (props: Props) => {
         )}
       </NavHeader>
       <StyledBoxForShadow ref={shadowRef} />
-      <VerticalMenu dictionary={dictionary} scrollMenu={scrollMenu} />
+      <VerticalMenu dictionary={dictionary} scrollMenu={scrollMenu} userDesignation={userDesignation} />
     </VerticalNav>
   )
 }
