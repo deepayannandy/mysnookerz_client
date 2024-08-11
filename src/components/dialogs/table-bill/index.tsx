@@ -57,6 +57,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData }: TableBillProp
 
   useEffect(() => {
     getBillData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData._id, open])
 
   const handleClose = () => {

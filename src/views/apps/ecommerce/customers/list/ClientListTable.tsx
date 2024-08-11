@@ -158,6 +158,7 @@ const ClientListTable = () => {
 
   useEffect(() => {
     getClientData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const columns = useMemo<ColumnDef<ECommerceOrderTypeWithAction, any>[]>(

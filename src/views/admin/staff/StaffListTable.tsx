@@ -112,6 +112,7 @@ const StaffListTable = () => {
 
   useEffect(() => {
     getStaffData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getAvatar = (params: Pick<StaffDataType, 'profileImage' | 'fullName'>) => {

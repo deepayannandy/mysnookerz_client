@@ -175,6 +175,7 @@ const DeviceListTable = () => {
 
   useEffect(() => {
     getDeviceData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleDeviceStatus = async (id: number, isActive: boolean) => {

@@ -106,6 +106,7 @@ const CustomerListTable = () => {
 
   useEffect(() => {
     getCustomerData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const deleteCustomer = async (customerId: string) => {
