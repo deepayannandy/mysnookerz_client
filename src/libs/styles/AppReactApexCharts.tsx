@@ -112,7 +112,6 @@ const AppReactApexCharts = (props: ApexChartWrapperProps) => {
 
   return (
     <ApexChartWrapper {...boxProps}>
-      {/* @ts-expect-error Async Server Component */}
       <ReactApexcharts {...rest} />
     </ApexChartWrapper>
   )
