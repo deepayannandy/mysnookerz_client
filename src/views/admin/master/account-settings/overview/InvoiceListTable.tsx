@@ -5,7 +5,6 @@ import type { MouseEvent } from 'react'
 import { useMemo, useState } from 'react'
 
 // Next Imports
-import { useParams } from 'next/navigation'
 
 // MUI Imports
 import Button from '@mui/material/Button'
@@ -95,8 +94,8 @@ const columnHelper = createColumnHelper<InvoiceTypeWithAction>()
 
 const InvoiceListTable = ({ invoiceData }: { invoiceData?: InvoiceType[] }) => {
   // States
+  const data = invoiceData
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState(invoiceData as InvoiceType[])
   const [globalFilter, setGlobalFilter] = useState('')
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
@@ -104,7 +103,7 @@ const InvoiceListTable = ({ invoiceData }: { invoiceData?: InvoiceType[] }) => {
   const open = Boolean(anchorEl)
 
   // Hooks
-  const { lang: locale } = useParams()
+  //const { lang: locale } = useParams()
 
   const columns = useMemo<ColumnDef<InvoiceTypeWithAction, any>[]>(
     () => [

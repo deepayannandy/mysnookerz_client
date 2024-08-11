@@ -11,7 +11,7 @@ import TablePagination from '@mui/material/TablePagination'
 import Typography from '@mui/material/Typography'
 
 // Third-party Imports
-import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils'
+import * as matchSortedUtils from '@tanstack/match-sorter-utils'
 import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import {
   createColumnHelper,
@@ -50,7 +50,7 @@ declare module '@tanstack/table-core' {
     fuzzy: FilterFn<unknown>
   }
   interface FilterMeta {
-    itemRank: RankingInfo
+    itemRank: matchSortedUtils.RankingInfo
   }
 }
 
@@ -69,7 +69,7 @@ type StaffDataWithAction = StaffDataType & {
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value)
+  const itemRank = matchSortedUtils.rankItem(row.getValue(columnId), value)
 
   // Store the itemRank info
   addMeta({

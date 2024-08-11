@@ -35,6 +35,7 @@ const BookingPage = () => {
   }, [])
 
   const handleCheckout = (tableData: TableDataType) => {
+    console.log({ tableData })
     setTableData(tableData)
     setShowBill(true)
   }

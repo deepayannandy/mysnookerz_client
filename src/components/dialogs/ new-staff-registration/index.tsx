@@ -1,7 +1,6 @@
 'use client'
 
 // React Imports
-import { useState } from 'react'
 
 // MUI Imports
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -14,7 +13,6 @@ import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
-import { useParams, usePathname, useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
@@ -47,13 +45,12 @@ const schema: yup.ObjectSchema<NewStaffRegistrationDataType> = yup.object().shap
     .oneOf([yup.ref('password'), ''], 'Passwords must match')
 })
 
-const NewStaffRegistration = ({ open, setOpen, getStaffData, data }: NewStaffRegistrationProps) => {
+const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrationProps) => {
   // States
-  const [userData, setUserData] = useState<NewStaffRegistrationProps['data']>(data)
 
-  const { lang: locale } = useParams()
-  const pathname = usePathname()
-  const router = useRouter()
+  // const { lang: locale } = useParams()
+  // const pathname = usePathname()
+  // const router = useRouter()
 
   const {
     control,

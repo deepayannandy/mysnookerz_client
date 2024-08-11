@@ -11,7 +11,6 @@ import TablePagination from '@mui/material/TablePagination'
 import Typography from '@mui/material/Typography'
 
 // Third-party Imports
-import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils'
 import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import {
   createColumnHelper,
@@ -35,6 +34,7 @@ import type { ThemeColor } from '@core/types'
 import OptionMenu from '@/@core/components/option-menu'
 import { CustomerDataType } from '@/types/staffTypes'
 import tableStyles from '@core/styles/table.module.css'
+import * as matchSortedUtils from '@tanstack/match-sorter-utils'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
@@ -44,7 +44,7 @@ declare module '@tanstack/table-core' {
     fuzzy: FilterFn<unknown>
   }
   interface FilterMeta {
-    itemRank: RankingInfo
+    itemRank: matchSortedUtils.RankingInfo
   }
 }
 
@@ -64,7 +64,7 @@ type CustomerDataWithAction = CustomerDataType & {
 
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value)
+  const itemRank = matchSortedUtils.rankItem(row.getValue(columnId), value)
 
   // Store the itemRank info
   addMeta({

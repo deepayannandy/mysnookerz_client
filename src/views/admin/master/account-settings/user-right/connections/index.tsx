@@ -17,13 +17,13 @@ type ConnectedAccountsType = {
   subtitle: string
 }
 
-type SocialAccountsType = {
-  title: string
-  logo: string
-  username?: string
-  isConnected: boolean
-  href?: string
-}
+// type SocialAccountsType = {
+//   title: string
+//   logo: string
+//   username?: string
+//   isConnected: boolean
+//   href?: string
+// }
 
 // Vars
 const connectedAccountsArr: ConnectedAccountsType[] = [
@@ -59,37 +59,37 @@ const connectedAccountsArr: ConnectedAccountsType[] = [
   }
 ]
 
-const socialAccountsArr: SocialAccountsType[] = [
-  {
-    title: 'Facebook',
-    isConnected: false,
-    logo: '/images/logos/facebook.png'
-  },
-  {
-    title: 'Twitter',
-    isConnected: true,
-    username: '@Theme_Selection',
-    logo: '/images/logos/twitter.png',
-    href: 'https://twitter.com/Theme_Selection'
-  },
-  {
-    title: 'Linkedin',
-    isConnected: true,
-    username: '@ThemeSelection',
-    logo: '/images/logos/linkedin.png',
-    href: 'https://in.linkedin.com/company/themeselection'
-  },
-  {
-    title: 'Dribbble',
-    isConnected: false,
-    logo: '/images/logos/dribbble.png'
-  },
-  {
-    title: 'Behance',
-    isConnected: false,
-    logo: '/images/logos/behance.png'
-  }
-]
+// const socialAccountsArr: SocialAccountsType[] = [
+//   {
+//     title: 'Facebook',
+//     isConnected: false,
+//     logo: '/images/logos/facebook.png'
+//   },
+//   {
+//     title: 'Twitter',
+//     isConnected: true,
+//     username: '@Theme_Selection',
+//     logo: '/images/logos/twitter.png',
+//     href: 'https://twitter.com/Theme_Selection'
+//   },
+//   {
+//     title: 'Linkedin',
+//     isConnected: true,
+//     username: '@ThemeSelection',
+//     logo: '/images/logos/linkedin.png',
+//     href: 'https://in.linkedin.com/company/themeselection'
+//   },
+//   {
+//     title: 'Dribbble',
+//     isConnected: false,
+//     logo: '/images/logos/dribbble.png'
+//   },
+//   {
+//     title: 'Behance',
+//     isConnected: false,
+//     logo: '/images/logos/behance.png'
+//   }
+// ]
 
 const ConnectionsTab = () => {
   return (

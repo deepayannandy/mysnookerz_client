@@ -52,7 +52,6 @@ const gameTypes = ['Minute Billing']
 const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps) => {
   //const [userData, setUserData] = useState([] as NewTableCreationDataType)
   const [gameType, setGameType] = useState('')
-  const [deviceDetails, setDeviceDetails] = useState({})
   const [devices, setDevices] = useState([])
   const [nodes, setNodes] = useState({} as Record<string, string[]>)
   const [deviceId, setDeviceId] = useState('')

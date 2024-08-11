@@ -57,7 +57,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData }: TableBillProp
 
   useEffect(() => {
     getBillData()
-  }, [tableData._id])
+  }, [tableData._id, open])
 
   const handleClose = () => {
     setInputData({ discount: null, paymentMethod: '' })
@@ -74,6 +74,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData }: TableBillProp
       })
 
       if (response && response.data) {
+        setInputData({ discount: null, paymentMethod: '' })
         getAllTablesData()
         setOpen(false)
       }

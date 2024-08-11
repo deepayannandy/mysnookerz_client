@@ -146,7 +146,11 @@ const StartTableDrawer = (props: Props) => {
               rules={{ required: true }}
               render={({ field }) => (
                 <Select label='Select Game Type' {...field} error={Boolean(errors.gameType)}>
-                  {tableData.gameTypes?.map(type => <MenuItem value={type}>{type}</MenuItem>)}
+                  {tableData.gameTypes?.map(type => (
+                    <MenuItem key={type} value={type}>
+                      {type}
+                    </MenuItem>
+                  ))}
                 </Select>
               )}
             />
@@ -159,6 +163,7 @@ const StartTableDrawer = (props: Props) => {
               rules={{ required: true }}
               render={({ field }) => (
                 <Autocomplete
+                  key={field.name}
                   {...field}
                   multiple
                   options={customersList}
@@ -173,6 +178,7 @@ const StartTableDrawer = (props: Props) => {
                         variant='outlined'
                         label={option.fullName ?? option}
                         {...getTagProps({ index })}
+                        key={option.fullName ?? option}
                       />
                     ))
                   }

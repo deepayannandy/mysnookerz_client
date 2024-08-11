@@ -42,7 +42,6 @@ import tableStyles from '@core/styles/table.module.css'
 import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
 import axios from 'axios'
-import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
@@ -125,9 +124,9 @@ const TableList = () => {
   const [newTableCreationDialogOpen, setNewTableCreationDialogOpen] = useState(false)
 
   //Hooks
-  const { lang: locale } = useParams()
-  const pathname = usePathname()
-  const router = useRouter()
+  // const { lang: locale } = useParams()
+  // const pathname = usePathname()
+  // const router = useRouter()
 
   const getTableData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL

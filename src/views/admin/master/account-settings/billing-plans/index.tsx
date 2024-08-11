@@ -6,7 +6,7 @@ import Address from './Address'
 import CurrentPlan from './CurrentPlan'
 
 // Data Imports
-import { getInvoiceData, getPricingData } from '@/app/server/actions'
+import { getPricingData } from '@/app/server/actions'
 
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
@@ -40,7 +40,7 @@ import { getInvoiceData, getPricingData } from '@/app/server/actions'
 const BillingPlans = async () => {
   // Vars
   const data = await getPricingData()
-  const invoiceData = await getInvoiceData()
+  // const invoiceData = await getInvoiceData()
 
   return (
     <Grid container spacing={6}>

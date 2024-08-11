@@ -19,7 +19,7 @@ import Avatar from '@mui/material/Avatar'
 import Chip from '@mui/material/Chip'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
-import { Theme } from '@mui/material/styles/createTheme'
+import * as muiCreateTheme from '@mui/material/styles/createTheme'
 import TextField from '@mui/material/TextField'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { DateTime } from 'luxon'
@@ -30,16 +30,15 @@ const BillPreviewCard = ({
   tableData,
   inputData,
   setInputData,
-  data,
-  setData
+  data
 }: {
   tableData: TableDataType
   inputData: { discount?: number | null; paymentMethod: string }
   setInputData: (value: { discount?: number | null; paymentMethod: string }) => void
   data: CustomerInvoiceType
-  setData: (value: CustomerInvoiceType) => void
+  setData?: (value: CustomerInvoiceType) => void
 }) => {
-  const isBelowMdScreen = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'))
+  const isBelowMdScreen = useMediaQuery((theme: muiCreateTheme.Theme) => theme.breakpoints.down('md'))
 
   return (
     <Card className='billPreviewCard'>

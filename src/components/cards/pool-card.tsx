@@ -42,7 +42,9 @@ const PoolCard = ({
           }}
         >
           {/* <Avatar key={customer.fullName} alt={customer.fullName} /> */}
-          {tableData.gameData?.players?.map(customer => <Avatar>{getInitials(customer.fullName)}</Avatar>)}
+          {tableData.gameData?.players?.map(customer => (
+            <Avatar key={customer.fullName}>{getInitials(customer.fullName)}</Avatar>
+          ))}
         </AvatarGroup>
 
         {tableData.gameData?.startTime ? (
