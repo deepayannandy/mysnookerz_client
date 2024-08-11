@@ -1,17 +1,17 @@
 // MUI Imports
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import Typography from '@mui/material/Typography'
-import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 
 // Type Imports
-import type { InvoiceType } from '@/types/apps/invoiceTypes'
 
 // Component Imports
 import Logo from '@components/layout/shared/Logo'
 
 // Style Imports
+import { InvoiceType } from '@/types/adminTypes'
 import tableStyles from '@core/styles/table.module.css'
 import './print.css'
 

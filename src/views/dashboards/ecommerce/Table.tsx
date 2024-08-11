@@ -13,7 +13,6 @@ import Typography from '@mui/material/Typography'
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 
 // Type Imports
-import type { InvoiceType } from '@/types/apps/invoiceTypes'
 
 // Components Imports
 import CustomAvatar from '@core/components/mui/Avatar'
@@ -22,6 +21,7 @@ import CustomAvatar from '@core/components/mui/Avatar'
 import { getInitials } from '@/utils/getInitials'
 
 // Style Imports
+import { InvoiceType } from '@/types/adminTypes'
 import tableStyles from '@core/styles/table.module.css'
 
 // type InvoiceStatusObj = {

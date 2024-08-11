@@ -2,11 +2,11 @@
 import Grid from '@mui/material/Grid'
 
 // Type Imports
-import type { InvoiceType } from '@/types/apps/invoiceTypes'
 
 // Component Imports
-import InvoiceListTable from './InvoiceListTable'
+import { InvoiceType } from '@/types/adminTypes'
 import InvoiceCard from './InvoiceCard'
+import InvoiceListTable from './InvoiceListTable'
 
 const InvoiceList = ({ invoiceData }: { invoiceData?: InvoiceType[] }) => {
   return (

@@ -1,10 +1,10 @@
 'use client'
 
+import { InvoiceType } from '@/types/adminTypes'
 // MUI Imports
 import Grid from '@mui/material/Grid'
 
 // Type Imports
-import type { InvoiceType } from '@/types/apps/invoiceTypes'
 
 // Component Imports
 import PreviewActions from './PreviewActions'
