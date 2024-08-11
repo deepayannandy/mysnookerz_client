@@ -13,6 +13,7 @@ import Logo from '@components/layout/shared/Logo'
 // Style Imports
 import { TableDataType } from '@/types/adminTypes'
 import { CustomerInvoiceType } from '@/types/staffTypes'
+import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
 import Avatar from '@mui/material/Avatar'
 import Chip from '@mui/material/Chip'
@@ -69,7 +70,7 @@ const BillPreviewCard = ({
           </Grid>
           <Grid item xs={12}>
             <Grid container spacing={6}>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={12}>
                 <div className='flex flex-col gap-4'>
                   <Typography className='font-medium' color='text.primary'>
                     Invoice To:
@@ -78,7 +79,7 @@ const BillPreviewCard = ({
                     {data.selectedTable?.gameData?.players?.map(player => (
                       <Chip
                         key={player.fullName}
-                        avatar={<Avatar>{player.fullName}</Avatar>}
+                        avatar={<Avatar>{getInitials(player.fullName)}</Avatar>}
                         label={player.fullName}
                         variant='outlined'
                       />
@@ -163,7 +164,7 @@ const BillPreviewCard = ({
                     size='small'
                     value={inputData.paymentMethod}
                     onChange={e => {
-                      setInputData({ ...data, paymentMethod: e.target.value })
+                      setInputData({ ...inputData, paymentMethod: e.target.value })
                     }}
                   >
                     {paymentMethods.map((paymentMethod, index) => (
@@ -181,11 +182,11 @@ const BillPreviewCard = ({
                     ₹ {data.totalBillAmt}
                   </Typography>
                 </div>
-                {data.discount ? (
+                {inputData.discount ? (
                   <div className='flex items-center justify-between'>
                     <Typography>Discount:</Typography>
                     <Typography className='font-medium' color='text.primary'>
-                      ₹ {data.discount}
+                      ₹ {inputData.discount}
                     </Typography>
                   </div>
                 ) : (
@@ -203,7 +204,7 @@ const BillPreviewCard = ({
                   <Typography>Total:</Typography>
                   <Typography className='font-medium' color='text.primary'>
                     {/* + (data.totalBillAmt - (data.discount ?? 0) * data.tax) / 100} */}₹{' '}
-                    {data.totalBillAmt - (data.discount ?? 0)}
+                    {data.totalBillAmt - (inputData.discount ?? 0)}
                   </Typography>
                 </div>
               </div>

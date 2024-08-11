@@ -36,6 +36,7 @@ import { HistoryDataType } from '@/types/staffTypes'
 import tableStyles from '@core/styles/table.module.css'
 import Chip from '@mui/material/Chip'
 import axios from 'axios'
+import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
@@ -155,13 +156,15 @@ const HistoryTable = () => {
 
   const columns = useMemo<ColumnDef<HistoryDataWithAction, any>[]>(
     () => [
+      columnHelper.accessor('_id', {
+        header: 'Transaction ID',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original._id}</Typography>
+      }),
       columnHelper.accessor('date', {
         header: 'Date',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.date}</Typography>
-      }),
-      columnHelper.accessor('transactionId', {
-        header: 'Transaction ID',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
+        cell: ({ row }) => (
+          <Typography color='text.primary'>{DateTime.fromISO(row.original.date).toFormat('dd LLL yyyy')}</Typography>
+        )
       }),
       columnHelper.accessor('customerName', {
         header: 'Customer Name',
@@ -171,33 +174,39 @@ const HistoryTable = () => {
         header: 'Description',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.description}</Typography>
       }),
-      columnHelper.accessor('start', {
+      columnHelper.accessor('startTime', {
         header: 'Start',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.start}</Typography>
+        cell: ({ row }) => (
+          <Typography color='text.primary'>
+            {DateTime.fromISO(row.original.startTime).toFormat('hh:mm:ss a')}
+          </Typography>
+        )
       }),
-      columnHelper.accessor('end', {
+      columnHelper.accessor('endTime', {
         header: 'End',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.end}</Typography>
+        cell: ({ row }) => (
+          <Typography color='text.primary'>{DateTime.fromISO(row.original.endTime).toFormat('hh:mm:ss a')}</Typography>
+        )
       }),
       columnHelper.accessor('time', {
         header: 'Time',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.time}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`${row.original.time} Mins`}</Typography>
       }),
-      columnHelper.accessor('table', {
-        header: 'Table',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.table}</Typography>
-      }),
-      columnHelper.accessor('meals', {
+      columnHelper.accessor('meal', {
         header: 'Meals',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.meals}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.meal}</Typography>
+      }),
+      columnHelper.accessor('booking', {
+        header: 'Booking',
+        cell: ({ row }) => <Typography color='text.primary'>{`₹ ${row.original.booking}`}</Typography>
       }),
       columnHelper.accessor('discount', {
         header: 'Discount',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.discount}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`₹ ${row.original.discount}`}</Typography>
       }),
       columnHelper.accessor('netPay', {
         header: 'Net Pay',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.netPay}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`₹ ${row.original.netPay}`}</Typography>
       }),
       columnHelper.accessor('status', {
         header: 'Status',

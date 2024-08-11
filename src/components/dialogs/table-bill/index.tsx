@@ -33,17 +33,49 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData }: TableBillProp
   // const { lang: locale } = useParams()
   // const pathname = usePathname()
   // const router = useRouter()
-  console.log(tableData)
 
   const getBillData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
+    if (open && tableData._id) {
+      try {
+        const response = await axios.get(`${apiBaseUrl}/games/getBilling/${tableData._id}`, {
+          headers: { 'auth-token': token }
+        })
+        if (response && response.data) {
+          setData(response.data)
+        }
+      } catch (error: any) {
+        // if (error?.response?.status === 400) {
+        //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        //   return router.replace(redirectUrl)
+        // }
+        toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+      }
+    }
+  }
+
+  useEffect(() => {
+    getBillData()
+  }, [tableData._id])
+
+  const handleClose = () => {
+    setInputData({ discount: null, paymentMethod: '' })
+    setOpen(false)
+  }
+
+  const handleSubmit = async () => {
+    const requestData = { ...inputData, timeDelta: data.timeDelta, totalBillAmt: data.totalBillAmt }
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/games/getBilling/${tableData._id}`, {
+      const response = await axios.patch(`${apiBaseUrl}/games/checkoutTable/${tableData._id}`, requestData, {
         headers: { 'auth-token': token }
       })
+
       if (response && response.data) {
-        setData(response.data)
+        getAllTablesData()
+        setOpen(false)
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
@@ -52,35 +84,6 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData }: TableBillProp
       // }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
-  }
-
-  useEffect(() => {
-    getBillData()
-  }, [])
-
-  const handleClose = () => {
-    setInputData({ discount: null, paymentMethod: '' })
-    setOpen(false)
-  }
-
-  const handleSubmit = () => {
-    setOpen(false)
-    // const data = new FormData(event.currentTarget)
-    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    // try {
-    //   const response = await axios.post(`${apiBaseUrl}/user/register`, data)
-
-    //   if (response && response.data) {
-    //     //getClientData()
-    //     setOpen(false)
-    //   }
-    // } catch (error: any) {
-    //   if (error?.response?.status === 400) {
-    //     const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-    //     return router.replace(redirectUrl)
-    //   }
-    //   toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
-    // }
   }
 
   return (

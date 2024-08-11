@@ -1,22 +1,28 @@
+import { DateTime, Duration } from 'luxon'
 import { useEffect, useState } from 'react'
 
 const CountUpTimer = ({ startTime, endTime, running }: { startTime: string; endTime?: string; running: boolean }) => {
-  const [time, setTime] = useState(new Date(startTime))
+  const timeDiff = endTime
+    ? DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime))
+    : DateTime.now().diff(DateTime.fromISO(startTime))
+
+  const [time, setTime] = useState(timeDiff)
 
   useEffect(() => {
     let timer: NodeJS.Timeout
     if (running) {
       timer = setInterval(() => {
-        setTime(prevTime => new Date(prevTime.getTime() + 1000))
+        setTime(prevTime => prevTime.plus({ millisecond: 1000 }))
       }, 1000)
     }
     return () => clearInterval(timer)
   }, [running])
 
-  const formatTime = (time: Date) => {
-    const hours = String(time.getUTCHours()).padStart(2, '0')
-    const minutes = String(time.getUTCMinutes()).padStart(2, '0')
-    const seconds = String(time.getUTCSeconds()).padStart(2, '0')
+  const formatTime = (time: Duration) => {
+    const timeArray = time.toFormat('hh:mm:ss').split(':')
+    const hours = timeArray[0].padStart(2, '0')
+    const minutes = timeArray[1].padStart(2, '0')
+    const seconds = timeArray[2].padStart(2, '0')
     return (
       <div>
         {' '}

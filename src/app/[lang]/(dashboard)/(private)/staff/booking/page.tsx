@@ -35,6 +35,7 @@ const BookingPage = () => {
   }, [])
 
   const handleCheckout = (tableData: TableDataType) => {
+    setTableData(tableData)
     setShowBill(true)
   }
 
@@ -66,6 +67,7 @@ const BookingPage = () => {
       // }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
+    setTableData(tableData)
     setShowBill(true)
   }
 
@@ -76,7 +78,6 @@ const BookingPage = () => {
           <PoolCard
             key={tableData.tableName}
             tableData={tableData}
-            setTableData={setTableData}
             handleCheckout={handleCheckout}
             handleStart={handleStart}
             handleStop={handleStop}

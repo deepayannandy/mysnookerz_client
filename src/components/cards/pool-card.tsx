@@ -1,16 +1,15 @@
 import { TableDataType } from '@/types/adminTypes'
+import { getInitials } from '@/utils/getInitials'
 import { Avatar, AvatarGroup, Button } from '@mui/material'
 import CountUpTimer from '../count-up-timer'
 
 const PoolCard = ({
   tableData,
-  setTableData,
   handleCheckout,
   handleStart,
   handleStop
 }: {
   tableData: TableDataType
-  setTableData: (value: TableDataType) => void
   handleCheckout: (value: TableDataType) => void
   handleStart: (value: TableDataType) => void
   handleStop: (value: TableDataType) => void
@@ -42,14 +41,15 @@ const PoolCard = ({
             }
           }}
         >
-          {tableData.gameData?.players?.map(customer => <Avatar key={customer.fullName} alt={customer.fullName} />)}
+          {/* <Avatar key={customer.fullName} alt={customer.fullName} /> */}
+          {tableData.gameData?.players?.map(customer => <Avatar>{getInitials(customer.fullName)}</Avatar>)}
         </AvatarGroup>
 
         {tableData.gameData?.startTime ? (
           <CountUpTimer
             startTime={tableData.gameData?.startTime}
             endTime={tableData.gameData?.endTime}
-            running={tableData.isOccupied}
+            running={tableData.isOccupied && !tableData.gameData?.endTime}
           ></CountUpTimer>
         ) : (
           <></>
@@ -57,13 +57,7 @@ const PoolCard = ({
 
         {tableData.isOccupied ? (
           tableData.gameData?.endTime ? (
-            <Button
-              onClick={() => {
-                setTableData(tableData)
-                handleCheckout(tableData)
-              }}
-              className='text-white outline-white py-0 my-12'
-            >
+            <Button onClick={() => handleCheckout(tableData)} className='text-white outline-white py-0 my-12'>
               <span className='ri-bill-fill size-4'></span>
               Checkout
             </Button>

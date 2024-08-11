@@ -35,8 +35,6 @@ type FormValidateType = {
   gameType: string
 }
 
-const gameTypes = ['Minute Billing']
-
 const StartTableDrawer = (props: Props) => {
   // Props
   const { open, handleClose, tableData, getAllTablesData } = props
@@ -52,7 +50,7 @@ const StartTableDrawer = (props: Props) => {
         const data = response.data.map((customer: CustomerDataType) => {
           return {
             customerId: customer._id,
-            fullName: `${customer.fullName} (${customer.contact})`
+            fullName: `${customer.fullName}(${customer.contact})`
           }
         })
         setCustomersList(data)
@@ -148,9 +146,7 @@ const StartTableDrawer = (props: Props) => {
               rules={{ required: true }}
               render={({ field }) => (
                 <Select label='Select Game Type' {...field} error={Boolean(errors.gameType)}>
-                  {gameTypes.map(type => (
-                    <MenuItem value={type}>{type}</MenuItem>
-                  ))}
+                  {tableData.gameTypes?.map(type => <MenuItem value={type}>{type}</MenuItem>)}
                 </Select>
               )}
             />

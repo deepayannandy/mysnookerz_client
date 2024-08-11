@@ -3,15 +3,16 @@ import { OptionsMenuType } from '@/@core/components/option-menu/types'
 import { ThemeColor } from '@/@core/types'
 
 export type HistoryDataType = {
+  _id: string
   date: string
   transactionId: string
   customerName: string
   description: string
-  start: string
-  end: string
+  startTime: string
+  endTime: string
   time: string
-  table: string
-  meals: string
+  booking: number
+  meal: string
   discount: number
   netPay: number
   status: string
