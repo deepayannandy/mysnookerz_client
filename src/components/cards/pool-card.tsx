@@ -51,7 +51,7 @@ const PoolCard = ({
           <CountUpTimer
             startTime={tableData.gameData?.startTime}
             endTime={tableData.gameData?.endTime}
-            running={tableData.isOccupied && !tableData.gameData?.endTime}
+            running={!!tableData.isOccupied && !tableData.gameData?.endTime}
           ></CountUpTimer>
         ) : (
           <></>
