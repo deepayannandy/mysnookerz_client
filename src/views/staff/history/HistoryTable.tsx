@@ -157,9 +157,9 @@ const HistoryTable = () => {
 
   const columns = useMemo<ColumnDef<HistoryDataWithAction, any>[]>(
     () => [
-      columnHelper.accessor('_id', {
+      columnHelper.accessor('transactionId', {
         header: 'Transaction ID',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original._id}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
       }),
       columnHelper.accessor('date', {
         header: 'Date',

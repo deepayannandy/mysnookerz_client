@@ -14,39 +14,49 @@ import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
 import _ from 'lodash'
+import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 
-type NewStaffRegistrationDataType = {
+type EditStaffDataType = {
+  _id: string
   fullName: string
   mobile: string | null
   email: string
   profileImage?: string
-  password: string
+  password?: string | null
   confirmPassword?: string
 }
 
-type NewStaffRegistrationProps = {
+type EditStaffInfoProps = {
   open: boolean
   setOpen: (open: boolean) => void
-  data?: NewStaffRegistrationDataType
+  staffData: EditStaffDataType
   getStaffData: () => void
 }
 
-const schema: yup.ObjectSchema<NewStaffRegistrationDataType> = yup.object().shape({
+const schema: yup.ObjectSchema<Omit<EditStaffDataType, '_id'>> = yup.object().shape({
   fullName: yup.string().required('This field is required').min(1),
   mobile: yup.string().required('This field is required').min(10).max(10),
   email: yup.string().required('This field is required').email('Please enter a valid email address'),
   profileImage: yup.string(),
-  password: yup.string().required('This field is required').min(8, 'Password must be at least 8 characters long'),
+  password: yup
+    .string()
+    .transform((value, originalValue) => (originalValue.trim() === '' ? null : value))
+    .min(8, 'Password must be at least 8 characters long')
+    .notRequired()
+    .nullable(),
   confirmPassword: yup
     .string()
-    .required('This field is required')
+    .when(['password'], {
+      is: (password: string) => !!password,
+      then: schema => schema.required('This field is required')
+    })
     .oneOf([yup.ref('password'), ''], 'Passwords must match')
 })
 
-const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrationProps) => {
+const EditStaffInfo = ({ open, setOpen, getStaffData, staffData }: EditStaffInfoProps) => {
   // States
 
   // const { lang: locale } = useParams()
@@ -58,33 +68,30 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
     reset: resetForm,
     handleSubmit,
     formState: { errors }
-  } = useForm<NewStaffRegistrationDataType>({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      fullName: '',
-      mobile: null,
-      email: '',
-      profileImage: '',
-      password: ''
-    }
+  } = useForm<Omit<EditStaffDataType, '_id'>>({
+    resolver: yupResolver(schema)
   })
+
+  useEffect(() => {
+    resetForm(_.omit(staffData, 'password'))
+  }, [staffData, resetForm])
 
   const handleClose = () => {
     resetForm()
     setOpen(false)
   }
 
-  const onSubmit = async (data: NewStaffRegistrationDataType) => {
-    const storeId = localStorage.getItem('storeId')
+  const onSubmit = async (data: Omit<EditStaffDataType, '_id'>) => {
+    // const storeId = localStorage.getItem('storeId')
     const profileImage = '-'
     const userDesignation = 'Staff'
     const requestData = _.omit(data, 'confirmPassword')
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.post(
-        `${apiBaseUrl}/user/register`,
-        { ...requestData, storeId, userDesignation, profileImage },
+      const response = await axios.patch(
+        `${apiBaseUrl}/user/${staffData._id}`,
+        { ...requestData, userDesignation, profileImage },
         { headers: { 'auth-token': token } }
       )
 
@@ -106,7 +113,7 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
   return (
     <Dialog fullWidth open={open} onClose={handleClose} maxWidth='md' scroll='body'>
       <DialogTitle variant='h4' className='flex gap-2 flex-col items-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
-        <div className='max-sm:is-[80%] max-sm:text-center'>New Staff Registration</div>
+        <div className='max-sm:is-[80%] max-sm:text-center'>Edit Staff Info</div>
         {/* <Typography component='span' className='flex flex-col text-center'>
           Updating user details will receive a privacy audit.
         </Typography> */}
@@ -222,4 +229,4 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
   )
 }
 
-export default NewStaffRegistration
+export default EditStaffInfo

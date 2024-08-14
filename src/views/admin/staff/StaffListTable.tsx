@@ -33,6 +33,7 @@ import type { ThemeColor } from '@core/types'
 // Style Imports
 
 import CustomAvatar from '@/@core/components/mui/Avatar'
+import EditStaffInfo from '@/components/dialogs/ edit-staff-info'
 import NewStaffRegistration from '@/components/dialogs/ new-staff-registration'
 import { StaffDataType } from '@/types/adminTypes'
 import { getInitials } from '@/utils/getInitials'
@@ -40,6 +41,7 @@ import tableStyles from '@core/styles/table.module.css'
 import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
+import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
 import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -85,8 +87,10 @@ const columnHelper = createColumnHelper<StaffDataWithAction>()
 const StaffListTable = () => {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as StaffDataType[])
+  const [staffData, setStaffData] = useState({} as StaffDataType)
   const [globalFilter, setGlobalFilter] = useState('')
   const [newStaffRegistrationDialogOpen, setNewStaffRegistrationDialogOpen] = useState(false)
+  const [editStaffInfoDialogOpen, setEditStaffInfoDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -127,6 +131,11 @@ const StaffListTable = () => {
         </CustomAvatar>
       )
     }
+  }
+
+  const editStaffData = (rowData: StaffDataType) => {
+    setStaffData(rowData)
+    setEditStaffInfoDialogOpen(!editStaffInfoDialogOpen)
   }
 
   const columns = useMemo<ColumnDef<StaffDataWithAction, any>[]>(
@@ -173,6 +182,34 @@ const StaffListTable = () => {
             />
           </div>
         )
+      }),
+      columnHelper.accessor('action', {
+        header: 'Actions',
+        cell: ({ row }) => (
+          <div className='flex items-center'>
+            <IconButton size='small' onClick={() => editStaffData(row.original)}>
+              <i className='ri-edit-box-line text-[22px] text-textSecondary' />
+            </IconButton>
+            {/* <OptionMenu
+              iconButtonProps={{ size: 'medium' }}
+              iconClassName='text-textSecondary text-[22px]'
+              options={[
+                // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
+                {
+                  text: 'Delete',
+                  icon: 'ri-delete-bin-7-line',
+                  menuItemProps: {
+                    className: 'gap-2',
+                    onClick: () => setData(data?.filter(product => product._id !== row.original._id))
+                  }
+                }
+
+                // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
+              ]}
+            /> */}
+          </div>
+        ),
+        enableSorting: false
       })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -227,7 +264,7 @@ const StaffListTable = () => {
               startIcon={<i className='ri-add-line' />}
               onClick={() => setNewStaffRegistrationDialogOpen(!newStaffRegistrationDialogOpen)}
             >
-              New Registration
+              Add Staff
             </Button>
           </div>
         </CardContent>
@@ -306,6 +343,12 @@ const StaffListTable = () => {
         open={newStaffRegistrationDialogOpen}
         setOpen={setNewStaffRegistrationDialogOpen}
         getStaffData={getStaffData}
+      />
+      <EditStaffInfo
+        open={editStaffInfoDialogOpen}
+        setOpen={setEditStaffInfoDialogOpen}
+        getStaffData={getStaffData}
+        staffData={staffData}
       />
     </>
   )

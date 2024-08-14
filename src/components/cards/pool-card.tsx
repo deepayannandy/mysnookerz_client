@@ -17,7 +17,7 @@ const PoolCard = ({
   return (
     <div className='relative'>
       <img className='size-full rotate-180' src={'/images/snooker-table/Snooker_table.png'} alt='' />
-      <div className='absolute flex flex-col justify-around items-center bottom-0 h-2/3 bg-gradient-to-t from-backdrop w-full rounded px-6'>
+      <div className='absolute flex flex-col justify-around items-center bottom-0 md:h-2/3 h-5/6 bg-gradient-to-t from-backdrop w-full rounded'>
         {/* <TextField
           label='Billing Type'
           defaultValue={billingType}
@@ -59,18 +59,18 @@ const PoolCard = ({
 
         {tableData.isOccupied ? (
           tableData.gameData?.endTime ? (
-            <Button onClick={() => handleCheckout(tableData)} className='text-white outline-white py-0 my-12'>
+            <Button onClick={() => handleCheckout(tableData)} className='text-white outline-white py-0 md:my-12 my-4'>
               <span className='ri-bill-fill size-4'></span>
               Checkout
             </Button>
           ) : (
-            <Button onClick={() => handleStop(tableData)} className='text-white outline-white py-0 my-12'>
+            <Button onClick={() => handleStop(tableData)} className='text-white outline-white py-0 md:my-12 my-4'>
               <span className='ri-stop-fill'></span>
               Stop
             </Button>
           )
         ) : (
-          <Button onClick={() => handleStart(tableData)} className='text-white outline-white py-0 my-12'>
+          <Button onClick={() => handleStart(tableData)} className='text-white outline-white py-0 md:my-12 my-4'>
             <span className='ri-play-fill'></span>
             Start
           </Button>

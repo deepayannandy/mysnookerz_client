@@ -12,7 +12,7 @@ import type { getDictionary } from '@/utils/getDictionary'
 import type { VerticalMenuContextProps } from '@menu/components/vertical-menu/Menu'
 
 // Component Imports
-import { Menu, MenuItem, MenuSection } from '@menu/vertical-menu'
+import { Menu, MenuItem, MenuSection, SubMenu } from '@menu/vertical-menu'
 
 // import { GenerateVerticalMenu } from '@components/GenerateMenu'
 
@@ -89,13 +89,16 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         </MenuSection>
         <MenuSection label={dictionary['navigation'].adminMenu}>
           <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
-          <MenuSection label={dictionary['navigation'].settings}>
-            {/* <SubMenu label={dictionary['navigation'].settings} icon={<i className='ri-shopping-bag-3-line' />}> */}
-            <MenuItem href={`/${locale}/admin/settings/master`}>{dictionary['navigation'].master}</MenuItem>
+          {/* <MenuSection label={dictionary['navigation'].settings}> */}
+          <SubMenu label={dictionary['navigation'].settings} icon={<i className='ri-shopping-bag-3-line' />}>
+            <MenuItem href={`/${locale}/admin/settings/store-settings`}>
+              {dictionary['navigation'].storeSettings}
+            </MenuItem>
             <MenuItem href={`/${locale}/admin/settings/account-settings`}>
               {dictionary['navigation'].accountSettings}
             </MenuItem>
-          </MenuSection>
+          </SubMenu>
+          {/* </MenuSection> */}
         </MenuSection>
       </Menu>
     </ScrollWrapper>

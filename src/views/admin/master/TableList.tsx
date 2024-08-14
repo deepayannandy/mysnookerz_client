@@ -36,11 +36,14 @@ import type { ThemeColor } from '@core/types'
 // Style Imports
 import OptionMenu from '@/@core/components/option-menu/index'
 
+import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
+import EditTableInfo from '@/components/dialogs/edit-table-info'
 import NewTableCreation from '@/components/dialogs/new-table-creation'
 import { TableDataType } from '@/types/adminTypes'
 import tableStyles from '@core/styles/table.module.css'
 import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
+import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
@@ -120,8 +123,12 @@ const TableList = () => {
   // States
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as TableDataType[])
+  const [tableId, setTableId] = useState('')
+  const [tableData, setTableData] = useState({} as TableDataType)
   const [globalFilter, setGlobalFilter] = useState('')
   const [newTableCreationDialogOpen, setNewTableCreationDialogOpen] = useState(false)
+  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
+  const [editTableInfoDialogOpen, setEditTableInfoDialogOpen] = useState(false)
 
   //Hooks
   // const { lang: locale } = useParams()
@@ -149,13 +156,14 @@ const TableList = () => {
     getTableData()
   }, [])
 
-  const deleteTable = async (tableId: string) => {
+  const deleteTable = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
       const response = await axios.delete(`${apiBaseUrl}/table/${tableId}`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         getTableData()
+        setDeleteConfirmationDialogOpen(false)
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
@@ -164,6 +172,16 @@ const TableList = () => {
       // }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
     }
+  }
+
+  const openDeleteConfirmation = (tableId: string) => {
+    setTableId(tableId)
+    setDeleteConfirmationDialogOpen(true)
+  }
+
+  const editTableData = (rowData: TableDataType) => {
+    setTableData(rowData)
+    setEditTableInfoDialogOpen(!editTableInfoDialogOpen)
   }
 
   const columns = useMemo<ColumnDef<TableTypeWithAction, any>[]>(
@@ -207,9 +225,9 @@ const TableList = () => {
         header: 'Actions',
         cell: ({ row }) => (
           <div className='flex items-center'>
-            {/* <IconButton size='small'>
+            <IconButton size='small' onClick={() => editTableData(row.original)}>
               <i className='ri-edit-box-line text-[22px] text-textSecondary' />
-            </IconButton> */}
+            </IconButton>
             <OptionMenu
               iconButtonProps={{ size: 'medium' }}
               iconClassName='text-textSecondary text-[22px]'
@@ -220,7 +238,7 @@ const TableList = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => deleteTable(row.original._id)
+                    onClick: () => openDeleteConfirmation(row.original._id)
                   }
                 }
 
@@ -291,7 +309,7 @@ const TableList = () => {
               startIcon={<i className='ri-add-line' />}
               onClick={() => setNewTableCreationDialogOpen(!newTableCreationDialogOpen)}
             >
-              New Registration
+              Add Table
             </Button>
           </div>
         </CardContent>
@@ -370,6 +388,18 @@ const TableList = () => {
         open={newTableCreationDialogOpen}
         setOpen={setNewTableCreationDialogOpen}
         getTableData={getTableData}
+      />
+      <EditTableInfo
+        open={editTableInfoDialogOpen}
+        setOpen={setEditTableInfoDialogOpen}
+        getTableData={getTableData}
+        tableData={tableData}
+      />
+      <DeleteConfirmation
+        open={deleteConfirmationDialogOpen}
+        name='table'
+        setOpen={setDeleteConfirmationDialogOpen}
+        deleteApiCall={deleteTable}
       />
     </>
   )

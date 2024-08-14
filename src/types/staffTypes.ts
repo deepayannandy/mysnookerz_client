@@ -21,6 +21,7 @@ export type HistoryDataType = {
 export type CustomerDataType = {
   _id: string
   fullName: string
+  profileImage: string
   contact: number
   rewards: string
   credit: number

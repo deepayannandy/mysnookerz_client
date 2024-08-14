@@ -102,11 +102,11 @@ const UserDropdown = () => {
         setUserDetails(response.data)
       }
     } catch (error: any) {
-      if (error?.response?.status === 400) {
-        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-        return router.replace(redirectUrl)
-      }
       toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+      localStorage.removeItem('token')
+      localStorage.removeItem('storeId')
+      const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      return router.replace(redirectUrl)
     }
   }
 

@@ -1,6 +1,7 @@
 import { InvoiceStatus } from './apps/invoiceTypes'
 
 export type StaffDataType = {
+  _id: string
   fullName: string
   mobile: string
   email: string
@@ -36,8 +37,7 @@ export type InvoiceType = {
 export type TableDataType = {
   _id: string
   tableName: string
-
-  gameData: {
+  gameData?: {
     startTime: string
     endTime: string
     gameType: string
@@ -57,6 +57,6 @@ export type TableDataType = {
   }>
   deviceId: string
   nodeID: string
-  isOccupied: boolean
-  isBooked: boolean
+  isOccupied?: boolean
+  isBooked?: boolean
 }

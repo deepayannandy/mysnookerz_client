@@ -18,28 +18,30 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
+import _ from 'lodash'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-type NewTableCreationDataType = Partial<{
+type EditTableDataType = {
+  _id: string
   tableName: string
-  gameType: string
-  minuteWiseRules: {
+  gameTypes: string[]
+  minuteWiseRules: Partial<{
     dayUptoMin: number | null
     dayMinAmt: number | null
     dayPerMin: number | null
     nightUptoMin: number | null
     nightMinAmt: number | null
     nightPerMin: number | null
-  }
+  }>
   deviceId: string
   nodeID: string
-}>
+}
 
-type NewTableCreationProps = {
+type EditTableInfoProps = {
   open: boolean
   setOpen: (open: boolean) => void
-  data?: NewTableCreationDataType
+  tableData: EditTableDataType
   getTableData: () => void
 }
 
@@ -49,9 +51,9 @@ type NewTableCreationProps = {
 
 const gameTypes = ['Minute Billing']
 
-const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps) => {
+const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfoProps) => {
   //const [userData, setUserData] = useState([] as NewTableCreationDataType)
-  const [gameType, setGameType] = useState(gameTypes[0])
+  const [gameType, setGameType] = useState('')
   const [devices, setDevices] = useState([] as string[])
   const [nodes, setNodes] = useState({} as Record<string, string[]>)
   const [deviceId, setDeviceId] = useState('')
@@ -67,48 +69,43 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     reset: resetForm,
     handleSubmit,
     formState: { errors }
-  } = useForm<NewTableCreationDataType>({
+  } = useForm<EditTableDataType, '_id'>({
     //resolver: yupResolver(schema),
-    defaultValues: {
-      tableName: '',
-      gameType: gameType[0],
-      minuteWiseRules: {
-        dayUptoMin: null,
-        dayMinAmt: null,
-        dayPerMin: null,
-        nightUptoMin: null,
-        nightMinAmt: null,
-        nightPerMin: null
-      },
-      deviceId: '',
-      nodeID: ''
-    }
   })
+
+  useEffect(() => {
+    resetForm(_.omit(tableData, 'deviceId', 'nodeID', 'gameType'))
+    setDeviceId(tableData.deviceId)
+    setNodeId(tableData.nodeID)
+    setGameType(tableData.gameTypes?.[0])
+  }, [tableData, resetForm])
+
+  useEffect(() => {
+    getDeviceData()
+  }, [])
 
   const handleClose = () => {
     resetForm()
-    setDeviceId('')
-    setNodeId('')
-    getTableData()
     setOpen(false)
   }
 
-  const onSubmit = async (data: NewTableCreationDataType) => {
-    data.deviceId = deviceId
-    data.nodeID = nodeId
-    data.gameType = gameType
+  const onSubmit = async (data: EditTableDataType) => {
+    const requestData: Pick<EditTableDataType, 'tableName' | 'minuteWiseRules' | 'deviceId' | 'nodeID'> = {
+      ..._.pick(data, 'tableName', 'minuteWiseRules'),
+      deviceId,
+      nodeID: nodeId
+    }
+    // requestData.deviceId = deviceId
+    // requestData.nodeID = nodeId
 
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.post(
-        `${apiBaseUrl}/table`,
-        { ...data, gameTypes: [data.gameType] },
-        { headers: { 'auth-token': token } }
-      )
+      const response = await axios.patch(`${apiBaseUrl}/table`, requestData, { headers: { 'auth-token': token } })
 
       if (response && response.data) {
         getTableData()
+        resetForm()
         setOpen(false)
       }
     } catch (error: any) {
@@ -138,9 +135,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
         })
 
         setDevices(deviceIds)
-        setDeviceId(deviceIds[0])
         setNodes(nodesData)
-        setNodeId(nodesData[deviceIds[0]]?.[0])
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
@@ -150,10 +145,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
       toast.error(error?.response?.data || error?.message, { hideProgressBar: false })
     }
   }
-
-  useEffect(() => {
-    getDeviceData()
-  }, [])
 
   return (
     <Dialog fullWidth open={open} onClose={handleClose} maxWidth='md' scroll='body'>
@@ -192,7 +183,12 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Game Type</InputLabel>
-                <Select label='Billing Type' value={gameType} onChange={e => setGameType(e.target.value)}>
+                <Select
+                  disabled={true}
+                  label='Billing Type'
+                  value={gameType}
+                  onChange={e => setGameType(e.target.value)}
+                >
                   {gameTypes.map((type, index) => (
                     <MenuItem key={index} value={type}>
                       {type}
@@ -370,4 +366,4 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
   )
 }
 
-export default NewTableCreation
+export default EditTableInfo

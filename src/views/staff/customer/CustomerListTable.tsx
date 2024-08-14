@@ -31,8 +31,11 @@ import type { ThemeColor } from '@core/types'
 
 // Style Imports
 
+import CustomAvatar from '@/@core/components/mui/Avatar'
 import OptionMenu from '@/@core/components/option-menu'
+import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import { CustomerDataType } from '@/types/staffTypes'
+import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
 import * as matchSortedUtils from '@tanstack/match-sorter-utils'
 import axios from 'axios'
@@ -80,6 +83,8 @@ const columnHelper = createColumnHelper<CustomerDataWithAction>()
 const CustomerListTable = () => {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as CustomerDataType[])
+  const [customerId, setCustomerId] = useState('')
+  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
   const [globalFilter, setGlobalFilter] = useState('')
 
   // Hooks
@@ -109,13 +114,14 @@ const CustomerListTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const deleteCustomer = async (customerId: string) => {
+  const deleteCustomer = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
       const response = await axios.delete(`${apiBaseUrl}/customer/${customerId}`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         getCustomerData()
+        setDeleteConfirmationDialogOpen(false)
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
@@ -126,16 +132,45 @@ const CustomerListTable = () => {
     }
   }
 
+  const openDeleteConfirmation = (customerId: string) => {
+    setCustomerId(customerId)
+    setDeleteConfirmationDialogOpen(true)
+  }
+
+  const getAvatar = (params: Pick<CustomerDataType, 'profileImage' | 'fullName'>) => {
+    const { profileImage, fullName } = params
+
+    if (profileImage && profileImage !== '-') {
+      return <CustomAvatar src={profileImage} skin='light' size={34} />
+    } else {
+      return (
+        <CustomAvatar skin='light' size={34}>
+          {getInitials(fullName as string)}
+        </CustomAvatar>
+      )
+    }
+  }
+
   const columns = useMemo<ColumnDef<CustomerDataWithAction, any>[]>(
     () => [
-      columnHelper.accessor('_id', {
-        header: 'Customer Id',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original._id}</Typography>
-      }),
       columnHelper.accessor('fullName', {
         header: 'Customer Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.fullName}</Typography>
+        cell: ({ row }) => (
+          <div className='flex items-center gap-4'>
+            {getAvatar({ profileImage: row.original.profileImage, fullName: row.original.fullName })}
+            <div className='flex flex-col'>
+              <Typography className='font-medium' color='text.primary'>
+                {row.original.fullName}
+              </Typography>
+              {/* <Typography variant='body2'>{row.original.fu}</Typography> */}
+            </div>
+          </div>
+        )
       }),
+      // columnHelper.accessor('fullName', {
+      //   header: 'Customer Name',
+      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.fullName}</Typography>
+      // }),
       columnHelper.accessor('contact', {
         header: 'Mobile',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.contact}</Typography>
@@ -178,7 +213,7 @@ const CustomerListTable = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => deleteCustomer(row.original._id)
+                    onClick: () => openDeleteConfirmation(row.original._id)
                   }
                 }
 
@@ -297,6 +332,12 @@ const CustomerListTable = () => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
+      <DeleteConfirmation
+        open={deleteConfirmationDialogOpen}
+        name='customer'
+        setOpen={setDeleteConfirmationDialogOpen}
+        deleteApiCall={deleteCustomer}
+      />
     </>
   )
 }
