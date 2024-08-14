@@ -157,14 +157,19 @@ const HistoryTable = () => {
 
   const columns = useMemo<ColumnDef<HistoryDataWithAction, any>[]>(
     () => [
-      columnHelper.accessor('transactionId', {
-        header: 'Transaction ID',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
-      }),
+      // columnHelper.accessor('transactionId', {
+      //   header: 'Transaction ID',
+      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
+      // }),
       columnHelper.accessor('date', {
         header: 'Date',
         cell: ({ row }) => (
-          <Typography color='text.primary'>{DateTime.fromISO(row.original.date).toFormat('dd LLL yyyy')}</Typography>
+          <div className='flex flex-col'>
+            <Typography className='font-medium' color='text.primary'>
+              {DateTime.fromISO(row.original.date).toFormat('dd LLL yyyy')}
+            </Typography>
+            <Typography variant='body2'>{row.original.transactionId}</Typography>
+          </div>
         )
       }),
       columnHelper.accessor('customerName', {
@@ -176,30 +181,35 @@ const HistoryTable = () => {
         cell: ({ row }) => <Typography color='text.primary'>{row.original.description}</Typography>
       }),
       columnHelper.accessor('startTime', {
-        header: 'Start',
+        header: 'Time',
         cell: ({ row }) => (
-          <Typography color='text.primary'>
-            {DateTime.fromISO(row.original.startTime).toFormat('hh:mm:ss a')}
-          </Typography>
+          <div className='flex flex-col'>
+            <Typography className='font-medium' color='text.primary'>
+              {DateTime.fromISO(row.original.startTime).toFormat('hh:mm:ss a')}
+            </Typography>
+            <Typography className='font-medium' color='text.primary'>
+              {DateTime.fromISO(row.original.endTime).toFormat('hh:mm:ss a')}
+            </Typography>
+          </div>
         )
       }),
-      columnHelper.accessor('endTime', {
-        header: 'End',
-        cell: ({ row }) => (
-          <Typography color='text.primary'>{DateTime.fromISO(row.original.endTime).toFormat('hh:mm:ss a')}</Typography>
-        )
-      }),
+      // columnHelper.accessor('endTime', {
+      //   header: 'End',
+      //   cell: ({ row }) => (
+      //     <Typography color='text.primary'>{DateTime.fromISO(row.original.endTime).toFormat('hh:mm:ss a')}</Typography>
+      //   )
+      // }),
       columnHelper.accessor('time', {
         header: 'Time',
         cell: ({ row }) => <Typography color='text.primary'>{`${row.original.time} Mins`}</Typography>
       }),
-      columnHelper.accessor('meal', {
-        header: 'Meals',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.meal}</Typography>
-      }),
       columnHelper.accessor('booking', {
         header: 'Booking',
         cell: ({ row }) => <Typography color='text.primary'>{`₹ ${row.original.booking}`}</Typography>
+      }),
+      columnHelper.accessor('meal', {
+        header: 'Meals',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.meal}</Typography>
       }),
       columnHelper.accessor('discount', {
         header: 'Discount',

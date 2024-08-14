@@ -166,7 +166,7 @@ const CustomerListTable = () => {
               <Typography className='font-medium' color='text.primary'>
                 {row.original.fullName}
               </Typography>
-              {/* <Typography variant='body2'>{row.original.fu}</Typography> */}
+              <Typography variant='body2'>{row.original.email}</Typography>
             </div>
           </div>
         )

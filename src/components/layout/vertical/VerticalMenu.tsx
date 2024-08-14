@@ -89,7 +89,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         </MenuSection>
         <MenuSection label={dictionary['navigation'].adminInterface}>
           <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
-          <MenuItem href={`/${locale}/admin/account-settings`}>{dictionary['navigation'].accountSettings}</MenuItem>
+
           <SubMenu label={dictionary['navigation'].storeSettings} icon={<i className='ri-shopping-bag-3-line' />}>
             <MenuItem href={`/${locale}/admin/store-settings/table`}>{dictionary['navigation'].table}</MenuItem>
             <MenuItem href={`/${locale}/admin/store-settings/night`}>{dictionary['navigation'].night}</MenuItem>
@@ -100,6 +100,7 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
             <MenuItem href={`/${locale}/admin/store-settings/control`}>{dictionary['navigation'].control}</MenuItem>
             <MenuItem href={`/${locale}/admin/store-settings/devices`}>{dictionary['navigation'].devices}</MenuItem>
           </SubMenu>
+          <MenuItem href={`/${locale}/admin/account-settings`}>{dictionary['navigation'].accountSettings}</MenuItem>
           {/* </MenuSection> */}
         </MenuSection>
       </Menu>
