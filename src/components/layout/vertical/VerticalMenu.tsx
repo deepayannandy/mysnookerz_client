@@ -81,22 +81,24 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='ri-circle-line' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        <MenuSection label={dictionary['navigation'].staffMenu}>
+        <MenuSection label={dictionary['navigation'].staffInterface}>
           <MenuItem href={`/${locale}/staff/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
           <MenuItem href={`/${locale}/staff/booking`}>{dictionary['navigation'].booking}</MenuItem>
           <MenuItem href={`/${locale}/staff/history`}>{dictionary['navigation'].history}</MenuItem>
           <MenuItem href={`/${locale}/staff/customer`}>{dictionary['navigation'].customer}</MenuItem>
         </MenuSection>
-        <MenuSection label={dictionary['navigation'].adminMenu}>
+        <MenuSection label={dictionary['navigation'].adminInterface}>
           <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
-          {/* <MenuSection label={dictionary['navigation'].settings}> */}
-          <SubMenu label={dictionary['navigation'].settings} icon={<i className='ri-shopping-bag-3-line' />}>
-            <MenuItem href={`/${locale}/admin/settings/store-settings`}>
-              {dictionary['navigation'].storeSettings}
+          <MenuItem href={`/${locale}/admin/account-settings`}>{dictionary['navigation'].accountSettings}</MenuItem>
+          <SubMenu label={dictionary['navigation'].storeSettings} icon={<i className='ri-shopping-bag-3-line' />}>
+            <MenuItem href={`/${locale}/admin/store-settings/table`}>{dictionary['navigation'].table}</MenuItem>
+            <MenuItem href={`/${locale}/admin/store-settings/night`}>{dictionary['navigation'].night}</MenuItem>
+            <MenuItem href={`/${locale}/admin/store-settings/happy-hours`}>
+              {dictionary['navigation'].happyHours}
             </MenuItem>
-            <MenuItem href={`/${locale}/admin/settings/account-settings`}>
-              {dictionary['navigation'].accountSettings}
-            </MenuItem>
+            <MenuItem href={`/${locale}/admin/store-settings/reminder`}>{dictionary['navigation'].reminder}</MenuItem>
+            <MenuItem href={`/${locale}/admin/store-settings/control`}>{dictionary['navigation'].control}</MenuItem>
+            <MenuItem href={`/${locale}/admin/store-settings/devices`}>{dictionary['navigation'].devices}</MenuItem>
           </SubMenu>
           {/* </MenuSection> */}
         </MenuSection>

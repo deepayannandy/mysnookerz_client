@@ -1,7 +1,7 @@
 import TableList from '@/views/admin/master/TableList'
 
-const MasterDetails = async () => {
+const TableDetails = async () => {
   return <TableList />
 }
 
-export default MasterDetails
+export default TableDetails
