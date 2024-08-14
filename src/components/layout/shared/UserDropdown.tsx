@@ -102,7 +102,7 @@ const UserDropdown = () => {
         setUserDetails(response.data)
       }
     } catch (error: any) {
-      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
       localStorage.removeItem('token')
       localStorage.removeItem('storeId')
       const redirectUrl = `/${locale}/login?redirectTo=${pathname}`

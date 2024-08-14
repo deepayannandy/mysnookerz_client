@@ -120,7 +120,7 @@ const Login = ({ mode }: { mode: Mode }) => {
         }
       }
     } catch (error: any) {
-      setSeverError(error?.response?.data ?? error?.message)
+      setSeverError(error?.response?.data?.message ?? error?.message)
     }
   }
 

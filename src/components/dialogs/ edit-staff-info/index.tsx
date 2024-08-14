@@ -106,7 +106,7 @@ const EditStaffInfo = ({ open, setOpen, getStaffData, staffData }: EditStaffInfo
       //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)
       // }
-      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }
 

@@ -1,34 +1,34 @@
 'use client'
 
 // React Imports
-import { useState, useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 // Next Imports
 import Link from 'next/link'
 
 // MUI Imports
 import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
 import Checkbox from '@mui/material/Checkbox'
 import Typography from '@mui/material/Typography'
 
 // Third-party Imports
-import classnames from 'classnames'
 import { rankItem } from '@tanstack/match-sorter-utils'
+import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable,
-  getFilteredRowModel,
+  getFacetedMinMaxValues,
   getFacetedRowModel,
   getFacetedUniqueValues,
-  getFacetedMinMaxValues,
+  getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel
+  getSortedRowModel,
+  useReactTable
 } from '@tanstack/react-table'
-import type { ColumnDef, FilterFn } from '@tanstack/react-table'
+import classnames from 'classnames'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -97,7 +97,7 @@ const OrderTable = () => {
   // States
   const [rowSelection, setRowSelection] = useState({})
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [data, setData] = useState(...[orderData])
+  const [data, setData] = useState([...orderData])
   const [globalFilter, setGlobalFilter] = useState('')
 
   const columns = useMemo<ColumnDef<dataType, any>[]>(

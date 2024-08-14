@@ -13,40 +13,36 @@ import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
-import _ from 'lodash'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import * as yup from 'yup'
 
-type NewStaffRegistrationDataType = {
+type NewCustomerRegistrationDataType = {
   fullName: string
-  mobile: string | null
-  email: string
+  contact: string | null
+  email?: string | null
   profileImage?: string
-  password: string
-  confirmPassword?: string
 }
 
-type NewStaffRegistrationProps = {
+type NewCustomerRegistrationProps = {
   open: boolean
   setOpen: (open: boolean) => void
-  data?: NewStaffRegistrationDataType
-  getStaffData: () => void
+  getCustomerData: () => void
 }
 
-const schema: yup.ObjectSchema<NewStaffRegistrationDataType> = yup.object().shape({
+const schema: yup.ObjectSchema<NewCustomerRegistrationDataType> = yup.object().shape({
   fullName: yup.string().required('This field is required').min(1),
-  mobile: yup.string().required('This field is required').min(10).max(10),
-  email: yup.string().required('This field is required').email('Please enter a valid email address'),
-  profileImage: yup.string(),
-  password: yup.string().required('This field is required').min(8, 'Password must be at least 8 characters long'),
-  confirmPassword: yup
+  contact: yup.string().required('This field is required').min(10).max(10),
+  email: yup
     .string()
-    .required('This field is required')
-    .oneOf([yup.ref('password'), ''], 'Passwords must match')
+    .notRequired()
+    .nullable()
+    .transform((value, originalValue) => (originalValue.trim() === '' ? null : value))
+    .email('Please enter a valid email address'),
+  profileImage: yup.string()
 })
 
-const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrationProps) => {
+const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomerRegistrationProps) => {
   // States
 
   // const { lang: locale } = useParams()
@@ -58,14 +54,12 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
     reset: resetForm,
     handleSubmit,
     formState: { errors }
-  } = useForm<NewStaffRegistrationDataType>({
+  } = useForm<NewCustomerRegistrationDataType>({
     resolver: yupResolver(schema),
     defaultValues: {
       fullName: '',
-      mobile: null,
-      email: '',
-      profileImage: '',
-      password: ''
+      contact: null,
+      email: ''
     }
   })
 
@@ -74,22 +68,20 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
     setOpen(false)
   }
 
-  const onSubmit = async (data: NewStaffRegistrationDataType) => {
+  const onSubmit = async (data: NewCustomerRegistrationDataType) => {
     const storeId = localStorage.getItem('storeId')
     const profileImage = '-'
-    const userDesignation = 'Staff'
-    const requestData = _.omit(data, 'confirmPassword')
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
       const response = await axios.post(
-        `${apiBaseUrl}/user/register`,
-        { ...requestData, storeId, userDesignation, profileImage },
+        `${apiBaseUrl}/customer`,
+        { ...data, profileImage, storeId },
         { headers: { 'auth-token': token } }
       )
 
       if (response && response.data) {
-        getStaffData()
+        getCustomerData()
         resetForm()
         setOpen(false)
       }
@@ -135,17 +127,17 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
-                name='mobile'
+                name='contact'
                 control={control}
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <TextField
                     fullWidth
-                    label='Mobile'
+                    label='Contact'
                     inputProps={{ type: 'number', min: 0 }}
                     value={value}
                     onChange={onChange}
-                    {...(errors.mobile && { error: true, helperText: errors.mobile.message })}
+                    {...(errors.contact && { error: true, helperText: errors.contact.message })}
                   />
                 )}
               />
@@ -154,7 +146,6 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
               <Controller
                 name='email'
                 control={control}
-                rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <TextField
                     fullWidth
@@ -166,7 +157,7 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <Controller
                 name='password'
                 control={control}
@@ -197,7 +188,7 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
                   />
                 )}
               />
-            </Grid>
+            </Grid> */}
             {/* <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
@@ -222,4 +213,4 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
   )
 }
 
-export default NewStaffRegistration
+export default NewCustomerRegistration

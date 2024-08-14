@@ -1,66 +1,61 @@
+'use client'
+
+import { DashboardDataType } from '@/types/staffTypes'
 // MUI Imports
+import Award from '@/views/staff/dashboard/Award'
+import Transactions from '@/views/staff/dashboard/Transactions'
 import Grid from '@mui/material/Grid'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
-// Type Imports
+const DashboardDetails = () => {
+  const [dashboardData, setDashboardData] = useState({} as DashboardDataType)
 
-// Components Imports
+  // Hooks
+  // const { lang: locale } = useParams()
+  // const pathname = usePathname()
+  // const router = useRouter()
 
-// Data Imports
-
-import VerticalCard from '@/views/staff/dashboard/VerticalCard'
-
-/**
- * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
- * ! `.env` file found at root of your project and also update the API endpoints like `/pages/widget-examples` in below example.
- * ! Also, remove the above server action import and the action itself from the `src/app/server/actions.ts` file to clean up unused code
- * ! because we've used the server action for getting our static data.
- */
-
-/* const getStatisticsData = async () => {
-  // Vars
-  const res = await fetch(`${process.env.API_URL}/pages/widget-examples`)
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch statisticsData')
+  const getDashboardData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    const storeId = localStorage.getItem('storeId')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/admin/Dashboard/${storeId}`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setDashboardData(response.data)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      setDashboardData({
+        sales: 446,
+        transactions: {
+          cash: 400,
+          card: 500,
+          upi: 3045,
+          prime: 209
+        }
+      })
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
   }
 
-  return res.json()
-} */
-
-const DashboardDetails = async () => {
-  // Vars
-  const data = [
-    {
-      title: 'Today Game Sale',
-      stats: '862',
-      avatarColor: 'primary',
-      avatarIcon: 'ri-file-word-2-line'
-    },
-    {
-      title: 'Today Food Sale',
-      stats: '250k',
-      avatarIcon: 'ri-pie-chart-2-line ',
-      avatarColor: 'secondary'
-    },
-    {
-      title: 'Today Credit',
-      stats: '952k',
-      avatarColor: 'success',
-      avatarIcon: 'ri-money-dollar-circle-line'
-    },
-    {
-      title: 'Today Profit',
-      stats: '440k',
-      avatarColor: 'error',
-      avatarIcon: 'ri-car-line'
-    }
-  ]
+  useEffect(() => {
+    getDashboardData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Grid container spacing={6}>
-      <Grid item xs={12}>
-        {/* @ts-ignore */}
-        <VerticalCard data={data} />
+      <Grid item xs={12} md={4}>
+        <Award data={dashboardData.sales} />
+      </Grid>
+      <Grid item xs={12} md={8} lg={8}>
+        <Transactions data={dashboardData} />
       </Grid>
     </Grid>
   )

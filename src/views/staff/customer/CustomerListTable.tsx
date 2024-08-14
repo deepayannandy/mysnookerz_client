@@ -33,10 +33,13 @@ import type { ThemeColor } from '@core/types'
 
 import CustomAvatar from '@/@core/components/mui/Avatar'
 import OptionMenu from '@/@core/components/option-menu'
+import NewCustomerRegistration from '@/components/dialogs/ new-customer-registration'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import { CustomerDataType } from '@/types/staffTypes'
 import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
+import Button from '@mui/material/Button'
+import CardContent from '@mui/material/CardContent'
 import * as matchSortedUtils from '@tanstack/match-sorter-utils'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -86,6 +89,7 @@ const CustomerListTable = () => {
   const [customerId, setCustomerId] = useState('')
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
   const [globalFilter, setGlobalFilter] = useState('')
+  const [newCustomerRegistrationDialogOpen, setNewCustomerRegistrationDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -105,7 +109,7 @@ const CustomerListTable = () => {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }
-      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }
 
@@ -128,7 +132,7 @@ const CustomerListTable = () => {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   return router.replace(redirectUrl)
       // }
-      toast.error(error?.response?.data ?? error?.message, { hideProgressBar: false })
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }
 
@@ -261,6 +265,26 @@ const CustomerListTable = () => {
   return (
     <>
       <Card>
+        <CardContent className='flex justify-between flex-col items-start sm:flex-col sm:items-end gap-y-4'>
+          {/* <DebouncedInput
+            value={globalFilter ?? ''}
+            onChange={value => setGlobalFilter(String(value))}
+            placeholder='Search'
+          /> */}
+          <div className='flex gap-x-4'>
+            {/* <Button variant='outlined' color='secondary' startIcon={<i className='ri-upload-2-line' />}>
+              Export
+            </Button> */}
+            <Button
+              variant='contained'
+              color='primary'
+              startIcon={<i className='ri-add-line' />}
+              onClick={() => setNewCustomerRegistrationDialogOpen(!newCustomerRegistrationDialogOpen)}
+            >
+              Add Customer
+            </Button>
+          </div>
+        </CardContent>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>
             <thead>
@@ -332,6 +356,11 @@ const CustomerListTable = () => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
+      <NewCustomerRegistration
+        open={newCustomerRegistrationDialogOpen}
+        setOpen={setNewCustomerRegistrationDialogOpen}
+        getCustomerData={getCustomerData}
+      />
       <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
         name='customer'
