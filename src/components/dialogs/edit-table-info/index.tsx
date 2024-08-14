@@ -101,7 +101,9 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.patch(`${apiBaseUrl}/table`, requestData, { headers: { 'auth-token': token } })
+      const response = await axios.patch(`${apiBaseUrl}/table/${tableData._id}`, requestData, {
+        headers: { 'auth-token': token }
+      })
 
       if (response && response.data) {
         getTableData()
