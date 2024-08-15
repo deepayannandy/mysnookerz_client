@@ -1,37 +1,32 @@
 // MUI Imports
-import type { ButtonProps } from '@mui/material/Button'
-import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 
 // Type Imports
-import type { ThemeColor } from '@core/types'
 
 // Component Imports
-import ConfirmationDialog from '@components/dialogs/confirmation-dialog'
-import EditUserInfo from '@components/dialogs/edit-user-info'
-import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
+import { UserDataType } from '@/types/adminTypes'
 import CustomAvatar from '@core/components/mui/Avatar'
 
 // Vars
-const userData = {
-  firstName: 'Seth',
-  lastName: 'Hallam',
-  storeName: 'Atbv store',
-  email: 'shallamb@gmail.com',
-  contact: '6298477372',
-  address: 'Mumbai, Maharastra, India',
-  useAsBillingAddress: true
-}
+// const userData = {
+//   firstName: 'Seth',
+//   lastName: 'Hallam',
+//   storeName: 'Atbv store',
+//   email: 'shallamb@gmail.com',
+//   contact: '6298477372',
+//   address: 'Mumbai, Maharastra, India',
+//   useAsBillingAddress: true
+// }
 
-const UserDetails = () => {
-  const buttonProps = (children: string, color: ThemeColor, variant: ButtonProps['variant']): ButtonProps => ({
-    children,
-    color,
-    variant
-  })
+const UserDetails = ({ data }: { data: UserDataType }) => {
+  // const buttonProps = (children: string, color: ThemeColor, variant: ButtonProps['variant']): ButtonProps => ({
+  //   children,
+  //   color,
+  //   variant
+  // })
 
   return (
     <>
@@ -41,7 +36,7 @@ const UserDetails = () => {
             <div className='flex items-center justify-center flex-col gap-4'>
               <div className='flex flex-col items-center gap-4'>
                 <CustomAvatar alt='user-profile' src='/images/avatars/1.png' variant='rounded' size={120} />
-                <Typography variant='h5'>{`${userData.firstName} ${userData.lastName}`}</Typography>
+                <Typography variant='h5'>{data?.clientName}</Typography>
               </div>
               {/* <Chip label='Subscriber' color='error' size='small' variant='tonal' /> */}
             </div>
@@ -74,29 +69,29 @@ const UserDetails = () => {
                 <Typography className='font-medium' color='text.primary'>
                   Store Name:
                 </Typography>
-                <Typography>{userData.storeName}</Typography>
+                <Typography>{data?.StoreData?.storeName}</Typography>
               </div>
               <div className='flex items-center flex-wrap gap-x-1.5'>
                 <Typography className='font-medium' color='text.primary'>
                   Email:
                 </Typography>
-                <Typography>{userData.email}</Typography>
+                <Typography>{data?.StoreData?.email}</Typography>
               </div>
               <div className='flex items-center flex-wrap gap-x-1.5'>
                 <Typography className='font-medium' color='text.primary'>
                   Contact:
                 </Typography>
-                <Typography color='text.primary'>{userData.contact}</Typography>
+                <Typography color='text.primary'>{data?.StoreData?.contact}</Typography>
               </div>
-              <div className='flex items-center flex-wrap gap-x-1.5'>
+              <div className='flex items-center flex-wrap gap-x-1'>
                 <Typography className='font-medium' color='text.primary'>
                   Address:
                 </Typography>
-                <Typography color='text.primary'>{userData.address}</Typography>
+                <Typography color='text.primary'>{data?.StoreData?.address}</Typography>
               </div>
             </div>
           </div>
-          <div className='flex gap-4 justify-center'>
+          {/* <div className='flex gap-4 justify-center'>
             <OpenDialogOnElementClick
               element={Button}
               elementProps={buttonProps('Edit', 'primary', 'contained')}
@@ -109,7 +104,7 @@ const UserDetails = () => {
               dialog={ConfirmationDialog}
               dialogProps={{ type: 'suspend-account' }}
             />
-          </div>
+          </div> */}
         </CardContent>
       </Card>
     </>

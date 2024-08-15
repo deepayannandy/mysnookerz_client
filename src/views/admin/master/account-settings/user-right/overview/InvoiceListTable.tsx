@@ -101,7 +101,7 @@ const columnHelper = createColumnHelper<InvoiceTypeWithAction>()
 const InvoiceListTable = ({ invoiceData }: { invoiceData?: InvoiceType[] }) => {
   // States
   const [rowSelection, setRowSelection] = useState({})
-  const [data, setData] = useState([...(invoiceData as InvoiceType[])])
+  const [data, setData] = useState([] as InvoiceType[])
   const [globalFilter, setGlobalFilter] = useState('')
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 

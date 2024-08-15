@@ -5,9 +5,8 @@ import Grid from '@mui/material/Grid'
 import type { PricingPlanType } from '@/types/pages/pricingTypes'
 
 // Component Imports
+import InvoiceListTable from '../overview/InvoiceListTable'
 import CurrentPlan from './CurrentPlan'
-import PaymentMethod from './PaymentMethod'
-import BillingAddress from './BillingAddress'
 
 const BillingPlans = ({ data }: { data?: PricingPlanType[] }) => {
   return (
@@ -16,11 +15,14 @@ const BillingPlans = ({ data }: { data?: PricingPlanType[] }) => {
         <CurrentPlan data={data} />
       </Grid>
       <Grid item xs={12}>
+        <InvoiceListTable />
+      </Grid>
+      {/* <Grid item xs={12}>
         <PaymentMethod />
       </Grid>
       <Grid item xs={12}>
         <BillingAddress />
-      </Grid>
+      </Grid> */}
     </Grid>
   )
 }

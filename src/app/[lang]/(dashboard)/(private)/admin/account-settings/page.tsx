@@ -15,10 +15,8 @@ import UserRight from '@/views/admin/master/account-settings/user-right'
 
 // Data Imports
 import { getPricingData } from '@/app/server/actions'
-import BillingPlans from '@/views/admin/master/account-settings/billing-plans'
-import OverViewTab from '@/views/admin/master/account-settings/overview'
-import ConnectionsTab from '@/views/admin/master/account-settings/user-right/connections'
-import NotificationsTab from '@/views/admin/master/account-settings/user-right/notifications'
+import BillingPlans from '@/views/admin/master/account-settings/user-right/billing-plans'
+import OverViewTab from '@/views/admin/master/account-settings/user-right/overview'
 import SecurityTab from '@/views/admin/master/account-settings/user-right/security'
 
 // Vars
@@ -27,9 +25,9 @@ const tabContentList = (data?: PricingPlanType[]): { [key: string]: ReactElement
   overview: <OverViewTab />,
   security: <SecurityTab />,
   // @ts-ignore
-  'billing-plans': <BillingPlans data={data} />,
-  actions: <NotificationsTab />,
-  deviceControl: <ConnectionsTab />
+  'billing-plans': <BillingPlans />
+  // actions: <NotificationsTab />,
+  // deviceControl: <ConnectionsTab />
 })
 
 /**

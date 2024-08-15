@@ -82,6 +82,9 @@ const UserDropdown = () => {
   const handleUserLogout = async () => {
     try {
       localStorage.removeItem('token')
+      localStorage.removeItem('storeId')
+      localStorage.removeItem('clientId')
+      localStorage.removeItem('clientName')
       const redirectURL = '/login'
 
       router.replace(getLocalizedUrl(redirectURL, locale as Locale))
@@ -98,6 +101,8 @@ const UserDropdown = () => {
       if (response && response.data) {
         if (response.data.storeId) {
           localStorage.setItem('storeId', response.data.storeId)
+          localStorage.setItem('clientId', response.data._id)
+          localStorage.setItem('clientName', response.data.fullName)
         }
         setUserDetails(response.data)
       }
@@ -105,6 +110,9 @@ const UserDropdown = () => {
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
       localStorage.removeItem('token')
       localStorage.removeItem('storeId')
+      localStorage.removeItem('clientId')
+      localStorage.removeItem('clientName')
+
       const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       return router.replace(redirectUrl)
     }

@@ -1,42 +1,53 @@
 // MUI Imports
-import type { ButtonProps } from '@mui/material/Button'
-import Button from '@mui/material/Button'
+//import UpgradePlan from '@/components/dialogs/upgrade-plan'
+import { UserDataType } from '@/types/adminTypes'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
 import LinearProgress from '@mui/material/LinearProgress'
 import Typography from '@mui/material/Typography'
+import { DateTime } from 'luxon'
 
 // Component Imports
-import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
-import UpgradePlan from '@components/dialogs/upgrade-plan'
 
-const UserPlan = () => {
-  // Vars
-  const buttonProps: ButtonProps = {
-    variant: 'contained',
-    children: 'Upgrade Plan'
-  }
+const UserPlan = ({ data }: { data: UserDataType }) => {
+  //Vars
+  // const buttonProps: ButtonProps = {
+  //   variant: 'contained',
+  //   children: 'Upgrade Plan'
+  // }
+
+  const daysPast =
+    typeof data?.SubscriptionData === 'object' && data?.SubscriptionData?.startDate
+      ? Math.round(DateTime.now().diff(DateTime.fromISO(data.SubscriptionData?.startDate), 'days').days)
+      : 0
 
   return (
     <>
       <Card className='border-2 border-primary rounded'>
-        <CardContent className='flex flex-col gap-6'>
-          <div className='flex justify-between'>
-            <Chip label='Standard' size='small' color='primary' variant='tonal' />
-            <div className='flex justify-center'>
-              <Typography variant='h5' component='sup' className='self-start' color='primary'>
-                $
-              </Typography>
-              <Typography component='span' variant='h1' color='primary'>
-                99
-              </Typography>
-              <Typography component='sub' className='self-end' color='text.primary'>
-                /month
-              </Typography>
+        {typeof data.SubscriptionData !== 'object' ? (
+          <CardContent className='flex flex-col gap-6'>
+            <Typography className='font-medium' color='text.primary'>
+              No active subscription
+            </Typography>
+          </CardContent>
+        ) : (
+          <CardContent className='flex flex-col gap-6'>
+            <div className='flex justify-between'>
+              <Chip label={data?.SubscriptionData?.subscriptionName} size='small' color='primary' variant='tonal' />
+              <div className='flex justify-center'>
+                <Typography variant='h5' component='sup' className='self-start' color='primary'>
+                  ₹
+                </Typography>
+                <Typography component='span' variant='h5' color='primary'>
+                  {data?.SubscriptionData?.subscriptionAmount}
+                </Typography>
+                <Typography component='sub' className='self-end' color='text.primary'>
+                  /month
+                </Typography>
+              </div>
             </div>
-          </div>
-          {/* <div className='flex flex-col gap-2'>
+            {/* <div className='flex flex-col gap-2'>
             <div className='flex items-center gap-2'>
               <i className='ri-circle-fill text-[10px] text-textSecondary' />
               <Typography component='span'>10 Users</Typography>
@@ -50,20 +61,24 @@ const UserPlan = () => {
               <Typography component='span'>Basic Support</Typography>
             </div>
           </div> */}
-          <div className='flex flex-col gap-1'>
-            <div className='flex items-center justify-between'>
-              <Typography className='font-medium' color='text.primary'>
-                Days
-              </Typography>
-              <Typography className='font-medium' color='text.primary'>
-                26 of 30 Days
-              </Typography>
+            <div className='flex flex-col gap-1'>
+              <div className='flex items-center justify-between'>
+                <Typography className='font-medium' color='text.primary'>
+                  Days
+                </Typography>
+                <Typography className='font-medium' color='text.primary'>
+                  {`${daysPast} of ${data?.SubscriptionData?.subscriptionValidity} Days`}
+                </Typography>
+              </div>
+              <LinearProgress
+                variant='determinate'
+                value={Math.round((daysPast * 100) / (data?.SubscriptionData?.subscriptionValidity || 1))}
+              />
+              <Typography variant='body2'>{`${(data?.SubscriptionData?.subscriptionValidity || 0) - daysPast} days remaining`}</Typography>
             </div>
-            <LinearProgress variant='determinate' value={65} />
-            <Typography variant='body2'>4 days remaining</Typography>
-          </div>
-          <OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={UpgradePlan} />
-        </CardContent>
+            {/* <OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={UpgradePlan} /> */}
+          </CardContent>
+        )}
       </Card>
     </>
   )
