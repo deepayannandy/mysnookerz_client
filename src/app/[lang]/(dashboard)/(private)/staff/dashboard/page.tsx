@@ -31,15 +31,6 @@ const DashboardDetails = () => {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   return router.replace(redirectUrl)
       // }
-      setDashboardData({
-        sales: 446,
-        transactions: {
-          cash: 400,
-          card: 500,
-          upi: 3045,
-          prime: 209
-        }
-      })
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }

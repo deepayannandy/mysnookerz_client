@@ -29,20 +29,20 @@ const transactionData: DataType[] = [
   },
   {
     id: 'card',
-    title: 'Users',
+    title: 'Card',
     color: 'success',
     icon: 'ri-group-line'
   },
   {
     id: 'upi',
     color: 'warning',
-    title: 'Products',
+    title: 'UPI',
     icon: 'ri-macbook-line'
   },
   {
     id: 'prime',
     color: 'info',
-    title: 'Revenue',
+    title: 'Prime',
     icon: 'ri-money-dollar-circle-line'
   }
 ]
