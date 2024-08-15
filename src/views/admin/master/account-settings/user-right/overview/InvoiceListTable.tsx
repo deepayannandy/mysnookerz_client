@@ -98,7 +98,7 @@ const invoiceStatusObj: InvoiceStatusObj = {
 // Column Definitions
 const columnHelper = createColumnHelper<InvoiceTypeWithAction>()
 
-const InvoiceListTable = ({ invoiceData }: { invoiceData?: InvoiceType[] }) => {
+const InvoiceListTable = () => {
   // States
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as InvoiceType[])

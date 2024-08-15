@@ -7,20 +7,18 @@ import type { ReactElement } from 'react'
 import Grid from '@mui/material/Grid'
 
 // Type Imports
-import type { PricingPlanType } from '@/types/pages/pricingTypes'
 
 // Component Imports
 import UserLeftOverview from '@/views/admin/master/account-settings/user-left-overview'
 import UserRight from '@/views/admin/master/account-settings/user-right'
 
 // Data Imports
-import { getPricingData } from '@/app/server/actions'
 import BillingPlans from '@/views/admin/master/account-settings/user-right/billing-plans'
 import OverViewTab from '@/views/admin/master/account-settings/user-right/overview'
 import SecurityTab from '@/views/admin/master/account-settings/user-right/security'
 
 // Vars
-const tabContentList = (data?: PricingPlanType[]): { [key: string]: ReactElement } => ({
+const tabContentList = (): { [key: string]: ReactElement } => ({
   //@ts-ignore
   overview: <OverViewTab />,
   security: <SecurityTab />,
@@ -50,7 +48,6 @@ const tabContentList = (data?: PricingPlanType[]): { [key: string]: ReactElement
 
 const AccountSettings = async () => {
   // Vars
-  const data = await getPricingData()
 
   return (
     <Grid container spacing={6}>
@@ -58,7 +55,7 @@ const AccountSettings = async () => {
         <UserLeftOverview />
       </Grid>
       <Grid item xs={12} lg={8} md={7}>
-        <UserRight tabContentList={tabContentList(data)} />
+        <UserRight tabContentList={tabContentList()} />
       </Grid>
     </Grid>
   )

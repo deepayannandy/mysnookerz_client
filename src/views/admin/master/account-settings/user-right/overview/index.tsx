@@ -3,9 +3,6 @@ import Grid from '@mui/material/Grid'
 
 // Component Imports
 
-// Data Imports
-import { getInvoiceData } from '@/app/server/actions'
-
 /**
  * ! If you need data using an API call, uncomment the below API code, update the `process.env.API_URL` variable in the
  * ! `.env` file found at root of your project and also update the API endpoints like `/apps/invoice` in below example.
@@ -25,7 +22,6 @@ import { getInvoiceData } from '@/app/server/actions'
 
 const OverViewTab = async () => {
   // Vars
-  const invoiceData = await getInvoiceData()
 
   return (
     <Grid container spacing={6}>
