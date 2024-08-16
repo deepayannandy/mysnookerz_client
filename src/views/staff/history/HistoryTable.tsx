@@ -208,7 +208,7 @@ const HistoryTable = () => {
       // }),
       columnHelper.accessor('time', {
         header: 'Time',
-        cell: ({ row }) => <Typography color='text.primary'>{`${row.original.time}Mins`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`${row.original.time} Mins`}</Typography>
       }),
       columnHelper.accessor('booking', {
         header: 'Booking',
