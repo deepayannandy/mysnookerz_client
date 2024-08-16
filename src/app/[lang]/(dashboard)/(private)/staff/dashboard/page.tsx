@@ -4,6 +4,7 @@ import { DashboardDataType } from '@/types/staffTypes'
 // MUI Imports
 import Award from '@/views/staff/dashboard/Award'
 import Transactions from '@/views/staff/dashboard/Transactions'
+import { Skeleton } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import axios from 'axios'
 import { useEffect, useState } from 'react'
@@ -16,11 +17,11 @@ const DashboardDetails = () => {
   // const { lang: locale } = useParams()
   // const pathname = usePathname()
   // const router = useRouter()
+  const [storeId, setStoreId] = useState('')
 
   const getDashboardData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
-    const storeId = localStorage.getItem('storeId')
     try {
       const response = await axios.get(`${apiBaseUrl}/admin/Dashboard/${storeId}`, { headers: { 'auth-token': token } })
       if (response && response.data) {
@@ -36,19 +37,50 @@ const DashboardDetails = () => {
   }
 
   useEffect(() => {
-    getDashboardData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (storeId) {
+      getDashboardData()
+    }
+  }, [storeId])
+
+  useEffect(() => {
+    // Function to continuously try fetching the Store ID from localStorage
+    const checkForId = () => {
+      const storedId = localStorage.getItem('storeId')
+      let time: NodeJS.Timeout
+
+      if (storedId) {
+        setStoreId(storedId)
+        return () => clearTimeout(time)
+      } else {
+        time = setTimeout(checkForId, 500)
+      }
+    }
+
+    checkForId()
   }, [])
 
   return (
-    <Grid container spacing={6}>
-      <Grid item xs={12} md={4}>
-        <Award data={dashboardData.sales} />
-      </Grid>
-      <Grid item xs={12} md={8} lg={8}>
-        <Transactions data={dashboardData} />
-      </Grid>
-    </Grid>
+    <>
+      {dashboardData?.sales ? (
+        <Grid container spacing={6}>
+          <Grid item xs={12} md={4}>
+            <Award data={dashboardData.sales} />
+          </Grid>
+          <Grid item xs={12} md={8} lg={8}>
+            <Transactions data={dashboardData} />
+          </Grid>
+        </Grid>
+      ) : (
+        <Grid container spacing={6}>
+          <Grid item xs={12} md={4}>
+            <Skeleton variant='rectangular' height={200} />
+          </Grid>
+          <Grid item xs={12} md={8} lg={8}>
+            <Skeleton variant='rectangular' height={200} />
+          </Grid>
+        </Grid>
+      )}
+    </>
   )
 }
 

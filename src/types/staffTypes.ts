@@ -19,7 +19,7 @@ export type CustomerDataType = {
   fullName: string
   email: string
   profileImage: string
-  contact: number
+  contact: string
   rewards: string
   credit: number
 }

@@ -178,14 +178,14 @@ const BillPreviewCard = ({
                 <div className='flex items-center justify-between'>
                   <Typography>Subtotal:</Typography>
                   <Typography className='font-medium' color='text.primary'>
-                    ₹ {data.totalBillAmt}
+                    ₹{data.totalBillAmt}
                   </Typography>
                 </div>
                 {inputData.discount ? (
                   <div className='flex items-center justify-between'>
                     <Typography>Discount:</Typography>
                     <Typography className='font-medium' color='text.primary'>
-                      ₹ {inputData.discount}
+                      ₹{inputData.discount}
                     </Typography>
                   </div>
                 ) : (

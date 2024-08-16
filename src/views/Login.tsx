@@ -59,6 +59,7 @@ const Login = ({ mode }: { mode: Mode }) => {
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [errorState, setErrorState] = useState<ErrorType | null>(null)
   const [serverError, setSeverError] = useState('')
+  const [rememberMe, setRememberMe] = useState(true)
 
   // Vars
   const darkImg = '/images/pages/auth-v2-mask-dark.png'
@@ -81,8 +82,8 @@ const Login = ({ mode }: { mode: Mode }) => {
   } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
-      email: 'dny@gmail.com',
-      password: 'test@6622'
+      email: localStorage.getItem('clientEmail') || '',
+      password: localStorage.getItem('clientPassword') || ''
     }
   })
 
@@ -109,6 +110,13 @@ const Login = ({ mode }: { mode: Mode }) => {
 
       if (response && response.data) {
         localStorage.setItem('token', response.data)
+        if (rememberMe) {
+          localStorage.setItem('clientEmail', data.email)
+          localStorage.setItem('clientPassword', data.password)
+        } else {
+          localStorage.removeItem('clientEmail')
+          localStorage.removeItem('clientPassword')
+        }
         const redirectURL = searchParams.get('redirectTo') ?? '/'
 
         router.replace(getLocalizedUrl(redirectURL, locale as Locale))
@@ -221,7 +229,16 @@ const Login = ({ mode }: { mode: Mode }) => {
               )}
             />
             <div className='flex justify-between items-center flex-wrap gap-x-3 gap-y-1'>
-              <FormControlLabel control={<Checkbox defaultChecked />} label='Remember me' />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    defaultChecked
+                    checked={rememberMe}
+                    onChange={event => setRememberMe(event.target.checked)}
+                  />
+                }
+                label='Remember me'
+              />
               <Typography className='text-end' color='primary' component={Link} href='/forgot-password'>
                 Forgot password?
               </Typography>
@@ -232,7 +249,7 @@ const Login = ({ mode }: { mode: Mode }) => {
 
             {serverError ? (
               <Alert variant='filled' severity='error'>
-                serverError
+                {serverError}
               </Alert>
             ) : (
               <></>

@@ -1,45 +1,45 @@
 'use client'
 
 // React Imports
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 // MUI Imports
+import type { ButtonProps } from '@mui/material/Button'
+import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
 import Chip from '@mui/material/Chip'
-import TablePagination from '@mui/material/TablePagination'
 import IconButton from '@mui/material/IconButton'
+import TablePagination from '@mui/material/TablePagination'
 import type { TextFieldProps } from '@mui/material/TextField'
-import type { ButtonProps } from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 
 // Third-party Imports
-import classnames from 'classnames'
+import type { RankingInfo } from '@tanstack/match-sorter-utils'
 import { rankItem } from '@tanstack/match-sorter-utils'
+import type { ColumnDef, FilterFn } from '@tanstack/react-table'
 import {
   createColumnHelper,
   flexRender,
   getCoreRowModel,
-  useReactTable,
-  getFilteredRowModel,
+  getFacetedMinMaxValues,
   getFacetedRowModel,
   getFacetedUniqueValues,
-  getFacetedMinMaxValues,
+  getFilteredRowModel,
   getPaginationRowModel,
-  getSortedRowModel
+  getSortedRowModel,
+  useReactTable
 } from '@tanstack/react-table'
-import type { ColumnDef, FilterFn } from '@tanstack/react-table'
-import type { RankingInfo } from '@tanstack/match-sorter-utils'
+import classnames from 'classnames'
 
 // Type Imports
-import type { ThemeColor } from '@core/types'
 import type { PermissionRowType } from '@/types/apps/permissionTypes'
+import type { ThemeColor } from '@core/types'
 
 // Component Imports
-import PermissionDialog from '@components/dialogs/permission-dialog'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
+import PermissionDialog from '@components/dialogs/permission-dialog'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
@@ -121,7 +121,7 @@ const Permissions = ({ permissionsData }: { permissionsData?: PermissionRowType[
   const [rowSelection, setRowSelection] = useState({})
   const [editValue, setEditValue] = useState<string>('')
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [data, setData] = useState(...[permissionsData])
+  const [data, setData] = useState([...(permissionsData || [])])
   const [globalFilter, setGlobalFilter] = useState('')
 
   // Vars

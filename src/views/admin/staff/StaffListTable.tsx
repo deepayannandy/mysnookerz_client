@@ -33,8 +33,10 @@ import type { ThemeColor } from '@core/types'
 // Style Imports
 
 import CustomAvatar from '@/@core/components/mui/Avatar'
-import EditStaffInfo from '@/components/dialogs/ edit-staff-info'
-import NewStaffRegistration from '@/components/dialogs/ new-staff-registration'
+import OptionMenu from '@/@core/components/option-menu'
+import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
+import EditStaffInfo from '@/components/dialogs/edit-staff-info'
+import NewStaffRegistration from '@/components/dialogs/new-staff-registration'
 import { StaffDataType } from '@/types/adminTypes'
 import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
@@ -88,9 +90,11 @@ const StaffListTable = () => {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as StaffDataType[])
   const [staffData, setStaffData] = useState({} as StaffDataType)
+  const [staffId, setStaffId] = useState('')
   const [globalFilter, setGlobalFilter] = useState('')
   const [newStaffRegistrationDialogOpen, setNewStaffRegistrationDialogOpen] = useState(false)
   const [editStaffInfoDialogOpen, setEditStaffInfoDialogOpen] = useState(false)
+  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -118,6 +122,29 @@ const StaffListTable = () => {
     getStaffData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const deleteStaff = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.delete(`${apiBaseUrl}/user/${staffId}`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        getStaffData()
+        setDeleteConfirmationDialogOpen(false)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  const openDeleteConfirmation = (staffId: string) => {
+    setStaffId(staffId)
+    setDeleteConfirmationDialogOpen(true)
+  }
 
   const getAvatar = (params: Pick<StaffDataType, 'profileImage' | 'fullName'>) => {
     const { profileImage, fullName } = params
@@ -190,7 +217,7 @@ const StaffListTable = () => {
             <IconButton size='small' onClick={() => editStaffData(row.original)}>
               <i className='ri-edit-box-line text-[22px] text-textSecondary' />
             </IconButton>
-            {/* <OptionMenu
+            <OptionMenu
               iconButtonProps={{ size: 'medium' }}
               iconClassName='text-textSecondary text-[22px]'
               options={[
@@ -200,13 +227,13 @@ const StaffListTable = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => setData(data?.filter(product => product._id !== row.original._id))
+                    onClick: () => openDeleteConfirmation(row.original._id)
                   }
                 }
 
                 // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
               ]}
-            /> */}
+            />
           </div>
         ),
         enableSorting: false
@@ -349,6 +376,12 @@ const StaffListTable = () => {
         setOpen={setEditStaffInfoDialogOpen}
         getStaffData={getStaffData}
         staffData={staffData}
+      />
+      <DeleteConfirmation
+        open={deleteConfirmationDialogOpen}
+        name='staff'
+        setOpen={setDeleteConfirmationDialogOpen}
+        deleteApiCall={deleteStaff}
       />
     </>
   )

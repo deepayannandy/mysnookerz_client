@@ -34,12 +34,14 @@ import type { ThemeColor } from '@core/types'
 import CustomAvatar from '@/@core/components/mui/Avatar'
 import OptionMenu from '@/@core/components/option-menu'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
+import EditCustomerInfo from '@/components/dialogs/edit-customer-info'
 import NewCustomerRegistration from '@/components/dialogs/new-customer-registration'
 import { CustomerDataType } from '@/types/staffTypes'
 import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
 import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
+import IconButton from '@mui/material/IconButton'
 import * as matchSortedUtils from '@tanstack/match-sorter-utils'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -86,10 +88,11 @@ const columnHelper = createColumnHelper<CustomerDataWithAction>()
 const CustomerListTable = () => {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as CustomerDataType[])
-  const [customerId, setCustomerId] = useState('')
+  const [customerData, setCustomerData] = useState({} as CustomerDataType)
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
   const [globalFilter, setGlobalFilter] = useState('')
   const [newCustomerRegistrationDialogOpen, setNewCustomerRegistrationDialogOpen] = useState(false)
+  const [editCustomerInfoDialogOpen, setEditCustomerInfoDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -119,6 +122,7 @@ const CustomerListTable = () => {
   }, [])
 
   const deleteCustomer = async () => {
+    const customerId = customerData._id
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -136,9 +140,14 @@ const CustomerListTable = () => {
     }
   }
 
-  const openDeleteConfirmation = (customerId: string) => {
-    setCustomerId(customerId)
+  const openDeleteConfirmation = (customer: CustomerDataType) => {
+    setCustomerData(customer)
     setDeleteConfirmationDialogOpen(true)
+  }
+
+  const editCustomerData = (rowData: CustomerDataType) => {
+    setCustomerData(rowData)
+    setEditCustomerInfoDialogOpen(!editCustomerInfoDialogOpen)
   }
 
   const getAvatar = (params: Pick<CustomerDataType, 'profileImage' | 'fullName'>) => {
@@ -185,7 +194,7 @@ const CustomerListTable = () => {
       }),
       columnHelper.accessor('credit', {
         header: 'Credit',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹ ${row.original.credit}`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.credit}`}</Typography>
       }),
       // columnHelper.accessor('status', {
       //   header: 'Status',
@@ -204,9 +213,9 @@ const CustomerListTable = () => {
         header: 'Actions',
         cell: ({ row }) => (
           <div className='flex items-center'>
-            {/* <IconButton size='small'>
+            <IconButton size='small' onClick={() => editCustomerData(row.original)}>
               <i className='ri-edit-box-line text-[22px] text-textSecondary' />
-            </IconButton> */}
+            </IconButton>
             <OptionMenu
               iconButtonProps={{ size: 'medium' }}
               iconClassName='text-textSecondary text-[22px]'
@@ -217,7 +226,7 @@ const CustomerListTable = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => openDeleteConfirmation(row.original._id)
+                    onClick: () => openDeleteConfirmation(row.original)
                   }
                 }
 
@@ -361,9 +370,15 @@ const CustomerListTable = () => {
         setOpen={setNewCustomerRegistrationDialogOpen}
         getCustomerData={getCustomerData}
       />
+      <EditCustomerInfo
+        open={editCustomerInfoDialogOpen}
+        setOpen={setEditCustomerInfoDialogOpen}
+        getCustomerData={getCustomerData}
+        customerData={customerData}
+      />
       <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
-        name='customer'
+        name={`customer (${customerData.fullName})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteCustomer}
       />

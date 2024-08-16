@@ -181,7 +181,7 @@ const HistoryTable = () => {
         cell: ({ row }) => <Typography color='text.primary'>{row.original.description}</Typography>
       }),
       columnHelper.accessor('startTime', {
-        header: 'Time',
+        header: 'Start/End Time',
         cell: ({ row }) => (
           <div className='flex flex-col'>
             <Typography className='font-medium' color='text.primary'>
@@ -201,11 +201,11 @@ const HistoryTable = () => {
       // }),
       columnHelper.accessor('time', {
         header: 'Time',
-        cell: ({ row }) => <Typography color='text.primary'>{`${row.original.time} Mins`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`${row.original.time}Mins`}</Typography>
       }),
       columnHelper.accessor('booking', {
         header: 'Booking',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹ ${row.original.booking}`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.booking}`}</Typography>
       }),
       columnHelper.accessor('meal', {
         header: 'Meals',
@@ -213,11 +213,11 @@ const HistoryTable = () => {
       }),
       columnHelper.accessor('discount', {
         header: 'Discount',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹ ${row.original.discount}`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.discount}`}</Typography>
       }),
       columnHelper.accessor('netPay', {
         header: 'Net Pay',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹ ${row.original.netPay}`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.netPay}`}</Typography>
       }),
       columnHelper.accessor('status', {
         header: 'Status',

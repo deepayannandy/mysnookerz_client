@@ -13,7 +13,7 @@ const Award = ({ data }: { data: number }) => {
         </div>
         <div>
           <Typography variant='h4' color='primary'>
-            {`₹ ${data}`}
+            {`₹${data}`}
           </Typography>
           {/* <Typography>78% of target 🚀</Typography> */}
         </div>
