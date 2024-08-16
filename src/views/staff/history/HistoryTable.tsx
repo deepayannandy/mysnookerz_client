@@ -34,6 +34,7 @@ import type { ThemeColor } from '@core/types'
 
 import { HistoryDataType } from '@/types/staffTypes'
 import tableStyles from '@core/styles/table.module.css'
+import { Tooltip } from '@mui/material'
 import Chip from '@mui/material/Chip'
 import axios from 'axios'
 import { DateTime } from 'luxon'
@@ -174,7 +175,13 @@ const HistoryTable = () => {
       }),
       columnHelper.accessor('customerName', {
         header: 'Customer Name',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.customerName}</Typography>
+        cell: ({ row }) => (
+          <Tooltip title={row.original.customerName} placement='top' className='cursor-pointer'>
+            <Typography className='text-wrap' color='text.primary'>
+              {row.original.customerName}
+            </Typography>
+          </Tooltip>
+        )
       }),
       columnHelper.accessor('description', {
         header: 'Description',
