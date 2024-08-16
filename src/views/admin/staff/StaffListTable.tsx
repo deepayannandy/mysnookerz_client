@@ -90,7 +90,6 @@ const StaffListTable = () => {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as StaffDataType[])
   const [staffData, setStaffData] = useState({} as StaffDataType)
-  const [staffId, setStaffId] = useState('')
   const [globalFilter, setGlobalFilter] = useState('')
   const [newStaffRegistrationDialogOpen, setNewStaffRegistrationDialogOpen] = useState(false)
   const [editStaffInfoDialogOpen, setEditStaffInfoDialogOpen] = useState(false)
@@ -124,6 +123,7 @@ const StaffListTable = () => {
   }, [])
 
   const deleteStaff = async () => {
+    const staffId = staffData._id
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -141,8 +141,8 @@ const StaffListTable = () => {
     }
   }
 
-  const openDeleteConfirmation = (staffId: string) => {
-    setStaffId(staffId)
+  const openDeleteConfirmation = (staff: StaffDataType) => {
+    setStaffData(staff)
     setDeleteConfirmationDialogOpen(true)
   }
 
@@ -227,7 +227,7 @@ const StaffListTable = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => openDeleteConfirmation(row.original._id)
+                    onClick: () => openDeleteConfirmation(row.original)
                   }
                 }
 
@@ -379,7 +379,7 @@ const StaffListTable = () => {
       />
       <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
-        name='staff'
+        name={`staff (${staffData.fullName})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteStaff}
       />

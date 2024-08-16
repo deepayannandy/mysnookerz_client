@@ -123,7 +123,6 @@ const TableList = () => {
   // States
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as TableDataType[])
-  const [tableId, setTableId] = useState('')
   const [tableData, setTableData] = useState({} as TableDataType)
   const [globalFilter, setGlobalFilter] = useState('')
   const [newTableCreationDialogOpen, setNewTableCreationDialogOpen] = useState(false)
@@ -157,6 +156,7 @@ const TableList = () => {
   }, [])
 
   const deleteTable = async () => {
+    const tableId = tableData._id
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -174,8 +174,8 @@ const TableList = () => {
     }
   }
 
-  const openDeleteConfirmation = (tableId: string) => {
-    setTableId(tableId)
+  const openDeleteConfirmation = (table: TableDataType) => {
+    setTableData(table)
     setDeleteConfirmationDialogOpen(true)
   }
 
@@ -238,7 +238,7 @@ const TableList = () => {
                   icon: 'ri-delete-bin-7-line',
                   menuItemProps: {
                     className: 'gap-2',
-                    onClick: () => openDeleteConfirmation(row.original._id)
+                    onClick: () => openDeleteConfirmation(row.original)
                   }
                 }
 
@@ -397,7 +397,7 @@ const TableList = () => {
       />
       <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
-        name='table'
+        name={`table (${tableData.tableName})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteTable}
       />
