@@ -17,9 +17,9 @@ const DashboardDetails = () => {
   // const { lang: locale } = useParams()
   // const pathname = usePathname()
   // const router = useRouter()
-  const [storeId, setStoreId] = useState('')
 
   const getDashboardData = async () => {
+    const storeId = localStorage.getItem('storeId')
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -36,12 +36,12 @@ const DashboardDetails = () => {
     }
   }
 
-  useEffect(() => {
-    if (storeId) {
-      getDashboardData()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  // useEffect(() => {
+  //   if (storeId) {
+  //     getDashboardData()
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [])
 
   useEffect(() => {
     // Function to continuously try fetching the Store ID from localStorage
@@ -50,7 +50,7 @@ const DashboardDetails = () => {
       let time: NodeJS.Timeout
 
       if (storedId) {
-        setStoreId(storedId)
+        getDashboardData()
         return () => clearTimeout(time)
       } else {
         time = setTimeout(checkForId, 500)
