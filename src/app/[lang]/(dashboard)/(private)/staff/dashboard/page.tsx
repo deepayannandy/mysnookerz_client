@@ -40,7 +40,8 @@ const DashboardDetails = () => {
     if (storeId) {
       getDashboardData()
     }
-  }, [storeId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     // Function to continuously try fetching the Store ID from localStorage

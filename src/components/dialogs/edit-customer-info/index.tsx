@@ -66,7 +66,6 @@ const EditCustomerInfo = ({ open, setOpen, getCustomerData, customerData }: Edit
   }
 
   const onSubmit = async (data: Omit<EditCustomerDataType, '_id'>) => {
-    const profileImage = '-'
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {

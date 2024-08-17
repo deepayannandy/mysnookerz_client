@@ -5,10 +5,10 @@ import type { CSSProperties } from 'react'
 import { useEffect, useRef } from 'react'
 
 // Third-party Imports
-import styled from '@emotion/styled'
+//import styled from '@emotion/styled'
 
 // Type Imports
-import type { VerticalNavContextProps } from '@menu/contexts/verticalNavContext'
+//import type { VerticalNavContextProps } from '@menu/contexts/verticalNavContext'
 
 // Component Imports
 
@@ -18,33 +18,34 @@ import type { VerticalNavContextProps } from '@menu/contexts/verticalNavContext'
 import { useSettings } from '@core/hooks/useSettings'
 import useVerticalNav from '@menu/hooks/useVerticalNav'
 
-type LogoTextProps = {
-  isHovered?: VerticalNavContextProps['isHovered']
-  isCollapsed?: VerticalNavContextProps['isCollapsed']
-  transitionDuration?: VerticalNavContextProps['transitionDuration']
-  color?: CSSProperties['color']
-}
+// type LogoTextProps = {
+//   isHovered?: VerticalNavContextProps['isHovered']
+//   isCollapsed?: VerticalNavContextProps['isCollapsed']
+//   transitionDuration?: VerticalNavContextProps['transitionDuration']
+//   color?: CSSProperties['color']
+// }
 
-const LogoText = styled.span<LogoTextProps>`
-  color: ${({ color }) => color ?? 'var(--mui-palette-text-primary)'};
-  font-size: 1.25rem;
-  line-height: 1.2;
-  font-weight: 600;
-  letter-spacing: 0.15px;
-  text-transform: uppercase;
-  transition: ${({ transitionDuration }) =>
-    `margin-inline-start ${transitionDuration}ms ease-in-out, opacity ${transitionDuration}ms ease-in-out`};
+// const LogoText = styled.span<LogoTextProps>`
+//   color: ${({ color }) => color ?? 'var(--mui-palette-text-primary)'};
+//   font-size: 1.25rem;
+//   line-height: 1.2;
+//   font-weight: 600;
+//   letter-spacing: 0.15px;
+//   text-transform: uppercase;
+//   transition: ${({ transitionDuration }) =>
+//     `margin-inline-start ${transitionDuration}ms ease-in-out, opacity ${transitionDuration}ms ease-in-out`};
 
-  ${({ isHovered, isCollapsed }) =>
-    isCollapsed && !isHovered ? 'opacity: 0; margin-inline-start: 0;' : 'opacity: 1; margin-inline-start: 10px;'}
-`
+//   ${({ isHovered, isCollapsed }) =>
+//     isCollapsed && !isHovered ? 'opacity: 0; margin-inline-start: 0;' : 'opacity: 1; margin-inline-start: 10px;'}
+// `
 
-const Logo = ({ color }: { color?: CSSProperties['color'] }) => {
+const Logo = ({}: { color?: CSSProperties['color'] }) => {
   // Refs
   const logoTextRef = useRef<HTMLSpanElement>(null)
 
   // Hooks
-  const { isHovered, transitionDuration } = useVerticalNav()
+  //const { isHovered, transitionDuration } = useVerticalNav()
+  const { isHovered } = useVerticalNav()
   const { settings } = useSettings()
 
   // Vars
