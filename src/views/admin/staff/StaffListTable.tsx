@@ -133,10 +133,10 @@ const StaffListTable = () => {
         setDeleteConfirmationDialogOpen(false)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
-      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-      //   return router.replace(redirectUrl)
-      // }
+      if (error?.response?.status === 401) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }

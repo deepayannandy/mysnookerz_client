@@ -45,6 +45,7 @@ import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
 declare module '@tanstack/table-core' {
@@ -130,9 +131,9 @@ const TableList = () => {
   const [editTableInfoDialogOpen, setEditTableInfoDialogOpen] = useState(false)
 
   //Hooks
-  // const { lang: locale } = useParams()
-  // const pathname = usePathname()
-  // const router = useRouter()
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
 
   const getTableData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -143,10 +144,10 @@ const TableList = () => {
         setData(response.data)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
-      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-      //   return router.replace(redirectUrl)
-      // }
+      if (error?.response?.status === 401) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }

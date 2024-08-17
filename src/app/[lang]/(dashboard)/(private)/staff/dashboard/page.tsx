@@ -7,6 +7,7 @@ import Transactions from '@/views/staff/dashboard/Transactions'
 import { Skeleton } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import axios from 'axios'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
@@ -14,9 +15,9 @@ const DashboardDetails = () => {
   const [dashboardData, setDashboardData] = useState({} as DashboardDataType)
 
   // Hooks
-  // const { lang: locale } = useParams()
-  // const pathname = usePathname()
-  // const router = useRouter()
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
 
   const getDashboardData = async () => {
     const storeId = localStorage.getItem('storeId')
@@ -28,10 +29,10 @@ const DashboardDetails = () => {
         setDashboardData(response.data)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
-      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-      //   return router.replace(redirectUrl)
-      // }
+      if (error?.response?.status === 401) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }

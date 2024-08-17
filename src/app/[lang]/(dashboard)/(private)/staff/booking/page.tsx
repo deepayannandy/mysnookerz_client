@@ -4,6 +4,7 @@ import TableBill from '@/components/dialogs/table-bill'
 import { TableDataType } from '@/types/adminTypes'
 import StartTableDrawer from '@/views/staff/booking/StartTableDrawer'
 import axios from 'axios'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
@@ -12,6 +13,11 @@ const BookingPage = () => {
   const [showStartForm, setShowStartForm] = useState(false)
   const [tableData, setTableData] = useState({} as TableDataType)
   const [allTablesData, setAllTablesData] = useState([] as TableDataType[])
+
+  // Hooks
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
 
   const getAllTablesData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -22,10 +28,10 @@ const BookingPage = () => {
         setAllTablesData(response.data)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
-      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-      //   return router.replace(redirectUrl)
-      // }
+      if (error?.response?.status === 401) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }
@@ -75,10 +81,14 @@ const BookingPage = () => {
   return (
     <>
       <div className='grid md:grid-cols-4 grid-cols-2 gap-4'>
-        {allTablesData.map(tableData => (
+        {[
+          {
+            tableName: 'Tbale-1'
+          }
+        ].map(tableData => (
           <PoolCard
             key={tableData.tableName}
-            tableData={tableData}
+            // tableData={tableData}
             handleCheckout={handleCheckout}
             handleStart={handleStart}
             handleStop={handleStop}

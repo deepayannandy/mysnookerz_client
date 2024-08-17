@@ -4,6 +4,7 @@ import { UserDataType } from '@/types/adminTypes'
 // MUI Imports
 import Grid from '@mui/material/Grid'
 import axios from 'axios'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
@@ -13,6 +14,11 @@ import UserPlan from './UserPlan'
 
 const UserLeftOverview = () => {
   const [userData, setUserData] = useState({} as UserDataType)
+
+  //Hooks
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
 
   const getUserData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -26,10 +32,10 @@ const UserLeftOverview = () => {
         setUserData({ ...response.data, clientName })
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
-      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-      //   return router.replace(redirectUrl)
-      // }
+      if (error?.response?.status === 401) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }

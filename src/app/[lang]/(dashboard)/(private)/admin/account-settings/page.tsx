@@ -9,13 +9,13 @@ import Grid from '@mui/material/Grid'
 // Type Imports
 
 // Component Imports
-import UserLeftOverview from '@/views/admin/master/account-settings/user-left-overview'
-import UserRight from '@/views/admin/master/account-settings/user-right'
+import UserLeftOverview from '@/views/admin/account-settings/user-left-overview'
+import UserRight from '@/views/admin/account-settings/user-right'
 
 // Data Imports
-import BillingPlans from '@/views/admin/master/account-settings/user-right/billing-plans'
-import OverViewTab from '@/views/admin/master/account-settings/user-right/overview'
-import SecurityTab from '@/views/admin/master/account-settings/user-right/security'
+import BillingPlans from '@/views/admin/account-settings/user-right/billing-plans'
+import OverViewTab from '@/views/admin/account-settings/user-right/overview'
+import SecurityTab from '@/views/admin/account-settings/user-right/security'
 
 // Vars
 const tabContentList = (): { [key: string]: ReactElement } => ({
