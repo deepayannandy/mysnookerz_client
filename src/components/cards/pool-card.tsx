@@ -56,7 +56,8 @@ const PoolCard = ({
     if (tableData.gameData?.endTime) {
       getBillData()
     }
-  }, [tableData])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const startGame = async () => {
     const players = customers.map(customer => {

@@ -63,6 +63,7 @@ const BookingPage = () => {
   useEffect(() => {
     getAllTablesData()
     getCustomerData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // const handleCheckout = (tableData: TableDataType) => {
