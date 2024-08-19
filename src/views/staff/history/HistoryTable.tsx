@@ -89,6 +89,14 @@ const HistoryTable = () => {
   const pathname = usePathname()
   const router = useRouter()
 
+  const getCustomerNamesToShow = (customerNames: string) => {
+    const customerNamesArray = customerNames.split(',')
+    if (customerNamesArray.length > 2) {
+      return [customerNamesArray[0], customerNamesArray[1]].join(',')
+    }
+    return customerNames
+  }
+
   const getHistoryData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
@@ -178,7 +186,7 @@ const HistoryTable = () => {
         cell: ({ row }) => (
           <Tooltip title={row.original.customerName} placement='top' className='cursor-pointer'>
             <Typography className='text-wrap' color='text.primary'>
-              {row.original.customerName}
+              {getCustomerNamesToShow(row.original.customerName)}
             </Typography>
           </Tooltip>
         )
