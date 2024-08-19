@@ -108,8 +108,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
       )
 
       if (response && response.data) {
-        getTableData()
-        setOpen(false)
+        handleClose()
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
@@ -123,7 +122,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
   const getDeviceData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
-    const storeId = '667e3c007e2ed9e64a9136be' //localStorage.getItem('storeId')
+    const storeId = localStorage.getItem('storeId')
     const nodesData: Record<string, string[]> = {}
     try {
       const response = await axios.get(`${apiBaseUrl}/devices/byStore/${storeId}`, {
@@ -153,7 +152,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
 
   useEffect(() => {
     getDeviceData()
-  }, [])
+  }, [open])
 
   return (
     <Dialog fullWidth open={open} onClose={handleClose} maxWidth='md' scroll='body'>
