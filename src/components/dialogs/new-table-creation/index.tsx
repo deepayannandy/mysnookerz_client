@@ -123,7 +123,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
   const getDeviceData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
-    const storeId = localStorage.getItem('storeId')
+    const storeId = '667e3c007e2ed9e64a9136be' //localStorage.getItem('storeId')
     const nodesData: Record<string, string[]> = {}
     try {
       const response = await axios.get(`${apiBaseUrl}/devices/byStore/${storeId}`, {

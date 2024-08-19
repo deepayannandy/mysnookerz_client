@@ -1,18 +1,19 @@
 'use client'
+
 import PoolCard from '@/components/cards/pool-card'
-import TableBill from '@/components/dialogs/table-bill'
 import { TableDataType } from '@/types/adminTypes'
-import StartTableDrawer from '@/views/staff/booking/StartTableDrawer'
+import { CustomerDataType, CustomerListType } from '@/types/staffTypes'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 const BookingPage = () => {
-  const [showBill, setShowBill] = useState(false)
-  const [showStartForm, setShowStartForm] = useState(false)
-  const [tableData, setTableData] = useState({} as TableDataType)
+  //const [showBill, setShowBill] = useState(false)
+  // const [showStartForm, setShowStartForm] = useState(false)
+  // const [tableData, setTableData] = useState({} as TableDataType)
   const [allTablesData, setAllTablesData] = useState([] as TableDataType[])
+  const [customersList, setCustomersList] = useState([] as CustomerListType[])
 
   // Hooks
   const { lang: locale } = useParams()
@@ -36,72 +37,96 @@ const BookingPage = () => {
     }
   }
 
-  useEffect(() => {
-    getAllTablesData()
-  }, [])
-
-  const handleCheckout = (tableData: TableDataType) => {
-    console.log({ tableData })
-    setTableData(tableData)
-    setShowBill(true)
-  }
-
-  const handleStart = (tableData: TableDataType) => {
-    setTableData(tableData)
-    setShowStartForm(true)
-  }
-
-  const handleStop = async (tableData: TableDataType) => {
+  const getCustomerData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.patch(
-        `${apiBaseUrl}/games/stopGame/${tableData._id}`,
-        {},
-        {
-          headers: { 'auth-token': token }
-        }
-      )
-
+      const response = await axios.get(`${apiBaseUrl}/customer/myCustomers`, { headers: { 'auth-token': token } })
       if (response && response.data) {
-        getAllTablesData()
+        const data = response.data.map((customer: CustomerDataType) => {
+          return {
+            customerId: customer._id,
+            fullName: `${customer.fullName}(${customer.contact})`
+          }
+        })
+        setCustomersList(data)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 401) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-      //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)
       // }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
-    setTableData(tableData)
-    setShowBill(true)
   }
+
+  useEffect(() => {
+    getAllTablesData()
+    getCustomerData()
+  }, [])
+
+  // const handleCheckout = (tableData: TableDataType) => {
+  //   setTableData(tableData)
+  //   setShowBill(true)
+  // }
+
+  // const handleStart = (tableData: TableDataType) => {
+  //   setTableData(tableData)
+  //   setShowStartForm(true)
+  // }
+
+  // const handleStop = async (tableData: TableDataType) => {
+  //   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+  //   const token = localStorage.getItem('token')
+  //   try {
+  //     const response = await axios.patch(
+  //       `${apiBaseUrl}/games/stopGame/${tableData._id}`,
+  //       {},
+  //       {
+  //         headers: { 'auth-token': token }
+  //       }
+  //     )
+
+  //     if (response && response.data) {
+  //       getAllTablesData()
+  //     }
+  //   } catch (error: any) {
+  //     // if (error?.response?.status === 400) {
+  //     //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+  //     //   console.log(redirectUrl)
+  //     //   return router.replace(redirectUrl)
+  //     // }
+  //     toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+  //   }
+  //   setTableData(tableData)
+  //   setShowBill(true)
+  // }
 
   return (
     <>
-      <div className='grid md:grid-cols-4 grid-cols-2 gap-4'>
-        {[
-          {
-            tableName: 'Tbale-1'
-          }
-        ].map(tableData => (
-          <PoolCard
-            key={tableData.tableName}
-            // tableData={tableData}
-            handleCheckout={handleCheckout}
-            handleStart={handleStart}
-            handleStop={handleStop}
-          />
-        ))}
+      <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+        {!allTablesData.length ? (
+          <p className='text-center md:col-span-3 lg:col-span-4'> No Table data available</p>
+        ) : (
+          <>
+            {allTablesData.map(tableDetails => (
+              <PoolCard
+                key={tableDetails.tableName}
+                tableData={tableDetails}
+                customersList={customersList}
+                getAllTablesData={getAllTablesData}
+              />
+            ))}
+          </>
+        )}
       </div>
-      <TableBill open={showBill} setOpen={setShowBill} tableData={tableData} getAllTablesData={getAllTablesData} />
-      <StartTableDrawer
+      {/* <TableBill open={showBill} setOpen={setShowBill} tableData={tableData} getAllTablesData={getAllTablesData} /> */}
+      {/* <StartTableDrawer
         open={showStartForm}
         handleClose={() => setShowStartForm(!showStartForm)}
         tableData={tableData}
         getAllTablesData={getAllTablesData}
-      />
+      /> */}
     </>
   )
 }

@@ -6,15 +6,13 @@ import { useEffect, useState } from 'react'
 // MUI Imports
 import { TableDataType } from '@/types/adminTypes'
 import { CustomerInvoiceType } from '@/types/staffTypes'
-import BillPreviewCard from '@/views/staff/booking/BillPreviewCard'
+import { getInitials } from '@/utils/getInitials'
+import { Autocomplete, Avatar, Chip, Divider, Drawer, MenuItem, TextField, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
-import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
+import { DateTime } from 'luxon'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
 type TableBillPropType = {
@@ -22,17 +20,35 @@ type TableBillPropType = {
   setOpen: (open: boolean) => void
   tableData: TableDataType
   getAllTablesData: () => void
+  setGameType: (value: string) => void
+  setCustomers: (value: string[]) => void
 }
 
-const TableBill = ({ open, setOpen, tableData, getAllTablesData }: TableBillPropType) => {
-  // States
-  //const [userData, setUserData] = useState<EditUserInfoProps['data']>(data)
-  const [data, setData] = useState({} as CustomerInvoiceType)
-  const [inputData, setInputData] = useState({} as { discount?: number | null; paymentMethod: string })
+const paymentMethods = ['CASH', 'UPI', 'CARD']
 
-  // const { lang: locale } = useParams()
-  // const pathname = usePathname()
-  // const router = useRouter()
+const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, setCustomers }: TableBillPropType) => {
+  // States
+  const [data, setData] = useState({} as CustomerInvoiceType)
+  const [inputData, setInputData] = useState({
+    discount: '',
+    paid: '',
+    paymentMethod: paymentMethods[0]
+  } as {
+    discount?: number | string
+    paid?: number | string
+    paymentMethod: string
+  })
+
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const totalTime = Math.round(
+    tableData.gameData?.startTime && tableData.gameData?.endTime
+      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['minutes'])
+          .minutes
+      : 0
+  )
 
   const getBillData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -46,10 +62,10 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData }: TableBillProp
           setData(response.data)
         }
       } catch (error: any) {
-        // if (error?.response?.status === 400) {
-        //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-        //   return router.replace(redirectUrl)
-        // }
+        if (error?.response?.status === 401) {
+          const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+          return router.replace(redirectUrl)
+        }
         toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
       }
     }
@@ -61,7 +77,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData }: TableBillProp
   }, [tableData._id, open])
 
   const handleClose = () => {
-    setInputData({ discount: null, paymentMethod: '' })
+    setInputData({ discount: '', paid: '', paymentMethod: paymentMethods[0] })
     setOpen(false)
   }
 
@@ -75,9 +91,10 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData }: TableBillProp
       })
 
       if (response && response.data) {
-        setInputData({ discount: null, paymentMethod: '' })
+        setGameType(tableData.gameTypes[0] || '')
+        setCustomers(['CASH'])
         getAllTablesData()
-        setOpen(false)
+        handleClose()
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
@@ -89,35 +106,183 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData }: TableBillProp
   }
 
   return (
-    <Dialog fullWidth open={open} onClose={handleClose} maxWidth='md' scroll='body'>
-      <DialogTitle variant='h4' className='flex gap-2 flex-col items-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
-        <div className='max-sm:is-[80%] max-sm:text-center'>Bill</div>
-      </DialogTitle>
-      <DialogContent className='overflow-visible pbs-0 sm:pli-16'>
-        <IconButton onClick={handleClose} className='absolute block-start-4 inline-end-4'>
-          <i className='ri-close-line text-textSecondary' />
+    <Drawer
+      open={open}
+      anchor='right'
+      variant='temporary'
+      onClose={handleClose}
+      ModalProps={{ keepMounted: true }}
+      sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
+    >
+      <div className='flex items-center justify-between pli-5 plb-4'>
+        <Typography variant='h5'>{tableData.tableName}</Typography>
+        <IconButton size='small' onClick={handleClose}>
+          <i className='ri-close-line text-2xl' />
         </IconButton>
-        <Grid container spacing={5}>
-          <Grid item xs={12} md={12}>
-            <BillPreviewCard
-              tableData={tableData}
-              inputData={inputData}
-              setInputData={setInputData}
-              data={data}
-              setData={setData}
+      </div>
+      <Divider />
+      <div className='p-5'>
+        <div className='flex flex-col gap-5'>
+          {tableData.gameData?.gameType ? (
+            <TextField disabled id='gameType' label='Game Type' defaultValue={tableData.gameData.gameType}></TextField>
+          ) : (
+            <></>
+          )}
+          {data.selectedTable?.gameData?.players ? (
+            <Autocomplete
+              disabled
+              clearIcon={false}
+              options={data.selectedTable.gameData.players}
+              freeSolo
+              multiple
+              value={data.selectedTable.gameData.players}
+              renderTags={(value, props) =>
+                value.map((option, index) => (
+                  <Chip
+                    size='small'
+                    variant='outlined'
+                    avatar={<Avatar>{getInitials(option.fullName)}</Avatar>}
+                    label={option.fullName}
+                    {...props({ index })}
+                    key={option.fullName}
+                  />
+                ))
+              }
+              renderInput={params => <TextField {...params} variant='outlined' label='Customers' />}
             />
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <DialogActions className='justify-center pbs-0 sm:pbe-16 sm:pli-16'>
-        <Button variant='contained' onClick={handleSubmit}>
-          Checkout
-        </Button>
-        <Button variant='outlined' color='secondary' type='reset' onClick={handleClose}>
-          Cancel
-        </Button>
-      </DialogActions>
-    </Dialog>
+          ) : (
+            <></>
+          )}
+
+          {data.selectedTable?.gameData?.startTime ? (
+            <div className='w-full grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
+              {data.selectedTable.gameData?.startTime ? (
+                <p>
+                  Start Time
+                  <br />
+                  <span className='font-bold'>
+                    {DateTime.fromISO(data.selectedTable.gameData.startTime).toFormat('hh:mm:ss a')}
+                  </span>
+                </p>
+              ) : (
+                <></>
+              )}
+
+              {data.selectedTable.gameData?.endTime ? (
+                <p>
+                  End Time
+                  <br />
+                  <span className='font-bold'>
+                    {DateTime.fromISO(data.selectedTable.gameData.endTime).toFormat('hh:mm:ss a')}
+                  </span>
+                </p>
+              ) : (
+                <></>
+              )}
+
+              {totalTime ? (
+                <>
+                  <Divider className='col-span-2' />
+                  <p>Total Time</p>
+                  <p>{totalTime} mins</p>
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
+          ) : (
+            <></>
+          )}
+
+          {data.selectedTable?.gameData?.endTime ? (
+            <>
+              <div className='w-full grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
+                <p>Table Amount</p>
+                <p>{`₹${data.totalBillAmt}`}</p>
+                <Divider className='col-span-2' />
+                <p>Meals Amount</p>
+                <p>{`₹${data.mealAmount || 0}`}</p>
+              </div>
+              {/* <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
+                <p>Net Pay</p>
+                <p>{`₹${data.totalBillAmt}`}</p>
+              </div> */}
+            </>
+          ) : (
+            <></>
+          )}
+
+          <div className='w-full grid grid-cols-2 gap-2 mt-2 rounded-lg'>
+            <TextField
+              placeholder='₹_._'
+              InputProps={{
+                type: 'number',
+                startAdornment: <p className='m-2'>Discount</p>
+              }}
+              value={inputData.discount}
+              onChange={event =>
+                setInputData({
+                  ...inputData,
+                  discount: Number(event.target.value) ? Number(event.target.value) : ''
+                })
+              }
+            />
+            <TextField
+              //className='w-full bg-[#E73434] rounded-lg'
+              value={`₹${data.totalBillAmt - (typeof inputData.discount === 'number' ? inputData.discount : 0)}`}
+              InputProps={{
+                startAdornment: <p className='m-1'>Net Pay</p>
+              }}
+            />
+            <TextField
+              placeholder='₹_._'
+              InputProps={{
+                type: 'number',
+                startAdornment: <p className='m-2'>Paid</p>
+              }}
+              value={inputData.paid}
+              onChange={event =>
+                setInputData({
+                  ...inputData,
+                  paid: Number(event.target.value) ? Number(event.target.value) : ''
+                })
+              }
+            />
+            <TextField
+              select
+              value={inputData.paymentMethod}
+              onChange={e => {
+                setInputData({ ...inputData, paymentMethod: e.target.value })
+              }}
+            >
+              {paymentMethods.map((paymentMethod, index) => (
+                <MenuItem key={index} value={paymentMethod}>
+                  {paymentMethod}
+                </MenuItem>
+              ))}
+            </TextField>
+            {/* <Select
+              size='small'
+              value={inputData.paymentMethod}
+              onChange={e => {
+                setInputData({ ...inputData, paymentMethod: e.target.value })
+              }}
+            >
+              
+            </Select> */}
+          </div>
+
+          <div className='flex items-center gap-4'>
+            <Button variant='contained' onClick={handleSubmit}>
+              Submit
+            </Button>
+            <Button variant='outlined' color='error' onClick={handleClose}>
+              Cancel
+            </Button>
+          </div>
+        </div>
+      </div>
+    </Drawer>
   )
 }
 

@@ -1,81 +1,374 @@
 import { TableDataType } from '@/types/adminTypes'
-import { getInitials } from '@/utils/getInitials'
-import { Avatar, AvatarGroup, Button } from '@mui/material'
+import { CustomerInvoiceType, CustomerListType } from '@/types/staffTypes'
+import { Autocomplete, Button, Chip, Divider, MenuItem, TextField } from '@mui/material'
+import axios from 'axios'
+import { DateTime } from 'luxon'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 import CountUpTimer from '../count-up-timer'
+import TableBill from '../dialogs/table-bill'
 
 const PoolCard = ({
   tableData,
-  handleCheckout,
-  handleStart,
-  handleStop
+  customersList,
+  getAllTablesData
 }: {
   tableData: TableDataType
-  handleCheckout: (value: TableDataType) => void
-  handleStart: (value: TableDataType) => void
-  handleStop: (value: TableDataType) => void
+  customersList: CustomerListType[]
+  getAllTablesData: () => void
 }) => {
+  const [showBill, setShowBill] = useState(false)
+  const [gameType, setGameType] = useState(tableData.gameData?.gameType || tableData.gameTypes[0])
+  const [customers, setCustomers] = useState(
+    (tableData.gameData?.players?.length ? tableData.gameData.players : ['CASH']) as (string | CustomerListType)[]
+  )
+  const [billData, setBillData] = useState({} as CustomerInvoiceType)
+
+  const totalTime = Math.round(
+    tableData.gameData?.startTime && tableData.gameData?.endTime
+      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['minutes'])
+          .minutes
+      : 0
+  )
+
+  const getBillData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    if (tableData._id) {
+      try {
+        const response = await axios.get(`${apiBaseUrl}/games/getBilling/${tableData._id}`, {
+          headers: { 'auth-token': token }
+        })
+        if (response && response.data) {
+          setBillData(response.data)
+        }
+      } catch (error: any) {
+        // if (error?.response?.status === 400) {
+        //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        //   return router.replace(redirectUrl)
+        // }
+        toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (tableData.gameData?.endTime) {
+      getBillData()
+    }
+  }, [tableData])
+
+  const startGame = async () => {
+    const players = customers.map(customer => {
+      if (typeof customer === 'string') {
+        return { fullName: customer }
+      }
+      return customer
+    })
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.post(
+        `${apiBaseUrl}/games/startGame/${tableData._id}`,
+        { gameType: gameType, players },
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+
+      if (response && response.data) {
+        getAllTablesData()
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   console.log(redirectUrl)
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  const stopGame = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.patch(
+        `${apiBaseUrl}/games/stopGame/${tableData._id}`,
+        {},
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+
+      if (response && response.data) {
+        getBillData()
+        getAllTablesData()
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   console.log(redirectUrl)
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
   return (
     <div className='relative'>
-      <img className='size-full rotate-180' src={'/images/snooker-table/Snooker_table.png'} alt='' />
-      <div className='absolute flex flex-col justify-around items-center bottom-0 md:h-2/3 h-5/6 bg-gradient-to-t from-backdrop w-full rounded'>
-        {/* <TextField
-          label='Billing Type'
-          defaultValue={billingType}
-          InputProps={{
-            readOnly: true
-          }}
-          variant='outlined'
-        /> */}
-        <h2 className='text-center text-sm my-2 text-white'>{tableData.tableName}</h2>
-
-        {tableData.gameData?.gameType ? <h3 className=' text-sm text-white'>{tableData.gameData?.gameType}</h3> : <></>}
-
-        <AvatarGroup
-          max={4}
-          sx={{
-            '& .MuiAvatar-root': {
-              width: 28,
-              height: 28,
-              fontSize: 12,
-              bgcolor: 'primary'
-            }
-          }}
-        >
-          {/* <Avatar key={customer.fullName} alt={customer.fullName} /> */}
-          {tableData.gameData?.players?.map(customer => (
-            <Avatar key={customer.fullName}>{getInitials(customer.fullName)}</Avatar>
-          ))}
-        </AvatarGroup>
-
-        {tableData.gameData?.startTime ? (
-          <CountUpTimer
-            startTime={tableData.gameData?.startTime}
-            endTime={tableData.gameData?.endTime}
-            running={!!tableData.isOccupied && !tableData.gameData?.endTime}
-          ></CountUpTimer>
-        ) : (
-          <></>
-        )}
-
-        {tableData.isOccupied ? (
-          tableData.gameData?.endTime ? (
-            <Button onClick={() => handleCheckout(tableData)} className='text-white outline-white py-0 md:my-12 my-4'>
-              <span className='ri-bill-fill size-4'></span>
-              Checkout
-            </Button>
-          ) : (
-            <Button onClick={() => handleStop(tableData)} className='text-white outline-white py-0 md:my-12 my-4'>
-              <span className='ri-stop-fill'></span>
-              Stop
-            </Button>
-          )
-        ) : (
-          <Button onClick={() => handleStart(tableData)} className='text-white outline-white py-0 md:my-12 my-4'>
-            <span className='ri-play-fill'></span>
-            Start
-          </Button>
-        )}
+      <div className='h-full w-full'>
+        <img src='/images/snooker-table/snooker-table-updated.svg' className='size-full' alt='' />
       </div>
+      <div className='absolute w-full h-full top-0 flex flex-col justify-between  p-8'>
+        <div className='grid place-items-center'>
+          <div className='bg-[url("/images/snooker-table/background-trapezoid.svg")] bg-contain text-center text-black bg-no-repeat bg-center w-full lg:w-11/12'>
+            <span className='md:px-10 text-base line-clamp-1'>{tableData.tableName}</span>
+          </div>
+          <TextField
+            className='w-full text-xs bg-[#0089B5] md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
+            disabled={!!tableData.gameData?.startTime}
+            size='small'
+            value={gameType}
+            onChange={e => setGameType(e.target.value)}
+            select // tell TextField to render select
+            label='Game Type'
+            sx={{
+              '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#5CD7FF',
+                borderWidth: '1px'
+              },
+              '& .MuiInputLabel-outlined': {
+                color: '#FFFFFF',
+                '&.Mui-focused': {
+                  color: '#FFFFFF'
+                }
+              }
+            }}
+          >
+            {tableData.gameTypes?.map(type => (
+              <MenuItem key={type} value={type}>
+                {type}
+              </MenuItem>
+            ))}
+          </TextField>
+          <Autocomplete
+            disabled={!!tableData.gameData?.startTime}
+            size='small'
+            className='w-full border-[#0FED11] text-xs bg-green-900 md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
+            limitTags={1}
+            multiple
+            sx={{
+              // '& .MuiOutlinedInput-root': {
+              //   // border: "1px solid yellow",
+              //   borderRadius: '4px'
+              // },
+              '& .MuiAutocomplete-paper': {
+                overflowY: 'auto' // Ensure the dropdown becomes scrollable
+              },
+              '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: '#0FED11',
+                borderWidth: '1px'
+              },
+              '& .MuiInputLabel-outlined': {
+                color: '#0FED11',
+                '&.Mui-focused': {
+                  color: '#0FED11'
+                }
+              }
+            }}
+            options={customersList}
+            getOptionLabel={option => (option as CustomerListType).fullName ?? option}
+            freeSolo
+            value={customers}
+            onChange={(_, value) => setCustomers(value)}
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => {
+                const { key, ...tagProps } = getTagProps({ index })
+                return (
+                  <Chip
+                    size='small'
+                    variant='outlined'
+                    label={(option as CustomerListType).fullName ?? option}
+                    {...tagProps}
+                    key={key}
+                  />
+                )
+              })
+            }
+            renderInput={params => (
+              <TextField
+                {...params}
+                sx={{
+                  '& .MuiInputBase-root': {
+                    ...(tableData.gameData?.startTime ? {} : { height: '60px' }), // Set the fixed height for the TextField
+                    overflowY: 'auto',
+                    border: 'none'
+                  },
+                  fieldset: {
+                    border: 'none'
+                  }
+                }}
+                variant='outlined'
+                label='Customers'
+                placeholder='Customers'
+              />
+            )}
+          />
+
+          {tableData.gameData?.startTime ? (
+            <div className='w-full grid grid-cols-2 gap-2 border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+              {tableData.gameData?.startTime ? (
+                <p className='text-[8px]'>
+                  Start Time
+                  <br />
+                  <span className='font-bold text-xs'>
+                    {DateTime.fromISO(tableData.gameData.startTime).toFormat('hh:mm:ss a')}
+                  </span>
+                </p>
+              ) : (
+                <></>
+              )}
+
+              {tableData.gameData?.endTime ? (
+                <p className='text-[8px]'>
+                  End Time
+                  <br />
+                  <span className='font-bold text-xs'>
+                    {DateTime.fromISO(tableData.gameData.endTime).toFormat('hh:mm:ss a')}
+                  </span>
+                </p>
+              ) : (
+                <></>
+              )}
+
+              {totalTime ? (
+                <>
+                  <Divider className='col-span-2' />
+                  <p className='text-xs'>Total Time</p>
+                  <p className='text-xs'>{totalTime} mins</p>
+                </>
+              ) : (
+                <></>
+              )}
+            </div>
+          ) : (
+            <></>
+          )}
+
+          {tableData.gameData?.startTime && !tableData.gameData?.endTime ? (
+            <div className='w-full grid grid-cols-2 gap-2 border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+              <p className='text-xs'>Timer</p>
+              <CountUpTimer
+                startTime={tableData.gameData?.startTime}
+                endTime={tableData.gameData?.endTime}
+                running={!!tableData.isOccupied && !tableData.gameData?.endTime}
+              ></CountUpTimer>
+            </div>
+          ) : (
+            <></>
+          )}
+          {/* <div className='w-full grid grid-cols-2 gap-2 border border-[#0FED11] px-4 py-2  bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+            <p className='text-xs'>Amount</p>
+            <p className='text-xs'>400</p>
+          </div> */}
+          {tableData.gameData?.endTime ? (
+            <>
+              <div className='w-full grid grid-cols-2 gap-2 border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+                <p className='text-xs'>Table Amount</p>
+                <p className='text-xs'>{`₹${billData.totalBillAmt}`}</p>
+                <Divider className='col-span-2' />
+                <p className='text-xs'>Meals Amount</p>
+                <p className='text-xs'>{`₹${billData.mealAmount || 0}`}</p>
+              </div>
+              <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 border border-white px-4 py-2 mt-2 shadow-[0.5px_0.5px_6px_1px_white] rounded-lg'>
+                <p className='text-xs'>Net Pay</p>
+                <p className='text-xs'>{`₹${billData.totalBillAmt}`}</p>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+          {/* <div className='w-full grid grid-cols-2 gap-2 border border-[#0FED11] px-2 py-1 md:px-4 md:py-2  bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+            <TextField
+              size='small'
+              id='outlined-start-adornment'
+              placeholder='$_._'
+              InputProps={{
+                startAdornment: <p className='text-xs mr-1'>Disc</p>
+              }}
+            />
+            <TextField
+              size='small'
+              id='outlined-start-adornment'
+              placeholder='$_._'
+              InputProps={{
+                startAdornment: <p className='text-xs mr-1'>Net Pay</p>
+              }}
+            />
+            <TextField
+              size='small'
+              id='outlined-start-adornment'
+              placeholder='$_._'
+              InputProps={{
+                startAdornment: <p className='text-xs mr-1'>Paid</p>
+              }}
+            />
+            <TextField
+              size='small'
+              id='outlined-start-adornment'
+              placeholder='$_._'
+              InputProps={{
+                startAdornment: <p className='text-xs mr-1'>Cash</p>
+              }}
+            />
+          </div> */}
+        </div>
+
+        <div className='grid gap-y-2 mb-6'>
+          {tableData.isOccupied ? (
+            tableData.gameData?.endTime ? (
+              <Button variant='contained' className='bg-[#FFCA00] text-black h-8' onClick={() => setShowBill(true)}>
+                <span className='ri-bank-card-fill text-base -rotate-45 mr-1'></span>Checkout
+              </Button>
+            ) : (
+              <>
+                <Button variant='contained' className='bg-[#2E2E2E] text-white  h-8'>
+                  <span className='ri-restaurant-2-fill text-base'></span>
+                  Add Meals
+                </Button>
+                <Button variant='contained' className='bg-[#FFCA00] text-black h-8'>
+                  <span className='ri-pause-mini-fill'></span>Pause
+                </Button>
+                <Button variant='contained' className='bg-[#E73434] text-white h-8' onClick={stopGame}>
+                  <span className='ri-stop-mini-fill'></span>Stop
+                </Button>
+              </>
+            )
+          ) : (
+            <Button variant='contained' className='bg-white text-black h-8' onClick={startGame}>
+              <span className='ri-play-mini-fill'></span>
+              Start
+            </Button>
+          )}
+        </div>
+      </div>
+      {/* <div
+        className='background-image-snooker-table bg-cover bg-no-repeat min-h-96 min-w-48'
+        style={{ backgroundImage: 'url(' + '/images/snooker-table/snooker-table-updated.svg' + ')' }}
+      ></div> */}
+      {showBill ? (
+        <TableBill
+          open={showBill}
+          setOpen={setShowBill}
+          tableData={tableData}
+          getAllTablesData={getAllTablesData}
+          setGameType={setGameType}
+          setCustomers={setCustomers}
+        />
+      ) : (
+        <></>
+      )}
     </div>
   )
 }

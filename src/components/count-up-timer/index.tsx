@@ -24,13 +24,12 @@ const CountUpTimer = ({ startTime, endTime, running }: { startTime: string; endT
     const minutes = timeArray[1].padStart(2, '0')
     const seconds = timeArray[2].padStart(2, '0')
     return (
-      <div className='flex justify-between items-center'>
-        <span className='border-2 rounded text-md p-1 text-center text-white border-slate-500'>{hours}</span>
-        <span className='text-slate-500 mx-1'>:</span>
-        <span className='border-2 rounded text-md p-1 text-center text-white border-slate-500'>{minutes}</span>
-        <span className='text-slate-500 mx-1'>:</span>
-        <span className='border-2 rounded text-md p-1 text-center text-white border-slate-500'>{seconds}</span>
-      </div>
+      <p className='text-xs'>
+        {hours}
+        <span className='text-[10px]'>h</span> {minutes}
+        <span className='text-[10px]'>m</span> {seconds}
+        <span className='text-[10px]'>s</span>
+      </p>
     )
   }
 

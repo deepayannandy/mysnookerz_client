@@ -24,6 +24,8 @@ export type CustomerDataType = {
   credit: number
 }
 
+export type CustomerListType = { fullName: string; customerId: string }
+
 export type DashboardDataType = {
   sales: number
   transactions: {
@@ -58,6 +60,8 @@ export type CustomerInvoiceType = {
   }
   billBreakup: { title: string; time: number; amount: number }[]
   totalBillAmt: number
+  mealAmount: number
+  netPay: number
   tax?: number
   total: number
   discount?: number | null
