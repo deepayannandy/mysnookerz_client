@@ -274,7 +274,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
 
           <div className='flex items-center gap-4'>
             <Button variant='contained' onClick={handleSubmit}>
-              Submit
+              Checkout
             </Button>
             <Button variant='outlined' color='error' onClick={handleClose}>
               Cancel
