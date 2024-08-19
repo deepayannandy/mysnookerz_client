@@ -193,6 +193,19 @@ const PoolCard = ({
                     label={(option as CustomerListType).fullName ?? option}
                     {...tagProps}
                     key={key}
+                    sx={{
+                      '& .MuiAvatar-root': {
+                        margin: '4px 0px'
+                      },
+                      '& .MuiChip-label': {
+                        wordWrap: 'break-word',
+                        whiteSpace: 'normal',
+                        textOverflow: 'clip',
+                        textAlign: 'center',
+                        maxWidth: '111px',
+                        height: '20px'
+                      }
+                    }}
                   />
                 )
               })
