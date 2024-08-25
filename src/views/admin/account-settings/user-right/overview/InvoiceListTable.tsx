@@ -310,7 +310,12 @@ const InvoiceListTable = () => {
               .rows.slice(0, table.getState().pagination.pageSize)
               .map(row => {
                 return (
-                  <tr key={row.id} className={classnames({ selected: row.getIsSelected() })}>
+                  <tr
+                    key={row.id}
+                    className={classnames('hover:bg-[var(--mui-palette-action-hover)]', {
+                      selected: row.getIsSelected()
+                    })}
+                  >
                     {row.getVisibleCells().map(cell => (
                       <td key={cell.id} {...(cell.id.includes('action') && { className: 'is-24' })}>
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}

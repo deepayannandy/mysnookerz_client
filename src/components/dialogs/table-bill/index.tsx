@@ -43,12 +43,13 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
   const pathname = usePathname()
   const router = useRouter()
 
-  const totalTime = Math.round(
+  const totalTime =
     tableData.gameData?.startTime && tableData.gameData?.endTime
-      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['minutes'])
-          .minutes
+      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), [
+          'hours',
+          'minutes'
+        ])
       : 0
-  )
 
   const getBillData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -124,7 +125,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       <div className='p-5'>
         <div className='flex flex-col gap-5'>
           {tableData.gameData?.gameType ? (
-            <TextField disabled id='gameType' label='Game Type' defaultValue={tableData.gameData.gameType}></TextField>
+            <TextField disabled id='gameType' label='Billing' defaultValue={tableData.gameData.gameType}></TextField>
           ) : (
             <></>
           )}
@@ -184,7 +185,9 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                 <>
                   <Divider className='col-span-2' />
                   <p>Total Time</p>
-                  <p>{totalTime} mins</p>
+                  <p>
+                    {totalTime.hours || '00'}hrs {Math.round(totalTime.minutes | 0) || '00'}mins
+                  </p>
                 </>
               ) : (
                 <></>
@@ -198,10 +201,10 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             <>
               <div className='w-full grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
                 <p>Table Amount</p>
-                <p>{`₹${data.totalBillAmt}`}</p>
+                <p>{`₹${Math.round(data.totalBillAmt || 0)}`}</p>
                 <Divider className='col-span-2' />
                 <p>Meals Amount</p>
-                <p>{`₹${data.mealAmount || 0}`}</p>
+                <p>{`₹${Math.round(data.mealAmount || 0)}`}</p>
               </div>
               {/* <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
                 <p>Net Pay</p>
@@ -214,11 +217,12 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
 
           <div className='w-full grid grid-cols-2 gap-2 mt-2 rounded-lg'>
             <TextField
-              placeholder='₹_._'
+              //placeholder='₹_._'
               InputProps={{
-                type: 'number',
-                startAdornment: <p className='m-2'>Discount</p>
+                type: 'number'
+                //startAdornment: <p className='m-2'>Discount</p>
               }}
+              label='Discount'
               value={inputData.discount}
               onChange={event =>
                 setInputData({
@@ -229,16 +233,20 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             />
             <TextField
               //className='w-full bg-[#E73434] rounded-lg'
-              value={`₹${data.totalBillAmt - (typeof inputData.discount === 'number' ? inputData.discount : 0)}`}
-              InputProps={{
-                startAdornment: <p className='m-1'>Net Pay</p>
-              }}
+              label='Net Pay'
+              value={`₹${Math.round(data.totalBillAmt - (typeof inputData.discount === 'number' ? inputData.discount : 0))}`}
+              InputProps={
+                {
+                  //startAdornment: <p className='m-1'>Net Pay</p>
+                }
+              }
             />
             <TextField
-              placeholder='₹_._'
+              label='Paid'
+              //placeholder='₹_._'
               InputProps={{
-                type: 'number',
-                startAdornment: <p className='m-2'>Paid</p>
+                type: 'number'
+                //startAdornment: <p className='m-2'>Paid</p>
               }}
               value={inputData.paid}
               onChange={event =>
@@ -249,6 +257,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
               }
             />
             <TextField
+              label='Payment Method'
               select
               value={inputData.paymentMethod}
               onChange={e => {

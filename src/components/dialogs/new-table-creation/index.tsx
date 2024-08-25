@@ -190,8 +190,8 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
-                <InputLabel>Game Type</InputLabel>
-                <Select label='Billing Type' value={gameType} onChange={e => setGameType(e.target.value)}>
+                <InputLabel>Billing</InputLabel>
+                <Select label='Billing' value={gameType} onChange={e => setGameType(e.target.value)}>
                   {gameTypes.map((type, index) => (
                     <MenuItem key={index} value={type}>
                       {type}

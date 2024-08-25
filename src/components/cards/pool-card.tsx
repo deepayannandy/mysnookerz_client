@@ -24,12 +24,13 @@ const PoolCard = ({
   )
   const [billData, setBillData] = useState({} as CustomerInvoiceType)
 
-  const totalTime = Math.round(
+  const totalTime =
     tableData.gameData?.startTime && tableData.gameData?.endTime
-      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['minutes'])
-          .minutes
+      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), [
+          'hours',
+          'minutes'
+        ])
       : 0
-  )
 
   const getBillData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -126,24 +127,67 @@ const PoolCard = ({
           <div className='bg-[url("/images/snooker-table/background-trapezoid.svg")] bg-contain text-center text-black bg-no-repeat bg-center w-full lg:w-11/12'>
             <span className='md:px-10 text-base line-clamp-1'>{tableData.tableName}</span>
           </div>
+          {/* {tableData.gameData?.gameType ? (
+            <div className='w-full text-center border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+              <p>{tableData.gameData?.gameType}</p>
+            </div>
+          ) : (
+            <TextField
+              className='w-full text-xs bg-[#0089B5] md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
+              disabled={!!tableData.gameData?.startTime}
+              size='small'
+              value={gameType}
+              onChange={e => setGameType(e.target.value)}
+              select // tell TextField to render select
+              label='Game Type'
+              sx={{
+                '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#5CD7FF',
+                  borderWidth: '1px'
+                },
+                '& .MuiInputLabel-outlined': {
+                  color: '#FFFFFF',
+                  '&.Mui-focused': {
+                    color: '#FFFFFF'
+                  }
+                }
+              }}
+            >
+              {tableData.gameTypes?.map(type => (
+                <MenuItem key={type} value={type}>
+                  {type}
+                </MenuItem>
+              ))}
+            </TextField>
+          )} */}
+
           <TextField
-            className='w-full text-xs bg-[#0089B5] md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
+            className='w-full text-xs bg-green-900 md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
             disabled={!!tableData.gameData?.startTime}
             size='small'
+            color='error'
             value={gameType}
             onChange={e => setGameType(e.target.value)}
             select // tell TextField to render select
-            label='Game Type'
+            label='Billing'
             sx={{
               '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#5CD7FF',
-                borderWidth: '1px'
+                border: 'none'
+              },
+              '& .MuiInputLabel-root.Mui-disabled': {
+                color: '#FFFFFF'
               },
               '& .MuiInputLabel-outlined': {
                 color: '#FFFFFF',
                 '&.Mui-focused': {
                   color: '#FFFFFF'
                 }
+              },
+              '& .MuiOutlinedInput-root': {
+                color: 'white'
+              },
+              '& .MuiInputBase-input.Mui-disabled': {
+                WebkitTextFillColor: '#adb5bd'
               }
             }}
           >
@@ -153,10 +197,11 @@ const PoolCard = ({
               </MenuItem>
             ))}
           </TextField>
+
           <Autocomplete
             disabled={!!tableData.gameData?.startTime}
             size='small'
-            className='w-full border-[#0FED11] text-xs bg-green-900 md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
+            className='w-full text-xs bg-green-900 md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
             limitTags={1}
             multiple
             sx={{
@@ -167,15 +212,30 @@ const PoolCard = ({
               '& .MuiAutocomplete-paper': {
                 overflowY: 'auto' // Ensure the dropdown becomes scrollable
               },
-              '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                borderColor: '#0FED11',
-                borderWidth: '1px'
+              // '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              //   borderColor: '#0FED11',
+              //   borderWidth: '1px'
+              // },
+              '& .MuiInputLabel-root.Mui-disabled': {
+                color: '#FFFFFF'
               },
               '& .MuiInputLabel-outlined': {
-                color: '#0FED11',
+                color: '#FFFFFF',
                 '&.Mui-focused': {
-                  color: '#0FED11'
+                  color: '#FFFFFF'
                 }
+              },
+              '& .MuiInputBase-root-MuiOutlinedInput-root': {
+                color: 'white'
+              },
+              '& .MuiInputBase-root-MuiOutlinedInput-root.Mui-disabled': {
+                color: 'white'
+              },
+              '& .MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled': {
+                WebkitTextFillColor: '#F5F7F8'
+              },
+              '& .MuiAutocomplete-tag': {
+                color: 'white'
               }
             }}
             options={customersList}
@@ -194,6 +254,7 @@ const PoolCard = ({
                     {...tagProps}
                     key={key}
                     sx={{
+                      borderColor: 'white',
                       '& .MuiAvatar-root': {
                         margin: '4px 0px'
                       },
@@ -203,8 +264,16 @@ const PoolCard = ({
                         textOverflow: 'clip',
                         textAlign: 'center',
                         maxWidth: '111px',
-                        height: '20px'
+                        height: '20px',
+                        color: 'white'
+                      },
+                      '& .MuiChip-deleteIcon': {
+                        color: 'white' // Customize the cancel button color
                       }
+                      // '& .MuiButtonBase-root.Mui-disabled': {
+                      //   opacity: 1,
+                      //   backgroundColor: 'red'
+                      // }
                     }}
                   />
                 )
@@ -217,7 +286,8 @@ const PoolCard = ({
                   '& .MuiInputBase-root': {
                     ...(tableData.gameData?.startTime ? {} : { height: '60px' }), // Set the fixed height for the TextField
                     overflowY: 'auto',
-                    border: 'none'
+                    border: 'none',
+                    color: 'white'
                   },
                   fieldset: {
                     border: 'none'
@@ -225,15 +295,97 @@ const PoolCard = ({
                 }}
                 variant='outlined'
                 label='Customers'
-                placeholder='Customers'
               />
             )}
           />
+          {/* {tableData.gameData?.players?.length ? (
+            <div className='w-full grid grid-cols-2 gap-2 border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+              <p>Customers</p>
+              <p>{`${tableData.gameData?.players[0]?.fullName} +${tableData.gameData?.players?.length - 1}`}</p>
+            </div>
+          ) : (
+            <Autocomplete
+              disabled={!!tableData.gameData?.startTime}
+              size='small'
+              className='w-full border-[#0FED11] text-xs bg-green-900 md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
+              limitTags={1}
+              multiple
+              sx={{
+                // '& .MuiOutlinedInput-root': {
+                //   // border: "1px solid yellow",
+                //   borderRadius: '4px'
+                // },
+                '& .MuiAutocomplete-paper': {
+                  overflowY: 'auto' // Ensure the dropdown becomes scrollable
+                },
+                '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                  borderColor: '#0FED11',
+                  borderWidth: '1px'
+                },
+                '& .MuiInputLabel-outlined': {
+                  color: '#0FED11',
+                  '&.Mui-focused': {
+                    color: '#0FED11'
+                  }
+                }
+              }}
+              options={customersList}
+              getOptionLabel={option => (option as CustomerListType).fullName ?? option}
+              freeSolo
+              value={customers}
+              onChange={(_, value) => setCustomers(value)}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => {
+                  const { key, ...tagProps } = getTagProps({ index })
+                  return (
+                    <Chip
+                      size='small'
+                      variant='outlined'
+                      label={(option as CustomerListType).fullName ?? option}
+                      {...tagProps}
+                      key={key}
+                      sx={{
+                        '& .MuiAvatar-root': {
+                          margin: '4px 0px'
+                        },
+                        '& .MuiChip-label': {
+                          wordWrap: 'break-word',
+                          whiteSpace: 'normal',
+                          textOverflow: 'clip',
+                          textAlign: 'center',
+                          maxWidth: '111px',
+                          height: '20px'
+                        }
+                      }}
+                    />
+                  )
+                })
+              }
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  sx={{
+                    '& .MuiInputBase-root': {
+                      ...(tableData.gameData?.startTime ? {} : { height: '60px' }), // Set the fixed height for the TextField
+                      overflowY: 'auto',
+                      border: 'none'
+                    },
+                    fieldset: {
+                      border: 'none'
+                    }
+                  }}
+                  variant='outlined'
+                  label='Customers'
+                  placeholder='Customers'
+                />
+              )}
+            />
+          )} */}
 
           {tableData.gameData?.startTime ? (
-            <div className='w-full grid grid-cols-2 gap-2 border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+            <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
               {tableData.gameData?.startTime ? (
-                <p className='text-[8px]'>
+                <p className='text-[10px]'>
                   Start Time
                   <br />
                   <span className='font-bold text-xs'>
@@ -245,7 +397,7 @@ const PoolCard = ({
               )}
 
               {tableData.gameData?.endTime ? (
-                <p className='text-[8px]'>
+                <p className='text-[10px]'>
                   End Time
                   <br />
                   <span className='font-bold text-xs'>
@@ -260,7 +412,9 @@ const PoolCard = ({
                 <>
                   <Divider className='col-span-2' />
                   <p className='text-xs'>Total Time</p>
-                  <p className='text-xs'>{totalTime} mins</p>
+                  <p className='text-xs'>
+                    {totalTime.hours || '00'}hrs {Math.round(totalTime.minutes | 0) || '00'}mins
+                  </p>
                 </>
               ) : (
                 <></>
@@ -271,7 +425,7 @@ const PoolCard = ({
           )}
 
           {tableData.gameData?.startTime && !tableData.gameData?.endTime ? (
-            <div className='w-full grid grid-cols-2 gap-2 border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+            <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
               <p className='text-xs'>Timer</p>
               <CountUpTimer
                 startTime={tableData.gameData?.startTime}
@@ -288,16 +442,16 @@ const PoolCard = ({
           </div> */}
           {tableData.gameData?.endTime ? (
             <>
-              <div className='w-full grid grid-cols-2 gap-2 border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+              <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
                 <p className='text-xs'>Table Amount</p>
-                <p className='text-xs'>{`₹${billData.totalBillAmt}`}</p>
+                <p className='text-xs'>{`₹${Math.round(billData.totalBillAmt || 0)}`}</p>
                 <Divider className='col-span-2' />
                 <p className='text-xs'>Meals Amount</p>
-                <p className='text-xs'>{`₹${billData.mealAmount || 0}`}</p>
+                <p className='text-xs'>{`₹${Math.round(billData.mealAmount || 0)}`}</p>
               </div>
-              <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 border border-white px-4 py-2 mt-2 shadow-[0.5px_0.5px_6px_1px_white] rounded-lg'>
-                <p className='text-xs'>Net Pay</p>
-                <p className='text-xs'>{`₹${billData.totalBillAmt}`}</p>
+              <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 text-white border border-white px-4 py-2 mt-2 shadow-[0.5px_0.5px_6px_1px_white] rounded-lg'>
+                <p className='text-[14px]'>Net Pay</p>
+                <p className='text-[14px]'>{`₹${Math.round(billData.totalBillAmt || 0)}`}</p>
               </div>
             </>
           ) : (
