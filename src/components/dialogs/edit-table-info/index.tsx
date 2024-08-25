@@ -199,7 +199,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 <span className='mx-3 font-bold'>Day</span>
               </Divider>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name='minuteWiseRules.dayUptoMin'
                 control={control}
@@ -219,7 +219,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name='minuteWiseRules.dayMinAmt'
                 control={control}
@@ -239,7 +239,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name='minuteWiseRules.dayPerMin'
                 control={control}
@@ -264,7 +264,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 <span className='mx-3 font-bold'>Night</span>
               </Divider>
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name='minuteWiseRules.nightUptoMin'
                 control={control}
@@ -283,7 +283,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name='minuteWiseRules.nightMinAmt'
                 control={control}
@@ -302,7 +302,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={4}>
               <Controller
                 name='minuteWiseRules.nightPerMin'
                 control={control}
