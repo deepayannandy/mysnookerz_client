@@ -186,7 +186,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                       avatar={option.fullName ? <Avatar>{getInitials(option.fullName)}</Avatar> : <></>}
                       label={option.fullName}
                       {...tagProps}
-                      key={option.fullName}
+                      key={key}
                     />
                   )
                 })
