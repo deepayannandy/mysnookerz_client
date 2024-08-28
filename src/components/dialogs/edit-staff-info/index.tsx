@@ -105,6 +105,7 @@ const EditStaffInfo = ({ open, setOpen, getStaffData, staffData }: EditStaffInfo
         getStaffData()
         resetForm()
         setOpen(false)
+        toast.success('Staff info updated successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

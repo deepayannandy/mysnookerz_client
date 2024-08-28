@@ -109,6 +109,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
         getTableData()
         resetForm()
         setOpen(false)
+        toast.success('Table info updated successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

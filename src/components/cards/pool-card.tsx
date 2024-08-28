@@ -67,6 +67,11 @@ const PoolCard = ({
       }
       return customer
     })
+
+    if (!players.length) {
+      toast.error('Please add at least one customer name')
+      return
+    }
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -80,6 +85,7 @@ const PoolCard = ({
 
       if (response && response.data) {
         getAllTablesData()
+        toast.success(`${tableData.tableName} started`, { icon: <>😁</> })
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
@@ -106,6 +112,7 @@ const PoolCard = ({
       if (response && response.data) {
         getBillData()
         getAllTablesData()
+        toast.success(`${tableData.tableName} stopped`)
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

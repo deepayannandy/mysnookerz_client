@@ -92,11 +92,11 @@ const VerticalMenu = ({ dictionary, scrollMenu }: Props) => {
 
           <SubMenu label={dictionary['navigation'].storeSettings} icon={<i className='ri-shopping-bag-3-line' />}>
             <MenuItem href={`/${locale}/admin/store-settings/table`}>{dictionary['navigation'].table}</MenuItem>
-            <MenuItem href={`/${locale}/admin/store-settings/night`}>{dictionary['navigation'].night}</MenuItem>
-            <MenuItem href={`/${locale}/admin/store-settings/happy-hours`}>
+            <MenuItem href={`/${locale}/admin/store-settings/master`}>{dictionary['navigation'].master}</MenuItem>
+            {/* <MenuItem href={`/${locale}/admin/store-settings/happy-hours`}>
               {dictionary['navigation'].happyHours}
             </MenuItem>
-            <MenuItem href={`/${locale}/admin/store-settings/reminder`}>{dictionary['navigation'].reminder}</MenuItem>
+            <MenuItem href={`/${locale}/admin/store-settings/reminder`}>{dictionary['navigation'].reminder}</MenuItem> */}
             <MenuItem href={`/${locale}/admin/store-settings/control`}>{dictionary['navigation'].control}</MenuItem>
             <MenuItem href={`/${locale}/admin/store-settings/devices`}>{dictionary['navigation'].devices}</MenuItem>
           </SubMenu>

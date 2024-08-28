@@ -131,6 +131,7 @@ const StaffListTable = () => {
       if (response && response.data) {
         getStaffData()
         setDeleteConfirmationDialogOpen(false)
+        toast.success('Staff deleted successfully')
       }
     } catch (error: any) {
       if (error?.response?.status === 401) {

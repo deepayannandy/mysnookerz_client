@@ -82,6 +82,7 @@ const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomer
         getCustomerData()
         resetForm()
         setOpen(false)
+        toast.success('Customer added successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

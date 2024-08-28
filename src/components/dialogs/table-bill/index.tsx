@@ -109,6 +109,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
         setCustomers(['CASH'])
         getAllTablesData()
         handleClose()
+        toast.success('Good Job!', { icon: <>👏</> })
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

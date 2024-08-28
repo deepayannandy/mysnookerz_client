@@ -109,6 +109,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
 
       if (response && response.data) {
         handleClose()
+        toast.success('Table added successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

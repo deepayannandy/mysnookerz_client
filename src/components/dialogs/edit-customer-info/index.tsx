@@ -80,6 +80,7 @@ const EditCustomerInfo = ({ open, setOpen, getCustomerData, customerData }: Edit
         getCustomerData()
         resetForm()
         setOpen(false)
+        toast.success('Customer info updated successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

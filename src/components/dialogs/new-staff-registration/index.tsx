@@ -89,6 +89,7 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
         getStaffData()
         resetForm()
         setOpen(false)
+        toast.success('Staff added successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

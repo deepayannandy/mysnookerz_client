@@ -166,6 +166,7 @@ const TableList = () => {
       if (response && response.data) {
         getTableData()
         setDeleteConfirmationDialogOpen(false)
+        toast.success('Table deleted successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

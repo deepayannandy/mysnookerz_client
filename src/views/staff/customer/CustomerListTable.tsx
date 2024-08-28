@@ -130,6 +130,7 @@ const CustomerListTable = () => {
       if (response && response.data) {
         getCustomerData()
         setDeleteConfirmationDialogOpen(false)
+        toast.success('Customer deleted successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
