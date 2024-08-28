@@ -229,7 +229,7 @@ const HistoryTable = () => {
       }),
       columnHelper.accessor('discount', {
         header: 'Discount',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.discount}`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.discount || 0}`}</Typography>
       }),
       columnHelper.accessor('netPay', {
         header: 'Net Pay',

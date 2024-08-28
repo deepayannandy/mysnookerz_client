@@ -13,15 +13,71 @@ const data: SearchData[] = [
     id: '1',
     name: 'Dashboard',
     url: '/staff/dashboard',
-    icon: 'ri-pie-chart-2-line',
-    section: 'Dashboards'
+    icon: 'ri-bar-chart-line',
+    section: 'Staff Interface'
   },
   {
     id: '2',
+    name: 'Booking',
+    url: '/staff/booking',
+    icon: 'ri-book-open-line',
+    section: 'Staff Interface'
+  },
+  {
+    id: '3',
     name: 'History',
     url: '/staff/history',
-    icon: 'ri-bar-chart-line',
-    section: 'Dashboards'
+    icon: 'ri-list-unordered',
+    section: 'Staff Interface'
+  },
+  {
+    id: '4',
+    name: 'Customer',
+    url: '/staff/customer',
+    icon: 'ri-pie-chart-2-line',
+    section: 'Staff Interface'
+  },
+  {
+    id: '5',
+    name: 'Staff',
+    url: '/admin/staff',
+    icon: 'ri-user-line',
+    section: 'Admin Interface'
+  },
+  {
+    id: '6',
+    name: 'Table',
+    url: '/admin/store-settings/table',
+    icon: 'ri-file-list-line',
+    section: 'Store Settings'
+  },
+  {
+    id: '7',
+    name: 'Master',
+    url: '/admin/store-settings/master',
+    icon: 'ri-settings-2-line',
+    section: 'Store Settings'
+  },
+  {
+    id: '8',
+    name: 'Control',
+    url: '/admin/store-settings/control',
+    icon: 'ri-user-settings-line',
+    section: 'Store Settings'
+  },
+  {
+    id: '9',
+    name: 'Devices',
+    url: '/admin/store-settings/devices',
+    icon: 'ri-device-line',
+    section: 'Store Settings'
+  },
+  {
+    id: '10',
+    name: 'Account Settings',
+    url: '/admin/account-settings',
+    icon: 'ri-file-user-line',
+    section: 'Admin Interface'
   }
 ]
 
