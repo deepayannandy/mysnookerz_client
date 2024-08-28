@@ -36,6 +36,7 @@ import OptionMenu from '@/@core/components/option-menu'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import EditCustomerInfo from '@/components/dialogs/edit-customer-info'
 import NewCustomerRegistration from '@/components/dialogs/new-customer-registration'
+import SearchInput from '@/components/Search'
 import { CustomerDataType } from '@/types/staffTypes'
 import { getInitials } from '@/utils/getInitials'
 import tableStyles from '@core/styles/table.module.css'
@@ -275,12 +276,13 @@ const CustomerListTable = () => {
   return (
     <>
       <Card>
-        <CardContent className='flex justify-between flex-col items-start sm:flex-col sm:items-end gap-y-4'>
-          {/* <DebouncedInput
+        <CardContent className='flex justify-between flex-col items-start sm:flex-row sm:items-end gap-y-2'>
+          <SearchInput
             value={globalFilter ?? ''}
             onChange={value => setGlobalFilter(String(value))}
             placeholder='Search'
-          /> */}
+            //className='is-full sm:is-auto'
+          />
           <div className='flex gap-x-4'>
             {/* <Button variant='outlined' color='secondary' startIcon={<i className='ri-upload-2-line' />}>
               Export

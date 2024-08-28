@@ -32,9 +32,10 @@ import type { ThemeColor } from '@core/types'
 
 // Style Imports
 
+import SearchInput from '@/components/Search'
 import { HistoryDataType } from '@/types/staffTypes'
 import tableStyles from '@core/styles/table.module.css'
-import { Tooltip } from '@mui/material'
+import { CardContent, Tooltip } from '@mui/material'
 import Chip from '@mui/material/Chip'
 import axios from 'axios'
 import { DateTime } from 'luxon'
@@ -284,6 +285,17 @@ const HistoryTable = () => {
   return (
     <>
       <Card>
+        <CardContent className='flex justify-between flex-col items-start sm:flex-row sm:items-end gap-y-2'>
+          <Typography className='text-xl font-bold'>History</Typography>
+          <div className='flex gap-x-4'>
+            <SearchInput
+              value={globalFilter ?? ''}
+              onChange={value => setGlobalFilter(String(value))}
+              placeholder='Search'
+              //className='is-full sm:is-auto'
+            />
+          </div>
+        </CardContent>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>
             <thead>
