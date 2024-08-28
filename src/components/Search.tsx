@@ -1,4 +1,4 @@
-import { TextField, TextFieldProps } from '@mui/material'
+import * as mui from '@mui/material'
 import { useEffect, useState } from 'react'
 
 const SearchInput = ({
@@ -10,7 +10,7 @@ const SearchInput = ({
   value: string | number
   onChange: (value: string | number) => void
   debounce?: number
-} & Omit<TextFieldProps, 'onChange'>) => {
+} & Omit<mui.TextFieldProps, 'onChange'>) => {
   // States
   const [value, setValue] = useState(initialValue)
 
@@ -27,7 +27,7 @@ const SearchInput = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
-  return <TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
+  return <mui.TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
 }
 
 export default SearchInput
