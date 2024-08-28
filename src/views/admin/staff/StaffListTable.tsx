@@ -190,7 +190,7 @@ const StaffListTable = () => {
         cell: ({ row }) => <Typography color='text.primary'>{row.original.email}</Typography>
       }),
       columnHelper.accessor('onBoardingDate', {
-        header: 'Boarding Date',
+        header: 'Joining Date',
         cell: ({ row }) => (
           <Typography color='text.primary'>
             {row.original.onBoardingDate ? DateTime.fromISO(row.original.onBoardingDate).toFormat('dd LLL yyyy') : ''}

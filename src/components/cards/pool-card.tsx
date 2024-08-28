@@ -169,7 +169,7 @@ const PoolCard = ({
             value={gameType}
             onChange={e => setGameType(e.target.value)}
             select // tell TextField to render select
-            label='Billing'
+            placeholder='Billing'
             sx={{
               '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
                 border: 'none'
@@ -239,7 +239,7 @@ const PoolCard = ({
               }
             }}
             options={customersList}
-            getOptionLabel={option => (option as CustomerListType).fullName ?? option}
+            getOptionLabel={option => ((option as CustomerListType).fullName ?? option)?.split('(').join(' (')}
             freeSolo
             value={customers}
             onChange={(_, value) => setCustomers(value)}
@@ -294,7 +294,7 @@ const PoolCard = ({
                   }
                 }}
                 variant='outlined'
-                label='Customers'
+                placeholder='Customers'
               />
             )}
           />

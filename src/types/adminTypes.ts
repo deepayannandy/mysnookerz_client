@@ -8,6 +8,7 @@ export type StaffDataType = {
   onBoardingDate: string
   profileImage: string
   userStatus: string
+  userDesignation: string
 }
 
 export type InvoiceType = {

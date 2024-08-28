@@ -29,6 +29,11 @@ const paymentMethods = ['CASH', 'UPI', 'CARD']
 const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, setCustomers }: TableBillPropType) => {
   // States
   const [data, setData] = useState({} as CustomerInvoiceType)
+  const [invoiceTo, setInvoiceTo] = useState(
+    (data.selectedTable?.gameData?.players || []) as { fullName?: string; customerId?: string }[]
+  )
+
+  const [errors, setErrors] = useState({} as { invoiceTo: string })
   const [inputData, setInputData] = useState({
     discount: '',
     paid: '',
@@ -38,6 +43,9 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
     paid?: number | string
     paymentMethod: string
   })
+  const [customerPaymentData, setCustomerPaymentData] = useState(
+    {} as { [x: string]: { amount?: number | string; paymentMethod?: string } }
+  )
 
   const { lang: locale } = useParams()
   const pathname = usePathname()
@@ -83,6 +91,11 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
   }
 
   const handleSubmit = async () => {
+    if (invoiceTo.length < 1) {
+      setErrors({ invoiceTo: 'This field is required' })
+      return
+    }
+
     const requestData = { ...inputData, timeDelta: data.timeDelta, totalBillAmt: data.totalBillAmt }
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
@@ -155,6 +168,41 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             <></>
           )}
 
+          {data.selectedTable?.gameData?.players ? (
+            <Autocomplete
+              options={data.selectedTable.gameData.players}
+              getOptionLabel={option => option.fullName as string}
+              multiple
+              value={invoiceTo}
+              onChange={(_, value) => setInvoiceTo(value)}
+              renderTags={(value, getTagProps) =>
+                value.map((option, index) => {
+                  const { key, ...tagProps } = getTagProps({ index })
+                  return (
+                    <Chip
+                      size='small'
+                      variant='outlined'
+                      avatar={option.fullName ? <Avatar>{getInitials(option.fullName)}</Avatar> : <></>}
+                      label={option.fullName}
+                      {...tagProps}
+                      key={option.fullName}
+                    />
+                  )
+                })
+              }
+              renderInput={params => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Invoice To'
+                  {...(errors.invoiceTo && invoiceTo.length < 1 && { error: true, helperText: errors.invoiceTo })}
+                />
+              )}
+            />
+          ) : (
+            <></>
+          )}
+
           {data.selectedTable?.gameData?.startTime ? (
             <div className='w-full grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
               {data.selectedTable.gameData?.startTime ? (
@@ -219,7 +267,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             <TextField
               //placeholder='₹_._'
               InputProps={{
-                type: 'number'
+                type: 'tel'
                 //startAdornment: <p className='m-2'>Discount</p>
               }}
               label='Discount'
@@ -245,7 +293,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
               label='Paid'
               //placeholder='₹_._'
               InputProps={{
-                type: 'number'
+                type: 'tel'
                 //startAdornment: <p className='m-2'>Paid</p>
               }}
               value={inputData.paid}
@@ -270,16 +318,76 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                 </MenuItem>
               ))}
             </TextField>
-            {/* <Select
-              size='small'
-              value={inputData.paymentMethod}
-              onChange={e => {
-                setInputData({ ...inputData, paymentMethod: e.target.value })
-              }}
-            >
-              
-            </Select> */}
           </div>
+
+          {invoiceTo.length > 1 ? (
+            <div className='w-full grid grid-cols-1  border mt-2 rounded-lg'>
+              <div className='w-full grid grid-cols-3 text-center font-bold border-b divide-x'>
+                <div className='size-full grid place-items-center'>
+                  <p>Customer</p>
+                </div>
+                <div className='size-full grid place-items-center'>
+                  <p>Amount</p>
+                </div>
+                <div className='size-full grid place-items-center'>
+                  <p>Payment Method</p>
+                </div>
+              </div>
+
+              {invoiceTo.map(customer => (
+                <div key={customer.fullName} className='w-full grid grid-cols-3 border-b divide-x'>
+                  <div className='size-full grid place-items-center break-all p-2'>
+                    <p>{customer.fullName}</p>
+                  </div>
+                  <div className='size-full grid place-items-center p-2'>
+                    <TextField
+                      size='small'
+                      //placeholder='₹_._'
+                      InputProps={{
+                        type: 'tel'
+                        //startAdornment: <p className='m-2'>Paid</p>
+                      }}
+                      value={customerPaymentData[customer.fullName as string]?.amount || ''}
+                      onChange={event =>
+                        setCustomerPaymentData({
+                          ...customerPaymentData,
+                          [customer.fullName as string]: {
+                            ...customerPaymentData[customer.fullName as string],
+                            amount: Number(event.target.value) ? Number(event.target.value) : ''
+                          }
+                        })
+                      }
+                    />
+                  </div>
+                  <div className='size-full grid place-items-center p-2'>
+                    <TextField
+                      className='w-full'
+                      size='small'
+                      select
+                      value={customerPaymentData[customer.fullName as string]?.paymentMethod || paymentMethods[0]}
+                      onChange={e => {
+                        setCustomerPaymentData({
+                          ...customerPaymentData,
+                          [customer.fullName as string]: {
+                            ...customerPaymentData[customer.fullName as string],
+                            paymentMethod: e.target.value
+                          }
+                        })
+                      }}
+                    >
+                      {paymentMethods.map((paymentMethod, index) => (
+                        <MenuItem key={index} value={paymentMethod}>
+                          {paymentMethod}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <></>
+          )}
 
           <div className='flex items-center gap-4'>
             <Button variant='contained' onClick={handleSubmit}>

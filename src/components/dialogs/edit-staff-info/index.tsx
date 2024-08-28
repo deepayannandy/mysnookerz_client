@@ -79,7 +79,7 @@ const EditStaffInfo = ({ open, setOpen, getStaffData, staffData }: EditStaffInfo
   })
 
   useEffect(() => {
-    resetForm(_.omit(staffData, 'password'))
+    resetForm({ ..._.omit(staffData, 'password'), password: '', confirmPassword: '' })
   }, [staffData, resetForm])
 
   const handleClose = () => {
