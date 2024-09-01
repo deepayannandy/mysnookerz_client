@@ -64,10 +64,10 @@ const DashboardDetails = () => {
 
   return (
     <>
-      {dashboardData?.sales ? (
+      {dashboardData?.sales >= 0 ? (
         <Grid container spacing={6}>
           <Grid item xs={12} md={4}>
-            <Award data={dashboardData.sales} />
+            <Award data={dashboardData.sales || 0} />
           </Grid>
           <Grid item xs={12} md={8} lg={8}>
             <Transactions data={dashboardData} />

@@ -70,7 +70,7 @@ const Transactions = ({ data }: { data: DashboardDataType }) => {
                 </CustomAvatar>
                 <div>
                   <Typography>{item.title}</Typography>
-                  <Typography variant='h5'>{`₹${data.transactions?.[item.id]}`}</Typography>
+                  <Typography variant='h5'>{`₹${data.transactions?.[item.id] || 0}`}</Typography>
                 </div>
               </div>
             </Grid>
