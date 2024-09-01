@@ -25,7 +25,7 @@ const UserPlan = ({ data }: { data: UserDataType }) => {
   return (
     <>
       <Card className='border-2 border-primary rounded'>
-        {typeof data.SubscriptionData !== 'object' ? (
+        {typeof data.SubscriptionData !== 'object' || daysPast > (data?.SubscriptionData?.subscriptionValidity || 0) ? (
           <CardContent className='flex flex-col gap-6'>
             <Typography className='font-medium' color='text.primary'>
               No active subscription
