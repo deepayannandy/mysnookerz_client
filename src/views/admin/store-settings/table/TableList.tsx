@@ -183,21 +183,7 @@ const TableList = () => {
   }
 
   const editTableData = (rowData: TableDataType) => {
-    setTableData({
-      ...rowData,
-      slotBillingData: [
-        {
-          uptoMin: 12,
-          dayCharge: 20,
-          nightCharge: 30
-        },
-        {
-          uptoMin: 15,
-          dayCharge: 50,
-          nightCharge: 1000
-        }
-      ]
-    })
+    setTableData(rowData)
     setEditTableInfoDialogOpen(!editTableInfoDialogOpen)
   }
 

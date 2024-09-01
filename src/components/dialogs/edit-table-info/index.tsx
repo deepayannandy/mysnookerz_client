@@ -35,10 +35,10 @@ type EditTableDataType = {
     nightMinAmt: number | null
     nightPerMin: number | null
   }>
-  slotBillingData: Partial<{
+  slotWiseRules: Partial<{
     uptoMin: number | null
-    dayCharge: number | null
-    nightCharge: number | null
+    slotCharge: number | null
+    nightSlotCharge: number | null
   }>[]
   deviceId: string
   nodeID: string
@@ -80,7 +80,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
 
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormProvider)
-    name: 'slotBillingData' // unique name for your Field Array
+    name: 'slotWiseRules' // unique name for your Field Array
   })
 
   useEffect(() => {
@@ -370,7 +370,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                   {fields.map((field, index) => (
                     <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
                       <Controller
-                        name={`slotBillingData.${index}.uptoMin`}
+                        name={`slotWiseRules.${index}.uptoMin`}
                         control={control}
                         rules={{ required: true }}
                         render={({ field: { value, onChange } }) => (
@@ -381,16 +381,16 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                             inputProps={{ type: 'number', min: 0 }}
                             value={value}
                             onChange={onChange}
-                            {...(errors.slotBillingData?.[index]?.uptoMin && {
+                            {...(errors.slotWiseRules?.[index]?.uptoMin && {
                               error: true,
-                              helperText: errors.slotBillingData?.[index]?.uptoMin?.message || 'This field is required'
+                              helperText: errors.slotWiseRules?.[index]?.uptoMin?.message || 'This field is required'
                             })}
                           />
                         )}
                       />
 
                       <Controller
-                        name={`slotBillingData.${index}.dayCharge`}
+                        name={`slotWiseRules.${index}.slotCharge`}
                         control={control}
                         rules={{ required: true }}
                         render={({ field: { value, onChange } }) => (
@@ -401,17 +401,16 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                             inputProps={{ type: 'tel', min: 0, step: 'any' }}
                             value={value}
                             onChange={onChange}
-                            {...(errors.slotBillingData?.[index]?.dayCharge && {
+                            {...(errors.slotWiseRules?.[index]?.slotCharge && {
                               error: true,
-                              helperText:
-                                errors.slotBillingData?.[index]?.dayCharge?.message || 'This field is required'
+                              helperText: errors.slotWiseRules?.[index]?.slotCharge?.message || 'This field is required'
                             })}
                           />
                         )}
                       />
 
                       <Controller
-                        name={`slotBillingData.${index}.nightCharge`}
+                        name={`slotWiseRules.${index}.nightSlotCharge`}
                         control={control}
                         rules={{ required: true }}
                         render={({ field: { value, onChange } }) => (
@@ -422,10 +421,10 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                             inputProps={{ type: 'tel', min: 0, step: 'any' }}
                             value={value}
                             onChange={onChange}
-                            {...(errors.slotBillingData?.[index]?.nightCharge && {
+                            {...(errors.slotWiseRules?.[index]?.nightSlotCharge && {
                               error: true,
                               helperText:
-                                errors.slotBillingData?.[index]?.nightCharge?.message || 'This field is required'
+                                errors.slotWiseRules?.[index]?.nightSlotCharge?.message || 'This field is required'
                             })}
                           />
                         )}
@@ -444,7 +443,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                           className='min-is-fit'
                           size='small'
                           variant='contained'
-                          onClick={() => append({ uptoMin: null, dayCharge: null, nightCharge: null })}
+                          onClick={() => append({ uptoMin: null, slotCharge: null, nightSlotCharge: null })}
                           startIcon={<i className='ri-add-line' />}
                         >
                           Add Item

@@ -33,10 +33,10 @@ type NewTableCreationDataType = Partial<{
     nightMinAmt: number | null
     nightPerMin: number | null
   }
-  slotBillingData: {
+  slotWiseRules: {
     uptoMin: number | null
-    dayCharge: number | null
-    nightCharge: number | null
+    slotCharge: number | null
+    nightSlotCharge: number | null
   }[]
   deviceId: string
   nodeID: string
@@ -84,11 +84,11 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
         nightMinAmt: null,
         nightPerMin: null
       },
-      slotBillingData: [
+      slotWiseRules: [
         {
           uptoMin: null,
-          dayCharge: null,
-          nightCharge: null
+          slotCharge: null,
+          nightSlotCharge: null
         }
       ],
       deviceId: '',
@@ -98,7 +98,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
 
   const { fields, append, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormProvider)
-    name: 'slotBillingData' // unique name for your Field Array
+    name: 'slotWiseRules' // unique name for your Field Array
   })
 
   const handleClose = () => {
@@ -379,7 +379,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                   {fields.map((field, index) => (
                     <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
                       <Controller
-                        name={`slotBillingData.${index}.uptoMin`}
+                        name={`slotWiseRules.${index}.uptoMin`}
                         control={control}
                         rules={{ required: true }}
                         render={({ field: { value, onChange } }) => (
@@ -390,16 +390,16 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                             inputProps={{ type: 'number', min: 0 }}
                             value={value}
                             onChange={onChange}
-                            {...(errors.slotBillingData?.[index]?.uptoMin && {
+                            {...(errors.slotWiseRules?.[index]?.uptoMin && {
                               error: true,
-                              helperText: errors.slotBillingData?.[index]?.uptoMin?.message || 'This field is required'
+                              helperText: errors.slotWiseRules?.[index]?.uptoMin?.message || 'This field is required'
                             })}
                           />
                         )}
                       />
 
                       <Controller
-                        name={`slotBillingData.${index}.dayCharge`}
+                        name={`slotWiseRules.${index}.slotCharge`}
                         control={control}
                         rules={{ required: true }}
                         render={({ field: { value, onChange } }) => (
@@ -410,17 +410,16 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                             inputProps={{ type: 'tel', min: 0, step: 'any' }}
                             value={value}
                             onChange={onChange}
-                            {...(errors.slotBillingData?.[index]?.dayCharge && {
+                            {...(errors.slotWiseRules?.[index]?.slotCharge && {
                               error: true,
-                              helperText:
-                                errors.slotBillingData?.[index]?.dayCharge?.message || 'This field is required'
+                              helperText: errors.slotWiseRules?.[index]?.slotCharge?.message || 'This field is required'
                             })}
                           />
                         )}
                       />
 
                       <Controller
-                        name={`slotBillingData.${index}.nightCharge`}
+                        name={`slotWiseRules.${index}.nightSlotCharge`}
                         control={control}
                         rules={{ required: true }}
                         render={({ field: { value, onChange } }) => (
@@ -431,10 +430,10 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                             inputProps={{ type: 'tel', min: 0, step: 'any' }}
                             value={value}
                             onChange={onChange}
-                            {...(errors.slotBillingData?.[index]?.nightCharge && {
+                            {...(errors.slotWiseRules?.[index]?.nightSlotCharge && {
                               error: true,
                               helperText:
-                                errors.slotBillingData?.[index]?.nightCharge?.message || 'This field is required'
+                                errors.slotWiseRules?.[index]?.nightSlotCharge?.message || 'This field is required'
                             })}
                           />
                         )}
@@ -453,7 +452,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                           className='min-is-fit'
                           size='small'
                           variant='contained'
-                          onClick={() => append({ uptoMin: null, dayCharge: null, nightCharge: null })}
+                          onClick={() => append({ uptoMin: null, slotCharge: null, nightSlotCharge: null })}
                           startIcon={<i className='ri-add-line' />}
                         >
                           Add Item
@@ -475,7 +474,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Device</InputLabel>
-                <Select label='Device' value={deviceId} onChange={e => setDeviceId(e.target.value)}>
+                <Select required label='Device' value={deviceId} onChange={e => setDeviceId(e.target.value)}>
                   {devices.map((type, index) => (
                     <MenuItem key={index} value={type}>
                       {type}
@@ -487,7 +486,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Node</InputLabel>
-                <Select label='Node' value={nodeId} onChange={e => setNodeId(e.target.value)}>
+                <Select required label='Node' value={nodeId} onChange={e => setNodeId(e.target.value)}>
                   {nodes[deviceId]?.map((type, index) => (
                     <MenuItem key={index} value={type}>
                       {type}
