@@ -56,6 +56,11 @@ export type TableDataType = {
     nightMinAmt: number | null
     nightPerMin: number | null
   }>
+  slotBillingData: Partial<{
+    uptoMin: number | null
+    dayCharge: number | null
+    nightCharge: number | null
+  }>[]
   deviceId: string
   nodeID: string
   isOccupied?: boolean

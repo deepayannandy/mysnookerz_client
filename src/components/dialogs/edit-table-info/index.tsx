@@ -4,7 +4,8 @@
 import { useEffect, useState } from 'react'
 
 // MUI Imports
-import { Divider } from '@mui/material'
+import CustomIconButton from '@/@core/components/mui/IconButton'
+import { Checkbox, Divider, FormControlLabel } from '@mui/material'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
@@ -19,7 +20,7 @@ import Select from '@mui/material/Select'
 import TextField from '@mui/material/TextField'
 import axios from 'axios'
 import _ from 'lodash'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 type EditTableDataType = {
@@ -34,6 +35,11 @@ type EditTableDataType = {
     nightMinAmt: number | null
     nightPerMin: number | null
   }>
+  slotBillingData: Partial<{
+    uptoMin: number | null
+    dayCharge: number | null
+    nightCharge: number | null
+  }>[]
   deviceId: string
   nodeID: string
 }
@@ -49,15 +55,14 @@ type EditTableInfoProps = {
 
 // const languages = ['English', 'Spanish', 'French', 'German', 'Hindi']
 
-const gameTypes = ['Minute Billing']
-
 const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfoProps) => {
   //const [userData, setUserData] = useState([] as NewTableCreationDataType)
-  const [gameType, setGameType] = useState('')
   const [devices, setDevices] = useState([] as string[])
   const [nodes, setNodes] = useState({} as Record<string, string[]>)
   const [deviceId, setDeviceId] = useState('')
   const [nodeId, setNodeId] = useState('')
+  const [isMinuteBillingSelected, setIsMinuteBillingSelected] = useState(true)
+  const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(true)
 
   // States
   // const { lang: locale } = useParams()
@@ -73,11 +78,15 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     //resolver: yupResolver(schema),
   })
 
+  const { fields, append, remove } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormProvider)
+    name: 'slotBillingData' // unique name for your Field Array
+  })
+
   useEffect(() => {
     resetForm(_.omit(tableData, 'deviceId', 'nodeID', 'gameType'))
     setDeviceId(tableData.deviceId)
     setNodeId(tableData.nodeID)
-    setGameType(tableData.gameTypes?.[0])
   }, [tableData, resetForm])
 
   useEffect(() => {
@@ -90,14 +99,13 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   }
 
   const onSubmit = async (data: EditTableDataType) => {
-    const requestData: Pick<EditTableDataType, 'tableName' | 'minuteWiseRules' | 'deviceId' | 'nodeID'> = {
-      ..._.pick(data, 'tableName', 'minuteWiseRules'),
+    const requestData: Omit<EditTableDataType, '_id' | 'gameTypes'> = {
+      ..._.omit(data, '_id', 'gameTypes'),
       deviceId,
       nodeID: nodeId
     }
     // requestData.deviceId = deviceId
     // requestData.nodeID = nodeId
-
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -164,6 +172,28 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
           </IconButton>
           <Grid container spacing={5}>
             <Grid item xs={12} sm={6}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    disabled
+                    defaultChecked
+                    onChange={event => setIsMinuteBillingSelected(event.target.checked)}
+                  />
+                }
+                label='Minute Billing'
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    disabled
+                    defaultChecked
+                    onChange={event => setIsSlotBillingSelected(event.target.checked)}
+                  />
+                }
+                label='Slot Billing'
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
               <Controller
                 name='tableName'
                 control={control}
@@ -183,7 +213,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Billing</InputLabel>
                 <Select disabled={true} label='Billing' value={gameType} onChange={e => setGameType(e.target.value)}>
@@ -194,134 +224,242 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                   ))}
                 </Select>
               </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-              <Divider>
-                <span className='mx-3 font-bold'>Day</span>
-              </Divider>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Controller
-                name='minuteWiseRules.dayUptoMin'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Up To Minute'
-                    inputProps={{ type: 'number', min: 0 }}
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.minuteWiseRules?.dayUptoMin && {
-                      error: true,
-                      helperText: errors.minuteWiseRules?.dayUptoMin?.message || 'This field is required'
-                    })}
+            </Grid> */}
+            {isMinuteBillingSelected ? (
+              <>
+                <Grid item xs={12}>
+                  <Divider>
+                    <span className='mx-3 font-bold'>Day</span>
+                  </Divider>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='minuteWiseRules.dayUptoMin'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        fullWidth
+                        label='Up To Minute'
+                        inputProps={{ type: 'number', min: 0 }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.minuteWiseRules?.dayUptoMin && {
+                          error: true,
+                          helperText: errors.minuteWiseRules?.dayUptoMin?.message || 'This field is required'
+                        })}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Controller
-                name='minuteWiseRules.dayMinAmt'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Minimum Charge'
-                    inputProps={{ type: 'number', min: 0, step: 'any' }}
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.minuteWiseRules?.dayMinAmt && {
-                      error: true,
-                      helperText: errors.minuteWiseRules?.dayMinAmt?.message || 'This field is required'
-                    })}
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='minuteWiseRules.dayMinAmt'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        fullWidth
+                        label='Minimum Charge'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.minuteWiseRules?.dayMinAmt && {
+                          error: true,
+                          helperText: errors.minuteWiseRules?.dayMinAmt?.message || 'This field is required'
+                        })}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Controller
-                name='minuteWiseRules.dayPerMin'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Per Minute Charge'
-                    inputProps={{ type: 'number', min: 0, step: 'any' }}
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.minuteWiseRules?.dayPerMin && {
-                      error: true,
-                      helperText: errors.minuteWiseRules?.dayPerMin?.message || 'This field is required'
-                    })}
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='minuteWiseRules.dayPerMin'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        fullWidth
+                        label='Per Minute Charge'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.minuteWiseRules?.dayPerMin && {
+                          error: true,
+                          helperText: errors.minuteWiseRules?.dayPerMin?.message || 'This field is required'
+                        })}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Divider>
-                <span className='mx-3 font-bold'>Night</span>
-              </Divider>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Controller
-                name='minuteWiseRules.nightUptoMin'
-                control={control}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Up To Minute'
-                    inputProps={{ type: 'number', min: 0 }}
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.minuteWiseRules?.nightUptoMin && {
-                      error: true,
-                      helperText: errors.minuteWiseRules?.nightUptoMin?.message
-                    })}
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider>
+                    <span className='mx-3 font-bold'>Night</span>
+                  </Divider>
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='minuteWiseRules.nightUptoMin'
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        fullWidth
+                        label='Up To Minute'
+                        inputProps={{ type: 'number', min: 0 }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.minuteWiseRules?.nightUptoMin && {
+                          error: true,
+                          helperText: errors.minuteWiseRules?.nightUptoMin?.message
+                        })}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Controller
-                name='minuteWiseRules.nightMinAmt'
-                control={control}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Minimum Charge'
-                    inputProps={{ type: 'number', min: 0, step: 'any' }}
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.minuteWiseRules?.nightMinAmt && {
-                      error: true,
-                      helperText: errors.minuteWiseRules?.nightMinAmt?.message
-                    })}
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='minuteWiseRules.nightMinAmt'
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        fullWidth
+                        label='Minimum Charge'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.minuteWiseRules?.nightMinAmt && {
+                          error: true,
+                          helperText: errors.minuteWiseRules?.nightMinAmt?.message
+                        })}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Controller
-                name='minuteWiseRules.nightPerMin'
-                control={control}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Per Minute Charge'
-                    inputProps={{ type: 'number', min: 0, step: 'any' }}
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.minuteWiseRules?.nightPerMin && {
-                      error: true,
-                      helperText: errors.minuteWiseRules?.nightPerMin?.message
-                    })}
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='minuteWiseRules.nightPerMin'
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        fullWidth
+                        label='Per Minute Charge'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.minuteWiseRules?.nightPerMin && {
+                          error: true,
+                          helperText: errors.minuteWiseRules?.nightPerMin?.message
+                        })}
+                      />
+                    )}
                   />
-                )}
-              />
-            </Grid>
+                </Grid>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {isSlotBillingSelected ? (
+              <>
+                <Grid item xs={12}>
+                  <Divider>
+                    <span className='mx-3 font-bold'>Slot Billing</span>
+                  </Divider>
+                </Grid>
+                <Grid item xs={12}>
+                  {fields.map((field, index) => (
+                    <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
+                      <Controller
+                        name={`slotBillingData.${index}.uptoMin`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Up To Minute'
+                            inputProps={{ type: 'number', min: 0 }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.slotBillingData?.[index]?.uptoMin && {
+                              error: true,
+                              helperText: errors.slotBillingData?.[index]?.uptoMin?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`slotBillingData.${index}.dayCharge`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Day Charge'
+                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.slotBillingData?.[index]?.dayCharge && {
+                              error: true,
+                              helperText:
+                                errors.slotBillingData?.[index]?.dayCharge?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`slotBillingData.${index}.nightCharge`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Night Charge'
+                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.slotBillingData?.[index]?.nightCharge && {
+                              error: true,
+                              helperText:
+                                errors.slotBillingData?.[index]?.nightCharge?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      {fields.length > 1 ? (
+                        <CustomIconButton onClick={() => remove(index)} className='min-is-fit'>
+                          <i className='ri-close-line' />
+                        </CustomIconButton>
+                      ) : (
+                        <></>
+                      )}
+
+                      {index === fields.length - 1 ? (
+                        <Button
+                          className='min-is-fit'
+                          size='small'
+                          variant='contained'
+                          onClick={() => append({ uptoMin: null, dayCharge: null, nightCharge: null })}
+                          startIcon={<i className='ri-add-line' />}
+                        >
+                          Add Item
+                        </Button>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  ))}
+                </Grid>
+              </>
+            ) : (
+              <></>
+            )}
+
             <Grid item xs={12}>
               <Divider />
             </Grid>
