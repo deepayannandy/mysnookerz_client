@@ -113,7 +113,7 @@ const CurrentPlan = ({ data }: { data?: PricingPlanType[] }) => {
                   Days
                 </Typography>
                 <Typography className='font-medium' color='text.primary'>
-                  {`${daysPast} of 30 Days`}
+                  {`${daysPast} of ${userData?.SubscriptionData?.subscriptionValidity} Days`}
                 </Typography>
               </div>
               <LinearProgress

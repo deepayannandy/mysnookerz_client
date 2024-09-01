@@ -39,7 +39,7 @@ const UserPlan = ({ data }: { data: UserDataType }) => {
                 <Typography variant='h5' component='sup' className='self-start' color='primary'>
                   ₹
                 </Typography>
-                <Typography component='span' variant='h5' color='primary'>
+                <Typography component='span' variant='h1' color='primary'>
                   {data?.SubscriptionData?.subscriptionAmount}
                 </Typography>
                 <Typography component='sub' className='self-end' color='text.primary'>
