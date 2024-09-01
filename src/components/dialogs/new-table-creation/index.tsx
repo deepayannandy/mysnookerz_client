@@ -25,14 +25,14 @@ import { toast } from 'react-toastify'
 type NewTableCreationDataType = Partial<{
   tableName: string
   gameType: string[]
-  minuteWiseRules: {
+  minuteWiseRules: Partial<{
     dayUptoMin: number | null
     dayMinAmt: number | null
     dayPerMin: number | null
     nightUptoMin: number | null
     nightMinAmt: number | null
     nightPerMin: number | null
-  }
+  }>
   slotWiseRules: {
     uptoMin: number | null
     slotCharge: number | null
@@ -105,6 +105,8 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     resetForm()
     setDeviceId('')
     setNodeId('')
+    setIsMinuteBillingSelected(true)
+    setIsSlotBillingSelected(true)
     getTableData()
     setOpen(false)
   }
@@ -116,6 +118,14 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     }
     if (isSlotBillingSelected) {
       gameTypes.push('Slot Billing')
+    }
+
+    if (!isMinuteBillingSelected) {
+      data.minuteWiseRules = {}
+    }
+
+    if (!isSlotBillingSelected) {
+      data.slotWiseRules = []
     }
 
     data.deviceId = deviceId
@@ -132,6 +142,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
 
       if (response && response.data) {
         handleClose()
+
         toast.success('Table added successfully')
       }
     } catch (error: any) {
@@ -146,7 +157,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
   const getDeviceData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
-    const storeId = localStorage.getItem('storeId')
+    const storeId = '667e3c007e2ed9e64a9136be' //localStorage.getItem('storeId')
     const nodesData: Record<string, string[]> = {}
     try {
       const response = await axios.get(`${apiBaseUrl}/devices/byStore/${storeId}`, {
@@ -192,12 +203,22 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
             <Grid item xs={12} sm={6}>
               <FormControlLabel
                 control={
-                  <Checkbox defaultChecked onChange={event => setIsMinuteBillingSelected(event.target.checked)} />
+                  <Checkbox
+                    defaultChecked
+                    checked={isMinuteBillingSelected}
+                    onChange={event => setIsMinuteBillingSelected(event.target.checked)}
+                  />
                 }
                 label='Minute Billing'
               />
               <FormControlLabel
-                control={<Checkbox defaultChecked onChange={event => setIsSlotBillingSelected(event.target.checked)} />}
+                control={
+                  <Checkbox
+                    defaultChecked
+                    checked={isSlotBillingSelected}
+                    onChange={event => setIsSlotBillingSelected(event.target.checked)}
+                  />
+                }
                 label='Slot Billing'
               />
             </Grid>

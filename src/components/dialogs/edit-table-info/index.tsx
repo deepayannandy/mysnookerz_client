@@ -61,8 +61,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   const [nodes, setNodes] = useState({} as Record<string, string[]>)
   const [deviceId, setDeviceId] = useState('')
   const [nodeId, setNodeId] = useState('')
-  const [isMinuteBillingSelected, setIsMinuteBillingSelected] = useState(true)
-  const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(true)
 
   // States
   // const { lang: locale } = useParams()
@@ -106,6 +104,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     }
     // requestData.deviceId = deviceId
     // requestData.nodeID = nodeId
+    console.log(requestData)
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -131,7 +130,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   const getDeviceData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
-    const storeId = localStorage.getItem('storeId')
+    const storeId = '667e3c007e2ed9e64a9136be' //localStorage.getItem('storeId')
     const nodesData: Record<string, string[]> = {}
     try {
       const response = await axios.get(`${apiBaseUrl}/devices/byStore/${storeId}`, {
@@ -172,26 +171,16 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
           </IconButton>
           <Grid container spacing={5}>
             <Grid item xs={12} sm={6}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    disabled
-                    defaultChecked
-                    onChange={event => setIsMinuteBillingSelected(event.target.checked)}
-                  />
-                }
-                label='Minute Billing'
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    disabled
-                    defaultChecked
-                    onChange={event => setIsSlotBillingSelected(event.target.checked)}
-                  />
-                }
-                label='Slot Billing'
-              />
+              {tableData?.gameTypes?.includes('Minute Billing') ? (
+                <FormControlLabel control={<Checkbox disabled defaultChecked />} label='Minute Billing' />
+              ) : (
+                <></>
+              )}
+              {tableData?.gameTypes?.includes('Slot Billing') ? (
+                <FormControlLabel control={<Checkbox disabled defaultChecked />} label='Slot Billing' />
+              ) : (
+                <></>
+              )}
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
@@ -225,7 +214,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 </Select>
               </FormControl>
             </Grid> */}
-            {isMinuteBillingSelected ? (
+            {tableData?.gameTypes?.includes('Minute Billing') ? (
               <>
                 <Grid item xs={12}>
                   <Divider>
@@ -359,7 +348,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
               <></>
             )}
 
-            {isSlotBillingSelected ? (
+            {tableData?.gameTypes?.includes('Slot Billing') ? (
               <>
                 <Grid item xs={12}>
                   <Divider>
