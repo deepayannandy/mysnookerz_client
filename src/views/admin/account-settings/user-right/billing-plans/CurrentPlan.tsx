@@ -70,7 +70,8 @@ const CurrentPlan = ({ data }: { data?: PricingPlanType[] }) => {
     <Card>
       <CardHeader title='Current Plan' />
       {typeof userData?.SubscriptionData !== 'object' ||
-      daysPast > (userData?.SubscriptionData?.subscriptionValidity || 0) ? (
+      !userData?.SubscriptionData?.subscriptionValidity ||
+      daysPast > userData.SubscriptionData.subscriptionValidity ? (
         <CardContent className='flex flex-col gap-6'>
           <Typography className='font-medium' color='text.primary'>
             No active subscription
