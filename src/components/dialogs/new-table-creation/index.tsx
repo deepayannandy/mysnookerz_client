@@ -150,7 +150,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   return router.replace(redirectUrl)
       // }
-      toast.error(error?.response?.data || error?.message, { hideProgressBar: false })
+      toast.error(error?.response?.data?.message || error?.message, { hideProgressBar: false })
     }
   }
 
