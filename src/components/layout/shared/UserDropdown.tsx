@@ -5,7 +5,7 @@ import type { MouseEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
 // Next Imports
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 
 // MUI Imports
 import Avatar from '@mui/material/Avatar'
@@ -61,7 +61,7 @@ const UserDropdown = () => {
   const router = useRouter()
   const { settings } = useSettings()
   const { lang: locale } = useParams()
-  // const pathname = usePathname()
+  const pathname = usePathname()
 
   const handleDropdownOpen = () => {
     !open ? setOpen(true) : setOpen(false)
@@ -113,8 +113,8 @@ const UserDropdown = () => {
       localStorage.removeItem('clientId')
       localStorage.removeItem('clientName')
 
-      //const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-      //return router.replace(redirectUrl)
+      const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      return router.replace(redirectUrl)
     }
   }
 
