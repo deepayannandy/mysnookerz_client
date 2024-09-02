@@ -150,7 +150,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   return router.replace(redirectUrl)
       // }
-      toast.error(error?.response?.data || error?.message, { hideProgressBar: false })
+      toast.error(error?.response?.data?.message || error?.message, { hideProgressBar: false })
     }
   }
 
@@ -442,7 +442,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                       <Controller
                         name={`slotWiseRules.${index}.nightSlotCharge`}
                         control={control}
-                        rules={{ required: true }}
                         render={({ field: { value, onChange } }) => (
                           <TextField
                             size='small'
@@ -495,7 +494,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Device</InputLabel>
-                <Select required label='Device' value={deviceId} onChange={e => setDeviceId(e.target.value)}>
+                <Select label='Device' value={deviceId} onChange={e => setDeviceId(e.target.value)}>
                   {devices.map((type, index) => (
                     <MenuItem key={index} value={type}>
                       {type}
@@ -507,7 +506,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Node</InputLabel>
-                <Select required label='Node' value={nodeId} onChange={e => setNodeId(e.target.value)}>
+                <Select label='Node' value={nodeId} onChange={e => setNodeId(e.target.value)}>
                   {nodes[deviceId]?.map((type, index) => (
                     <MenuItem key={index} value={type}>
                       {type}
