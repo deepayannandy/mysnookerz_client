@@ -1,6 +1,5 @@
 // MUI Imports
 import NightTime from '@/views/admin/store-settings/master/NightTime'
-import ProductInformation from '@/views/apps/ecommerce/products/add/ProductInformation'
 
 // Component Imports
 
@@ -10,12 +9,12 @@ const MasterDetails = () => {
       <div className='border rounded-lg'>
         <NightTime />
       </div>
-      <div className='border rounded-lg'>
+      {/* <div className='border rounded-lg'>
         <ProductInformation />
       </div>
       <div className='border rounded-lg'>
         <ProductInformation />
-      </div>
+      </div> */}
     </div>
   )
 }

@@ -7,22 +7,19 @@ import CardHeader from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField'
 
-// Third-party Imports
-
-// Components Imports
-
 // Style Imports
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import '@/libs/styles/tiptapEditor.css'
 import Button from '@mui/material/Button'
 import axios from 'axios'
+import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 type NightTimeDataType = {
-  startTime: Date
-  endTime: Date
+  nightStartTime: Date
+  nightEndTime: Date
 }
 
 const NightTime = () => {
@@ -38,17 +35,24 @@ const NightTime = () => {
     formState: { errors }
   } = useForm<NightTimeDataType>({
     defaultValues: {
-      startTime: new Date(),
-      endTime: new Date()
+      nightStartTime: new Date(),
+      nightEndTime: new Date()
     }
   })
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: NightTimeDataType) => {
+    const nightStartTime = DateTime.fromJSDate(data.nightStartTime).toFormat('hh:mm a')
+    const nightEndTime = DateTime.fromJSDate(data.nightEndTime).toFormat('hh:mm a')
+
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     const storeId = localStorage.getItem('storeId')
     try {
-      const response = await axios.patch(`${apiBaseUrl}/store/${storeId}`, data, { headers: { 'auth-token': token } })
+      const response = await axios.patch(
+        `${apiBaseUrl}/store/${storeId}`,
+        { nightStartTime, nightEndTime },
+        { headers: { 'auth-token': token } }
+      )
       if (response && response.data) {
         resetForm()
         toast.success('Night time updated successfully')
@@ -68,27 +72,28 @@ const NightTime = () => {
       <form onSubmit={handleSubmit(data => onSubmit(data))}>
         <CardContent>
           <Grid container spacing={5} className='mbe-5'>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={4}>
               <Controller
-                name='startTime'
+                name='nightStartTime'
                 control={control}
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <AppReactDatepicker
-                    showYearDropdown
-                    showMonthDropdown
+                    showTimeSelect
+                    timeIntervals={15}
+                    showTimeSelectOnly
+                    dateFormat='hh:mm aa'
                     boxProps={{ className: 'is-full' }}
                     selected={value}
-                    placeholderText='dd/MM/yyyy'
-                    dateFormat={'dd/MM/yyyy'}
                     onChange={onChange}
                     customInput={
                       <TextField
-                        fullWidth
+                        label='Start Time'
                         size='small'
-                        {...(errors.startTime && {
+                        fullWidth
+                        {...(errors.nightStartTime && {
                           error: true,
-                          helperText: errors.startTime.message || 'This field is required'
+                          helperText: errors.nightStartTime.message || 'This field is required'
                         })}
                       />
                     }
@@ -96,27 +101,28 @@ const NightTime = () => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} md={4}>
               <Controller
-                name='endTime'
+                name='nightEndTime'
                 control={control}
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <AppReactDatepicker
-                    showYearDropdown
-                    showMonthDropdown
+                    showTimeSelect
+                    timeIntervals={15}
+                    showTimeSelectOnly
+                    dateFormat='hh:mm aa'
                     boxProps={{ className: 'is-full' }}
                     selected={value}
-                    placeholderText='DD/MM/YYYY'
-                    dateFormat={'dd/MM/yyyy'}
                     onChange={onChange}
                     customInput={
                       <TextField
-                        fullWidth
+                        label='End Time'
                         size='small'
-                        {...(errors.endTime && {
+                        fullWidth
+                        {...(errors.nightEndTime && {
                           error: true,
-                          helperText: errors.endTime.message || 'This field is required'
+                          helperText: errors.nightEndTime.message || 'This field is required'
                         })}
                       />
                     }
@@ -124,11 +130,13 @@ const NightTime = () => {
                 )}
               />
             </Grid>
-            <div className='justify-center pbs-0 sm:pbe-16 sm:pli-16'>
-              <Button variant='contained' type='submit'>
-                Submit
-              </Button>
-            </div>
+            <Grid item xs={12} md={4}>
+              <div className='flex justify-center'>
+                <Button variant='contained' type='submit'>
+                  Submit
+                </Button>
+              </div>
+            </Grid>
           </Grid>
         </CardContent>
       </form>
