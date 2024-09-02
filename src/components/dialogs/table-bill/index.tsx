@@ -37,15 +37,20 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
   const [inputData, setInputData] = useState({
     discount: '',
     paid: '',
-    paymentMethod: paymentMethods[0]
+    paymentMethod: paymentMethods[0],
+    cashIn: ''
   } as {
     discount?: number | string
     paid?: number | string
     paymentMethod: string
+    cashIn?: number | string
   })
   const [customerPaymentData, setCustomerPaymentData] = useState(
     {} as { [x: string]: { amount?: number | string; paymentMethod?: string } }
   )
+
+  const netPay = Math.round(data.totalBillAmt - (typeof inputData.discount === 'number' ? inputData.discount : 0))
+  const cashOut = Math.round((typeof inputData.cashIn === 'number' ? inputData.cashIn : 0) - data.totalBillAmt)
 
   const { lang: locale } = useParams()
   const pathname = usePathname()
@@ -125,7 +130,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       }
     }
 
-    const requestData = { ...inputData, timeDelta: data.timeDelta, totalBillAmt: data.totalBillAmt }
+    const requestData = { ...inputData, timeDelta: data.timeDelta, totalBillAmt: data.totalBillAmt, cashOut }
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -381,7 +386,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             <TextField
               //className='w-full bg-[#E73434] rounded-lg'
               label='Net Pay'
-              value={`₹${Math.round(data.totalBillAmt - (typeof inputData.discount === 'number' ? inputData.discount : 0))}`}
+              value={`₹${netPay}`}
               InputProps={
                 {
                   //startAdornment: <p className='m-1'>Net Pay</p>
@@ -417,6 +422,31 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                 </MenuItem>
               ))}
             </TextField>
+            <TextField
+              label='Cash In'
+              //placeholder='₹_._'
+              InputProps={{
+                type: 'tel'
+                //startAdornment: <p className='m-2'>Paid</p>
+              }}
+              value={inputData.cashIn}
+              onChange={event =>
+                setInputData({
+                  ...inputData,
+                  cashIn: Number(event.target.value) ? Number(event.target.value) : ''
+                })
+              }
+            />
+            <TextField
+              //className='w-full bg-[#E73434] rounded-lg'
+              label='Cash Out'
+              value={`₹${cashOut}`}
+              InputProps={
+                {
+                  //startAdornment: <p className='m-1'>Net Pay</p>
+                }
+              }
+            />
           </div>
 
           <div className='flex items-center gap-4'>

@@ -401,7 +401,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                       <Controller
                         name={`slotWiseRules.${index}.nightSlotCharge`}
                         control={control}
-                        rules={{ required: true }}
                         render={({ field: { value, onChange } }) => (
                           <TextField
                             size='small'
