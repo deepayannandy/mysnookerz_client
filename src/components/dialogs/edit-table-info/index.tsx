@@ -56,11 +56,15 @@ type EditTableInfoProps = {
 // const languages = ['English', 'Spanish', 'French', 'German', 'Hindi']
 
 const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfoProps) => {
-  //const [userData, setUserData] = useState([] as NewTableCreationDataType)
+  const isMinuteBilling = tableData?.gameTypes?.includes('Minute Billing') ?? false
+  const isSlotBilling = tableData?.gameTypes?.includes('Slot Billing') ?? false
+
   const [devices, setDevices] = useState([] as string[])
   const [nodes, setNodes] = useState({} as Record<string, string[]>)
   const [deviceId, setDeviceId] = useState('')
   const [nodeId, setNodeId] = useState('')
+  const [isMinuteBillingSelected, setIsMinuteBillingSelected] = useState(false)
+  const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(false)
 
   // States
   // const { lang: locale } = useParams()
@@ -85,6 +89,12 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     resetForm(_.omit(tableData, 'deviceId', 'nodeID', 'gameType'))
     setDeviceId(tableData.deviceId)
     setNodeId(tableData.nodeID)
+    setIsMinuteBillingSelected(isMinuteBilling)
+    setIsSlotBillingSelected(isSlotBilling)
+
+    if (!isSlotBilling) {
+      append({ uptoMin: null, slotCharge: null, nightSlotCharge: null })
+    }
   }, [tableData, resetForm])
 
   useEffect(() => {
@@ -97,10 +107,27 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   }
 
   const onSubmit = async (data: EditTableDataType) => {
-    const requestData: Omit<EditTableDataType, '_id' | 'gameTypes'> = {
+    const gameTypes = []
+    if (isMinuteBillingSelected) {
+      gameTypes.push('Minute Billing')
+    }
+    if (isSlotBillingSelected) {
+      gameTypes.push('Slot Billing')
+    }
+
+    if (!isMinuteBillingSelected) {
+      data.minuteWiseRules = {}
+    }
+
+    if (!isSlotBillingSelected) {
+      data.slotWiseRules = []
+    }
+
+    const requestData: Omit<EditTableDataType, '_id'> = {
       ..._.omit(data, '_id', 'gameTypes'),
       deviceId,
-      nodeID: nodeId
+      nodeID: nodeId,
+      gameTypes
     }
     // requestData.deviceId = deviceId
     // requestData.nodeID = nodeId
@@ -171,16 +198,27 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
           </IconButton>
           <Grid container spacing={5}>
             <Grid item xs={12} sm={6}>
-              {tableData?.gameTypes?.includes('Minute Billing') ? (
-                <FormControlLabel control={<Checkbox disabled defaultChecked />} label='Minute Billing' />
-              ) : (
-                <></>
-              )}
-              {tableData?.gameTypes?.includes('Slot Billing') ? (
-                <FormControlLabel control={<Checkbox disabled defaultChecked />} label='Slot Billing' />
-              ) : (
-                <></>
-              )}
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    disabled={isMinuteBilling}
+                    checked={isMinuteBillingSelected}
+                    onChange={event => setIsMinuteBillingSelected(event.target.checked)}
+                  />
+                }
+                label='Minute Billing'
+              />
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    disabled={isSlotBilling}
+                    checked={isSlotBillingSelected}
+                    onChange={event => setIsSlotBillingSelected(event.target.checked)}
+                  />
+                }
+                label='Slot Billing'
+              />
             </Grid>
             <Grid item xs={12} sm={6}>
               <Controller
@@ -214,7 +252,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 </Select>
               </FormControl>
             </Grid> */}
-            {tableData?.gameTypes?.includes('Minute Billing') ? (
+            {isMinuteBillingSelected ? (
               <>
                 <Grid item xs={12}>
                   <Divider>
@@ -348,7 +386,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
               <></>
             )}
 
-            {tableData?.gameTypes?.includes('Slot Billing') ? (
+            {isSlotBillingSelected ? (
               <>
                 <Grid item xs={12}>
                   <Divider>
@@ -425,22 +463,18 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                       ) : (
                         <></>
                       )}
-
-                      {index === fields.length - 1 ? (
-                        <Button
-                          className='min-is-fit'
-                          size='small'
-                          variant='contained'
-                          onClick={() => append({ uptoMin: null, slotCharge: null, nightSlotCharge: null })}
-                          startIcon={<i className='ri-add-line' />}
-                        >
-                          Add Item
-                        </Button>
-                      ) : (
-                        <></>
-                      )}
                     </div>
                   ))}
+
+                  <Button
+                    className='min-is-fit'
+                    size='small'
+                    variant='contained'
+                    onClick={() => append({ uptoMin: null, slotCharge: null, nightSlotCharge: null })}
+                    startIcon={<i className='ri-add-line' />}
+                  >
+                    Add Item
+                  </Button>
                 </Grid>
               </>
             ) : (

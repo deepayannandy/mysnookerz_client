@@ -24,6 +24,35 @@ export type CustomerDataType = {
   credit: number
 }
 
+export type CustomerDetailsDataType = {
+  customers: {
+    _id: string
+    status: string
+    fullName: string
+    email: string
+    profileImage: string
+    dob: string
+    city: string
+    boardingDate: string
+    contact: string
+    rewardPoint: string
+    credit: number
+    maxCredit: number
+    storeId: string
+    isBlackListed: boolean
+    isDeleted: boolean
+  }
+  tableCredit: number
+  cafeCredit: number
+  gameWin: number
+  orders: number
+  totalSpend: number
+  membership: {
+    membershipName: string
+    membershipMin: string
+  }
+}
+
 export type CustomerListType = { fullName: string; customerId: string }
 
 export type DashboardDataType = {

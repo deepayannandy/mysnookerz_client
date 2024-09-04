@@ -37,14 +37,17 @@ import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import EditCustomerInfo from '@/components/dialogs/edit-customer-info'
 import NewCustomerRegistration from '@/components/dialogs/new-customer-registration'
 import SearchInput from '@/components/Search'
+import { Locale } from '@/configs/i18n'
 import { CustomerDataType } from '@/types/staffTypes'
 import { getInitials } from '@/utils/getInitials'
+import { getLocalizedUrl } from '@/utils/i18n'
 import tableStyles from '@core/styles/table.module.css'
 import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
 import IconButton from '@mui/material/IconButton'
 import * as matchSortedUtils from '@tanstack/match-sorter-utils'
 import axios from 'axios'
+import Link from 'next/link'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
@@ -174,7 +177,12 @@ const CustomerListTable = () => {
           <div className='flex items-center gap-4'>
             {getAvatar({ profileImage: row.original.profileImage, fullName: row.original.fullName })}
             <div className='flex flex-col'>
-              <Typography className='font-medium' color='text.primary'>
+              <Typography
+                component={Link}
+                color='text.primary'
+                href={getLocalizedUrl(`/staff/customer/details/${row.original._id}`, locale as Locale)}
+                className='font-medium hover:text-primary'
+              >
                 {row.original.fullName}
               </Typography>
               <Typography variant='body2'>{row.original.email}</Typography>

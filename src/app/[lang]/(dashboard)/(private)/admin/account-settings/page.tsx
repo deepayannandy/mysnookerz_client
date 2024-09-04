@@ -1,12 +1,8 @@
 // React Imports
 import type { ReactElement } from 'react'
 
-// Next Imports
-
 // MUI Imports
 import Grid from '@mui/material/Grid'
-
-// Type Imports
 
 // Component Imports
 import UserLeftOverview from '@/views/admin/account-settings/user-left-overview'

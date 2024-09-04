@@ -1,8 +1,8 @@
 'use client'
 
 // React Imports
-import { useState } from 'react'
 import type { ComponentType } from 'react'
+import { useState } from 'react'
 
 type OpenDialogOnElementClickProps = {
   element: ComponentType<any>

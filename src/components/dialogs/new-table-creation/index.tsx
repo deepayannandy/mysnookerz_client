@@ -466,22 +466,17 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                       ) : (
                         <></>
                       )}
-
-                      {index === fields.length - 1 ? (
-                        <Button
-                          className='min-is-fit'
-                          size='small'
-                          variant='contained'
-                          onClick={() => append({ uptoMin: null, slotCharge: null, nightSlotCharge: null })}
-                          startIcon={<i className='ri-add-line' />}
-                        >
-                          Add Item
-                        </Button>
-                      ) : (
-                        <></>
-                      )}
                     </div>
                   ))}
+                  <Button
+                    className='min-is-fit'
+                    size='small'
+                    variant='contained'
+                    onClick={() => append({ uptoMin: null, slotCharge: null, nightSlotCharge: null })}
+                    startIcon={<i className='ri-add-line' />}
+                  >
+                    Add Item
+                  </Button>
                 </Grid>
               </>
             ) : (
