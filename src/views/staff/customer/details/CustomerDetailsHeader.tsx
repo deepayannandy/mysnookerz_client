@@ -9,16 +9,15 @@ import type { ThemeColor } from '@core/types'
 // Component Imports
 import ConfirmationDialog from '@components/dialogs/confirmation-dialog'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
+import { DateTime } from 'luxon'
 import MenuDropdown from './MenuDropdown'
 
 const CustomerDetailHeader = ({
-  customerId,
   boardingDate,
   setCreditLimitDialogOpen,
   setOldCreditDialogOpen,
   setDeleteConfirmationDialogOpen
 }: {
-  customerId: string
   boardingDate: string
   setCreditLimitDialogOpen: (value: boolean) => void
   setOldCreditDialogOpen: (value: boolean) => void
@@ -34,8 +33,8 @@ const CustomerDetailHeader = ({
   return (
     <div className='flex flex-wrap justify-between items-center gap-x-6 gap-y-4'>
       <div className='flex flex-col gap-1'>
-        <Typography variant='h4'>{`Customer ID #${'ewewqe'}`}</Typography>
-        <Typography>{boardingDate}</Typography>
+        {/* <Typography variant='h4'>{`Customer ID #${'ewewqe'}`}</Typography> */}
+        <Typography>{`${boardingDate ? DateTime.fromISO(boardingDate).toFormat('dd LLL yyyy') : ''}`}</Typography>
       </div>
       <div className='flex flex-col sm:flex-row justify-between gap-3'>
         <OpenDialogOnElementClick

@@ -42,7 +42,6 @@ const CustomerDetails = ({ params }: { params: { id: string } }) => {
   const getCustomerData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
-    const storeId = localStorage.getItem('storeId')
 
     try {
       const response = await axios.get(`${apiBaseUrl}/customer/${params.id}`, { headers: { 'auth-token': token } })
@@ -93,8 +92,7 @@ const CustomerDetails = ({ params }: { params: { id: string } }) => {
       <Grid container spacing={6}>
         <Grid item xs={12}>
           <CustomerDetailsHeader
-            customerId={params.id}
-            boardingDate={customerData?.customers?.boardingDate}
+            boardingDate={customerData?.customers?.onBoardingDate}
             setCreditLimitDialogOpen={setCreditLimitDialogOpen}
             setOldCreditDialogOpen={setOldCreditDialogOpen}
             setDeleteConfirmationDialogOpen={setDeleteConfirmationDialogOpen}

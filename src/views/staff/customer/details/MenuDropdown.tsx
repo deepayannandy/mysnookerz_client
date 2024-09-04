@@ -4,7 +4,6 @@
 import { useRef, useState } from 'react'
 
 // Next Imports
-import { useParams, usePathname } from 'next/navigation'
 
 // MUI Imports
 import ClickAwayListener from '@mui/material/ClickAwayListener'
@@ -22,15 +21,6 @@ import Button from '@mui/material/Button'
 
 type MenuDataType = {
   name: string
-}
-
-const getLocalePath = (pathName: string, locale: string) => {
-  if (!pathName) return '/'
-  const segments = pathName.split('/')
-
-  segments[1] = locale
-
-  return segments.join('/')
 }
 
 // Vars
@@ -62,9 +52,7 @@ const MenuDropdown = ({
   const anchorRef = useRef<HTMLButtonElement>(null)
 
   // Hooks
-  const pathName = usePathname()
   const { settings } = useSettings()
-  const { lang } = useParams()
 
   const handleClose = () => {
     setOpen(false)

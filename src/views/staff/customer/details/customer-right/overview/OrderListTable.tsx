@@ -4,7 +4,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
 // Next Imports
-import { useParams } from 'next/navigation'
 
 // MUI Imports
 import Card from '@mui/material/Card'
@@ -139,11 +138,12 @@ const columnHelper = createColumnHelper<ECommerceOrderListDataTypeWithAction>()
 const OrderListTable = ({ orderData }: { orderData?: OrderListDataType[] }) => {
   // States
   const [rowSelection, setRowSelection] = useState({})
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   const [data, setData] = useState([...((orderData as OrderListDataType[]) ?? [])])
   const [globalFilter, setGlobalFilter] = useState('')
 
   // Hooks
-  const { lang: locale } = useParams()
+  // const { lang: locale } = useParams()
 
   const columns = useMemo<ColumnDef<ECommerceOrderListDataTypeWithAction, any>[]>(
     () => [

@@ -72,9 +72,9 @@ const CustomerAddress = (props: dataType) => {
   // Hooks
   const theme = useTheme()
 
-  const mastercard = '/images/apps/ecommerce/mastercard.png'
-  const americanExpress = '/images/apps/ecommerce/american-express.png'
-  const visa = '/images/apps/ecommerce/visa.png'
+  // const mastercard = '/images/apps/ecommerce/mastercard.png'
+  // const americanExpress = '/images/apps/ecommerce/american-express.png'
+  // const visa = '/images/apps/ecommerce/visa.png'
 
   return (
     <>

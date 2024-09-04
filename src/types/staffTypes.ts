@@ -33,7 +33,7 @@ export type CustomerDetailsDataType = {
     profileImage: string
     dob: string
     city: string
-    boardingDate: string
+    onBoardingDate: string
     contact: string
     rewardPoint: string
     credit: number

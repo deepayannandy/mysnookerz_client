@@ -11,8 +11,6 @@ import TextField from '@mui/material/TextField'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import '@/libs/styles/tiptapEditor.css'
 import Button from '@mui/material/Button'
-import { DateTime } from 'luxon'
-import { useParams, usePathname, useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
@@ -23,13 +21,12 @@ type HappyHoursDataType = {
 
 const HappyHours = () => {
   //Hooks
-  const { lang: locale } = useParams()
-  const pathname = usePathname()
-  const router = useRouter()
+  // const { lang: locale } = useParams()
+  // const pathname = usePathname()
+  // const router = useRouter()
 
   const {
     control,
-    reset: resetForm,
     handleSubmit,
     formState: { errors }
   } = useForm<HappyHoursDataType>({
@@ -39,13 +36,13 @@ const HappyHours = () => {
     }
   })
 
-  const onSubmit = async (data: HappyHoursDataType) => {
-    const happyHoursStartTime = DateTime.fromJSDate(data.happyHoursStartTime).toFormat('hh:mm a')
-    const happyHoursEndTime = DateTime.fromJSDate(data.happyHoursEndTime).toFormat('hh:mm a')
-
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    const token = localStorage.getItem('token')
-    const storeId = localStorage.getItem('storeId')
+  const onSubmit = async (data?: HappyHoursDataType) => {
+    // const happyHoursStartTime = DateTime.fromJSDate(data.happyHoursStartTime).toFormat('hh:mm a')
+    // const happyHoursEndTime = DateTime.fromJSDate(data.happyHoursEndTime).toFormat('hh:mm a')
+    console.log(data)
+    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    // const token = localStorage.getItem('token')
+    // const storeId = localStorage.getItem('storeId')
     toast.success('Happy Hours updated successfully')
 
     // try {

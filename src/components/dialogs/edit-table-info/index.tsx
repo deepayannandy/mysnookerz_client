@@ -95,6 +95,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     if (!isSlotBilling) {
       append({ uptoMin: null, slotCharge: null, nightSlotCharge: null })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData, resetForm])
 
   useEffect(() => {
