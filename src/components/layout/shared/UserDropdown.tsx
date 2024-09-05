@@ -31,6 +31,7 @@ import type { Locale } from '@configs/i18n'
 import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
+import { UserDetailsType } from '@/types/userTypes'
 import { getLocalizedUrl } from '@/utils/i18n'
 
 // Styled component for badge content
@@ -42,12 +43,6 @@ const BadgeContentSpan = styled('span')({
   backgroundColor: 'var(--mui-palette-success-main)',
   boxShadow: '0 0 0 2px var(--mui-palette-background-paper)'
 })
-
-type UserDetailsType = {
-  fullName: string
-  profileImage: string
-  email: string
-}
 
 const UserDropdown = () => {
   // States
@@ -99,12 +94,24 @@ const UserDropdown = () => {
     try {
       const response = await axios.get(`${apiBaseUrl}/user/whoAmI`, { headers: { 'auth-token': token } })
       if (response && response.data) {
+        setUserDetails(response.data)
         if (response.data.storeId) {
           localStorage.setItem('storeId', response.data.storeId)
           localStorage.setItem('clientId', response.data._id)
           localStorage.setItem('clientName', response.data.fullName)
         }
-        setUserDetails(response.data)
+        if (response.data.userDesignation) {
+          localStorage.setItem('userDesignation', response.data.userDesignation)
+          if (response.data.userDesignation === 'Admin' && !pathname.includes(`/${locale}/admin/`)) {
+            const redirectUrl = `/${locale}/admin/staff`
+            return router.replace(redirectUrl)
+          }
+
+          if (response.data.userDesignation === 'Staff' && !pathname.includes(`/${locale}/staff/`)) {
+            const redirectUrl = `/${locale}/staff/dashboard`
+            return router.replace(redirectUrl)
+          }
+        }
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })

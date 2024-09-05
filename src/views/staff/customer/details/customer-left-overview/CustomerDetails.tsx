@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography'
 // Component Imports
 import EditCustomerInfo from '@/components/dialogs/edit-customer-info'
 import { CustomerDetailsDataType } from '@/types/staffTypes'
+import { getInitials } from '@/utils/getInitials'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
 import CustomAvatar from '@core/components/mui/Avatar'
 import { DateTime } from 'luxon'
@@ -34,20 +35,42 @@ const CustomerDetails = ({
     getCustomerData
   }
 
+  const getAvatar = (params: { profileImage: string; fullName: string }) => {
+    const { profileImage, fullName } = params
+
+    if (profileImage && profileImage !== '-') {
+      return <CustomAvatar variant='rounded' src={profileImage} skin='light' size={120} alt='Customer Avatar' />
+    } else if (fullName) {
+      return (
+        <CustomAvatar skin='light' size={120} variant='rounded' alt='Customer Avatar'>
+          {getInitials(fullName as string)}
+        </CustomAvatar>
+      )
+    } else {
+      return <CustomAvatar skin='light' size={120} variant='rounded' alt='Customer Avatar' />
+    }
+  }
+
+  const getStatus = (customerData: CustomerDetailsDataType) => {
+    return customerData?.customers?.isDeleted
+      ? 'InActive'
+      : customerData?.customers?.isBlackListed
+        ? 'Blacklisted'
+        : 'Active'
+  }
+
   return (
     <Card>
       <CardContent className='flex flex-col pbs-12 gap-6'>
         <div className='flex flex-col justify-self-center items-center gap-6'>
           <div className='flex flex-col items-center gap-4'>
-            <CustomAvatar
-              src={customerData?.customers?.profileImage}
-              variant='rounded'
-              alt='Customer Avatar'
-              size={120}
-            />
+            {getAvatar({
+              profileImage: customerData?.customers?.profileImage,
+              fullName: customerData?.customers?.fullName
+            })}
             <div className='flex flex-col items-center'>
               <Typography variant='h5'>{customerData?.customers?.fullName}</Typography>
-              <Chip label={customerData?.customers?.status ?? 'Active'} variant='tonal' color='success' size='small' />
+              <Chip label={getStatus(customerData)} variant='tonal' color='success' size='small' />
               {/* <Typography>Customer ID #{customerData?.customerId}</Typography> */}
             </div>
           </div>

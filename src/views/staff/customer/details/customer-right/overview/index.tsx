@@ -2,12 +2,49 @@
 import { CardStatsCustomerStatsProps } from '@/types/pages/widgetTypes'
 import { CustomerDetailsDataType } from '@/types/staffTypes'
 import Grid from '@mui/material/Grid'
+import axios from 'axios'
+import { useParams, usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 // Component Imports
 import CustomerStatisticsCard from './CustomerStatisticsCard'
 import OrderListTable from './OrderListTable'
 
-const Overview = ({ data, tableData }: { data: CustomerDetailsDataType; tableData?: any }) => {
+const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
+  const [tableData, setTableData] = useState([])
+
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
+
+  const getTableData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+
+    if (data?.customers?._id) {
+      try {
+        const response = await axios.get(`${apiBaseUrl}/customerHistory/${data.customers._id}`, {
+          headers: { 'auth-token': token }
+        })
+        if (response && response.data) {
+          setTableData(response.data)
+        }
+      } catch (error: any) {
+        if (error?.response?.status === 401) {
+          const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+          return router.replace(redirectUrl)
+        }
+        toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+      }
+    }
+  }
+
+  useEffect(() => {
+    getTableData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
+
   const customerStats: CardStatsCustomerStatsProps[] = [
     {
       color: 'primary',
@@ -48,7 +85,7 @@ const Overview = ({ data, tableData }: { data: CustomerDetailsDataType; tableDat
         <CustomerStatisticsCard customerStatData={customerStats} />
       </Grid>
       <Grid item xs={12}>
-        <OrderListTable orderData={tableData?.orderData} />
+        <OrderListTable orderData={tableData} />
       </Grid>
     </Grid>
   )
