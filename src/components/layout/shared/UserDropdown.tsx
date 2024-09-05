@@ -101,10 +101,14 @@ const UserDropdown = () => {
           localStorage.setItem('clientName', response.data.fullName)
         }
         if (response.data.userDesignation) {
-          response.data.userDesignation = 'admin'
           localStorage.setItem('userDesignation', response.data.userDesignation)
-          if (response.data.userDesignation === 'admin' && !pathname.includes(`/${locale}/admin/`)) {
+          if (response.data.userDesignation === 'Admin' && !pathname.includes(`/${locale}/admin/`)) {
             const redirectUrl = `/${locale}/admin/staff`
+            return router.replace(redirectUrl)
+          }
+
+          if (response.data.userDesignation === 'Staff' && !pathname.includes(`/${locale}/staff/`)) {
+            const redirectUrl = `/${locale}/staff/dashboard`
             return router.replace(redirectUrl)
           }
         }
