@@ -420,7 +420,7 @@ const PoolCard = ({
                   <Divider className='col-span-2' />
                   <p className='text-xs'>Total Time</p>
                   <p className='text-xs'>
-                    {totalTime.hours || '00'}hrs {Math.round(totalTime.minutes | 0) || '00'}mins
+                    {totalTime.hours || '00'}hrs {Math.ceil(totalTime.minutes | 0) || '00'}mins
                   </p>
                 </>
               ) : (
@@ -451,14 +451,14 @@ const PoolCard = ({
             <>
               <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
                 <p className='text-xs'>Table Amount</p>
-                <p className='text-xs'>{`₹${Math.round(billData.totalBillAmt || 0)}`}</p>
+                <p className='text-xs'>{`₹${billData.totalBillAmt || 0}`}</p>
                 <Divider className='col-span-2' />
                 <p className='text-xs'>Meals Amount</p>
-                <p className='text-xs'>{`₹${Math.round(billData.mealAmount || 0)}`}</p>
+                <p className='text-xs'>{`₹${billData.mealAmount || 0}`}</p>
               </div>
               <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 text-white border border-white px-4 py-2 mt-2 shadow-[0.5px_0.5px_6px_1px_white] rounded-lg'>
                 <p className='text-[14px]'>Net Pay</p>
-                <p className='text-[14px]'>{`₹${Math.round(billData.totalBillAmt || 0)}`}</p>
+                <p className='text-[14px]'>{`₹${billData.totalBillAmt || 0}`}</p>
               </div>
             </>
           ) : (

@@ -56,12 +56,13 @@ const AddOldCredit = ({ open, setOpen, getCustomerData, customerData }: AddOldCr
 
   const onSubmit = async (data: AddOldCreditDataType) => {
     const newCredit = (customerData?.customers?.credit ?? 0) + (Number(data.credit) ? Number(data.credit) : 0)
+    const description = 'Add Old Credit'
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
       const response = await axios.patch(
         `${apiBaseUrl}/customer/${customerData?.customers?._id}`,
-        { credit: newCredit },
+        { credit: newCredit, description },
         {
           headers: { 'auth-token': token }
         }

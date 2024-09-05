@@ -172,9 +172,9 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
         })
 
         setDevices(deviceIds)
-        setDeviceId(deviceIds[0])
+        // setDeviceId(deviceIds[0])
         setNodes(nodesData)
-        setNodeId(nodesData[deviceIds[0]]?.[0])
+        // setNodeId(nodesData[deviceIds[0]]?.[0])
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {

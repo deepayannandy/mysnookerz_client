@@ -1,6 +1,7 @@
 'use client'
 
 import { CustomerDetailsDataType } from '@/types/staffTypes'
+import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material'
 // React Imports
 
 // MUI Imports
@@ -18,6 +19,7 @@ import { toast } from 'react-toastify'
 
 type PayDueDataType = {
   amount: number | string
+  paymentMethod: string
 }
 
 type PayDueInfoProps = {
@@ -26,6 +28,8 @@ type PayDueInfoProps = {
   customerData: CustomerDetailsDataType
   getCustomerData: () => void
 }
+
+const paymentMethods = ['CASH', 'UPI', 'CARD']
 
 const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProps) => {
   // States
@@ -41,7 +45,8 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
     formState: { errors }
   } = useForm<PayDueDataType>({
     defaultValues: {
-      amount: ''
+      amount: '',
+      paymentMethod: paymentMethods[0]
     }
   })
 
@@ -60,12 +65,14 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
       toast.error('Amount cannot be more than due')
       return
     }
+
+    const description = 'Pay Dues'
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
       const response = await axios.patch(
         `${apiBaseUrl}/customer/${customerData?.customers?._id}`,
-        { credit },
+        { credit, paymentMethods: data.paymentMethod, description },
         {
           headers: { 'auth-token': token }
         }
@@ -100,7 +107,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
           <IconButton onClick={handleClose} className='absolute block-start-4 inline-end-4'>
             <i className='ri-close-line text-textSecondary' />
           </IconButton>
-          <div className='flex flex-col max-w-fit justify-center'>
+          <div className='flex sm:flex-row flex-col justify-between gap-4'>
             <Controller
               name='amount'
               control={control}
@@ -120,6 +127,25 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
                 />
               )}
             />
+
+            <FormControl fullWidth>
+              <InputLabel>Payment Method</InputLabel>
+              <Controller
+                name='paymentMethod'
+                control={control}
+                rules={{ required: true }}
+                render={({ field }) => (
+                  <Select size='small' label='Payment Method' {...field}>
+                    {paymentMethods.map((method, index) => (
+                      <MenuItem key={index} value={method}>
+                        {method}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+              {errors.paymentMethod && <FormHelperText error>This field is required.</FormHelperText>}
+            </FormControl>
           </div>
         </DialogContent>
         <DialogActions className='justify-center pbs-0 sm:pbe-16 sm:pli-16'>

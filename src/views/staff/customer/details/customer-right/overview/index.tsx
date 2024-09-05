@@ -50,16 +50,16 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
       color: 'primary',
       avatarIcon: 'ri-money-rupee-circle-line',
       title: 'Total Credit',
-      stats: `₹${data?.tableCredit ?? 'NA'}`,
-      content: 'Table Credit',
-      description: `${data?.cafeCredit !== undefined ? `₹${data?.cafeCredit} Cafe Credit` : 'NA'}    ${data?.customers?.maxCredit !== undefined ? `₹${data?.customers?.maxCredit} Credit limit` : ''} `
+      stats: `₹${data?.customers?.credit ?? 0}`,
+      content: 'Total Due',
+      description: `₹${data?.customers?.maxCredit !== undefined ? `${data?.customers?.maxCredit}` : 0} Credit limit`
     },
     {
       color: 'success',
       avatarIcon: 'ri-gift-line',
       title: 'Membership',
       chipLabel: `${data?.membership?.membershipName ?? 'NA'}`,
-      description: `${data?.membership?.membershipMin !== undefined ? `${data?.membership?.membershipMin} membership minutes` : 'NA'}`
+      description: `${data?.membership?.membershipMin !== undefined ? `${data?.membership?.membershipMin}` : 0} membership minutes`
     },
     {
       color: 'warning',
@@ -67,7 +67,7 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
       title: 'Games',
       stats: `${data?.gameWin ?? 0}`,
       content: 'Winner',
-      description: `${data?.customers?.rewardPoint !== undefined ? `${data?.customers?.rewardPoint} Reward point` : 'NA'}`
+      description: `${data?.customers?.rewardPoint !== undefined ? `${data?.customers?.rewardPoint}` : 0} Reward point`
     }
     // {
     //   color: 'info',
