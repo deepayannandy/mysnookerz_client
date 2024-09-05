@@ -16,18 +16,18 @@ import axios from 'axios'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
-type SetCreditLimitDataType = {
-  maxCredit: number | string
+type PayDueDataType = {
+  amount: number | string
 }
 
-type SetCreditLimitInfoProps = {
+type PayDueInfoProps = {
   open: boolean
   setOpen: (open: boolean) => void
   customerData: CustomerDetailsDataType
   getCustomerData: () => void
 }
 
-const SetCreditLimit = ({ open, setOpen, getCustomerData, customerData }: SetCreditLimitInfoProps) => {
+const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProps) => {
   // States
 
   // const { lang: locale } = useParams()
@@ -39,9 +39,9 @@ const SetCreditLimit = ({ open, setOpen, getCustomerData, customerData }: SetCre
     reset: resetForm,
     handleSubmit,
     formState: { errors }
-  } = useForm<SetCreditLimitDataType>({
+  } = useForm<PayDueDataType>({
     defaultValues: {
-      maxCredit: ''
+      amount: ''
     }
   })
 
@@ -54,19 +54,28 @@ const SetCreditLimit = ({ open, setOpen, getCustomerData, customerData }: SetCre
     setOpen(false)
   }
 
-  const onSubmit = async (data: SetCreditLimitDataType) => {
+  const onSubmit = async (data: PayDueDataType) => {
+    const credit = (customerData?.customers?.credit ?? 0) - (Number(data.amount) ? Number(data.amount) : 0)
+    if (credit < 0) {
+      toast.error('Amount cannot be more than due')
+      return
+    }
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.patch(`${apiBaseUrl}/customer/${customerData?.customers?._id}`, data, {
-        headers: { 'auth-token': token }
-      })
+      const response = await axios.patch(
+        `${apiBaseUrl}/customer/${customerData?.customers?._id}`,
+        { credit },
+        {
+          headers: { 'auth-token': token }
+        }
+      )
 
       if (response && response.data) {
         getCustomerData()
         resetForm()
         setOpen(false)
-        toast.success('Credit info updated successfully')
+        toast.success('Dues paid successfully')
       }
     } catch (error: any) {
       // if (error?.response?.status === 400) {
@@ -81,9 +90,9 @@ const SetCreditLimit = ({ open, setOpen, getCustomerData, customerData }: SetCre
   return (
     <Dialog fullWidth open={open} onClose={handleClose} maxWidth='xs' scroll='body'>
       <DialogTitle variant='h4' className='flex gap-2 flex-col items-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
-        <div className='max-sm:is-[80%] max-sm:text-center'>Credit Limit</div>
+        <div className='max-sm:is-[80%] max-sm:text-center'>Pay Dues</div>
         <Typography component='span' className='flex flex-col text-center'>
-          {`Current Limit: ₹${customerData?.customers?.maxCredit ?? 0}`}
+          {`Payment Due: ₹${customerData?.customers?.credit ?? 0}`}
         </Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit(data => onSubmit(data))}>
@@ -93,20 +102,20 @@ const SetCreditLimit = ({ open, setOpen, getCustomerData, customerData }: SetCre
           </IconButton>
           <div className='flex flex-col max-w-fit justify-center'>
             <Controller
-              name='maxCredit'
+              name='amount'
               control={control}
               rules={{ required: true }}
               render={({ field: { value, onChange } }) => (
                 <TextField
                   size='small'
                   fullWidth
-                  label='New Credit Limit'
+                  label='Amount'
                   inputProps={{ type: 'number', min: 0 }}
                   value={value}
                   onChange={onChange}
-                  {...(errors.maxCredit && {
+                  {...(errors.amount && {
                     error: true,
-                    helperText: errors.maxCredit?.message || 'This field is required'
+                    helperText: errors.amount?.message || 'This field is required'
                   })}
                 />
               )}
@@ -126,4 +135,4 @@ const SetCreditLimit = ({ open, setOpen, getCustomerData, customerData }: SetCre
   )
 }
 
-export default SetCreditLimit
+export default PayDue

@@ -7,18 +7,23 @@ import Typography from '@mui/material/Typography'
 import type { ThemeColor } from '@core/types'
 
 // Component Imports
-import ConfirmationDialog from '@components/dialogs/confirmation-dialog'
+import PayDue from '@/components/dialogs/pay-dues'
+import { CustomerDetailsDataType } from '@/types/staffTypes'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
 import { DateTime } from 'luxon'
 import MenuDropdown from './MenuDropdown'
 
 const CustomerDetailHeader = ({
   boardingDate,
+  customerData,
+  getCustomerData,
   setCreditLimitDialogOpen,
   setOldCreditDialogOpen,
   setDeleteConfirmationDialogOpen
 }: {
   boardingDate: string
+  customerData: CustomerDetailsDataType
+  getCustomerData: () => void
   setCreditLimitDialogOpen: (value: boolean) => void
   setOldCreditDialogOpen: (value: boolean) => void
   setDeleteConfirmationDialogOpen: (value: boolean) => void
@@ -30,6 +35,11 @@ const CustomerDetailHeader = ({
     variant
   })
 
+  const dialogProps = {
+    customerData,
+    getCustomerData
+  }
+
   return (
     <div className='flex flex-wrap justify-between items-center gap-x-6 gap-y-4'>
       <div className='flex flex-col gap-1'>
@@ -40,8 +50,8 @@ const CustomerDetailHeader = ({
         <OpenDialogOnElementClick
           element={Button}
           elementProps={buttonProps('Pay Dues', 'error', 'outlined')}
-          dialog={ConfirmationDialog}
-          dialogProps={{ type: 'pay-dues' }}
+          dialog={PayDue}
+          dialogProps={dialogProps}
         />
         {/* <OpenDialogOnElementClick
           element={Button}

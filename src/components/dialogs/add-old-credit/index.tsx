@@ -55,12 +55,17 @@ const AddOldCredit = ({ open, setOpen, getCustomerData, customerData }: AddOldCr
   }
 
   const onSubmit = async (data: AddOldCreditDataType) => {
+    const newCredit = (customerData?.customers?.credit ?? 0) + (Number(data.credit) ? Number(data.credit) : 0)
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.patch(`${apiBaseUrl}/customer/${customerData?.customers?._id}`, data, {
-        headers: { 'auth-token': token }
-      })
+      const response = await axios.patch(
+        `${apiBaseUrl}/customer/${customerData?.customers?._id}`,
+        { credit: newCredit },
+        {
+          headers: { 'auth-token': token }
+        }
+      )
 
       if (response && response.data) {
         getCustomerData()
@@ -83,7 +88,7 @@ const AddOldCredit = ({ open, setOpen, getCustomerData, customerData }: AddOldCr
       <DialogTitle variant='h4' className='flex gap-2 flex-col items-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
         <div className='max-sm:is-[80%] max-sm:text-center'>Old Credit</div>
         <Typography component='span' className='flex flex-col text-center'>
-          {`Credit: ₹${customerData?.customers?.credit}`}
+          {`Credit: ₹${customerData?.customers?.credit ?? 0}`}
         </Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit(data => onSubmit(data))}>
@@ -100,7 +105,7 @@ const AddOldCredit = ({ open, setOpen, getCustomerData, customerData }: AddOldCr
                 <TextField
                   size='small'
                   fullWidth
-                  label='New Credit'
+                  label='Add Credit'
                   inputProps={{ type: 'number', min: 0 }}
                   value={value}
                   onChange={onChange}
@@ -114,11 +119,11 @@ const AddOldCredit = ({ open, setOpen, getCustomerData, customerData }: AddOldCr
           </div>
         </DialogContent>
         <DialogActions className='justify-center pbs-0 sm:pbe-16 sm:pli-16'>
-          <Button variant='contained' type='submit'>
-            Submit
-          </Button>
           <Button variant='outlined' color='secondary' type='reset' onClick={handleClose}>
             Cancel
+          </Button>
+          <Button variant='contained' type='submit'>
+            Submit
           </Button>
         </DialogActions>
       </form>

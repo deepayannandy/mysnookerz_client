@@ -30,7 +30,7 @@ const CustomerDetails = ({
   }
 
   const dialogProps = {
-    customerData: customerData?.customers,
+    customerData,
     getCustomerData
   }
 

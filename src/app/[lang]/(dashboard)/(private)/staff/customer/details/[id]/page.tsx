@@ -93,6 +93,8 @@ const CustomerDetails = ({ params }: { params: { id: string } }) => {
         <Grid item xs={12}>
           <CustomerDetailsHeader
             boardingDate={customerData?.customers?.onBoardingDate}
+            customerData={customerData}
+            getCustomerData={getCustomerData}
             setCreditLimitDialogOpen={setCreditLimitDialogOpen}
             setOldCreditDialogOpen={setOldCreditDialogOpen}
             setDeleteConfirmationDialogOpen={setDeleteConfirmationDialogOpen}
