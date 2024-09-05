@@ -1,5 +1,6 @@
 'use client'
 
+import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 // React Imports
 
 // MUI Imports
@@ -20,6 +21,7 @@ type NewCustomerRegistrationDataType = {
   contact: string | null
   email?: string | null
   profileImage?: string
+  dob?: Date | null
 }
 
 type NewCustomerRegistrationProps = {
@@ -37,7 +39,8 @@ const schema: yup.ObjectSchema<NewCustomerRegistrationDataType> = yup.object().s
     .nullable()
     .transform((value, originalValue) => (originalValue.trim() === '' ? null : value))
     .email('Please enter a valid email address'),
-  profileImage: yup.string()
+  profileImage: yup.string(),
+  dob: yup.date().notRequired()
 })
 
 const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomerRegistrationProps) => {
@@ -57,7 +60,8 @@ const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomer
     defaultValues: {
       fullName: '',
       contact: '',
-      email: ''
+      email: '',
+      dob: new Date()
     }
   })
 
@@ -154,6 +158,31 @@ const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomer
                   value={value}
                   onChange={onChange}
                   {...(errors.email && { error: true, helperText: errors.email.message })}
+                />
+              )}
+            />
+
+            <Controller
+              name='dob'
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <AppReactDatepicker
+                  selected={value}
+                  showYearDropdown
+                  scrollableYearDropdown
+                  yearDropdownItemNumber={40}
+                  onChange={onChange}
+                  placeholderText='DD/MM/YYYY'
+                  dateFormat={'dd/MM/yyyy'}
+                  customInput={
+                    <TextField
+                      value={value}
+                      onChange={onChange}
+                      fullWidth
+                      label='Date Of Birth'
+                      {...(errors.dob && { error: true, helperText: errors.dob.message })}
+                    />
+                  }
                 />
               )}
             />

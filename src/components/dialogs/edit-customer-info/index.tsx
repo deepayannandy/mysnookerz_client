@@ -1,5 +1,6 @@
 'use client'
 
+import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 // React Imports
 
 // MUI Imports
@@ -22,6 +23,7 @@ type EditCustomerDataType = {
   contact: string | null
   email?: string | null
   profileImage?: string
+  dob?: Date | null
 }
 
 type EditCustomerInfoProps = {
@@ -35,7 +37,8 @@ const schema: yup.ObjectSchema<Omit<EditCustomerDataType, '_id'>> = yup.object()
   fullName: yup.string().required('This field is required').min(1),
   contact: yup.string().required('This field is required').min(10).max(10),
   email: yup.string().email('Please enter a valid email address'),
-  profileImage: yup.string()
+  profileImage: yup.string(),
+  dob: yup.date().notRequired()
 })
 
 const EditCustomerInfo = ({ open, setOpen, getCustomerData, customerData }: EditCustomerInfoProps) => {
@@ -55,7 +58,8 @@ const EditCustomerInfo = ({ open, setOpen, getCustomerData, customerData }: Edit
     defaultValues: {
       fullName: '',
       contact: '',
-      email: ''
+      email: '',
+      dob: new Date()
     }
   })
 
@@ -152,6 +156,31 @@ const EditCustomerInfo = ({ open, setOpen, getCustomerData, customerData }: Edit
                   value={value || ''}
                   onChange={onChange}
                   {...(errors.email && { error: true, helperText: errors.email.message })}
+                />
+              )}
+            />
+
+            <Controller
+              name='dob'
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <AppReactDatepicker
+                  selected={value}
+                  showYearDropdown
+                  scrollableYearDropdown
+                  yearDropdownItemNumber={40}
+                  onChange={onChange}
+                  placeholderText='DD/MM/YYYY'
+                  dateFormat={'dd/MM/yyyy'}
+                  customInput={
+                    <TextField
+                      value={value}
+                      onChange={onChange}
+                      fullWidth
+                      label='Date Of Birth'
+                      {...(errors.dob && { error: true, helperText: errors.dob.message })}
+                    />
+                  }
                 />
               )}
             />

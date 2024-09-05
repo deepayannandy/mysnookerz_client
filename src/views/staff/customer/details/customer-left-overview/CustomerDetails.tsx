@@ -100,7 +100,7 @@ const CustomerDetails = ({
               </Typography>
               <Typography>
                 {customerData?.customers?.dob
-                  ? DateTime.fromISO(customerData.customers.dob).toFormat('dd LLL yyyyy')
+                  ? DateTime.fromISO(customerData.customers.dob).toFormat('dd LLL yyyy')
                   : ''}
               </Typography>
             </div>
