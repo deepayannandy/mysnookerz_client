@@ -82,17 +82,14 @@ const VerticalMenu = ({ dictionary, scrollMenu, userDesignation }: Props) => {
         renderExpandedMenuItemIcon={{ icon: <i className='ri-circle-line' /> }}
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
-        {userDesignation === 'Staff' ? (
-          <MenuSection label={dictionary['navigation'].staffInterface}>
-            <MenuItem href={`/${locale}/staff/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
-            <MenuItem href={`/${locale}/staff/booking`}>{dictionary['navigation'].booking}</MenuItem>
-            <MenuItem href={`/${locale}/staff/history`}>{dictionary['navigation'].history}</MenuItem>
-            <MenuItem href={`/${locale}/staff/customer`}>{dictionary['navigation'].customer}</MenuItem>
-          </MenuSection>
-        ) : (
-          <></>
-        )}
-        {userDesignation === 'Admin' ? (
+        <MenuSection label={dictionary['navigation'].staffInterface}>
+          <MenuItem href={`/${locale}/staff/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
+          <MenuItem href={`/${locale}/staff/booking`}>{dictionary['navigation'].booking}</MenuItem>
+          <MenuItem href={`/${locale}/staff/history`}>{dictionary['navigation'].history}</MenuItem>
+          <MenuItem href={`/${locale}/staff/customer`}>{dictionary['navigation'].customer}</MenuItem>
+        </MenuSection>
+
+        {userDesignation !== 'Staff' ? (
           <MenuSection label={dictionary['navigation'].adminInterface}>
             <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
 
