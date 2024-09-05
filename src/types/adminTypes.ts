@@ -67,14 +67,23 @@ export type TableDataType = {
   isBooked?: boolean
 }
 
-export type UserDataType = {
+export type UserDataType = StoreDataType & {
   clientName: string
+}
+
+export type StoreDataType = {
   StoreData: {
     _id: string
     storeName: string
     contact: string
     email: string
     address: string
+    onboarding: string
+    validTill: string
+    profileImage: string
+    transactionCounter: number
+    nightEndTime: string
+    nightStartTime: string
   }
   SubscriptionData?: {
     _id: string

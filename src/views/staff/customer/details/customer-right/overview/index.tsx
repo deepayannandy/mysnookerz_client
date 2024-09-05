@@ -13,33 +13,33 @@ const Overview = ({ data, tableData }: { data: CustomerDetailsDataType; tableDat
       color: 'primary',
       avatarIcon: 'ri-money-rupee-circle-line',
       title: 'Total Credit',
-      stats: `₹${data?.tableCredit}`,
+      stats: `₹${data?.tableCredit ?? 'NA'}`,
       content: 'Table Credit',
-      description: `₹${data?.cafeCredit} Cafe Credit   ₹${data?.customers?.maxCredit} Card limit`
+      description: `${data?.cafeCredit !== undefined ? `₹${data?.cafeCredit} Cafe Credit` : 'NA'}    ${data?.customers?.maxCredit !== undefined ? `₹${data?.customers?.maxCredit} Credit limit` : ''} `
     },
     {
       color: 'success',
       avatarIcon: 'ri-gift-line',
       title: 'Membership',
-      chipLabel: `${data?.membership?.membershipName}`,
-      description: `${data?.membership?.membershipMin} membership minutes`
+      chipLabel: `${data?.membership?.membershipName ?? 'NA'}`,
+      description: `${data?.membership?.membershipMin !== undefined ? `${data?.membership?.membershipMin} membership minutes` : 'NA'}`
     },
     {
       color: 'warning',
       avatarIcon: 'ri-star-smile-line',
       title: 'Games',
-      stats: `${data?.gameWin}`,
+      stats: `${data?.gameWin ?? 0}`,
       content: 'Winner',
-      description: `${data?.customers?.rewardPoint} Reward point`
-    },
-    {
-      color: 'info',
-      avatarIcon: 'ri-vip-crown-line',
-      title: 'coupons',
-      stats: '21',
-      content: 'Coupons you win',
-      description: 'Use coupon on next purchase'
+      description: `${data?.customers?.rewardPoint !== undefined ? `${data?.customers?.rewardPoint} Reward point` : 'NA'}`
     }
+    // {
+    //   color: 'info',
+    //   avatarIcon: 'ri-vip-crown-line',
+    //   title: 'coupons',
+    //   stats: '21',
+    //   content: 'Coupons you win',
+    //   description: 'Use coupon on next purchase'
+    // }
   ]
 
   return (

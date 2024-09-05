@@ -10,10 +10,12 @@ import TextField from '@mui/material/TextField'
 // Style Imports
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import '@/libs/styles/tiptapEditor.css'
+import { StoreDataType } from '@/types/adminTypes'
 import Button from '@mui/material/Button'
 import axios from 'axios'
 import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
@@ -22,7 +24,7 @@ type NightTimeDataType = {
   nightEndTime: Date
 }
 
-const NightTime = () => {
+const NightTime = ({ storeData, getStoreData }: { storeData: StoreDataType; getStoreData: () => void }) => {
   //Hooks
   const { lang: locale } = useParams()
   const pathname = usePathname()
@@ -40,9 +42,20 @@ const NightTime = () => {
     }
   })
 
+  useEffect(() => {
+    resetForm({
+      nightStartTime: storeData?.StoreData?.nightStartTime
+        ? DateTime.fromISO(storeData?.StoreData?.nightStartTime).toJSDate()
+        : new Date(),
+      nightEndTime: storeData?.StoreData?.nightEndTime
+        ? DateTime.fromISO(storeData?.StoreData?.nightEndTime).toJSDate()
+        : new Date()
+    })
+  }, [storeData, resetForm])
+
   const onSubmit = async (data: NightTimeDataType) => {
-    const nightStartTime = DateTime.fromJSDate(data.nightStartTime).toFormat('hh:mm a')
-    const nightEndTime = DateTime.fromJSDate(data.nightEndTime).toFormat('hh:mm a')
+    const nightStartTime = DateTime.fromJSDate(data.nightStartTime).toFormat('HH:mm')
+    const nightEndTime = DateTime.fromJSDate(data.nightEndTime).toFormat('HH:mm')
 
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
@@ -54,6 +67,7 @@ const NightTime = () => {
         { headers: { 'auth-token': token } }
       )
       if (response && response.data) {
+        getStoreData()
         resetForm()
         toast.success('Night time updated successfully')
       }

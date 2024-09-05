@@ -393,7 +393,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                 }
               }
             />
-            <TextField
+            {/* <TextField
               label='Paid'
               //placeholder='₹_._'
               InputProps={{
@@ -407,8 +407,9 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                   paid: Number(event.target.value) ? Number(event.target.value) : ''
                 })
               }
-            />
+            /> */}
             <TextField
+              className='col-span-2'
               label='Payment Method'
               select
               value={inputData.paymentMethod}
