@@ -56,13 +56,17 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
   const pathname = usePathname()
   const router = useRouter()
 
-  const totalTime =
+  const totalSeconds =
     tableData.gameData?.startTime && tableData.gameData?.endTime
-      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), [
-          'hours',
-          'minutes'
-        ])
+      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['seconds'])
+          .seconds
       : 0
+
+  const totalMinutes = Math.ceil(totalSeconds / 60)
+
+  // Now break down total minutes into hours and minutes
+  const hours = Math.floor(totalMinutes / 60) // full hours
+  const minutes = totalMinutes % 60
 
   const getBillData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -161,7 +165,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       variant='temporary'
       onClose={handleClose}
       ModalProps={{ keepMounted: true }}
-      sx={{ '& .MuiDrawer-paper': { width: { xs: 300, sm: 400 } } }}
+      sx={{ '& .MuiDrawer-paper': { width: { xs: 320, sm: 400 } } }}
     >
       <div className='flex items-center justify-between pli-5 plb-4'>
         <Typography variant='h5'>{tableData.tableName}</Typography>
@@ -333,12 +337,12 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                 <></>
               )}
 
-              {totalTime ? (
+              {totalSeconds ? (
                 <>
                   <Divider className='col-span-2' />
                   <p>Total Time</p>
                   <p>
-                    {totalTime.hours || '00'}hrs {Math.round(totalTime.minutes | 0) || '00'}mins
+                    {hours || '00'}hrs {minutes || '00'}mins
                   </p>
                 </>
               ) : (

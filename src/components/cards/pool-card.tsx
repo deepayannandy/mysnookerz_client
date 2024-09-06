@@ -24,7 +24,7 @@ const PoolCard = ({
   )
   const [billData, setBillData] = useState({} as CustomerInvoiceType)
 
-  let totalSeconds =
+  const totalSeconds =
     tableData.gameData?.startTime && tableData.gameData?.endTime
       ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['seconds'])
           .seconds
