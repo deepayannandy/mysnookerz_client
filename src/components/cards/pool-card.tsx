@@ -24,13 +24,17 @@ const PoolCard = ({
   )
   const [billData, setBillData] = useState({} as CustomerInvoiceType)
 
-  const totalTime =
+  let totalSeconds =
     tableData.gameData?.startTime && tableData.gameData?.endTime
-      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), [
-          'hours',
-          'minutes'
-        ])
+      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['seconds'])
+          .seconds
       : 0
+
+  const totalMinutes = Math.ceil(totalSeconds / 60)
+
+  // Now break down total minutes into hours and minutes
+  const hours = Math.floor(totalMinutes / 60) // full hours
+  const minutes = totalMinutes % 60
 
   const getBillData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -415,12 +419,12 @@ const PoolCard = ({
                 <></>
               )}
 
-              {totalTime ? (
+              {totalSeconds ? (
                 <>
                   <Divider className='col-span-2' />
                   <p className='text-xs'>Total Time</p>
                   <p className='text-xs'>
-                    {totalTime.hours || '00'}hrs {Math.ceil(totalTime.minutes | 0) || '00'}mins
+                    {hours || '00'}hrs {minutes || '00'}mins
                   </p>
                 </>
               ) : (
