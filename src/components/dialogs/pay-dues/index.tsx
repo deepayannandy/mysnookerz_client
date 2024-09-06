@@ -1,7 +1,7 @@
 'use client'
 
 import { CustomerDetailsDataType } from '@/types/staffTypes'
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material'
+import { FormControl, FormHelperText, FormLabel, MenuItem } from '@mui/material'
 // React Imports
 
 // MUI Imports
@@ -10,7 +10,6 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import axios from 'axios'
@@ -96,63 +95,66 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
 
   return (
     <Dialog fullWidth open={open} onClose={handleClose} maxWidth='xs' scroll='body'>
-      <DialogTitle variant='h4' className='flex gap-2 flex-col items-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
-        <div className='max-sm:is-[80%] max-sm:text-center'>Pay Dues</div>
+      <DialogTitle variant='h4' className='flex gap-2 flex-col text-center sm:items-start pb-0'>
+        <div className='text-center sm:text-start'>Pay Dues</div>
         <Typography component='span' className='flex flex-col text-center'>
           {`Payment Due: ₹${customerData?.customers?.credit ?? 0}`}
         </Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit(data => onSubmit(data))}>
-        <DialogContent className='overflow-visible pbs-0 sm:pli-16 flex justify-center'>
-          <IconButton onClick={handleClose} className='absolute block-start-4 inline-end-4'>
+        <DialogContent className='overflow-visible flex justify-center sm:justify-start'>
+          {/* <IconButton onClick={handleClose} className='absolute block-start-4 inline-end-4'>
             <i className='ri-close-line text-textSecondary' />
-          </IconButton>
-          <div className='flex sm:flex-row flex-col justify-between gap-4'>
-            <Controller
-              name='amount'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  size='small'
-                  fullWidth
-                  label='Amount'
-                  inputProps={{ type: 'number', min: 0 }}
-                  value={value}
-                  onChange={onChange}
-                  {...(errors.amount && {
-                    error: true,
-                    helperText: errors.amount?.message || 'This field is required'
-                  })}
-                />
-              )}
-            />
-
-            <FormControl fullWidth>
-              <InputLabel>Payment Method</InputLabel>
+          </IconButton> */}
+          <div className='flex sm:flex-row flex-col gap-2 sm:w-full justify-center sm:justify-start'>
+            <div className='flex flex-col justify-start w-full'>
+              <FormLabel className='font-bold'>Amount</FormLabel>
               <Controller
-                name='paymentMethod'
+                name='amount'
                 control={control}
                 rules={{ required: true }}
-                render={({ field }) => (
-                  <Select size='small' label='Payment Method' {...field}>
-                    {paymentMethods.map((method, index) => (
-                      <MenuItem key={index} value={method}>
-                        {method}
-                      </MenuItem>
-                    ))}
-                  </Select>
+                render={({ field: { value, onChange } }) => (
+                  <TextField
+                    size='small'
+                    inputProps={{ type: 'number', min: 0 }}
+                    value={value}
+                    onChange={onChange}
+                    {...(errors.amount && {
+                      error: true,
+                      helperText: errors.amount?.message || 'This field is required'
+                    })}
+                  />
                 )}
               />
-              {errors.paymentMethod && <FormHelperText error>This field is required.</FormHelperText>}
-            </FormControl>
+            </div>
+
+            <div className='flex flex-col justify-start w-full'>
+              <FormLabel className='font-bold'>Payment Method</FormLabel>
+              <FormControl>
+                <Controller
+                  name='paymentMethod'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field }) => (
+                    <TextField select size='small' {...field}>
+                      {paymentMethods.map((method, index) => (
+                        <MenuItem key={index} value={method}>
+                          {method}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  )}
+                />
+                {errors.paymentMethod && <FormHelperText error>This field is required.</FormHelperText>}
+              </FormControl>
+            </div>
           </div>
         </DialogContent>
-        <DialogActions className='justify-center pbs-0 sm:pbe-16 sm:pli-16'>
-          <Button variant='outlined' color='secondary' type='reset' onClick={handleClose}>
+        <DialogActions className='justify-center sm:justify-end'>
+          <Button size='small' variant='outlined' color='secondary' type='reset' onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant='contained' type='submit'>
+          <Button size='small' variant='contained' type='submit'>
             Submit
           </Button>
         </DialogActions>

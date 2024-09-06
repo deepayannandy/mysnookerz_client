@@ -1,6 +1,7 @@
 'use client'
 
 import { CustomerDetailsDataType } from '@/types/staffTypes'
+import { FormLabel } from '@mui/material'
 // React Imports
 
 // MUI Imports
@@ -9,7 +10,6 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import axios from 'axios'
@@ -86,18 +86,19 @@ const AddOldCredit = ({ open, setOpen, getCustomerData, customerData }: AddOldCr
 
   return (
     <Dialog fullWidth open={open} onClose={handleClose} maxWidth='xs' scroll='body'>
-      <DialogTitle variant='h4' className='flex gap-2 flex-col items-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
-        <div className='max-sm:is-[80%] max-sm:text-center'>Old Credit</div>
+      <DialogTitle variant='h4' className='flex gap-2 flex-col text-center sm:items-start pb-0'>
+        <div className='text-center sm:text-start'>Old Credit</div>
         <Typography component='span' className='flex flex-col text-center'>
           {`Credit: ₹${customerData?.customers?.credit ?? 0}`}
         </Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit(data => onSubmit(data))}>
-        <DialogContent className='overflow-visible pbs-0 sm:pli-16 flex justify-center'>
-          <IconButton onClick={handleClose} className='absolute block-start-4 inline-end-4'>
+        <DialogContent className='overflow-visible flex justify-center sm:justify-start'>
+          {/* <IconButton onClick={handleClose} className='absolute block-start-4 inline-end-4'>
             <i className='ri-close-line text-textSecondary' />
-          </IconButton>
-          <div className='flex flex-col max-w-fit justify-center'>
+          </IconButton> */}
+          <div className='flex flex-col gap-2 sm:w-full justify-center sm:justify-start'>
+            <FormLabel className='font-bold'>Amount</FormLabel>
             <Controller
               name='credit'
               control={control}
@@ -106,7 +107,6 @@ const AddOldCredit = ({ open, setOpen, getCustomerData, customerData }: AddOldCr
                 <TextField
                   size='small'
                   fullWidth
-                  label='Add Credit'
                   inputProps={{ type: 'number', min: 0 }}
                   value={value}
                   onChange={onChange}
@@ -119,11 +119,11 @@ const AddOldCredit = ({ open, setOpen, getCustomerData, customerData }: AddOldCr
             />
           </div>
         </DialogContent>
-        <DialogActions className='justify-center pbs-0 sm:pbe-16 sm:pli-16'>
-          <Button variant='outlined' color='secondary' type='reset' onClick={handleClose}>
+        <DialogActions className='justify-center sm:justify-end'>
+          <Button size='small' variant='outlined' color='secondary' type='reset' onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant='contained' type='submit'>
+          <Button size='small' variant='contained' type='submit'>
             Submit
           </Button>
         </DialogActions>
