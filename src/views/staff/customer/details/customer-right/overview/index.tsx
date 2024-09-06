@@ -9,16 +9,16 @@ import { toast } from 'react-toastify'
 
 // Component Imports
 import CustomerStatisticsCard from './CustomerStatisticsCard'
-import OrderListTable from './OrderListTable'
+import CustomerPaymentHistoryTable from './OrderListTable'
 
 const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
-  const [tableData, setTableData] = useState([])
+  const [paymentHistoryData, setPaymentHistoryData] = useState([])
 
   const { lang: locale } = useParams()
   const pathname = usePathname()
   const router = useRouter()
 
-  const getTableData = async () => {
+  const getPaymentHistoryData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
 
@@ -28,7 +28,7 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
           headers: { 'auth-token': token }
         })
         if (response && response.data) {
-          setTableData(response.data)
+          setPaymentHistoryData(response.data)
         }
       } catch (error: any) {
         if (error?.response?.status === 401) {
@@ -41,7 +41,7 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
   }
 
   useEffect(() => {
-    getTableData()
+    getPaymentHistoryData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
@@ -85,7 +85,7 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
         <CustomerStatisticsCard customerStatData={customerStats} />
       </Grid>
       <Grid item xs={12}>
-        <OrderListTable orderData={tableData} />
+        <CustomerPaymentHistoryTable paymentHistoryData={paymentHistoryData} />
       </Grid>
     </Grid>
   )

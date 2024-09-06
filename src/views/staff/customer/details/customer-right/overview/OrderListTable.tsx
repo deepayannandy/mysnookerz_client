@@ -40,6 +40,7 @@ import type { ThemeColor } from '@core/types'
 
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
+import { DateTime } from 'luxon'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -73,20 +74,20 @@ export const statusChipColor: { [key: string]: StatusChipColorType } = {
   Dispatched: { color: 'warning' }
 }
 
-type OrderListDataType = {
+type PaymentHistoryDataType = {
   date: string
-  customer: string
+  customerName: string
   description: string
   quantity: number
   startEndTime: string
   netPay: number
   discount: number
   paid: number
-  dueCredit: number
+  due: number
   paidBy: string
 }
 
-type ECommerceOrderListDataTypeWithAction = OrderListDataType & {
+type PaymentHistoryDataTypeWithAction = PaymentHistoryDataType & {
   action?: string
 }
 
@@ -133,60 +134,59 @@ const DebouncedInput = ({
 }
 
 // Column Definitions
-const columnHelper = createColumnHelper<ECommerceOrderListDataTypeWithAction>()
+const columnHelper = createColumnHelper<PaymentHistoryDataTypeWithAction>()
 
-const OrderListTable = ({ orderData }: { orderData?: OrderListDataType[] }) => {
+const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryData: PaymentHistoryDataType[] }) => {
   // States
   const [rowSelection, setRowSelection] = useState({})
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  const [data, setData] = useState([...((orderData as OrderListDataType[]) ?? [])])
   const [globalFilter, setGlobalFilter] = useState('')
 
   // Hooks
   // const { lang: locale } = useParams()
 
-  const columns = useMemo<ColumnDef<ECommerceOrderListDataTypeWithAction, any>[]>(
+  const columns = useMemo<ColumnDef<PaymentHistoryDataTypeWithAction, any>[]>(
     () => [
       columnHelper.accessor('date', {
         header: 'Date',
-        cell: ({ row }) => <Typography>{`${new Date(row.original.date).toDateString()}`}</Typography>
+        cell: ({ row }) => <Typography>{`${DateTime.fromISO(row.original.date).toFormat('dd LLL yyyy')}`}</Typography>
       }),
-      columnHelper.accessor('customer', {
+      columnHelper.accessor('customerName', {
         header: 'Customer',
-        cell: ({ row }) => <Typography>${row.original.customer}</Typography>
+        cell: ({ row }) => <Typography>{row.original.customerName}</Typography>
       }),
       columnHelper.accessor('description', {
         header: 'Description',
-        cell: ({ row }) => <Typography>${row.original.description}</Typography>
+        cell: ({ row }) => <Typography>{row.original.description}</Typography>
       }),
       columnHelper.accessor('quantity', {
         header: 'Quantity',
-        cell: ({ row }) => <Typography>${row.original.quantity}</Typography>
+        cell: ({ row }) => <Typography>{row.original.quantity}</Typography>
       }),
 
       columnHelper.accessor('startEndTime', {
         header: 'Start-End Time',
-        cell: ({ row }) => <Typography>${row.original.startEndTime}</Typography>
+        cell: ({ row }) => <Typography>{row.original.startEndTime}</Typography>
       }),
       columnHelper.accessor('netPay', {
-        header: 'Description',
-        cell: ({ row }) => <Typography>${row.original.netPay}</Typography>
+        header: 'Net Pay',
+        cell: ({ row }) => <Typography>₹{row.original.netPay ?? 0}</Typography>
       }),
       columnHelper.accessor('discount', {
         header: 'Discount',
-        cell: ({ row }) => <Typography>${row.original.discount}</Typography>
+        cell: ({ row }) => <Typography>₹{row.original.discount ?? 0}</Typography>
       }),
       columnHelper.accessor('paid', {
         header: 'Paid',
-        cell: ({ row }) => <Typography>${row.original.paid}</Typography>
+        cell: ({ row }) => <Typography>₹{row.original.paid ?? 0}</Typography>
       }),
-      columnHelper.accessor('dueCredit', {
+      columnHelper.accessor('due', {
         header: 'Due(Credit)',
-        cell: ({ row }) => <Typography>${row.original.dueCredit}</Typography>
+        cell: ({ row }) => <Typography>₹{row.original.due ?? 0}</Typography>
       }),
       columnHelper.accessor('paidBy', {
         header: 'Paid By',
-        cell: ({ row }) => <Typography>${row.original.paidBy}</Typography>
+        cell: ({ row }) => <Typography>{row.original.paidBy}</Typography>
       })
 
       // columnHelper.accessor('action', {
@@ -219,11 +219,11 @@ const OrderListTable = ({ orderData }: { orderData?: OrderListDataType[] }) => {
       // })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [data]
+    [paymentHistoryData]
   )
 
   const table = useReactTable({
-    data: data as OrderListDataType[],
+    data: paymentHistoryData as PaymentHistoryDataType[],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter
@@ -254,11 +254,11 @@ const OrderListTable = ({ orderData }: { orderData?: OrderListDataType[] }) => {
   return (
     <Card>
       <CardContent className='flex justify-between flex-col items-start sm:flex-row sm:items-center gap-y-4'>
-        <Typography variant='h5'>Orders Placed</Typography>
+        <Typography variant='h5'>Payment History</Typography>
         <DebouncedInput
           value={globalFilter ?? ''}
           onChange={value => setGlobalFilter(String(value))}
-          placeholder='Search Order'
+          placeholder='Search'
           className='is-full sm:is-auto'
         />
       </CardContent>
@@ -336,4 +336,4 @@ const OrderListTable = ({ orderData }: { orderData?: OrderListDataType[] }) => {
   )
 }
 
-export default OrderListTable
+export default CustomerPaymentHistoryTable
