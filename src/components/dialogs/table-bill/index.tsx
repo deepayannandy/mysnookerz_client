@@ -11,6 +11,7 @@ import { Autocomplete, Avatar, Chip, Divider, Drawer, MenuItem, TextField, Typog
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
+import _ from 'lodash'
 import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
@@ -36,21 +37,19 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
   const [errors, setErrors] = useState({} as { invoiceTo: string })
   const [inputData, setInputData] = useState({
     discount: '',
-    paid: '',
     paymentMethod: paymentMethods[0],
     cashIn: ''
   } as {
     discount?: number | string
-    paid?: number | string
     paymentMethod: string
     cashIn?: number | string
   })
   const [customerPaymentData, setCustomerPaymentData] = useState(
-    {} as { [x: string]: { amount?: number | string; paymentMethod?: string } }
+    {} as { [x: string]: { amount?: number | string; paymentMethod?: string; cashIn?: number | string } }
   )
 
-  const netPay = Math.round(data.totalBillAmt - (typeof inputData.discount === 'number' ? inputData.discount : 0))
-  const cashOut = Math.round((typeof inputData.cashIn === 'number' ? inputData.cashIn : 0) - data.totalBillAmt)
+  const netPay = Math.ceil(data.totalBillAmt - (typeof inputData.discount === 'number' ? inputData.discount : 0))
+  const cashOut = Math.ceil((typeof inputData.cashIn === 'number' ? inputData.cashIn : 0) - netPay)
 
   const { lang: locale } = useParams()
   const pathname = usePathname()
@@ -95,7 +94,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
   }, [tableData._id, open])
 
   const handleClose = () => {
-    setInputData({ discount: '', paid: '', paymentMethod: paymentMethods[0] })
+    setInputData({ discount: '', paymentMethod: paymentMethods[0], cashIn: '' })
     setOpen(false)
   }
 
@@ -105,36 +104,61 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       return
     }
 
-    const customerDetails = []
+    const checkoutPlayers = []
     if (invoiceTo.length > 1) {
       let totalAmount = 0
-      const neyPayable = Math.round(
-        data.totalBillAmt - (typeof inputData.discount === 'number' ? inputData.discount : 0)
-      )
       for (const name of Object.keys(customerPaymentData)) {
         if (!customerPaymentData[name]?.amount) {
           break
         }
+
         totalAmount = totalAmount + Number(customerPaymentData[name].amount)
 
-        customerDetails.push({
-          customerName: name,
+        const customerData = invoiceTo.find(data => data.fullName === name)
+
+        if (!customerData) {
+          toast.error('Incorrect customer data')
+          return
+        }
+
+        checkoutPlayers.push({
+          ...customerData,
           amount: customerPaymentData[name].amount,
-          paymentMethod: customerPaymentData[name].paymentMethod
+          paymentMethod: customerPaymentData[name].paymentMethod,
+          cashIn: customerPaymentData[name].cashIn
         })
       }
-      if (!customerDetails.length) {
+      if (!checkoutPlayers.length) {
         toast.error('Please provide complete payment details for the customers')
         return
       }
 
-      if (totalAmount > neyPayable) {
+      if (totalAmount > netPay) {
         toast.error('Total payable amount can not be more than net pay')
         return
       }
+    } else {
+      if ((inputData.cashIn ?? 0) > netPay) {
+        toast.error('Cash In can not be more than net pay')
+        return
+      }
+
+      checkoutPlayers.push({
+        ...invoiceTo[0],
+        amount: netPay,
+        paymentMethod: inputData.paymentMethod,
+        cashIn: inputData.cashIn
+      })
     }
 
-    const requestData = { ...inputData, timeDelta: data.timeDelta, totalBillAmt: data.totalBillAmt, cashOut }
+    const inputDetails = invoiceTo?.length > 1 ? _.omit(inputData, 'paymentMethod') : inputData
+    const requestData = {
+      ...inputDetails,
+      timeDelta: data.timeDelta,
+      totalBillAmt: data.totalBillAmt,
+      cashOut,
+      checkoutPlayers
+    }
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -158,6 +182,69 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
     }
   }
 
+  const handleCustomerPaymentDataChange = ({
+    value,
+    field,
+    fullName
+  }: {
+    value: string
+    field: string
+    fullName?: string
+  }) => {
+    let fieldValue: number | string = value
+    if (['amount', 'cashIn'].includes(field)) {
+      fieldValue = Number(value) ? Number(value) : ''
+    }
+
+    if (field === 'cashIn' && value > (customerPaymentData[fullName as string]?.amount ?? 0)) {
+      toast.error('Cash In can not be more than amount')
+      return
+    }
+
+    if (field === 'amount' && value < (customerPaymentData[fullName as string]?.cashIn ?? 0)) {
+      toast.error('Amount can not be less than cash in')
+      return
+    }
+
+    setCustomerPaymentData({
+      ...customerPaymentData,
+      [fullName as string]: {
+        ...customerPaymentData[fullName as string],
+        [field]: fieldValue
+      }
+    })
+
+    if (field === 'amount') {
+      let cashInValue = Number(value) ? Number(value) : 0
+      Object.keys(customerPaymentData).forEach(data => {
+        if (data !== fullName) {
+          cashInValue =
+            cashInValue +
+            (customerPaymentData[data]?.amount && Number(customerPaymentData[data]?.amount)
+              ? Number(customerPaymentData[data]?.amount)
+              : 0)
+        }
+      })
+
+      setInputData({
+        ...inputData,
+        cashIn: Number(cashInValue) ? Number(cashInValue) : ''
+      })
+    }
+  }
+
+  const handleCashInChange = (value: string) => {
+    if ((Number(value) ?? 0) > netPay) {
+      toast.error('Cash In can not be more than net pay')
+      return
+    }
+
+    setInputData({
+      ...inputData,
+      cashIn: Number(value) ? Number(value) : ''
+    })
+  }
+
   return (
     <Drawer
       open={open}
@@ -165,7 +252,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       variant='temporary'
       onClose={handleClose}
       ModalProps={{ keepMounted: true }}
-      sx={{ '& .MuiDrawer-paper': { width: { xs: 320, sm: 400 } } }}
+      sx={{ '& .MuiDrawer-paper': { width: { xs: 340, sm: 400 } } }}
     >
       <div className='flex items-center justify-between pli-5 plb-4'>
         <Typography variant='h5'>{tableData.tableName}</Typography>
@@ -243,25 +330,28 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
           )}
 
           {invoiceTo.length > 1 ? (
-            <div className='w-full grid grid-cols-1  border mt-2 rounded-lg'>
-              <div className='w-full grid grid-cols-3 text-center font-bold border-b divide-x'>
-                <div className='size-full grid place-items-center'>
+            <div className='w-full grid grid-cols-1 border mt-2 rounded-lg overflow-x-auto '>
+              <div className='w-full grid grid-cols-4 text-center font-bold border-b divide-x'>
+                <div className='size-full grid place-items-center  p-1 sm:p-2 '>
                   <p>Customer</p>
                 </div>
-                <div className='size-full grid place-items-center'>
+                <div className='size-full grid place-items-center  p-1 sm:p-2'>
                   <p>Amount</p>
                 </div>
-                <div className='size-full grid place-items-center'>
+                <div className='size-full grid place-items-center p-1 sm:p-2'>
+                  <p>Cash In</p>
+                </div>
+                <div className='size-full grid place-items-center p-1 sm:p-2'>
                   <p>Payment Method</p>
                 </div>
               </div>
 
               {invoiceTo.map(customer => (
-                <div key={customer.fullName} className='w-full grid grid-cols-3 border-b divide-x'>
-                  <div className='size-full grid place-items-center break-all p-2'>
+                <div key={customer.fullName} className='w-full grid grid-cols-4 border-b divide-x'>
+                  <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
                     <p>{customer.fullName}</p>
                   </div>
-                  <div className='size-full grid place-items-center p-2'>
+                  <div className='size-full grid place-items-center p-1 sm:p-2'>
                     <TextField
                       size='small'
                       //placeholder='₹_._'
@@ -271,29 +361,43 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                       }}
                       value={customerPaymentData[customer.fullName as string]?.amount || ''}
                       onChange={event =>
-                        setCustomerPaymentData({
-                          ...customerPaymentData,
-                          [customer.fullName as string]: {
-                            ...customerPaymentData[customer.fullName as string],
-                            amount: Number(event.target.value) ? Number(event.target.value) : ''
-                          }
+                        handleCustomerPaymentDataChange({
+                          value: event.target.value,
+                          fullName: customer.fullName,
+                          field: 'amount'
                         })
                       }
                     />
                   </div>
-                  <div className='size-full grid place-items-center p-2'>
+                  <div className='size-full grid place-items-center p-1 sm:p-2'>
                     <TextField
-                      className='w-full'
+                      size='small'
+                      //placeholder='₹_._'
+                      InputProps={{
+                        type: 'tel'
+                        //startAdornment: <p className='m-2'>Paid</p>
+                      }}
+                      value={customerPaymentData[customer.fullName as string]?.cashIn || ''}
+                      onChange={event =>
+                        handleCustomerPaymentDataChange({
+                          value: event.target.value,
+                          fullName: customer.fullName,
+                          field: 'cashIn'
+                        })
+                      }
+                    />
+                  </div>
+                  <div className='size-full grid place-items-center p-1 sm:p-2'>
+                    <TextField
+                      className='min-w-max'
                       size='small'
                       select
                       value={customerPaymentData[customer.fullName as string]?.paymentMethod || paymentMethods[0]}
                       onChange={e => {
-                        setCustomerPaymentData({
-                          ...customerPaymentData,
-                          [customer.fullName as string]: {
-                            ...customerPaymentData[customer.fullName as string],
-                            paymentMethod: e.target.value
-                          }
+                        handleCustomerPaymentDataChange({
+                          value: e.target.value,
+                          fullName: customer.fullName,
+                          field: 'paymentMethod'
                         })
                       }}
                     >
@@ -412,22 +516,27 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                 })
               }
             /> */}
+            {invoiceTo?.length <= 1 ? (
+              <TextField
+                className='col-span-2'
+                label='Payment Method'
+                select
+                value={inputData.paymentMethod}
+                onChange={e => {
+                  setInputData({ ...inputData, paymentMethod: e.target.value })
+                }}
+              >
+                {paymentMethods.map((paymentMethod, index) => (
+                  <MenuItem key={index} value={paymentMethod}>
+                    {paymentMethod}
+                  </MenuItem>
+                ))}
+              </TextField>
+            ) : (
+              <></>
+            )}
             <TextField
-              className='col-span-2'
-              label='Payment Method'
-              select
-              value={inputData.paymentMethod}
-              onChange={e => {
-                setInputData({ ...inputData, paymentMethod: e.target.value })
-              }}
-            >
-              {paymentMethods.map((paymentMethod, index) => (
-                <MenuItem key={index} value={paymentMethod}>
-                  {paymentMethod}
-                </MenuItem>
-              ))}
-            </TextField>
-            <TextField
+              disabled={invoiceTo?.length > 1}
               label='Cash In'
               //placeholder='₹_._'
               InputProps={{
@@ -435,12 +544,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                 //startAdornment: <p className='m-2'>Paid</p>
               }}
               value={inputData.cashIn}
-              onChange={event =>
-                setInputData({
-                  ...inputData,
-                  cashIn: Number(event.target.value) ? Number(event.target.value) : ''
-                })
-              }
+              onChange={event => handleCashInChange(event.target.value)}
             />
             <TextField
               //className='w-full bg-[#E73434] rounded-lg'
@@ -455,7 +559,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
           </div>
 
           <div className='flex items-center gap-4'>
-            <Button variant='contained' onClick={handleSubmit}>
+            <Button variant='contained' onClick={handleSubmit} disabled={invoiceTo?.length > 1 && cashOut !== 0}>
               Checkout
             </Button>
             <Button variant='outlined' color='error' onClick={handleClose}>
