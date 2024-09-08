@@ -138,7 +138,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
         return
       }
     } else {
-      if ((inputData.cashIn ?? 0) > netPay) {
+      if ((Number(inputData.cashIn) ? Number(inputData.cashIn) : 0) > netPay) {
         toast.error('Cash In can not be more than net pay')
         return
       }
@@ -196,12 +196,18 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       fieldValue = Number(value) ? Number(value) : ''
     }
 
-    if (field === 'cashIn' && value > (customerPaymentData[fullName as string]?.amount ?? 0)) {
+    if (
+      field === 'cashIn' &&
+      (Number(value) ? Number(value) : 0) > (Number(customerPaymentData[fullName as string]?.amount ?? 0) ?? 0)
+    ) {
       toast.error('Cash In can not be more than amount')
       return
     }
 
-    if (field === 'amount' && value < (customerPaymentData[fullName as string]?.cashIn ?? 0)) {
+    if (
+      field === 'amount' &&
+      (Number(value) ? Number(value) : 0) < (Number(customerPaymentData[fullName as string]?.cashIn ?? 0) ?? 0)
+    ) {
       toast.error('Amount can not be less than cash in')
       return
     }
@@ -234,7 +240,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
   }
 
   const handleCashInChange = (value: string) => {
-    if ((Number(value) ?? 0) > netPay) {
+    if ((Number(value) ? Number(value) : 0) > netPay) {
       toast.error('Cash In can not be more than net pay')
       return
     }
