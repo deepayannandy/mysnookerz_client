@@ -48,8 +48,8 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
     {} as { [x: string]: { amount?: number | string; paymentMethod?: string; cashIn?: number | string } }
   )
 
-  const netPay = Math.ceil(data.totalBillAmt - (typeof inputData.discount === 'number' ? inputData.discount : 0))
-  const cashOut = Math.ceil((typeof inputData.cashIn === 'number' ? inputData.cashIn : 0) - netPay)
+  const netPay = data.totalBillAmt - (typeof inputData.discount === 'number' ? inputData.discount : 0)
+  const cashOut = (typeof inputData.cashIn === 'number' ? inputData.cashIn : 0) - netPay
 
   const { lang: locale } = useParams()
   const pathname = usePathname()
@@ -125,10 +125,10 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
           ...customerData,
           amount: customerPaymentData[name].amount,
           paymentMethod: customerPaymentData[name].paymentMethod,
-          cashIn: customerPaymentData[name].cashIn
+          cashIn: customerPaymentData[name].cashIn ?? 0
         })
       }
-      if (!checkoutPlayers.length) {
+      if (checkoutPlayers?.length !== invoiceTo?.length) {
         toast.error('Please provide complete payment details for the customers')
         return
       }
@@ -147,7 +147,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
         ...invoiceTo[0],
         amount: netPay,
         paymentMethod: inputData.paymentMethod,
-        cashIn: inputData.cashIn
+        cashIn: inputData.cashIn ?? 0
       })
     }
 
@@ -468,10 +468,10 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             <>
               <div className='w-full grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
                 <p>Table Amount</p>
-                <p>{`₹${Math.round(data.totalBillAmt || 0)}`}</p>
+                <p>{`₹${data.totalBillAmt || 0}`}</p>
                 <Divider className='col-span-2' />
                 <p>Meals Amount</p>
-                <p>{`₹${Math.round(data.mealAmount || 0)}`}</p>
+                <p>{`₹${data.mealAmount || 0}`}</p>
               </div>
               {/* <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
                 <p>Net Pay</p>
