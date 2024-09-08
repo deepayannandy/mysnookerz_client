@@ -204,19 +204,20 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       return
     }
 
+    let resetCashIn = {}
     if (
       field === 'amount' &&
       (Number(value) ? Number(value) : 0) < (Number(customerPaymentData[fullName as string]?.cashIn ?? 0) ?? 0)
     ) {
-      toast.error('Amount can not be less than cash in')
-      return
+      resetCashIn = { cashIn: '' }
     }
 
     setCustomerPaymentData({
       ...customerPaymentData,
       [fullName as string]: {
         ...customerPaymentData[fullName as string],
-        [field]: fieldValue
+        [field]: fieldValue,
+        ...resetCashIn
       }
     })
 
