@@ -342,7 +342,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                     <TextField
                       size='small'
                       //placeholder='₹_._'
-                      inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                      inputProps={{ type: 'number', min: 0, step: 'any' }}
                       value={customerPaymentData[customer.fullName as string]?.amount || ''}
                       onChange={event =>
                         handleCustomerPaymentDataChange({
@@ -357,7 +357,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                     <TextField
                       size='small'
                       //placeholder='₹_._'
-                      inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                      inputProps={{ type: 'number', min: 0, step: 'any' }}
                       value={customerPaymentData[customer.fullName as string]?.cashIn || ''}
                       onChange={event =>
                         handleCustomerPaymentDataChange({
@@ -459,13 +459,13 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
           <div className='w-full grid grid-cols-2 gap-2 mt-2 rounded-lg'>
             <TextField
               //placeholder='₹_._'
-              inputProps={{ type: 'tel', min: 0 }}
+              inputProps={{ type: 'number', min: 0, step: 'any' }}
               label='Discount'
               value={inputData.discount}
               onChange={event =>
                 setInputData({
                   ...inputData,
-                  discount: Number(event.target.value) ? Number(event.target.value) : ''
+                  discount: event.target.value
                 })
               }
             />
@@ -517,7 +517,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
               disabled={invoiceTo?.length > 1}
               label='Cash In'
               //placeholder='₹_._'
-              inputProps={{ type: 'tel', min: 0, step: 'any' }}
+              inputProps={{ type: 'number', min: 0, step: 'any' }}
               value={inputData.cashIn}
               onChange={event =>
                 setInputData({

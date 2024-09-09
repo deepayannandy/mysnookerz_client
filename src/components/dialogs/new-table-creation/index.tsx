@@ -291,7 +291,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                       <TextField
                         fullWidth
                         label='Minimum Charge'
-                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
                         value={value}
                         onChange={onChange}
                         {...(errors.minuteWiseRules?.dayMinAmt && {
@@ -311,7 +311,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                       <TextField
                         fullWidth
                         label='Per Minute Charge'
-                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
                         value={value}
                         onChange={onChange}
                         {...(errors.minuteWiseRules?.dayPerMin && {
@@ -354,7 +354,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                       <TextField
                         fullWidth
                         label='Minimum Charge'
-                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
                         value={value}
                         onChange={onChange}
                         {...(errors.minuteWiseRules?.nightMinAmt && {
@@ -373,7 +373,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                       <TextField
                         fullWidth
                         label='Per Minute Charge'
-                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
                         value={value}
                         onChange={onChange}
                         {...(errors.minuteWiseRules?.nightPerMin && {
@@ -428,7 +428,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                             size='small'
                             fullWidth
                             label='Day Charge'
-                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                            inputProps={{ type: 'number', min: 0, step: 'any' }}
                             value={value}
                             onChange={onChange}
                             {...(errors.slotWiseRules?.[index]?.slotCharge && {
@@ -447,7 +447,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                             size='small'
                             fullWidth
                             label='Night Charge'
-                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                            inputProps={{ type: 'number', min: 0, step: 'any' }}
                             value={value}
                             onChange={onChange}
                             {...(errors.slotWiseRules?.[index]?.nightSlotCharge && {

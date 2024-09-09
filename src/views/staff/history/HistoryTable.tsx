@@ -115,51 +115,6 @@ const HistoryTable = () => {
     }
   }
 
-  // const historyData: HistoryDataType[] = [
-  //   {
-  //     date: '22 May 2024',
-  //     transactionId: 'T1412424242',
-  //     customerName: 'Deepayan',
-  //     description: 'this is description',
-  //     start: '10:00 AM',
-  //     end: '12:00 PM',
-  //     time: '2 hours',
-  //     table: '1',
-  //     meals: 'affafsc',
-  //     discount: 300,
-  //     netPay: 4000,
-  //     status: 'Paid'
-  //   },
-  //   {
-  //     date: '12 May 2024',
-  //     transactionId: 'T1562424242',
-  //     customerName: 'Mrinal',
-  //     description: 'this is not description',
-  //     start: '11:00 AM',
-  //     end: '04:00 PM',
-  //     time: '5 hours',
-  //     table: '2',
-  //     meals: 'affaafsffsc',
-  //     discount: 5000,
-  //     netPay: 40000,
-  //     status: 'Not Paid'
-  //   },
-  //   {
-  //     date: '20 May 2024',
-  //     transactionId: 'T1562424242',
-  //     customerName: 'Deepayan Nandy',
-  //     description: 'this was description',
-  //     start: '09:00 AM',
-  //     end: '12:00 PM',
-  //     time: '3 hours',
-  //     table: '3',
-  //     meals: 'affafafsc',
-  //     discount: 3000,
-  //     netPay: 8000,
-  //     status: 'Running'
-  //   }
-  // ]
-
   useEffect(() => {
     getHistoryData()
     // eslint-disable-next-line react-hooks/exhaustive-deps

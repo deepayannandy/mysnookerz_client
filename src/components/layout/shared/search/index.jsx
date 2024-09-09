@@ -19,8 +19,8 @@ import DefaultSuggestions from './DefaultSuggestions'
 import NoResult from './NoResult'
 
 // Hook Imports
-import useVerticalNav from '@menu/hooks/useVerticalNav'
 import { useSettings } from '@core/hooks/useSettings'
+import useVerticalNav from '@menu/hooks/useVerticalNav'
 
 // Util Imports
 import { getLocalizedUrl } from '@/utils/i18n'
@@ -33,6 +33,11 @@ import data from '@/data/searchData'
 
 // Transform the data to group items by their sections
 const transformedData = data.reduce((acc, item) => {
+  const userDesignation = localStorage.getItem('userDesignation')
+  if (userDesignation === 'Staff' && !item.url.startsWith(`/staff/`)) {
+    return acc
+  }
+
   const existingSection = acc.find(section => section.title === item.section)
 
   const newItem = {
