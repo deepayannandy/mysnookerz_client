@@ -48,8 +48,8 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
     {} as { [x: string]: { amount?: number | string; paymentMethod?: string; cashIn?: number | string } }
   )
 
-  const netPay = data.totalBillAmt - (typeof inputData.discount === 'number' ? inputData.discount : 0)
-  const cashOut = (typeof inputData.cashIn === 'number' ? inputData.cashIn : 0) - netPay
+  const netPay = (data.totalBillAmt - Number(inputData.discount ?? 0)).toFixed(2)
+  const cashOut = (Number(inputData.cashIn ?? 0) - Number(netPay ?? 0)).toFixed(2)
 
   const { lang: locale } = useParams()
   const pathname = usePathname()
@@ -121,6 +121,11 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
           return
         }
 
+        if (Number(customerPaymentData[name].cashIn ?? 0) > Number(customerPaymentData[name].amount ?? 0)) {
+          toast.error('Cash In can not be more than amount')
+          return
+        }
+
         checkoutPlayers.push({
           ...customerData,
           amount: customerPaymentData[name].amount,
@@ -133,12 +138,12 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
         return
       }
 
-      if (totalAmount > netPay) {
+      if (totalAmount > Number(netPay ?? 0)) {
         toast.error('Total payable amount can not be more than net pay')
         return
       }
     } else {
-      if ((Number(inputData.cashIn) ? Number(inputData.cashIn) : 0) > netPay) {
+      if (Number(inputData.cashIn ?? 0) > Number(netPay ?? 0)) {
         toast.error('Cash In can not be more than net pay')
         return
       }
@@ -191,23 +196,10 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
     field: string
     fullName?: string
   }) => {
-    let fieldValue: number | string = value
-    if (['amount', 'cashIn'].includes(field)) {
-      fieldValue = Number(value) ? Number(value) : ''
-    }
-
-    if (
-      field === 'cashIn' &&
-      (Number(value) ? Number(value) : 0) > (Number(customerPaymentData[fullName as string]?.amount ?? 0) ?? 0)
-    ) {
-      toast.error('Cash In can not be more than amount')
-      return
-    }
-
     let resetCashIn = {}
     if (
       field === 'amount' &&
-      (Number(value) ? Number(value) : 0) < (Number(customerPaymentData[fullName as string]?.cashIn ?? 0) ?? 0)
+      Number(value ?? 0) < (Number(customerPaymentData[fullName as string]?.cashIn ?? 0) ?? 0)
     ) {
       resetCashIn = { cashIn: '' }
     }
@@ -216,13 +208,13 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       ...customerPaymentData,
       [fullName as string]: {
         ...customerPaymentData[fullName as string],
-        [field]: fieldValue,
+        [field]: value,
         ...resetCashIn
       }
     })
 
     if (field === 'amount') {
-      let cashInValue = Number(value) ? Number(value) : 0
+      let cashInValue = Number(value ?? 0)
       Object.keys(customerPaymentData).forEach(data => {
         if (data !== fullName) {
           cashInValue =
@@ -235,21 +227,9 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
 
       setInputData({
         ...inputData,
-        cashIn: Number(cashInValue) ? Number(cashInValue) : ''
+        cashIn: cashInValue
       })
     }
-  }
-
-  const handleCashInChange = (value: string) => {
-    if ((Number(value) ? Number(value) : 0) > netPay) {
-      toast.error('Cash In can not be more than net pay')
-      return
-    }
-
-    setInputData({
-      ...inputData,
-      cashIn: Number(value) ? Number(value) : ''
-    })
   }
 
   return (
@@ -362,10 +342,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                     <TextField
                       size='small'
                       //placeholder='₹_._'
-                      InputProps={{
-                        type: 'tel'
-                        //startAdornment: <p className='m-2'>Paid</p>
-                      }}
+                      inputProps={{ type: 'tel', min: 0, step: 'any' }}
                       value={customerPaymentData[customer.fullName as string]?.amount || ''}
                       onChange={event =>
                         handleCustomerPaymentDataChange({
@@ -380,10 +357,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                     <TextField
                       size='small'
                       //placeholder='₹_._'
-                      InputProps={{
-                        type: 'tel'
-                        //startAdornment: <p className='m-2'>Paid</p>
-                      }}
+                      inputProps={{ type: 'tel', min: 0, step: 'any' }}
                       value={customerPaymentData[customer.fullName as string]?.cashIn || ''}
                       onChange={event =>
                         handleCustomerPaymentDataChange({
@@ -485,10 +459,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
           <div className='w-full grid grid-cols-2 gap-2 mt-2 rounded-lg'>
             <TextField
               //placeholder='₹_._'
-              InputProps={{
-                type: 'tel'
-                //startAdornment: <p className='m-2'>Discount</p>
-              }}
+              inputProps={{ type: 'tel', min: 0 }}
               label='Discount'
               value={inputData.discount}
               onChange={event =>
@@ -546,12 +517,14 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
               disabled={invoiceTo?.length > 1}
               label='Cash In'
               //placeholder='₹_._'
-              InputProps={{
-                type: 'tel'
-                //startAdornment: <p className='m-2'>Paid</p>
-              }}
+              inputProps={{ type: 'tel', min: 0, step: 'any' }}
               value={inputData.cashIn}
-              onChange={event => handleCashInChange(event.target.value)}
+              onChange={event =>
+                setInputData({
+                  ...inputData,
+                  cashIn: event.target.value
+                })
+              }
             />
             <TextField
               //className='w-full bg-[#E73434] rounded-lg'
@@ -566,7 +539,11 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
           </div>
 
           <div className='flex items-center gap-4'>
-            <Button variant='contained' onClick={handleSubmit} disabled={invoiceTo?.length > 1 && cashOut !== 0}>
+            <Button
+              variant='contained'
+              onClick={handleSubmit}
+              disabled={invoiceTo?.length > 1 && Number(cashOut) !== 0}
+            >
               Checkout
             </Button>
             <Button variant='outlined' color='error' onClick={handleClose}>
