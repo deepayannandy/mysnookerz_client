@@ -4,17 +4,17 @@
 import { useMemo } from 'react'
 
 // MUI Imports
-import { deepmerge } from '@mui/utils'
-import {
-  Experimental_CssVarsProvider as CssVarsProvider,
-  experimental_extendTheme as extendTheme,
-  lighten,
-  darken
-} from '@mui/material/styles'
+import type {} from '@mui/lab/themeAugmentation' //! Do not remove this import otherwise you will get type errors while making a production build
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter'
 import CssBaseline from '@mui/material/CssBaseline'
+import {
+  darken,
+  Experimental_CssVarsProvider as CssVarsProvider,
+  experimental_extendTheme as extendTheme,
+  lighten
+} from '@mui/material/styles'
 import type {} from '@mui/material/themeCssVarsAugmentation' //! Do not remove this import otherwise you will get type errors while making a production build
-import type {} from '@mui/lab/themeAugmentation' //! Do not remove this import otherwise you will get type errors while making a production build
+import { deepmerge } from '@mui/utils'
 
 // Third-party Imports
 import { useMedia } from 'react-use'
@@ -50,7 +50,7 @@ const ThemeProvider = (props: Props) => {
 
   // Hooks
   const { settings } = useSettings()
-  const isDark = useMedia('(prefers-color-scheme: dark)', false)
+  const isDark = useMedia('(prefers-color-scheme: dark)', systemMode === 'dark')
 
   if (isServer) {
     currentMode = systemMode
@@ -110,7 +110,7 @@ const ThemeProvider = (props: Props) => {
         modeStorageKey={`${themeConfig.templateName.toLowerCase().split(' ').join('-')}-mui-template-mode`}
       >
         <>
-          <ModeChanger />
+          <ModeChanger systemMode={systemMode} />
           <CssBaseline />
           {children}
         </>

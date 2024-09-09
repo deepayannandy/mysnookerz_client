@@ -125,3 +125,7 @@ code {
   background-color: rgb(var(--mui-palette-info-mainChannel) / 0.08);
   border: 0;
 }
+
+input[autocomplete='one-time-code'][data-input-otp='true'] {
+  inline-size: 100% !important;
+}

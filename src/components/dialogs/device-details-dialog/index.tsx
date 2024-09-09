@@ -228,7 +228,7 @@ const DeviceDetailsDialog = ({
                 showYearDropdown
                 showMonthDropdown
                 selected={selectedDate}
-                onChange={(date: Date) => setSelectedDate(date)}
+                onChange={date => setSelectedDate(date as Date)}
                 placeholderText='DD/MM/YYYY'
                 customInput={<TextField fullWidth size='small' />}
               />

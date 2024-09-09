@@ -1,25 +1,25 @@
 'use client'
 
 // React Imports
-import { useCallback, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 // Next Imports
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 
 // MUI Imports
-import IconButton from '@mui/material/IconButton'
-import Popper from '@mui/material/Popper'
-import Fade from '@mui/material/Fade'
-import Paper from '@mui/material/Paper'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
-import Typography from '@mui/material/Typography'
-import Tooltip from '@mui/material/Tooltip'
 import Divider from '@mui/material/Divider'
+import Fade from '@mui/material/Fade'
 import Grid from '@mui/material/Grid'
-import useMediaQuery from '@mui/material/useMediaQuery'
+import IconButton from '@mui/material/IconButton'
+import Paper from '@mui/material/Paper'
+import Popper from '@mui/material/Popper'
 import type { Theme } from '@mui/material/styles'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
 // Third Party Components
 import classnames from 'classnames'
@@ -49,10 +49,10 @@ export type ShortcutsType = {
 
 const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: boolean }) => {
   if (hidden) {
-    return <div className='overflow-x-hidden max-bs-[458px]'>{children}</div>
+    return <div className='overflow-x-hidden bs-full'>{children}</div>
   } else {
     return (
-      <PerfectScrollbar className='max-bs-[458px]' options={{ wheelPropagation: false, suppressScrollX: true }}>
+      <PerfectScrollbar className='bs-full' options={{ wheelPropagation: false, suppressScrollX: true }}>
         {children}
       </PerfectScrollbar>
     )
@@ -65,6 +65,7 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
 
   // Refs
   const anchorRef = useRef<HTMLButtonElement>(null)
+  const ref = useRef<HTMLDivElement | null>(null)
 
   // Hooks
   const hidden = useMediaQuery((theme: Theme) => theme.breakpoints.down('lg'))
@@ -80,6 +81,19 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
     setOpen(prevOpen => !prevOpen)
   }, [])
 
+  useEffect(() => {
+    const adjustPopoverHeight = () => {
+      if (ref.current) {
+        // Calculate available height, subtracting any fixed UI elements' height as necessary
+        const availableHeight = window.innerHeight - 100
+
+        ref.current.style.height = `${Math.min(availableHeight, 550)}px`
+      }
+    }
+
+    window.addEventListener('resize', adjustPopoverHeight)
+  }, [])
+
   return (
     <>
       <IconButton ref={anchorRef} onClick={handleToggle} className='!text-textPrimary'>
@@ -90,10 +104,11 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
         transition
         disablePortal
         placement='bottom-end'
+        ref={ref}
         anchorEl={anchorRef.current}
         {...(isSmallScreen
           ? {
-              className: 'is-full !mbs-4 z-[1]',
+              className: 'is-full !mbs-4 z-[1] max-bs-[509px]',
               modifiers: [
                 {
                   name: 'preventOverflow',
@@ -103,13 +118,13 @@ const ShortcutsDropdown = ({ shortcuts }: { shortcuts: ShortcutsType[] }) => {
                 }
               ]
             }
-          : { className: 'is-[380px] !mbs-4 z-[1]' })}
+          : { className: 'is-[380px] !mbs-4 z-[1] max-bs-[509px]' })}
       >
         {({ TransitionProps, placement }) => (
           <Fade {...TransitionProps} style={{ transformOrigin: placement === 'bottom-end' ? 'right top' : 'left top' }}>
-            <Paper className={settings.skin === 'bordered' ? 'border shadow-none' : 'shadow-lg'}>
+            <Paper className={classnames('bs-full', settings.skin === 'bordered' ? 'border shadow-none' : 'shadow-lg')}>
               <ClickAwayListener onClickAway={handleClose}>
-                <div>
+                <div className='bs-full flex flex-col'>
                   <div className='flex items-center justify-between plb-2 pli-4 is-full gap-2'>
                     <Typography variant='h5' className='flex-auto'>
                       Shortcuts
