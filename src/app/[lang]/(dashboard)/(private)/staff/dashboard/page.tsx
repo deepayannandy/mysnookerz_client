@@ -1,8 +1,10 @@
 'use client'
 
+import CardStatVertical from '@/components/card-statistics/Vertical'
 import { DashboardDataType } from '@/types/staffTypes'
 // MUI Imports
 import Award from '@/views/staff/dashboard/Award'
+import DueAmountTable from '@/views/staff/dashboard/DueAmountTable'
 import Transactions from '@/views/staff/dashboard/Transactions'
 import { Skeleton } from '@mui/material'
 import Grid from '@mui/material/Grid'
@@ -65,12 +67,26 @@ const DashboardDetails = () => {
   return (
     <>
       {dashboardData?.sales >= 0 ? (
-        <Grid container spacing={6}>
+        <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
             <Award data={dashboardData.sales || 0} />
           </Grid>
-          <Grid item xs={12} md={8} lg={8}>
+          <Grid item xs={12} sm={8} md={6}>
             <Transactions data={dashboardData} />
+          </Grid>
+          <Grid item xs={12} sm={4} md={2}>
+            <CardStatVertical
+              title='Credit'
+              stats={`₹${dashboardData.credit || 0}`}
+              avatarIcon='ri-refund-2-line'
+              avatarColor='error'
+              // subtitle='Revenue Increase'
+              // trendNumber='42%'
+              // trend='positive'
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <DueAmountTable data={dashboardData.creditHistoryToday ?? []} getDashboardData={getDashboardData} />
           </Grid>
         </Grid>
       ) : (

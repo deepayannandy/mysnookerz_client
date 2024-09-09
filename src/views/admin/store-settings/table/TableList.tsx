@@ -258,7 +258,7 @@ const TableList = () => {
   )
 
   const table = useReactTable({
-    data: data as TableDataType[],
+    data: data as TableTypeWithAction[],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter

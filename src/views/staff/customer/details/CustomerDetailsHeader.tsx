@@ -36,7 +36,10 @@ const CustomerDetailHeader = ({
   })
 
   const dialogProps = {
-    customerData,
+    customerData: {
+      customerId: customerData?.customers?._id,
+      credit: customerData?.customers?.credit
+    },
     getCustomerData
   }
 

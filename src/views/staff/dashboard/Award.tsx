@@ -5,10 +5,10 @@ import Typography from '@mui/material/Typography'
 
 const Award = ({ data }: { data: number }) => {
   return (
-    <Card>
+    <Card className='h-full'>
       <CardContent className='flex flex-col gap-16 relative items-start'>
         <div>
-          <Typography variant='h4'>Sales</Typography>
+          <Typography variant='h4'>Gross Revenue</Typography>
           {/* <Typography>Best seller of the month</Typography> */}
         </div>
         <div>

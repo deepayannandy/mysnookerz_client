@@ -1,6 +1,5 @@
 'use client'
 
-import { CustomerDetailsDataType } from '@/types/staffTypes'
 import { FormControl, FormHelperText, FormLabel, MenuItem } from '@mui/material'
 // React Imports
 
@@ -24,7 +23,10 @@ type PayDueDataType = {
 type PayDueInfoProps = {
   open: boolean
   setOpen: (open: boolean) => void
-  customerData: CustomerDetailsDataType
+  customerData: {
+    customerId: string
+    credit: number
+  }
   getCustomerData: () => void
 }
 
@@ -59,7 +61,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
   }
 
   const onSubmit = async (data: PayDueDataType) => {
-    const credit = (customerData?.customers?.credit ?? 0) - (Number(data.amount) ? Number(data.amount) : 0)
+    const credit = (customerData?.credit ?? 0) - (Number(data.amount) ? Number(data.amount) : 0)
     if (credit < 0) {
       toast.error('Amount cannot be more than due')
       return
@@ -70,7 +72,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
     const token = localStorage.getItem('token')
     try {
       const response = await axios.patch(
-        `${apiBaseUrl}/customer/${customerData?.customers?._id}`,
+        `${apiBaseUrl}/customer/${customerData?.customerId}`,
         { credit, paymentMethods: data.paymentMethod, description },
         {
           headers: { 'auth-token': token }
@@ -98,7 +100,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
       <DialogTitle variant='h4' className='flex gap-2 flex-col text-center sm:items-start pb-0'>
         <div className='text-center sm:text-start'>Pay Dues</div>
         <Typography component='span' className='flex flex-col text-center'>
-          {`Payment Due: ₹${customerData?.customers?.credit ?? 0}`}
+          {`Payment Due: ₹${customerData?.credit ?? 0}`}
         </Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit(data => onSubmit(data))}>
@@ -116,7 +118,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
                 render={({ field: { value, onChange } }) => (
                   <TextField
                     size='small'
-                    inputProps={{ type: 'number', min: 0 }}
+                    inputProps={{ type: 'number', min: 0, step: 'any' }}
                     value={value}
                     onChange={onChange}
                     {...(errors.amount && {

@@ -57,12 +57,14 @@ export type CustomerListType = { fullName: string; customerId: string }
 
 export type DashboardDataType = {
   sales: number
+  credit: string
   transactions: {
     cash: number
     card: number
     upi: number
     prime: number
   }
+  creditHistoryToday: DueAmountDataType[]
   // title: string
   // stats: string
   // avatarIcon: string
@@ -100,4 +102,21 @@ export type CustomerInvoiceType = {
   // state: string
   // country: string
   paymentMethod?: string
+}
+
+export type DueAmountDataType = {
+  _id: string
+  transactionId: string
+  customerId: string
+  customerName: string
+  date: string
+  description: string
+  startTime: string
+  endTime: string
+  discount: number
+  due: number
+  netPay: number
+  paid: number
+  quantity: number
+  action?: string
 }
