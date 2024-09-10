@@ -116,6 +116,11 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
       gameTypes.push('Slot Billing')
     }
 
+    if (!gameTypes.length) {
+      toast.error('Please select at least one billing type')
+      return
+    }
+
     if (!isMinuteBillingSelected) {
       data.minuteWiseRules = {}
     }
@@ -202,7 +207,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
               <FormControlLabel
                 control={
                   <Checkbox
-                    disabled={isMinuteBilling}
                     checked={isMinuteBillingSelected}
                     onChange={event => setIsMinuteBillingSelected(event.target.checked)}
                   />
@@ -213,7 +217,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
               <FormControlLabel
                 control={
                   <Checkbox
-                    disabled={isSlotBilling}
                     checked={isSlotBillingSelected}
                     onChange={event => setIsSlotBillingSelected(event.target.checked)}
                   />

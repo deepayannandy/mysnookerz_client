@@ -120,6 +120,11 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
       gameTypes.push('Slot Billing')
     }
 
+    if (!gameTypes.length) {
+      toast.error('Please select at least one billing type')
+      return
+    }
+
     if (!isMinuteBillingSelected) {
       data.minuteWiseRules = {}
     }
