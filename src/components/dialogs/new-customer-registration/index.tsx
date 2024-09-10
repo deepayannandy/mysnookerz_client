@@ -22,6 +22,7 @@ type NewCustomerRegistrationDataType = {
   email?: string | null
   profileImage?: string
   dob?: Date | null
+  city?: string | null
 }
 
 type NewCustomerRegistrationProps = {
@@ -40,7 +41,8 @@ const schema: yup.ObjectSchema<NewCustomerRegistrationDataType> = yup.object().s
     .transform((value, originalValue) => (originalValue.trim() === '' ? null : value))
     .email('Please enter a valid email address'),
   profileImage: yup.string(),
-  dob: yup.date().notRequired()
+  dob: yup.date().notRequired(),
+  city: yup.string().notRequired()
 })
 
 const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomerRegistrationProps) => {
@@ -61,7 +63,8 @@ const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomer
       fullName: '',
       contact: '',
       email: '',
-      dob: new Date()
+      dob: new Date(),
+      city: ''
     }
   })
 
@@ -183,6 +186,20 @@ const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomer
                       {...(errors.dob && { error: true, helperText: errors.dob.message })}
                     />
                   }
+                />
+              )}
+            />
+
+            <Controller
+              name='city'
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  fullWidth
+                  label='City'
+                  value={value}
+                  onChange={onChange}
+                  {...(errors.city && { error: true, helperText: errors.city.message })}
                 />
               )}
             />
