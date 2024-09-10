@@ -436,8 +436,7 @@ const PoolCard = ({
           )}
 
           {tableData.gameData?.startTime && !tableData.gameData?.endTime ? (
-            <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
-              <p className='text-xs'>Timer</p>
+            <div className='w-full grid grid-cols-1 gap-2 place-items-center text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
               <CountUpTimer
                 startTime={tableData.gameData?.startTime}
                 endTime={tableData.gameData?.endTime}
