@@ -24,11 +24,11 @@ const CountUpTimer = ({ startTime, endTime, running }: { startTime: string; endT
     const minutes = timeArray[1].padStart(2, '0')
     const seconds = timeArray[2].padStart(2, '0')
     return (
-      <p className='text-base'>
+      <p className='text-xl'>
         {hours}
-        <span className='text-[14px]'>h</span> {minutes}
-        <span className='text-[14px]'>m</span> {seconds}
-        <span className='text-[14px]'>s</span>
+        <span className='text-base'>h</span> {minutes}
+        <span className='text-base'>m</span> {seconds}
+        <span className='text-base'>s</span>
       </p>
     )
   }
