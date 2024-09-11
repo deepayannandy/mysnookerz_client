@@ -144,8 +144,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       }
     } else {
       if (Number(inputData.cashIn ?? 0) > Number(netPay ?? 0)) {
-        toast.error('Cash In can not be more than net pay')
-        return
+        inputData.cashIn = netPay
       }
 
       checkoutPlayers.push({
@@ -156,7 +155,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       })
     }
 
-    const inputDetails = invoiceTo?.length > 1 ? _.omit(inputData, 'paymentMethod') : inputData
+    const inputDetails = _.omit(inputData, 'paymentMethod')
     const requestData = {
       ...inputDetails,
       timeDelta: data.timeDelta,

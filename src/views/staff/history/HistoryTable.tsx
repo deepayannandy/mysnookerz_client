@@ -58,7 +58,7 @@ type StatusChipColorType = {
 export const statusChipColor: { [key: string]: StatusChipColorType } = {
   Paid: { color: 'success' },
   Running: { color: 'primary' },
-  'Not Paid': { color: 'error' }
+  Due: { color: 'error' }
 }
 
 type HistoryDataWithAction = HistoryDataType & {

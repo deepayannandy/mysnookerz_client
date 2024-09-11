@@ -44,10 +44,10 @@ const getColumns = (getDashboardData: () => void) => {
   const columnHelper = createColumnHelper<DueAmountDataType>()
 
   const columns = [
-    columnHelper.accessor('transactionId', {
-      header: 'TransactionId',
-      cell: ({ row }) => <Typography>{row.original.transactionId}</Typography>
-    }),
+    // columnHelper.accessor('transactionId', {
+    //   header: 'TransactionId',
+    //   cell: ({ row }) => <Typography>{row.original.transactionId}</Typography>
+    // }),
     columnHelper.accessor('customerName', {
       header: 'Customer Name',
       cell: ({ row }) => (
@@ -62,10 +62,10 @@ const getColumns = (getDashboardData: () => void) => {
         </div>
       )
     }),
-    columnHelper.accessor('description', {
-      header: 'Description',
-      cell: ({ row }) => <Typography>{row.original.description}</Typography>
-    }),
+    // columnHelper.accessor('description', {
+    //   header: 'Description',
+    //   cell: ({ row }) => <Typography>{row.original.description}</Typography>
+    // }),
     columnHelper.accessor('credit', {
       header: 'Due',
       cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.credit ?? 0}`}</Typography>
