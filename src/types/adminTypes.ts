@@ -94,3 +94,16 @@ export type StoreDataType = {
     endDate: string
   }
 }
+
+export type DeviceDataType = {
+  _id?: number
+  deviceName: string
+  serialNumber: string
+  onboarding?: string
+  deviceId?: string
+  ipAddress?: string
+  storeId?: string
+  warrantyExpiryDate: string
+  warrantyAvailingDate?: string[]
+  isActive?: boolean
+}
