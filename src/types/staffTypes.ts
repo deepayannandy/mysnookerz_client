@@ -114,10 +114,11 @@ export type DueAmountDataType = {
   startTime: string
   endTime: string
   discount: number
-  due: number
   netPay: number
   paid: number
   credit: number
+  cafeCredit: number
   quantity: number
+  totalDue?: number
   action?: string
 }

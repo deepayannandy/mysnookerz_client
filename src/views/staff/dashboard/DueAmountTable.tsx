@@ -48,34 +48,6 @@ const getColumns = (getDashboardData: () => void) => {
       header: 'TransactionId',
       cell: ({ row }) => <Typography>{row.original.transactionId}</Typography>
     }),
-    //   columnHelper.accessor('invoiceStatus', {
-    //     header: 'Status',
-    //     cell: ({ row }) => (
-    //       <Tooltip
-    //         title={
-    //           <div>
-    //             <Typography variant='body2' component='span' className='text-inherit'>
-    //               {row.original.invoiceStatus}
-    //             </Typography>
-    //             <br />
-    //             <Typography variant='body2' component='span' className='text-inherit'>
-    //               Balance:
-    //             </Typography>{' '}
-    //             {row.original.balance}
-    //             <br />
-    //             <Typography variant='body2' component='span' className='text-inherit'>
-    //               Due Date:
-    //             </Typography>{' '}
-    //             {row.original.dueDate}
-    //           </div>
-    //         }
-    //       >
-    //         <CustomAvatar skin='light' color={invoiceStatusObj[row.original.invoiceStatus].color} size={28}>
-    //           <i className={classnames('text-base', invoiceStatusObj[row.original.invoiceStatus].icon)} />
-    //         </CustomAvatar>
-    //       </Tooltip>
-    //     )
-    //   }),
     columnHelper.accessor('customerName', {
       header: 'Customer Name',
       cell: ({ row }) => (
@@ -94,9 +66,19 @@ const getColumns = (getDashboardData: () => void) => {
       header: 'Description',
       cell: ({ row }) => <Typography>{row.original.description}</Typography>
     }),
-    columnHelper.accessor('due', {
+    columnHelper.accessor('credit', {
       header: 'Due',
-      cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.due}`}</Typography>
+      cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.credit ?? 0}`}</Typography>
+    }),
+    columnHelper.accessor('cafeCredit', {
+      header: 'Cafe Due',
+      cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.cafeCredit ?? 0}`}</Typography>
+    }),
+    columnHelper.accessor('totalDue', {
+      header: 'Total Due',
+      cell: ({ row }) => (
+        <Typography color='text.primary'>{`₹${Number(row.original.credit ?? 0) + Number(row.original.cafeCredit ?? 0)}`}</Typography>
+      )
     }),
     columnHelper.accessor('action', {
       header: 'Action',
@@ -112,7 +94,7 @@ const getColumns = (getDashboardData: () => void) => {
             getCustomerData: getDashboardData,
             customerData: {
               customerId: row.original.customerId,
-              credit: row.original.due
+              credit: Number(row.original.credit ?? 0) + Number(row.original.cafeCredit ?? 0)
             }
           }}
         />
