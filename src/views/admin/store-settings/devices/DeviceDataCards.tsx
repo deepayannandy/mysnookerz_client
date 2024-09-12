@@ -23,71 +23,10 @@ import AddNewCard from '@components/dialogs/billing-card'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
 import OptionMenu from '@core/components/option-menu'
 import Switch from '@mui/material/Switch'
+import axios from 'axios'
 import { DateTime } from 'luxon'
-
-// type dataType = {
-//   typeOfCard: string
-//   isDefault: boolean
-//   expiryDate: string
-// }
-
-type ConnectedAccountsType = {
-  title: string
-  logo: string
-  checked: boolean
-  subtitle: string
-}
-
-// const data: dataType[] = [
-//   {
-//     typeOfCard: 'Mastercard',
-//     isDefault: true,
-//     expiryDate: 'Apr 2028'
-//   },
-//   {
-//     typeOfCard: 'American Express',
-//     isDefault: false,
-//     expiryDate: 'Jan 2025'
-//   },
-//   {
-//     typeOfCard: 'Visa',
-//     isDefault: false,
-//     expiryDate: 'Nov 2030'
-//   }
-// ]
-
-const connectedAccountsArr: ConnectedAccountsType[] = [
-  {
-    checked: true,
-    title: 'Switch 1',
-    logo: '/images/logos/google.png',
-    subtitle: ''
-  },
-  {
-    checked: false,
-    title: 'Switch 2',
-    logo: '/images/logos/slack.png',
-    subtitle: ''
-  },
-  {
-    checked: true,
-    title: 'Switch 3',
-    logo: '/images/logos/github.png',
-    subtitle: ''
-  },
-  {
-    checked: true,
-    title: 'Switch 4',
-    subtitle: '',
-    logo: '/images/logos/mailchimp.png'
-  },
-  {
-    title: 'Switch 5',
-    checked: false,
-    subtitle: '',
-    logo: '/images/logos/asana.png'
-  }
-]
+import { useParams, usePathname, useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 // Vars
 const editCardData = {
@@ -109,10 +48,6 @@ const DeviceCard = ({ deviceDetails, isDefault }: { deviceDetails: DeviceDataTyp
 
   // Hooks
   const theme = useTheme()
-
-  // const mastercard = '/images/apps/ecommerce/mastercard.png'
-  // const americanExpress = '/images/apps/ecommerce/american-express.png'
-  // const visa = '/images/apps/ecommerce/visa.png'
 
   return (
     <>
@@ -143,7 +78,7 @@ const DeviceCard = ({ deviceDetails, isDefault }: { deviceDetails: DeviceDataTyp
             <div className='flex flex-col gap-1'>
               <div className='flex flex-wrap items-center gap-x-2 gap-y-1'>
                 <Typography color='text.primary' className='font-medium'>
-                  {deviceDetails?.deviceName ?? ''}
+                  {deviceDetails?.deviceType ?? ''}
                 </Typography>
                 {/* {isDefault && <Chip variant='tonal' color='success' label='Default Card' size='small' />} */}
               </div>
@@ -192,10 +127,10 @@ const DeviceCard = ({ deviceDetails, isDefault }: { deviceDetails: DeviceDataTyp
               <Grid item xs={6}>
                 <div className='flex flex-col gap-1'>
                   <Typography variant='body2' color='text.primary' className='font-medium'>
-                    {deviceDetails?.deviceName ?? ''}
+                    {deviceDetails?.deviceType ?? ''}
                   </Typography>
                   <Typography variant='body2' color='text.primary' className='font-medium'>
-                    {deviceDetails?.serialNumber ?? ''}
+                    {deviceDetails?.deviceId ?? ''}
                   </Typography>
                   <Typography variant='body2' color='text.primary' className='font-medium'>
                     {deviceDetails?.warrantyExpiryDate
@@ -216,42 +151,28 @@ const DeviceCard = ({ deviceDetails, isDefault }: { deviceDetails: DeviceDataTyp
             </Grid>
           </Grid>
           <Grid item xs={12} md={6}>
-            {/* <Card>
-              <CardHeader
+            <Card className='bg-[var(--mui-palette-customColors-bodyBg)]'>
+              {/* <CardHeader
                 title='Connected Accounts'
                 subheader='Display content from your connected accounts on your site'
               /> */}
-            <div className='flex flex-col gap-4'>
-              {connectedAccountsArr.map((item, index) => (
-                <div key={index} className='flex items-center justify-between gap-4'>
-                  <div className='flex flex-grow items-center gap-4'>
-                    <img height={36} width={36} src={item.logo} alt={item.title} />
-                    <div className='flex flex-col flex-grow gap-0.5'>
-                      <Typography className='font-medium' color='text.primary'>
-                        {item.title}
-                      </Typography>
-                      <Typography>{item.subtitle}</Typography>
+              <div className='flex flex-col gap-4 px-5'>
+                {deviceDetails?.nodes?.map((item, index) => (
+                  <div key={index} className='flex items-center justify-between gap-4'>
+                    <div className='flex flex-grow items-center gap-4'>
+                      {/* <img height={36} width={36} src={item.logo} alt={item.title} /> */}
+                      <div className='flex flex-col flex-grow gap-0.5'>
+                        <Typography className='font-medium' color='text.primary'>
+                          {item}
+                        </Typography>
+                        {/* <Typography>{item.subtitle}</Typography> */}
+                      </div>
                     </div>
+                    <Switch defaultChecked={!!deviceDetails?.nodeStatus?.[index]} />
                   </div>
-                  <Switch defaultChecked={item.checked} />
-                </div>
-              ))}
-            </div>
-            {/* </Card> */}
-            {/* {connectedAccountsArr.map((item, index) => (
-              <div key={index} className='flex items-center justify-between gap-4'>
-                <div className='flex flex-grow items-center gap-4'>
-                  <img height={36} width={36} src={item.logo} alt={item.title} />
-                  <div className='flex flex-col flex-grow gap-0.5'>
-                    <Typography className='font-medium' color='text.primary'>
-                      {item.title}
-                    </Typography>
-                    <Typography>{item.subtitle}</Typography>
-                  </div>
-                </div>
-                <Switch defaultChecked={item.checked} />
+                ))}
               </div>
-            ))} */}
+            </Card>
             {/* <Grid container>
               <Grid item xs={4}>
                 <div className='flex flex-col gap-1'>
@@ -308,42 +229,26 @@ const DeviceDataCards = () => {
   }
 
   //Hooks
-  // const { lang: locale } = useParams()
-  // const pathname = usePathname()
-  // const router = useRouter()
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
 
   const getDevicesData = async () => {
-    setData([
-      {
-        deviceName: 'Nod2-8',
-        serialNumber: 'ewrwad123123',
-        warrantyExpiryDate: '2024-10-27'
-      },
-      {
-        deviceName: 'Nod1-9',
-        serialNumber: '123asda123',
-        warrantyExpiryDate: '2024-12-29'
-      },
-      {
-        deviceName: 'Nod4',
-        serialNumber: 'q12321sda',
-        warrantyExpiryDate: '2024-11-30'
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    const storeId = localStorage.getItem('storeId')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/devices/byStore/${storeId}`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setData(response.data)
       }
-    ])
-    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    // const token = localStorage.getItem('token')
-    // try {
-    //   const response = await axios.get(`${apiBaseUrl}/devices`, { headers: { 'auth-token': token } })
-    //   if (response && response.data) {
-    //     setData(response.data)
-    //   }
-    // } catch (error: any) {
-    //   if (error?.response?.status === 401) {
-    //     const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-    //     return router.replace(redirectUrl)
-    //   }
-    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    // }
+    } catch (error: any) {
+      if (error?.response?.status === 401) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
   }
 
   useEffect(() => {

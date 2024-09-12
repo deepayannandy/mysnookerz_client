@@ -97,13 +97,14 @@ export type StoreDataType = {
 
 export type DeviceDataType = {
   _id?: number
-  deviceName: string
-  serialNumber: string
-  onboarding?: string
-  deviceId?: string
-  ipAddress?: string
-  storeId?: string
+  deviceType: string
+  onboarding: string
+  deviceId: string
+  storeId: string
+  nodes?: string[]
+  nodeStatus?: number[]
   warrantyExpiryDate: string
+  ipAddress?: string
   warrantyAvailingDate?: string[]
-  isActive?: boolean
+  isActive: boolean
 }
