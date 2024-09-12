@@ -1,6 +1,6 @@
 'use client'
 
-import PoolCard from '@/components/cards/pool-card'
+import PoolCard from '@/components/cards/PoolCard'
 import { TableDataType } from '@/types/adminTypes'
 import { CustomerDataType, CustomerListType } from '@/types/staffTypes'
 import axios from 'axios'
