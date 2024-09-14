@@ -56,7 +56,7 @@ const DeviceCard = ({
     try {
       const response = await axios.post(
         `${apiBaseUrl}/games/SendMqtt`,
-        { topic: `${deviceId}/${node}`, message: checked ? 1 : 0 },
+        { topic: `${deviceId}/${node}`, message: checked ? '1' : '0' },
         { headers: { 'auth-token': token } }
       )
 
