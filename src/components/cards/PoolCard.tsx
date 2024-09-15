@@ -130,47 +130,15 @@ const PoolCard = ({
 
   return (
     <div className='relative'>
-      <div className='h-full w-full'>
-        <img src='/images/snooker-table/snooker-table-updated.svg' className='size-full' alt='' />
-      </div>
-      <div className='absolute w-full h-full top-0 flex flex-col justify-between  p-8'>
+      <img src='/images/snooker-table/snooker-table-updated.svg' className='size-full' alt='' />
+
+      <div
+        className={`absolute w-full h-full top-0 flex flex-col justify-between p-8 ${!tableData.gameData?.startTime ? 'bg-backdrop rounded-t-[22px] rounded-b-[16px]' : ''}`}
+      >
         <div className='grid place-items-center'>
           <div className='bg-[url("/images/snooker-table/background-trapezoid.svg")] bg-contain text-center text-black bg-no-repeat bg-center w-full lg:w-11/12'>
             <span className='md:px-10 text-base line-clamp-1'>{tableData.tableName}</span>
           </div>
-          {/* {tableData.gameData?.gameType ? (
-            <div className='w-full text-center border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
-              <p>{tableData.gameData?.gameType}</p>
-            </div>
-          ) : (
-            <TextField
-              className='w-full text-xs bg-[#0089B5] md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
-              disabled={!!tableData.gameData?.startTime}
-              size='small'
-              value={gameType}
-              onChange={e => setGameType(e.target.value)}
-              select // tell TextField to render select
-              label='Game Type'
-              sx={{
-                '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#5CD7FF',
-                  borderWidth: '1px'
-                },
-                '& .MuiInputLabel-outlined': {
-                  color: '#FFFFFF',
-                  '&.Mui-focused': {
-                    color: '#FFFFFF'
-                  }
-                }
-              }}
-            >
-              {tableData.gameTypes?.map(type => (
-                <MenuItem key={type} value={type}>
-                  {type}
-                </MenuItem>
-              ))}
-            </TextField>
-          )} */}
 
           <TextField
             className='w-full text-xs bg-green-900 md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
