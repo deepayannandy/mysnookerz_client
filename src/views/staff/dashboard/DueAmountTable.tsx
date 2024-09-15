@@ -48,14 +48,14 @@ const getColumns = (getDashboardData: () => void) => {
     //   header: 'TransactionId',
     //   cell: ({ row }) => <Typography>{row.original.transactionId}</Typography>
     // }),
-    columnHelper.accessor('customerName', {
+    columnHelper.accessor('fullName', {
       header: 'Customer Name',
       cell: ({ row }) => (
         <div className='flex items-center gap-3'>
-          {getAvatar({ customerName: row.original.customerName })}
+          {getAvatar({ fullName: row.original.fullName })}
           <div className='flex flex-col'>
             <Typography className='font-medium' color='text.primary'>
-              {row.original.customerName}
+              {row.original.fullName}
             </Typography>
             {/* <Typography variant='body2'>{row.original.companyEmail}</Typography> */}
           </div>
@@ -93,7 +93,7 @@ const getColumns = (getDashboardData: () => void) => {
           dialogProps={{
             getCustomerData: getDashboardData,
             customerData: {
-              customerId: row.original.customerId,
+              customerId: row.original._id,
               credit: Number(row.original.credit ?? 0) + Number(row.original.cafeCredit ?? 0)
             }
           }}
@@ -106,15 +106,15 @@ const getColumns = (getDashboardData: () => void) => {
   return columns
 }
 
-const getAvatar = (params: Pick<DueAmountDataType, 'customerName'>) => {
-  const { customerName } = params
+const getAvatar = (params: Pick<DueAmountDataType, 'fullName'>) => {
+  const { fullName } = params
 
   //   if (avatar) {
   //     return <CustomAvatar src={avatar} skin='light' size={34} />
   //   } else {  }
   return (
     <CustomAvatar skin='light' size={34}>
-      {getInitials(customerName)}
+      {getInitials(fullName)}
     </CustomAvatar>
   )
 }

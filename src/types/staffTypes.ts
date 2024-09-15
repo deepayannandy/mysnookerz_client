@@ -107,8 +107,7 @@ export type CustomerInvoiceType = {
 export type DueAmountDataType = {
   _id: string
   transactionId: string
-  customerId: string
-  customerName: string
+  fullName: string
   date: string
   description: string
   startTime: string
