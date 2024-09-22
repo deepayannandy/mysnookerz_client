@@ -6,15 +6,18 @@ import { DateTime } from 'luxon'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import CountUpTimer from '../count-up-timer'
+import SwitchTable from '../dialogs/switch-table'
 import TableBill from '../dialogs/table-bill'
 
 const PoolCard = ({
   tableData,
   customersList,
+  allTablesData,
   getAllTablesData
 }: {
   tableData: TableDataType
   customersList: CustomerListType[]
+  allTablesData: TableDataType[]
   getAllTablesData: () => void
 }) => {
   const [showBill, setShowBill] = useState(false)
@@ -23,6 +26,7 @@ const PoolCard = ({
     (tableData.gameData?.players?.length ? tableData.gameData.players : ['CASH']) as (string | CustomerListType)[]
   )
   const [billData, setBillData] = useState({} as CustomerInvoiceType)
+  const [showSwitchTable, setShowSwitchTable] = useState(false)
 
   const totalSeconds =
     tableData.gameData?.startTime && tableData.gameData?.endTime
@@ -136,8 +140,9 @@ const PoolCard = ({
         className={`absolute w-full h-full top-0 flex flex-col justify-between p-8 ${!tableData.gameData?.startTime ? 'bg-backdrop rounded-t-[22px] rounded-b-[16px]' : ''}`}
       >
         <div className='grid place-items-center'>
-          <div className='bg-[url("/images/snooker-table/background-trapezoid.svg")] bg-contain text-center text-black bg-no-repeat bg-center w-full lg:w-11/12'>
-            <span className='md:px-10 text-base line-clamp-1'>{tableData.tableName}</span>
+          <div className='bg-[url("/images/snooker-table/background-trapezoid.svg")] flex justify-center gap-3 bg-contain text-black bg-no-repeat bg-center w-full lg:w-11/12'>
+            <span className='ri-arrow-left-right-line cursor-pointer' onClick={() => setShowSwitchTable(true)}></span>
+            <span className='text-base line-clamp-1'>{tableData.tableName}</span>
           </div>
 
           <TextField
@@ -511,6 +516,17 @@ const PoolCard = ({
           getAllTablesData={getAllTablesData}
           setGameType={setGameType}
           setCustomers={setCustomers}
+        />
+      ) : (
+        <></>
+      )}
+      {showSwitchTable ? (
+        <SwitchTable
+          open={showSwitchTable}
+          setOpen={setShowSwitchTable}
+          tableData={tableData}
+          allTablesData={allTablesData}
+          getAllTablesData={getAllTablesData}
         />
       ) : (
         <></>

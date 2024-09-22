@@ -36,6 +36,7 @@ import type { ThemeColor } from '@core/types'
 // Style Imports
 import OptionMenu from '@/@core/components/option-menu/index'
 
+import CopyTableInfo from '@/components/dialogs/copy-table-info'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import EditTableInfo from '@/components/dialogs/edit-table-info'
 import NewTableCreation from '@/components/dialogs/new-table-creation'
@@ -129,6 +130,7 @@ const TableList = () => {
   const [newTableCreationDialogOpen, setNewTableCreationDialogOpen] = useState(false)
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
   const [editTableInfoDialogOpen, setEditTableInfoDialogOpen] = useState(false)
+  const [copyTableInfoDialogOpen, setCopyTableInfoDialogOpen] = useState(false)
 
   //Hooks
   const { lang: locale } = useParams()
@@ -187,6 +189,11 @@ const TableList = () => {
     setEditTableInfoDialogOpen(!editTableInfoDialogOpen)
   }
 
+  const copyTableData = (rowData: TableDataType) => {
+    setTableData(rowData)
+    setCopyTableInfoDialogOpen(!copyTableInfoDialogOpen)
+  }
+
   const columns = useMemo<ColumnDef<TableTypeWithAction, any>[]>(
     () => [
       columnHelper.accessor('tableName', {
@@ -243,9 +250,15 @@ const TableList = () => {
                     className: 'gap-2',
                     onClick: () => openDeleteConfirmation(row.original)
                   }
+                },
+                {
+                  text: 'Copy Table',
+                  icon: 'ri-stack-line',
+                  menuItemProps: {
+                    className: 'gap-2',
+                    onClick: () => copyTableData(row.original)
+                  }
                 }
-
-                // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
               ]}
             />
           </div>
@@ -408,6 +421,12 @@ const TableList = () => {
         name={`table (${tableData.tableName})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteTable}
+      />
+      <CopyTableInfo
+        open={copyTableInfoDialogOpen}
+        setOpen={setCopyTableInfoDialogOpen}
+        getTableData={getTableData}
+        tableData={tableData}
       />
     </>
   )

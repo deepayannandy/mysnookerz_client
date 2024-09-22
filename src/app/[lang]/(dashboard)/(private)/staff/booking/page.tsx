@@ -115,6 +115,7 @@ const BookingPage = () => {
                 key={tableDetails.tableName}
                 tableData={tableDetails}
                 customersList={customersList}
+                allTablesData={allTablesData}
                 getAllTablesData={getAllTablesData}
               />
             ))}
