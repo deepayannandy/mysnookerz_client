@@ -1,6 +1,6 @@
 import { TableDataType } from '@/types/adminTypes'
 import { CustomerInvoiceType, CustomerListType } from '@/types/staffTypes'
-import { Autocomplete, Button, Chip, Divider, MenuItem, TextField } from '@mui/material'
+import { Autocomplete, Button, Chip, Divider, MenuItem, TextField, Tooltip } from '@mui/material'
 import axios from 'axios'
 import { DateTime } from 'luxon'
 import { useEffect, useState } from 'react'
@@ -141,8 +141,12 @@ const PoolCard = ({
       >
         <div className='grid place-items-center'>
           <div className='bg-[url("/images/snooker-table/background-trapezoid.svg")] flex justify-center gap-3 bg-contain text-black bg-no-repeat bg-center w-full lg:w-11/12'>
-            <span className='ri-arrow-left-right-line cursor-pointer' onClick={() => setShowSwitchTable(true)}></span>
-            <span className='text-base line-clamp-1'>{tableData.tableName}</span>
+            <Tooltip title='Switch Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
+              <span className='ri-arrow-left-right-line' onClick={() => setShowSwitchTable(true)}></span>
+            </Tooltip>
+            <Tooltip title={tableData.tableName} placement='top' className='cursor-pointer'>
+              <span className='text-base line-clamp-1 w-24 col-span-2 pl-3'>{tableData.tableName}</span>
+            </Tooltip>
           </div>
 
           <TextField
