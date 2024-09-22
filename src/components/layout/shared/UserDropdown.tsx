@@ -103,7 +103,7 @@ const UserDropdown = () => {
         if (response.data.userDesignation) {
           localStorage.setItem('userDesignation', response.data.userDesignation)
           if (response.data.userDesignation === 'Staff' && !pathname.includes(`/${locale}/staff/`)) {
-            const redirectUrl = `/${locale}/staff/dashboard`
+            const redirectUrl = `/${locale}/staff/booking`
             return router.replace(redirectUrl)
           }
         }

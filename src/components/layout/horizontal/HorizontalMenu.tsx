@@ -95,11 +95,11 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof 
         }}
       >
         <MenuSection label={dictionary['navigation'].staffMenu}>
-          <MenuItem href={`/${locale}/staff/dashboard`} icon={<i className='ri-pie-chart-2-line' />}>
-            {dictionary['navigation'].dashboard}
-          </MenuItem>
           <MenuItem href={`/${locale}/staff/booking`} icon={<i className='ri-bar-chart-line' />}>
             {dictionary['navigation'].booking}
+          </MenuItem>
+          <MenuItem href={`/${locale}/staff/dashboard`} icon={<i className='ri-pie-chart-2-line' />}>
+            {dictionary['navigation'].dashboard}
           </MenuItem>
           <MenuItem href={`/${locale}/staff/history`} icon={<i className='ri-shopping-bag-3-line' />}>
             {dictionary['navigation'].history}

@@ -83,8 +83,8 @@ const VerticalMenu = ({ dictionary, scrollMenu, userDesignation }: Props) => {
         menuSectionStyles={menuSectionStyles(verticalNavOptions, theme)}
       >
         <MenuSection label={dictionary['navigation'].staffInterface}>
-          <MenuItem href={`/${locale}/staff/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
           <MenuItem href={`/${locale}/staff/booking`}>{dictionary['navigation'].booking}</MenuItem>
+          <MenuItem href={`/${locale}/staff/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
           <MenuItem href={`/${locale}/staff/history`}>{dictionary['navigation'].history}</MenuItem>
           <MenuItem href={`/${locale}/staff/customer`}>{dictionary['navigation'].customer}</MenuItem>
         </MenuSection>

@@ -95,7 +95,7 @@ async function updateNextConfig() {
 
   const redirect = `return [{
     source: '/',
-    destination: '/staff/dashboard',
+    destination: '/staff/booking',
     permanent: true
   }]`
 

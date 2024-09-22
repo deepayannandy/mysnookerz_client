@@ -55,7 +55,7 @@ export type Config = {
 
 const themeConfig: Config = {
   templateName: 'Snooker',
-  homePageUrl: '/staff/dashboard',
+  homePageUrl: '/staff/booking',
   settingsCookieName: 'my-snooker-client',
   mode: 'system', // 'system', 'light', 'dark'
   skin: 'default', // 'default', 'bordered'
