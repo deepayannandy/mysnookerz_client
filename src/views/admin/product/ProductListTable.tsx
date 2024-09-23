@@ -36,14 +36,17 @@ import CustomAvatar from '@/@core/components/mui/Avatar'
 import OptionMenu from '@/@core/components/option-menu'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import SearchInput from '@/components/Search'
+import { Locale } from '@/configs/i18n'
 import { ProductDataType } from '@/types/adminTypes'
 import { getInitials } from '@/utils/getInitials'
+import { getLocalizedUrl } from '@/utils/i18n'
 import tableStyles from '@core/styles/table.module.css'
 import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
+import Link from 'next/link'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
@@ -290,9 +293,10 @@ const ProductListTable = () => {
             </Button> */}
             <Button
               variant='contained'
-              color='primary'
+              component={Link}
+              href={getLocalizedUrl('/admin/new-product', locale as Locale)}
               startIcon={<i className='ri-add-line' />}
-              onClick={() => setNewProductRegistrationDialogOpen(!newProductRegistrationDialogOpen)}
+              className='max-sm:is-full is-auto'
             >
               Add Product
             </Button>

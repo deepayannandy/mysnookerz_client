@@ -45,13 +45,6 @@ const Dropzone = styled(AppReactDropzone)<BoxProps>(({ theme }) => ({
 
 const NewProduct = () => {
   const [files, setFiles] = useState<File[]>([])
-  const [count, setCount] = useState(1)
-  const [activeTab, setActiveTab] = useState('restock')
-  const [date, setDate] = useState<Date | null>(null)
-  const [vendor, setVendor] = useState('')
-  const [category, setCategory] = useState('')
-  const [collection, setCollection] = useState('')
-  const [status, setStatus] = useState('')
 
   // Hooks
   const theme = useTheme()
@@ -143,7 +136,7 @@ const NewProduct = () => {
             />
             <CardContent>
               <div {...getRootProps({ className: 'dropzone' })}>
-                <input {...getInputProps()} />
+                <input {...getInputProps()} multiple={false} />
                 <div className='flex items-center flex-col gap-2 text-center'>
                   <CustomAvatar variant='rounded' skin='light' color='secondary'>
                     <i className='ri-upload-2-line' />
@@ -158,12 +151,12 @@ const NewProduct = () => {
               {files.length ? (
                 <>
                   <List>{fileList}</List>
-                  <div className='buttons'>
+                  {/* <div className='buttons'>
                     <Button color='error' variant='outlined' onClick={handleRemoveAllFiles}>
                       Remove All
                     </Button>
                     <Button variant='contained'>Upload Files</Button>
-                  </div>
+                  </div> */}
                 </>
               ) : null}
             </CardContent>
