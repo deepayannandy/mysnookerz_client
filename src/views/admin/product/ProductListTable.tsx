@@ -94,7 +94,6 @@ const ProductListTable = () => {
   const [data, setData] = useState([] as ProductDataType[])
   const [productData, setProductData] = useState({} as ProductDataType)
   const [globalFilter, setGlobalFilter] = useState('')
-  const [newProductRegistrationDialogOpen, setNewProductRegistrationDialogOpen] = useState(false)
   const [editProductInfoDialogOpen, setEditProductInfoDialogOpen] = useState(false)
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
 

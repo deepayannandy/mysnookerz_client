@@ -5,8 +5,8 @@ import CustomAvatar from '@/@core/components/mui/Avatar'
 import AppReactDropzone from '@/libs/styles/AppReactDropzone'
 import Form from '@components/Form'
 import styled from '@emotion/styled'
+import * as mui from '@mui/material'
 import {
-  BoxProps,
   Button,
   Card,
   CardContent,
@@ -20,8 +20,7 @@ import {
   Typography
 } from '@mui/material'
 import Grid from '@mui/material/Grid'
-import { useTheme } from '@mui/material/styles'
-import { SyntheticEvent, useState } from 'react'
+import { useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 
 type FileProp = {
@@ -30,7 +29,7 @@ type FileProp = {
   size: number
 }
 
-const Dropzone = styled(AppReactDropzone)<BoxProps>(({ theme }) => ({
+const Dropzone = styled(AppReactDropzone)<mui.BoxProps>(({ theme }) => ({
   '& .dropzone': {
     minHeight: 'unset',
     padding: theme.spacing(12),
@@ -47,14 +46,7 @@ const NewProduct = () => {
   const [files, setFiles] = useState<File[]>([])
 
   // Hooks
-  const theme = useTheme()
-
-  const deleteForm = (e: SyntheticEvent) => {
-    e.preventDefault()
-
-    // @ts-ignore
-    e.target.closest('.repeater-item').remove()
-  }
+  //const theme = useTheme()
 
   // Hooks
   const { getRootProps, getInputProps } = useDropzone({
@@ -98,10 +90,6 @@ const NewProduct = () => {
       </IconButton>
     </ListItem>
   ))
-
-  const handleRemoveAllFiles = () => {
-    setFiles([])
-  }
 
   return (
     <Grid container spacing={6}>
