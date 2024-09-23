@@ -12,7 +12,9 @@ import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import axios from 'axios'
 import { Controller, useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 type SwitchTableDataType = {
   nextTable: string
@@ -58,35 +60,34 @@ const SwitchTable = ({ open, setOpen, tableData, allTablesData, getAllTablesData
   }
 
   const onSubmit = async (data: SwitchTableDataType) => {
-    console.log('he;las')
-    console.log(data)
-    const nextTableName = allTables.find(table => table.id === data.nextTable)
-    console.log(nextTableName)
-    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    // const token = localStorage.getItem('token')
-    // try {
-    //   const response = await axios.patch(
-    //     `${apiBaseUrl}/customer/${data.currentTable}`,
-    //     { nextTable: data.nextTable },
-    //     {
-    //       headers: { 'auth-token': token }
-    //     }
-    //   )
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.patch(
+        `${apiBaseUrl}/table/switchTable/switch`,
+        {
+          oldTable: tableData._id,
+          newTable: data.nextTable
+        },
+        {
+          headers: { 'auth-token': token }
+        }
+      )
 
-    //   if (response && response.data) {
-    //     getAllTablesData()
-    //     resetForm()
-    //     setOpen(false)
-    //     toast.success('Table Data switched successfully')
-    //   }
-    // } catch (error: any) {
-    //   // if (error?.response?.status === 400) {
-    //   //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-    //   //   console.log(redirectUrl)
-    //   //   return router.replace(redirectUrl)
-    //   // }
-    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    // }
+      if (response && response.data) {
+        getAllTablesData()
+        resetForm()
+        setOpen(false)
+        toast.success('Table Data switched successfully')
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   console.log(redirectUrl)
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
   }
 
   return (

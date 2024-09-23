@@ -108,3 +108,18 @@ export type DeviceDataType = {
   warrantyAvailingDate?: string[]
   isActive: boolean
 }
+
+export type ProductDataType = {
+  _id: string
+  productName: string
+  productImage: string
+  description: string
+  category: string
+  stock: string
+  sku: string
+  storeId: string
+  basePrice: string
+  salePrice: string
+  quantity: number
+  isOutOfStock: boolean
+}
