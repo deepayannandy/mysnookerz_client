@@ -217,7 +217,11 @@ const ProductListTable = () => {
         header: 'Actions',
         cell: ({ row }) => (
           <div className='flex items-center'>
-            <IconButton size='small' onClick={() => editProductData(row.original)}>
+            <IconButton
+              size='small'
+              component={Link}
+              href={getLocalizedUrl(`/admin/edit-product/${row.original._id}`, locale as Locale)}
+            >
               <i className='ri-edit-box-line text-[22px] text-textSecondary' />
             </IconButton>
             <OptionMenu
@@ -377,12 +381,6 @@ const ProductListTable = () => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
-      {/* <EditProductInfo
-        open={editProductInfoDialogOpen}
-        setOpen={setEditProductInfoDialogOpen}
-        getProductData={getProductData}
-        productData={productData}
-      /> */}
       <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
         name={`Product (${productData.productName})`}

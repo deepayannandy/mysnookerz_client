@@ -128,10 +128,10 @@ export type NewProductDataType = {
   productName: string
   description: string
   category: string
-  barcode: string
+  barcode?: string
   sku: string
-  basePrice: string
-  salePrice: string
+  basePrice: string | number
+  salePrice: string | number
   quantity: number | string
   isOutOfStock: boolean
 }
