@@ -123,3 +123,15 @@ export type ProductDataType = {
   quantity: number
   isOutOfStock: boolean
 }
+
+export type NewProductDataType = {
+  productName: string
+  description: string
+  category: string
+  barcode: string
+  sku: string
+  basePrice: string
+  salePrice: string
+  quantity: number | string
+  isOutOfStock: boolean
+}

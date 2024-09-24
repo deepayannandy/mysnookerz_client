@@ -125,11 +125,11 @@ const ProductListTable = () => {
   }, [])
 
   const deleteProduct = async () => {
-    const ProductId = productData._id
+    const productId = productData._id
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.delete(`${apiBaseUrl}/user/${ProductId}`, { headers: { 'auth-token': token } })
+      const response = await axios.delete(`${apiBaseUrl}/products/${productId}`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         getAllProductsData()
         setDeleteConfirmationDialogOpen(false)
