@@ -1,10 +1,28 @@
 import { DateTime, Duration } from 'luxon'
 import { useEffect, useState } from 'react'
 
-const CountUpTimer = ({ startTime, endTime, running }: { startTime: string; endTime?: string; running: boolean }) => {
-  const timeDiff = endTime
+const CountUpTimer = ({
+  startTime,
+  endTime,
+  pauseTime,
+  pauseMinute,
+  running
+}: {
+  startTime: string
+  endTime?: string
+  pauseTime?: string
+  pauseMinute?: number
+  running: boolean
+}) => {
+  let timeDiff = endTime
     ? DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime))
-    : DateTime.now().diff(DateTime.fromISO(startTime))
+    : pauseTime
+      ? DateTime.fromISO(pauseTime).diff(DateTime.fromISO(startTime))
+      : DateTime.now().diff(DateTime.fromISO(startTime))
+
+  if (pauseMinute) {
+    timeDiff = timeDiff.minus({ minutes: pauseMinute })
+  }
 
   const [time, setTime] = useState(timeDiff)
 

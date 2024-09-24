@@ -38,6 +38,8 @@ export type InvoiceType = {
 export type TableDataType = {
   _id: string
   tableName: string
+  pauseTime: string
+  pauseMin: number
   gameData?: {
     startTime: string
     endTime: string

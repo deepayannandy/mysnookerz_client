@@ -28,11 +28,15 @@ const PoolCard = ({
   const [billData, setBillData] = useState({} as CustomerInvoiceType)
   const [showSwitchTable, setShowSwitchTable] = useState(false)
 
-  const totalSeconds =
+  let totalSeconds =
     tableData.gameData?.startTime && tableData.gameData?.endTime
       ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['seconds'])
           .seconds
       : 0
+
+  if (tableData?.pauseMin) {
+    totalSeconds = totalSeconds - tableData.pauseMin * 60
+  }
 
   const totalMinutes = Math.ceil(totalSeconds / 60)
 
@@ -132,6 +136,57 @@ const PoolCard = ({
     }
   }
 
+  const pauseGame = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.post(
+        `${apiBaseUrl}/games/pause/${tableData._id}`,
+        {},
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+
+      if (response && response.data) {
+        getAllTablesData()
+        toast.success(`${tableData.tableName} paused`)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   console.log(redirectUrl)
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  const resumeGame = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.post(
+        `${apiBaseUrl}/games/resume/${tableData._id}`,
+        {},
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+
+      if (response && response.data) {
+        getAllTablesData()
+        toast.success(`${tableData.tableName} resumed`)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   console.log(redirectUrl)
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
   return (
     <div className='relative'>
       <img src='/images/snooker-table/snooker-table-updated.svg' className='size-full' alt='' />
@@ -396,7 +451,7 @@ const PoolCard = ({
                 <></>
               )}
 
-              {totalSeconds ? (
+              {tableData.gameData?.startTime && tableData.gameData?.endTime ? (
                 <>
                   <Divider className='col-span-2' />
                   <p className='text-xs'>Total Time</p>
@@ -417,7 +472,9 @@ const PoolCard = ({
               <CountUpTimer
                 startTime={tableData.gameData?.startTime}
                 endTime={tableData.gameData?.endTime}
-                running={!!tableData.isOccupied && !tableData.gameData?.endTime}
+                pauseTime={tableData?.pauseTime}
+                pauseMinute={tableData?.pauseMin}
+                running={!!tableData.isOccupied && !tableData.gameData?.endTime && !tableData?.pauseTime}
               ></CountUpTimer>
             </div>
           ) : (
@@ -492,9 +549,15 @@ const PoolCard = ({
                   <span className='ri-restaurant-2-fill text-base'></span>
                   Add Meals
                 </Button>
-                <Button variant='contained' className='bg-[#FFCA00] text-black h-8'>
-                  <span className='ri-pause-mini-fill'></span>Pause
-                </Button>
+                {tableData?.pauseTime ? (
+                  <Button variant='contained' className='bg-[#FFCA00] text-black h-8' onClick={resumeGame}>
+                    <span className='ri-play-mini-fill'></span>Resume
+                  </Button>
+                ) : (
+                  <Button variant='contained' className='bg-[#FFCA00] text-black h-8' onClick={pauseGame}>
+                    <span className='ri-pause-mini-fill'></span>Pause
+                  </Button>
+                )}
                 <Button variant='contained' className='bg-[#E73434] text-white h-8' onClick={stopGame}>
                   <span className='ri-stop-mini-fill'></span>Stop
                 </Button>
