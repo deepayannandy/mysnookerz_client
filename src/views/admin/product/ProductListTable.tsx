@@ -94,7 +94,6 @@ const ProductListTable = () => {
   const [data, setData] = useState([] as ProductDataType[])
   const [productData, setProductData] = useState({} as ProductDataType)
   const [globalFilter, setGlobalFilter] = useState('')
-  const [editProductInfoDialogOpen, setEditProductInfoDialogOpen] = useState(false)
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
 
   // Hooks
@@ -161,11 +160,6 @@ const ProductListTable = () => {
         </CustomAvatar>
       )
     }
-  }
-
-  const editProductData = (rowData: ProductDataType) => {
-    setProductData(rowData)
-    setEditProductInfoDialogOpen(!editProductInfoDialogOpen)
   }
 
   const columns = useMemo<ColumnDef<ProductDataWithAction, any>[]>(
