@@ -75,8 +75,8 @@ const SwitchTable = ({ open, setOpen, tableData, allTablesData, getAllTablesData
       )
 
       if (response && response.data) {
-        getAllTablesData()
         resetForm()
+        getAllTablesData()
         setOpen(false)
         toast.success('Table Data switched successfully')
       }

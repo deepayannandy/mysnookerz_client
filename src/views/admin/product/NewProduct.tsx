@@ -124,7 +124,11 @@ const NewProduct = () => {
   const onSubmit = async (data: NewProductDataType) => {
     data.category = category
     data.quantity = quantity
-    data.isOutOfStock = !inStockSwitch
+    data.isQntRequired = inStockSwitch
+
+    if (!inStockSwitch) {
+      data.quantity = ''
+    }
 
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
@@ -306,7 +310,6 @@ const NewProduct = () => {
                       <Controller
                         name='description'
                         control={control}
-                        rules={{ required: true }}
                         render={({ field: { value, onChange } }) => (
                           <TextField
                             fullWidth
@@ -383,20 +386,24 @@ const NewProduct = () => {
               </Card>
             </Grid>
             <Grid item xs={12}>
-              <Card>
-                <CardHeader title='Stock' />
-                <CardContent>
-                  <TextField
-                    fullWidth
-                    className='mbe-5'
-                    label='Quantity'
-                    inputProps={{ type: 'number', min: 0 }}
-                    value={quantity}
-                    onChange={event => setQuantity(Number(event.target.value) ? Number(event.target.value) : '')}
-                  />
-                  <TextField disabled fullWidth className='mbe-5' label='Gross' value={gross ? gross : ''} />
-                </CardContent>
-              </Card>
+              {inStockSwitch ? (
+                <Card>
+                  <CardHeader title='Stock' />
+                  <CardContent>
+                    <TextField
+                      fullWidth
+                      className='mbe-5'
+                      label='Quantity'
+                      inputProps={{ type: 'number', min: 0 }}
+                      value={quantity}
+                      onChange={event => setQuantity(Number(event.target.value) ? Number(event.target.value) : '')}
+                    />
+                    <TextField disabled fullWidth className='mbe-5' label='Gross' value={gross ? gross : ''} />
+                  </CardContent>
+                </Card>
+              ) : (
+                <></>
+              )}
             </Grid>
           </Grid>
         </Grid>

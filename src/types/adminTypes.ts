@@ -135,5 +135,6 @@ export type NewProductDataType = {
   basePrice: string | number
   salePrice: string | number
   quantity: number | string
-  isOutOfStock: boolean
+  isOutOfStock?: boolean
+  isQntRequired?: boolean
 }

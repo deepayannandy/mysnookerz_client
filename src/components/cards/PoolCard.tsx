@@ -69,8 +69,12 @@ const PoolCard = ({
     if (tableData.gameData?.endTime) {
       getBillData()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+
+    setCustomers(
+      (tableData.gameData?.players?.length ? tableData.gameData.players : ['CASH']) as (string | CustomerListType)[]
+    )
+    setGameType(tableData.gameData?.gameType || tableData.gameTypes[0])
+  }, [tableData])
 
   const startGame = async () => {
     const players = customers.map(customer => {
