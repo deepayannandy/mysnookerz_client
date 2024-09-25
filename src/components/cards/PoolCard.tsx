@@ -74,6 +74,7 @@ const PoolCard = ({
       (tableData.gameData?.players?.length ? tableData.gameData.players : ['CASH']) as (string | CustomerListType)[]
     )
     setGameType(tableData.gameData?.gameType || tableData.gameTypes[0])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData])
 
   const startGame = async () => {
