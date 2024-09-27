@@ -27,6 +27,7 @@ const PoolCard = ({
   )
   const [billData, setBillData] = useState({} as CustomerInvoiceType)
   const [showSwitchTable, setShowSwitchTable] = useState(false)
+  const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false)
 
   let totalSeconds =
     tableData.gameData?.startTime && tableData.gameData?.endTime
@@ -78,6 +79,9 @@ const PoolCard = ({
   }, [tableData])
 
   const startGame = async () => {
+    setIsStartButtonDisabled(true)
+    setTimeout(() => setIsStartButtonDisabled(false), 5000)
+
     const players = customers.map(customer => {
       if (typeof customer === 'string') {
         return { fullName: customer }
@@ -569,8 +573,13 @@ const PoolCard = ({
               </>
             )
           ) : (
-            <Button variant='contained' className='bg-white text-black h-8' onClick={startGame}>
-              <span className='ri-play-mini-fill'></span>
+            <Button
+              disabled={isStartButtonDisabled}
+              variant='contained'
+              className='bg-white text-black h-8'
+              onClick={startGame}
+            >
+              <span className='ri-play-mini-fill' />
               Start
             </Button>
           )}
