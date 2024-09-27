@@ -61,11 +61,11 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
           .seconds
       : 0
 
-  const totalMinutes = Math.ceil(totalSeconds / 60)
+  // const totalMinutes = Math.ceil(totalSeconds / 60)
 
   // Now break down total minutes into hours and minutes
-  const hours = Math.floor(totalMinutes / 60) // full hours
-  const minutes = totalMinutes % 60
+  // const hours = Math.floor(totalMinutes / 60) // full hours
+  // const minutes = totalMinutes % 60
 
   const getBillData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -426,7 +426,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                   <Divider className='col-span-2' />
                   <p>Total Time</p>
                   <p>
-                    {hours || '00'}hrs {minutes || '00'}mins
+                    {Math.floor(data.timeDelta / 60) || '00'}hrs {data.timeDelta % 60 || '00'}mins
                   </p>
                 </>
               ) : (
