@@ -196,6 +196,33 @@ const PoolCard = ({
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }
+
+  const restartGame = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.post(
+        `${apiBaseUrl}/games/restart/${tableData._id}`,
+        {},
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+
+      if (response && response.data) {
+        getAllTablesData()
+        toast.success(`${tableData.tableName} restarted`)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   console.log(redirectUrl)
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
   return (
     <div className='relative'>
       <img src='/images/snooker-table/snooker-table-updated.svg' className='size-full' alt='' />
@@ -205,9 +232,15 @@ const PoolCard = ({
       >
         <div className='grid place-items-center'>
           <div className='bg-[url("/images/snooker-table/background-trapezoid.svg")] flex justify-center gap-3 bg-contain text-black bg-no-repeat bg-center w-full lg:w-11/12'>
-            <Tooltip title='Switch Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
-              <span className='ri-arrow-left-right-line' onClick={() => setShowSwitchTable(true)}></span>
-            </Tooltip>
+            {tableData?.gameData?.endTime ? (
+              <Tooltip title='Restart Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
+                <span className='ri-restart-line' onClick={restartGame}></span>
+              </Tooltip>
+            ) : (
+              <Tooltip title='Switch Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
+                <span className='ri-arrow-left-right-line' onClick={() => setShowSwitchTable(true)}></span>
+              </Tooltip>
+            )}
             <Tooltip title={tableData.tableName} placement='top' className='cursor-pointer'>
               <span className='text-base line-clamp-1 w-24 col-span-2 pl-3'>{tableData.tableName}</span>
             </Tooltip>
