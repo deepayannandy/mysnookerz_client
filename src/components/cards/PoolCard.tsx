@@ -6,6 +6,7 @@ import { DateTime } from 'luxon'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import CountUpTimer from '../count-up-timer'
+import OrderMeals from '../dialogs/order-meals'
 import SwitchTable from '../dialogs/switch-table'
 import TableBill from '../dialogs/table-bill'
 
@@ -28,6 +29,7 @@ const PoolCard = ({
   const [billData, setBillData] = useState({} as CustomerInvoiceType)
   const [showSwitchTable, setShowSwitchTable] = useState(false)
   const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false)
+  const [showMealCart, setShowMealCart] = useState(false)
 
   let totalSeconds =
     tableData.gameData?.startTime && tableData.gameData?.endTime
@@ -587,7 +589,11 @@ const PoolCard = ({
               </Button>
             ) : (
               <>
-                <Button variant='contained' className='bg-[#2E2E2E] text-white  h-8'>
+                <Button
+                  variant='contained'
+                  className='bg-[#2E2E2E] text-white h-8'
+                  onClick={() => setShowMealCart(true)}
+                >
                   <span className='ri-restaurant-2-fill text-base'></span>
                   Add Meals
                 </Button>
@@ -630,6 +636,16 @@ const PoolCard = ({
           getAllTablesData={getAllTablesData}
           setGameType={setGameType}
           setCustomers={setCustomers}
+        />
+      ) : (
+        <></>
+      )}
+      {showMealCart ? (
+        <OrderMeals
+          open={showMealCart}
+          setOpen={setShowMealCart}
+          tableData={tableData}
+          getAllTablesData={getAllTablesData}
         />
       ) : (
         <></>

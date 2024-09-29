@@ -182,9 +182,9 @@ const ProductListTable = () => {
         header: 'Category',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.category}</Typography>
       }),
-      columnHelper.accessor('stock', {
+      columnHelper.accessor('quantity', {
         header: 'Stock',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.stock}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.quantity}</Typography>
       }),
       columnHelper.accessor('sku', {
         header: 'SKU',
