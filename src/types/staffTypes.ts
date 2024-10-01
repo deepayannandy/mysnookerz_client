@@ -121,3 +121,24 @@ export type DueAmountDataType = {
   totalDue?: number
   action?: string
 }
+
+export type OrderFoodType = {
+  productId: string
+  productName: string
+  productSalePrice: string
+  qnt: string | number
+}
+
+export type FoodOrderHistoryDataType = {
+  _id: string
+  storeId: string
+  date: string
+  customers: CustomerListType[]
+  orderItems: OrderFoodType[]
+  description: string
+  total: number
+  discount: number
+  netPay: number
+  status: string
+  transactionId: string
+}

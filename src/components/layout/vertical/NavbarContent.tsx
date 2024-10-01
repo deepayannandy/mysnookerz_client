@@ -10,6 +10,7 @@ import NavToggle from './NavToggle'
 
 // Util Imports
 import { verticalLayoutClasses } from '@layouts/utils/layoutClasses'
+import TakeawayFoodOrderDrawer from '../shared/TakeawayFoodOrderDrawer'
 
 const NavbarContent = () => {
   return (
@@ -19,6 +20,7 @@ const NavbarContent = () => {
         <NavSearch />
       </div>
       <div className='flex items-center'>
+        <TakeawayFoodOrderDrawer />
         <LanguageDropdown />
         <ModeDropdown />
         <UserDropdown />
