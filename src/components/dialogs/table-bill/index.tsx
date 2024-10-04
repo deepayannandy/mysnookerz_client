@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { TableDataType } from '@/types/adminTypes'
 import { CustomerInvoiceType } from '@/types/staffTypes'
 import { getInitials } from '@/utils/getInitials'
-import { Autocomplete, Avatar, Chip, Divider, Drawer, MenuItem, TextField, Typography } from '@mui/material'
+import { Autocomplete, Avatar, Chip, Divider, Drawer, MenuItem, TextField, Tooltip, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
@@ -27,9 +27,39 @@ type TableBillPropType = {
 
 const paymentMethods = ['CASH', 'UPI', 'CARD']
 
+const orderData = [
+  {
+    customerName: 'mks',
+    order: [
+      {
+        item: 'Coke',
+        qty: 3,
+        amount: 50
+      },
+      {
+        item: 'Pepsi',
+        qty: 5,
+        amount: 500
+      }
+    ]
+  },
+  {
+    customerName: 'Deep',
+    order: [{ item: 'Burger', qty: 5, amount: 900 }]
+  },
+  {
+    customerName: 'Deepayan',
+    order: [
+      { item: 'Fries', qty: 3, amount: 100 },
+      { item: 'Pizza', qty: 4, amount: 590 }
+    ]
+  }
+]
+
 const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, setCustomers }: TableBillPropType) => {
   // States
   const [data, setData] = useState({} as CustomerInvoiceType)
+  const [viewMealOrders, setViewMealOrders] = useState(false)
   const [invoiceTo, setInvoiceTo] = useState(
     (data.selectedTable?.gameData?.players || []) as { fullName?: string; customerId?: string }[]
   )
@@ -443,13 +473,58 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
                 <p>Table Amount</p>
                 <p>{`₹${data.totalBillAmt || 0}`}</p>
                 <Divider className='col-span-2' />
-                <p>Meals Amount</p>
+                <Tooltip
+                  title={<Button onClick={() => setViewMealOrders(true)}>View</Button>}
+                  placement='top-start'
+                  className='cursor-pointer'
+                >
+                  <p>Meals Amount</p>
+                </Tooltip>
                 <p>{`₹${data.mealAmount || 0}`}</p>
               </div>
               {/* <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
                 <p>Net Pay</p>
                 <p>{`₹${data.totalBillAmt}`}</p>
               </div> */}
+            </>
+          ) : (
+            <></>
+          )}
+
+          {viewMealOrders ? (
+            <>
+              {orderData.map(orderDetails => (
+                <div className='w-full grid grid-cols-1 border mt-2 rounded-lg overflow-x-auto '>
+                  <div className='w-full text-center font-bold border-b p-1 sm:p-2'>{orderDetails.customerName}</div>
+                  <div className='w-full grid grid-cols-3 text-center font-bold border-b divide-x'>
+                    <div className='size-full grid place-items-center p-1 sm:p-2 '>
+                      <p>Item</p>
+                    </div>
+                    <div className='size-full grid place-items-center p-1 sm:p-2'>
+                      <p>Qty</p>
+                    </div>
+                    <div className='size-full grid place-items-center p-1 sm:p-2'>
+                      <p>Amount</p>
+                    </div>
+                  </div>
+
+                  {orderDetails.order.map((orderItem, index) => (
+                    <div
+                      className={`w-full grid grid-cols-3 divide-x ${orderDetails.order.length - 1 !== index ? 'border-b' : ''}`}
+                    >
+                      <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
+                        <p>{orderItem.item}</p>
+                      </div>
+                      <div className='size-full grid place-items-center p-1 sm:p-2'>
+                        <p>{orderItem.qty}</p>
+                      </div>
+                      <div className='size-full grid place-items-center p-1 sm:p-2'>
+                        <p>{`₹${orderItem.amount}`}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </>
           ) : (
             <></>
