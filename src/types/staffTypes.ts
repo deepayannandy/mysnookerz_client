@@ -97,11 +97,13 @@ export type CustomerInvoiceType = {
   total: number
   discount?: number | null
   return?: number | null
-  // storeName: string
-  // city: string
-  // state: string
-  // country: string
   paymentMethod?: string
+  productList?: {
+    customerDetails: { fullName: string; customerId: string }
+    orders: { productId: string; productName: string; productSalePrice: number; qnt: number; _id: string }[]
+    orderTotal: number
+    _id: string
+  }[]
 }
 
 export type DueAmountDataType = {

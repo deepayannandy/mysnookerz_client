@@ -158,7 +158,7 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
       toast.error('Please add items to place order')
       return
     }
-    const orderList = data.order.map(ord => {
+    const orders = data.order.map(ord => {
       return {
         productId: ord.product._id,
         productName: ord.product.productName,
@@ -167,12 +167,18 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
       }
     })
 
+    const productList = {
+      customerDetails: data.customer,
+      orders,
+      orderTotal: total
+    }
+
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
       const response = await axios.post(
         `${apiBaseUrl}/games/addMeal/${tableData._id}`,
-        { productList: orderList },
+        { productList },
         {
           headers: { 'auth-token': token }
         }
