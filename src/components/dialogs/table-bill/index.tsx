@@ -515,6 +515,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
 
               {data.productList.map((orderItem, index) => (
                 <div
+                  key={orderItem._id}
                   className={`w-full grid grid-cols-4 divide-x ${(data.productList?.length ?? 0) - 1 !== index ? 'border-b' : ''}`}
                 >
                   <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
