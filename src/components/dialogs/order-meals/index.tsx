@@ -24,7 +24,7 @@ type MealCartType = {
   customer: CustomerListType
   order: {
     product: ProductDataType
-    quantity: number | string
+    quantity: number
   }[]
 }
 
@@ -64,7 +64,7 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
       order: [
         {
           product: productList[0],
-          quantity: ''
+          quantity: 1
         }
       ]
     }
@@ -83,7 +83,7 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
     } else {
       clearErrors('order')
       setFieldIndex(fields.length)
-      append({ product: productList[0], quantity: '' })
+      append({ product: productList[0], quantity: 1 })
     }
   }
 
@@ -133,7 +133,7 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
           order: [
             {
               product: response.data[0],
-              quantity: ''
+              quantity: 1
             }
           ]
         })
