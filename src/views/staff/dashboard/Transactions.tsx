@@ -64,13 +64,13 @@ const Transactions = ({ data }: { data: DashboardDataType }) => {
         <Grid container spacing={2}>
           {transactionData.map((item, index) => (
             <Grid item xs={6} md={3} key={index}>
-              <div className='flex items-center gap-3'>
+              <div className='flex items-center gap-2'>
                 <CustomAvatar variant='rounded' color={item.color} className='shadow-xs'>
                   <i className={item.icon}></i>
                 </CustomAvatar>
                 <div>
                   <Typography>{item.title}</Typography>
-                  <Typography variant='h5'>{`₹${data.transactions?.[item.id] || 0}`}</Typography>
+                  <Typography variant='h6'>{`₹${data.transactions?.[item.id] || 0}`}</Typography>
                 </div>
               </div>
             </Grid>

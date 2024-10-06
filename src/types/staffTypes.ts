@@ -58,6 +58,7 @@ export type CustomerListType = { fullName: string; customerId: string }
 export type DashboardDataType = {
   sales: number
   credit: number
+  discount: number
   transactions: {
     cash: number
     card: number

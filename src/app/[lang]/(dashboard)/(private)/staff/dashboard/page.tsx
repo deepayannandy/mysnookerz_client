@@ -68,13 +68,24 @@ const DashboardDetails = () => {
     <>
       {dashboardData?.sales >= 0 ? (
         <Grid container spacing={4}>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={3}>
             <Award data={dashboardData.sales || 0} />
           </Grid>
-          <Grid item xs={12} sm={8} md={6}>
+          <Grid item xs={12} sm={6} md={5.5}>
             <Transactions data={dashboardData} />
           </Grid>
-          <Grid item xs={12} sm={4} md={2}>
+          <Grid item xs={12} sm={3} md={1.75}>
+            <CardStatVertical
+              title='Discount'
+              stats={`₹${dashboardData.discount || 0}`}
+              avatarIcon='ri-discount-percent-line'
+              avatarColor='warning'
+              // subtitle='Revenue Increase'
+              // trendNumber='42%'
+              // trend='positive'
+            />
+          </Grid>
+          <Grid item xs={12} sm={3} md={1.75}>
             <CardStatVertical
               title='Credit'
               stats={`₹${dashboardData.credit || 0}`}
@@ -88,6 +99,9 @@ const DashboardDetails = () => {
           <Grid item xs={12}>
             <DueAmountTable data={dashboardData.creditHistoryToday ?? []} getDashboardData={getDashboardData} />
           </Grid>
+          {/* <Grid item xs={12}>
+            <TotalRevenueStackedBar />
+          </Grid> */}
         </Grid>
       ) : (
         <Grid container spacing={6}>

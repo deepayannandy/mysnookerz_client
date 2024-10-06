@@ -54,6 +54,7 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
     handleSubmit,
     watch,
     getValues,
+    setValue,
     setError,
     clearErrors,
     formState: { errors }
@@ -90,6 +91,7 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
   const handleProductChange = (value: ProductDataType | null, onChange: (value: ProductDataType | null) => void) => {
     clearErrors(`order.${fieldIndex}.product`)
     onChange(value)
+    setValue(`order.${fieldIndex}.quantity`, 1)
   }
 
   const handleQuantityChange = (value: string | null, onChange: (value: string | null) => void) => {
@@ -167,7 +169,7 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
   }, [])
 
   useEffect(() => {
-    resetForm({ customer: customersList[0] ?? '', order: [{ product: productList[0], quantity: 1 }] })
+    resetForm({ customer: '', order: [] })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customersList, productList])
 
@@ -308,7 +310,7 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
                     fullWidth
                     label='Quantity'
                     inputProps={{ type: 'number', min: 0 }}
-                    value={value}
+                    value={value ?? ''}
                     onChange={event => handleQuantityChange(event.target.value, onChange)}
                     {...(errors.order?.[fieldIndex]?.quantity && {
                       error: true,

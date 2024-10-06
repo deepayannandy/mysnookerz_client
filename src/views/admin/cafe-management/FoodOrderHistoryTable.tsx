@@ -106,11 +106,13 @@ const FoodOrderHistoryTable = () => {
 
   const getOrderItemsToShow = (orderItems: OrderFoodType[]) => {
     let itemsToShow = ''
-    orderItems.map(item => {
-      itemsToShow = itemsToShow
-        ? `${itemsToShow}, ${item.productName} x ${item.qnt}`
-        : `${item.productName} x ${item.qnt}`
-    })
+    if (orderItems?.length) {
+      orderItems.map(item => {
+        itemsToShow = itemsToShow
+          ? `${itemsToShow}, ${item.productName} x ${item.qnt}`
+          : `${item.productName} x ${item.qnt}`
+      })
+    }
 
     return itemsToShow
   }

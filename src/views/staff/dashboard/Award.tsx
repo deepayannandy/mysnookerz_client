@@ -20,12 +20,7 @@ const Award = ({ data }: { data: number }) => {
         {/* <Button size='small' variant='contained'>
           View Sales
         </Button> */}
-        <img
-          src='/images/pages/trophy.png'
-          alt='trophy image'
-          height={102}
-          className='absolute inline-end-7 bottom-6'
-        />
+        <img src='/images/pages/trophy.png' alt='trophy image' height={90} className='absolute inline-end-7 bottom-6' />
       </CardContent>
     </Card>
   )
