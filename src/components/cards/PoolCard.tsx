@@ -535,7 +535,7 @@ const PoolCard = ({
                 <p className='text-xs'>{`₹${billData.totalBillAmt || 0}`}</p>
                 <Divider className='col-span-2' />
                 <p className='text-xs'>Meals Amount</p>
-                <p className='text-xs'>{`₹${billData.mealAmount || 0}`}</p>
+                <p className='text-xs'>{`₹${billData.mealTotal || 0}`}</p>
               </div>
               <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 text-white border border-white px-4 py-2 mt-2 shadow-[0.5px_0.5px_6px_1px_white] rounded-lg'>
                 <p className='text-[14px]'>Net Pay</p>
