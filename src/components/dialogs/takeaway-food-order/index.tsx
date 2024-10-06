@@ -186,42 +186,42 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
       }
     })
 
-    let customers = {}
+    let customer = {}
     if (typeof data.customer === 'string') {
-      customers = { fullName: data.customer }
+      customer = { fullName: data.customer }
     } else {
-      customers = data.customer
+      customer = data.customer
     }
 
-    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    // const token = localStorage.getItem('token')
-    // try {
-    //   const response = await axios.post(
-    //     `${apiBaseUrl}/order`,
-    //     {
-    //       customers,
-    //       orderItems,
-    //       total: (Number(subTotal ?? 0) + Number(tax ?? 0)).toFixed(2),
-    //       discount: inputData.discount,
-    //       netPay: total,
-    //       credit: inputData.cashIn,
-    //       paymentMethod: inputData.paymentMethod
-    //     },
-    //     {
-    //       headers: { 'auth-token': token }
-    //     }
-    //   )
-    //   if (response && response.data) {
-    //     handleClose()
-    //     toast.success('Order Placed!', { icon: <>👏</> })
-    //   }
-    // } catch (error: any) {
-    //   // if (error?.response?.status === 400) {
-    //   //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-    //   //   return router.replace(redirectUrl)
-    //   // }
-    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    // }
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.post(
+        `${apiBaseUrl}/order`,
+        {
+          customer,
+          orderItems,
+          total: (Number(subTotal ?? 0) + Number(tax ?? 0)).toFixed(2),
+          discount: inputData.discount,
+          netPay: total,
+          cashIn: inputData.cashIn,
+          paymentMethod: inputData.paymentMethod
+        },
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+      if (response && response.data) {
+        handleClose()
+        toast.success('Order Placed!', { icon: <>👏</> })
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
   }
 
   return (

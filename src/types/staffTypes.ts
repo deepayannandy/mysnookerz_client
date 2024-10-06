@@ -91,7 +91,7 @@ export type CustomerInvoiceType = {
   }
   billBreakup: { title: string; time: number; amount: number }[]
   totalBillAmt: number
-  mealAmount: number
+  mealTotal: number
   netPay: number
   tax?: number
   total: number
