@@ -254,6 +254,7 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
                 render={({ field: { value, onChange } }) => (
                   <Autocomplete
                     fullWidth
+                    disableClearable
                     options={productList}
                     getOptionLabel={option => `${option.productName} (₹${option.salePrice})`}
                     value={value}
