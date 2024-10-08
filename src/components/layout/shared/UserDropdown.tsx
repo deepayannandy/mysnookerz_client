@@ -31,8 +31,9 @@ import type { Locale } from '@configs/i18n'
 import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
-import { UserDetailsType } from '@/types/userTypes'
+import { DailyCollectionDataType, UserDetailsType } from '@/types/userTypes'
 import { getLocalizedUrl } from '@/utils/i18n'
+import DailyCollectionData from '@/views/admin/DailyCollectionData'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -48,6 +49,8 @@ const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false)
   const [userDetails, setUserDetails] = useState({} as UserDetailsType)
+  const [dailyCollectionData, setDailyCollectionData] = useState({} as DailyCollectionDataType)
+  const [showDailyCollectionData, setShowDailyCollectionData] = useState(false)
 
   // Refs
   const anchorRef = useRef<HTMLDivElement>(null)
@@ -75,16 +78,19 @@ const UserDropdown = () => {
   }
 
   const handleUserLogout = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    const clientId = localStorage.getItem('clientId')
     try {
-      localStorage.removeItem('token')
-      localStorage.removeItem('storeId')
-      localStorage.removeItem('clientId')
-      localStorage.removeItem('clientName')
-      const redirectURL = '/login'
-
-      router.replace(getLocalizedUrl(redirectURL, locale as Locale))
-    } catch (error) {
-      toast.error((error as Error).message)
+      const response = await axios.get(`${apiBaseUrl}/admin/signOffReport/${clientId}`, {
+        headers: { 'auth-token': token }
+      })
+      if (response && response.data) {
+        setDailyCollectionData(response.data)
+        setShowDailyCollectionData(true)
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }
 
@@ -205,6 +211,12 @@ const UserDropdown = () => {
           </Fade>
         )}
       </Popper>
+
+      <DailyCollectionData
+        data={dailyCollectionData}
+        open={showDailyCollectionData}
+        setOpen={setShowDailyCollectionData}
+      />
     </>
   )
 }
