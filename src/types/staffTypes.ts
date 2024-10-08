@@ -78,6 +78,27 @@ export type DashboardDataType = {
   // moreOptions?: OptionsMenuType
 }
 
+export type DashboardTotalRevenueDataType = {
+  totalRevenue: number
+  totalDiscounts: number
+  totalExpense: number
+  totalProfit: number
+  lastMonthBalance: number
+  timePeriods: string[]
+  discounts: {
+    timePeriod: string
+    value: number
+  }[]
+  expense: {
+    timePeriod: string
+    value: number
+  }[]
+  profit: {
+    timePeriod: string
+    value: number
+  }[]
+}
+
 export type CustomerInvoiceType = {
   timeDelta: number
   selectedTable: {
