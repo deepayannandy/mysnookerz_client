@@ -13,5 +13,7 @@ export type DailyCollectionDataType = {
   dues: number
   expense: number
   netProfit: number
+  cash: number
+  upi: number
   cashDrawerBalance: number
 }

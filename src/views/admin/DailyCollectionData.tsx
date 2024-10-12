@@ -40,7 +40,7 @@ const DailyCollectionData = ({
   return (
     <Dialog fullWidth open={open} onClose={handleClose} maxWidth='md' scroll='body'>
       <DialogTitle variant='h4' className='flex gap-2 flex-col items-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
-        <div className='max-sm:is-[80%] max-sm:text-center'>Reports</div>
+        <div className='max-sm:is-[80%] max-sm:text-center'>Today’s Billing Collection Report</div>
       </DialogTitle>
 
       <DialogContent className='overflow-visible pbs-0 sm:pli-16'>
@@ -59,11 +59,6 @@ const DailyCollectionData = ({
           </div>
 
           <div className='grid grid-cols-2 gap-2 border-b divide-x'>
-            <p className='text-center p-2'>Total Collection</p>
-            <p className='text-center p-2'>{`₹${data.totalCollection || 0}`}</p>
-          </div>
-
-          <div className='grid grid-cols-2 gap-2 border-b divide-x'>
             <p className='text-center p-2'>Dues</p>
             <p className='text-center p-2'>{`₹${data.dues || 0}`}</p>
           </div>
@@ -74,8 +69,32 @@ const DailyCollectionData = ({
           </div>
 
           <div className='grid grid-cols-2 gap-2 border-b divide-x'>
+            <p className='text-center p-2'>Total Collection</p>
+            <p className='text-center p-2'>{`₹${data.totalCollection || 0}`}</p>
+          </div>
+
+          <div className='grid grid-cols-2 gap-2 border-b divide-x'>
             <p className='text-center p-2'>Net Profit</p>
             <p className='text-center p-2'>{`₹${data.netProfit || 0}`}</p>
+          </div>
+
+          <div className='grid grid-cols-2 gap-2 border-b divide-x'>
+            <p className='text-start p-2 col-span-2'>Payment Methods</p>
+          </div>
+
+          <div className='grid grid-cols-2 gap-2 border-b divide-x'>
+            <p className='text-center p-2'>CASH</p>
+            <p className='text-center p-2'>{`₹${data.cash || 0}`}</p>
+          </div>
+
+          <div className='grid grid-cols-2 gap-2 border-b divide-x'>
+            <p className='text-center p-2'>UPI</p>
+            <p className='text-center p-2'>{`₹${data.upi || 0}`}</p>
+          </div>
+
+          <div className='grid grid-cols-2 gap-2 border-b divide-x'>
+            <p className='text-center p-2'>GEMS</p>
+            <p className='text-center p-2'>{`₹${data.upi || 0}`}</p>
           </div>
 
           <div className='grid grid-cols-2 gap-2 divide-x'>
@@ -86,7 +105,7 @@ const DailyCollectionData = ({
       </DialogContent>
       <DialogActions className='justify-center pbs-0 sm:pbe-16 sm:pli-16'>
         <Button className='w-full' variant='contained' onClick={handleLogout}>
-          Close Today!
+          Finish Shift
         </Button>
         {/* <Button variant='outlined' color='secondary' type='reset' onClick={handleClose}>
           Cancel

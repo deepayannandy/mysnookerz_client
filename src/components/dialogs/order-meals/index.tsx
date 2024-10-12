@@ -53,7 +53,6 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
     reset: resetForm,
     handleSubmit,
     watch,
-    getValues,
     setError,
     clearErrors,
     formState: { errors }
@@ -103,13 +102,12 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
   }
 
   let subTotal = 0
-  getValues('order')
-    .slice(0, -1)
-    .map(input => {
-      if (input.product?.salePrice && input.quantity) {
-        subTotal = subTotal + Number(input.product.salePrice) * Number(input.quantity)
-      }
-    })
+  fields.slice(0, -1).map(orderItem => {
+    if (orderItem.product?.salePrice && orderItem.quantity) {
+      subTotal = subTotal + Number(orderItem.product.salePrice) * Number(orderItem.quantity)
+    }
+  })
+
   const tax = ((subTotal * 10) / 100).toFixed(2)
   const total = (Number(subTotal) + Number(tax)).toFixed(2)
   // const cashOut = (Number(inputData.cashIn ?? 0) - Number(total ?? 0)).toFixed(2)
