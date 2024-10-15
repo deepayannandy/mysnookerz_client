@@ -28,6 +28,7 @@ const DailyCollectionData = ({
     try {
       localStorage.removeItem('token')
       localStorage.removeItem('storeId')
+      localStorage.removeItem('storeName')
       localStorage.removeItem('clientId')
       localStorage.removeItem('clientName')
       const redirectURL = '/login'
@@ -79,7 +80,7 @@ const DailyCollectionData = ({
           </div>
 
           <div className='grid grid-cols-2 gap-2 border-b divide-x'>
-            <p className='text-start p-2 col-span-2'>Payment Methods</p>
+            <p className='text-center p-2'>Payment Methods</p>
           </div>
 
           <div className='grid grid-cols-2 gap-2 border-b divide-x'>

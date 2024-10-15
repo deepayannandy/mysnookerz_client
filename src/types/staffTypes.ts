@@ -157,7 +157,7 @@ export type FoodOrderHistoryDataType = {
   _id: string
   storeId: string
   date: string
-  customers: CustomerListType[]
+  customers: CustomerListType
   orderItems: OrderFoodType[]
   description: string
   total: number

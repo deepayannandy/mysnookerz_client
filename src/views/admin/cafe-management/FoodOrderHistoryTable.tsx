@@ -33,9 +33,9 @@ import type { ThemeColor } from '@core/types'
 // Style Imports
 
 import SearchInput from '@/components/Search'
-import { CustomerListType, FoodOrderHistoryDataType, OrderFoodType } from '@/types/staffTypes'
+import { FoodOrderHistoryDataType, OrderFoodType } from '@/types/staffTypes'
 import tableStyles from '@core/styles/table.module.css'
-import { CardContent, Tooltip } from '@mui/material'
+import { CardContent } from '@mui/material'
 import Chip from '@mui/material/Chip'
 import axios from 'axios'
 import { DateTime } from 'luxon'
@@ -89,20 +89,6 @@ const FoodOrderHistoryTable = () => {
   const { lang: locale } = useParams()
   const pathname = usePathname()
   const router = useRouter()
-
-  const getCustomerNamesToShow = (customerList: CustomerListType[]) => {
-    let customerNames = ''
-    let visibleCustomerNames = ''
-    customerList.map((customer, index) => {
-      customerNames = customerNames ? `${customerNames}, ${customer.fullName}` : `${customer.fullName}`
-      if ([0, 1].includes(index)) {
-        visibleCustomerNames = visibleCustomerNames
-          ? `${visibleCustomerNames}, ${customer.fullName}`
-          : `${customer.fullName}`
-      }
-    })
-    return { customerNames, visibleCustomerNames }
-  }
 
   const getOrderItemsToShow = (orderItems: OrderFoodType[]) => {
     let itemsToShow = ''
@@ -159,15 +145,9 @@ const FoodOrderHistoryTable = () => {
       columnHelper.accessor('customers', {
         header: 'Customer Name',
         cell: ({ row }) => (
-          <Tooltip
-            title={getCustomerNamesToShow(row.original.customers).customerNames}
-            placement='top'
-            className='cursor-pointer'
-          >
-            <Typography className='text-wrap' color='text.primary'>
-              {getCustomerNamesToShow(row.original.customers).visibleCustomerNames}
-            </Typography>
-          </Tooltip>
+          <Typography className='text-wrap' color='text.primary'>
+            {row.original.customers?.fullName}
+          </Typography>
         )
       }),
       columnHelper.accessor('orderItems', {

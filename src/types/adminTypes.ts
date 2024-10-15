@@ -138,3 +138,23 @@ export type NewProductDataType = {
   isOutOfStock?: boolean
   isQntRequired?: boolean
 }
+
+export type TransactionReportDataType = {
+  netAmount: number
+  discount: number
+  dues: number
+  cash: number
+  card: number
+  upi: number
+  gems: number
+  data: TransactionReportTableDataType[]
+}
+
+export type TransactionReportTableDataType = {
+  transactionId: string
+  date: string
+  description: string
+  netPay: number
+  discount: number
+  dues: number
+}

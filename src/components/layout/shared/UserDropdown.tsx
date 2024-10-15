@@ -103,6 +103,7 @@ const UserDropdown = () => {
         setUserDetails(response.data)
         if (response.data.storeId) {
           localStorage.setItem('storeId', response.data.storeId)
+          localStorage.setItem('storeName', response.data.storeName)
           localStorage.setItem('clientId', response.data._id)
           localStorage.setItem('clientName', response.data.fullName)
         }
@@ -118,6 +119,7 @@ const UserDropdown = () => {
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
       localStorage.removeItem('token')
       localStorage.removeItem('storeId')
+      localStorage.removeItem('storeName')
       localStorage.removeItem('clientId')
       localStorage.removeItem('clientName')
 
