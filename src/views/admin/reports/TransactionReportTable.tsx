@@ -34,16 +34,8 @@ import classnames from 'classnames'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import { TransactionReportTableDataType } from '@/types/adminTypes'
 import tableStyles from '@core/styles/table.module.css'
-import {
-  Button,
-  CardContent,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  TextField,
-  TextFieldProps
-} from '@mui/material'
+import * as mui from '@mui/material'
+import { Button, CardContent, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { DateTime } from 'luxon'
 
 declare module '@tanstack/table-core' {
@@ -79,7 +71,7 @@ const DebouncedInput = ({
   value: string | number
   onChange: (value: string | number) => void
   debounce?: number
-} & Omit<TextFieldProps, 'onChange'>) => {
+} & Omit<mui.TextFieldProps, 'onChange'>) => {
   // States
   const [value, setValue] = useState(initialValue)
 

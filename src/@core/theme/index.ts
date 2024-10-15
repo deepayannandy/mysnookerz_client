@@ -9,14 +9,19 @@ import type { Settings } from '@core/contexts/settingsContext'
 import type { Skin, SystemMode } from '@core/types'
 
 // Theme Options Imports
-import overrides from './overrides'
 import colorSchemes from './colorSchemes'
-import spacing from './spacing'
-import shadows from './shadows'
 import customShadows from './customShadows'
+import overrides from './overrides'
+import shadows from './shadows'
+import spacing from './spacing'
 import typography from './typography'
 
-const inter = Inter({ subsets: ['latin'], weight: ['300', '400', '500', '600', '700', '800', '900'] })
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800', '900'],
+  display: 'swap',
+  adjustFontFallback: false
+})
 
 const theme = (settings: Settings, mode: SystemMode, direction: Theme['direction']): Theme => {
   return {
