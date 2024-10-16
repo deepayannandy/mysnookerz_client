@@ -88,7 +88,7 @@ const CollectionReportPage = () => {
         <ReportCard data={reportCardData ?? []} />
       </Grid> */}
       <Grid item xs={12}>
-        <CollectionReportTable data={reportData ?? []} getReportData={getReportData} />
+        <CollectionReportTable data={reportData ?? []} />
       </Grid>
     </Grid>
   )

@@ -90,14 +90,14 @@ const DebouncedInput = ({
   return <TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
 }
 
-const storeName = localStorage.getItem('storeName')
+//const storeName = localStorage.getItem('storeName')
 
 const CollectionReportTable = ({
-  data,
-  getReportData
+  data
+  //getReportData
 }: {
   data: CollectionReportDataType[]
-  getReportData: (dates?: { startDate: string; endDate: string }) => void
+  //getReportData: (dates?: { startDate: string; endDate: string }) => void
 }) => {
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')
