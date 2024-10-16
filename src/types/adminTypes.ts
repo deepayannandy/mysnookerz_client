@@ -158,3 +158,16 @@ export type TransactionReportTableDataType = {
   discount: number
   dues: number
 }
+
+export type CollectionReportDataType = {
+  transactionId: string
+  userName: string
+  loginTime: string
+  logoutTime: string
+  totalCollection: number
+  totalReceived: number
+  cash: number
+  upi: number
+  gems: number
+  cashDrawerBalance: number
+}

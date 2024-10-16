@@ -155,12 +155,18 @@ const HistoryTable = () => {
         header: 'Start/End Time',
         cell: ({ row }) => (
           <div className='flex flex-col'>
-            <Typography className='font-medium' color='text.primary'>
-              {DateTime.fromISO(row.original.startTime).toFormat('hh:mm:ss a')}
-            </Typography>
-            <Typography className='font-medium' color='text.primary'>
-              {DateTime.fromISO(row.original.endTime).toFormat('hh:mm:ss a')}
-            </Typography>
+            {row.original.startTime && row.original.endTime ? (
+              <>
+                <Typography className='font-medium' color='text.primary'>
+                  {DateTime.fromISO(row.original.startTime).toFormat('hh:mm:ss a')}
+                </Typography>
+                <Typography className='font-medium' color='text.primary'>
+                  {DateTime.fromISO(row.original.endTime).toFormat('hh:mm:ss a')}
+                </Typography>
+              </>
+            ) : (
+              <>-</>
+            )}
           </div>
         )
       }),
