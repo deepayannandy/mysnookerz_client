@@ -365,58 +365,50 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
               <p>{`₹${total}`}</p>
             </div>
 
-            {/* <div className='w-full grid grid-cols-2 gap-2 mt-2 rounded-lg'>
-              <TextField
-                //placeholder='₹_._'
-                inputProps={{ type: 'number', min: 0, step: 'any' }}
-                label='Discount'
-                value={inputData.discount}
-                onChange={event =>
-                  setInputData({
-                    ...inputData,
-                    discount: event.target.value
-                  })
-                }
-              />
+            {tableData.productList?.length ? (
+              <div className='w-full grid grid-cols-1 border mt-2 rounded-lg overflow-x-auto '>
+                <div className='w-full text-center font-bold border-b p-1 sm:p-2'>Previous Orders</div>
+                <div className='w-full grid grid-cols-4 text-center font-bold border-b divide-x'>
+                  <div className='size-full grid place-items-center p-1 sm:p-2 '>
+                    <p>Customer</p>
+                  </div>
+                  <div className='size-full grid place-items-center p-1 sm:p-2'>
+                    <p>Item</p>
+                  </div>
+                  <div className='size-full grid place-items-center p-1 sm:p-2'>
+                    <p>Qty</p>
+                  </div>
+                  <div className='size-full grid place-items-center p-1 sm:p-2'>
+                    <p>Amount</p>
+                  </div>
+                </div>
 
-              <TextField
-                label='Payment Method'
-                select
-                value={inputData.paymentMethod}
-                onChange={e => {
-                  setInputData({ ...inputData, paymentMethod: e.target.value })
-                }}
-              >
-                {paymentMethods.map((paymentMethod, index) => (
-                  <MenuItem key={index} value={paymentMethod}>
-                    {paymentMethod}
-                  </MenuItem>
+                {tableData.productList.map((orderItem, index) => (
+                  <>
+                    {orderItem.orders?.map(order => (
+                      <div key={order._id} className={`w-full grid grid-cols-4 divide-x border-b`}>
+                        <>
+                          <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
+                            <p>{orderItem?.customerDetails?.fullName}</p>
+                          </div>
+                          <div className='size-full grid place-items-center p-1 sm:p-2'>
+                            <p>{order.productName}</p>
+                          </div>
+                          <div className='size-full grid place-items-center p-1 sm:p-2'>
+                            <p>{order.qnt}</p>
+                          </div>
+                          <div className='size-full grid place-items-center p-1 sm:p-2'>
+                            <p>{`₹${order.productSalePrice ?? 0}`}</p>
+                          </div>
+                        </>
+                      </div>
+                    ))}
+                  </>
                 ))}
-              </TextField>
-
-              <TextField
-                label='Cash In'
-                //placeholder='₹_._'
-                inputProps={{ type: 'number', min: 0, step: 'any' }}
-                value={inputData.cashIn}
-                onChange={event =>
-                  setInputData({
-                    ...inputData,
-                    cashIn: event.target.value
-                  })
-                }
-              />
-              <TextField
-                //className='w-full bg-[#E73434] rounded-lg'
-                label='Cash Out'
-                value={`₹${cashOut}`}
-                InputProps={
-                  {
-                    //startAdornment: <p className='m-1'>Net Pay</p>
-                  }
-                }
-              />
-            </div> */}
+              </div>
+            ) : (
+              <></>
+            )}
 
             <div className='flex items-center gap-4'>
               <Button variant='contained' type='submit'>
