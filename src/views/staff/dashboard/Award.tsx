@@ -8,7 +8,7 @@ const Award = ({ data }: { data: number }) => {
     <Card className='h-full'>
       <CardContent className='flex flex-col gap-16 relative items-start'>
         <div>
-          <Typography variant='h4'>Gross Revenue</Typography>
+          <Typography variant='h4'>Today's Revenue</Typography>
           {/* <Typography>Best seller of the month</Typography> */}
         </div>
         <div>

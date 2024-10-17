@@ -383,7 +383,7 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
                   </div>
                 </div>
 
-                {tableData.productList.map((orderItem, index) => (
+                {tableData.productList.map(orderItem => (
                   <>
                     {orderItem.orders?.map(order => (
                       <div key={order._id} className={`w-full grid grid-cols-4 divide-x border-b`}>
