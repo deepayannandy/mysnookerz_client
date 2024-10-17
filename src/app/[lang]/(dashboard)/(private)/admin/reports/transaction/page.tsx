@@ -89,7 +89,7 @@ const TransactionReportPage = () => {
         <ReportCard data={reportCardData ?? []} />
       </Grid>
       <Grid item xs={12}>
-        <TransactionReportTable data={reportData.data ?? []} getReportData={getReportData} />
+        <TransactionReportTable data={reportData.allTransaction ?? []} getReportData={getReportData} />
       </Grid>
     </Grid>
   )

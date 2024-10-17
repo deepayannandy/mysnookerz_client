@@ -147,7 +147,7 @@ export type TransactionReportDataType = {
   card: number
   upi: number
   gems: number
-  data: TransactionReportTableDataType[]
+  allTransaction: TransactionReportTableDataType[]
 }
 
 export type TransactionReportTableDataType = {
@@ -156,7 +156,7 @@ export type TransactionReportTableDataType = {
   description: string
   netPay: number
   discount: number
-  dues: number
+  due: number
 }
 
 export type CollectionReportDataType = {

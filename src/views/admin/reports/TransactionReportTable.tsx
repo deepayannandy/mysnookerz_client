@@ -134,15 +134,17 @@ const TransactionReportTable = ({
         header: 'Discount',
         cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.discount || 0}`}</Typography>
       }),
-      columnHelper.accessor('dues', {
+      columnHelper.accessor('due', {
         header: 'Dues',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.dues || 0}`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.due || 0}`}</Typography>
       }),
       columnHelper.accessor('description', {
         header: 'Payment Method',
         cell: ({ row }) => (
           <Typography color='text.primary'>
-            {row.original.description?.split(' ')?.[-1] ? row.original.description.split(' ')[-1] : ''}
+            {row.original.description?.split(' ')?.length
+              ? row.original.description.split(' ')[row.original.description.split(' ').length - 1]
+              : ''}
           </Typography>
         )
       })

@@ -5,6 +5,7 @@ import { Locale } from '@/configs/i18n'
 import { DailyCollectionDataType } from '@/types/userTypes'
 import { getLocalizedUrl } from '@/utils/i18n'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton } from '@mui/material'
+import axios from 'axios'
 import { useParams, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
@@ -24,17 +25,24 @@ const DailyCollectionData = ({
     setOpen(false)
   }
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
     try {
-      localStorage.removeItem('token')
-      localStorage.removeItem('storeId')
-      localStorage.removeItem('storeName')
-      localStorage.removeItem('clientId')
-      localStorage.removeItem('clientName')
-      const redirectURL = '/login'
-      router.replace(getLocalizedUrl(redirectURL, locale as Locale))
-    } catch (error) {
-      toast.error((error as Error).message)
+      const response = await axios.post(`${apiBaseUrl}/admin/addMyDailyReport`, data, {
+        headers: { 'auth-token': token }
+      })
+      if (response && response.data) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('storeId')
+        localStorage.removeItem('storeName')
+        localStorage.removeItem('clientId')
+        localStorage.removeItem('clientName')
+        const redirectURL = '/login'
+        router.replace(getLocalizedUrl(redirectURL, locale as Locale))
+      }
+    } catch (error: any) {
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }
 
@@ -86,6 +94,11 @@ const DailyCollectionData = ({
           <div className='grid grid-cols-2 gap-2 border-b divide-x'>
             <p className='text-center p-2'>CASH</p>
             <p className='text-center p-2'>{`₹${data.cash || 0}`}</p>
+          </div>
+
+          <div className='grid grid-cols-2 gap-2 border-b divide-x'>
+            <p className='text-center p-2'>CARD</p>
+            <p className='text-center p-2'>{`₹${data.card || 0}`}</p>
           </div>
 
           <div className='grid grid-cols-2 gap-2 border-b divide-x'>
