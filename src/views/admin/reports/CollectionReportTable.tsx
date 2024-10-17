@@ -109,10 +109,10 @@ const CollectionReportTable = ({
 
   const columns = useMemo<ColumnDef<CollectionReportDataType, any>[]>(
     () => [
-      columnHelper.accessor('transactionId', {
-        header: 'Transaction ID',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
-      }),
+      // columnHelper.accessor('transactionId', {
+      //   header: 'Transaction ID',
+      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.transactionId}</Typography>
+      // }),
       columnHelper.accessor('userName', {
         header: 'Username',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.userName}</Typography>
