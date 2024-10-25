@@ -177,3 +177,19 @@ export type CollectionReportDataType = {
   gems: number
   cashDrawerBalance: number
 }
+
+export type ExpenseDataType = {
+  _id: string
+  date: string
+  category: string
+  invoiceNo: string
+  vendorName: string
+  description: string
+  amount: number
+  quantity: number
+  total: number
+  note: string
+  status: string
+}
+
+export type CategoryListType = { name: string; categoryId: string }
