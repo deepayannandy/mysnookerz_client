@@ -38,10 +38,7 @@ import { toast } from 'react-toastify'
 //   }
 // }))
 
-const categoryList = ['Cold Drink', 'Snacks', 'Meal']
-
 const EditProduct = ({ productId }: { productId: string }) => {
-  const [category, setCategory] = useState('')
   const [quantity, setQuantity] = useState<string | number>('')
   const [inStockSwitch, setInStockSwitch] = useState(true)
   const [categoryList, setCategoryList] = useState([] as CategoryListType[])
@@ -126,7 +123,6 @@ const EditProduct = ({ productId }: { productId: string }) => {
       const response = await axios.get(`${apiBaseUrl}/products/${productId}`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         resetForm(response.data)
-        setCategory(response.data.category)
         setQuantity(response.data.quantity)
         setInStockSwitch(!response.data.isOutOfStock)
       }
