@@ -1,17 +1,14 @@
 'use client'
 
 // MUI Imports
-import { NewProductDataType } from '@/types/adminTypes'
+import { CategoryListType, NewProductDataType } from '@/types/adminTypes'
 import {
+  Autocomplete,
   Button,
   Card,
   CardContent,
   CardHeader,
   Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Switch,
   TextField,
   Typography
@@ -19,7 +16,7 @@ import {
 import Grid from '@mui/material/Grid'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 // type FileProp = {
@@ -41,12 +38,11 @@ import { toast } from 'react-toastify'
 //   }
 // }))
 
-const categoryList = ['Cold Drink', 'Snacks', 'Meal']
-
 const NewProduct = () => {
-  const [category, setCategory] = useState(categoryList[0])
   const [quantity, setQuantity] = useState<string | number>('')
   const [inStockSwitch, setInStockSwitch] = useState(true)
+  const [categoryList, setCategoryList] = useState([] as CategoryListType[])
+
   // const [files, setFiles] = useState<File[]>([])
 
   // Hooks
@@ -121,10 +117,63 @@ const NewProduct = () => {
 
   const gross = Number(getValues('basePrice') || 0) * Number(quantity || 0)
 
+  const getAllCategoryData = async () => {
+    const data = [
+      {
+        categoryId: 'qedasdas',
+        name: 'snacks'
+      },
+      {
+        categoryId: '123e3easdas',
+        name: 'Cold Drink'
+      },
+      {
+        categoryId: '636gvsg',
+        name: 'Burger'
+      }
+    ]
+    setCategoryList(data)
+    resetForm({
+      category: data[0]
+    })
+    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    // const token = localStorage.getItem('token')
+    // try {
+    //   const response = await axios.get(`${apiBaseUrl}/category`, { headers: { 'auth-token': token } })
+    //   if (response && response.data) {
+    //     const data = response.data.map((category: CategoryListType) => {
+    //       return {
+    //         categoryId: category.categoryId,
+    //         name: category.name
+    //       }
+    //     })
+
+    //     setCategoryList(data)
+    //   }
+    // } catch (error: any) {
+    //   // if (error?.response?.status === 401) {
+    //   //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+    //   //   return router.replace(redirectUrl)
+    //   // }
+    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    // }
+  }
+
+  useEffect(() => {
+    getAllCategoryData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const onSubmit = async (data: NewProductDataType) => {
-    data.category = category
     data.quantity = quantity
     data.isQntRequired = inStockSwitch
+
+    let category = {}
+    if (typeof data.category === 'string') {
+      category = { name: data.category }
+    } else {
+      category = data.category
+    }
 
     if (!inStockSwitch) {
       data.quantity = ''
@@ -133,9 +182,13 @@ const NewProduct = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.post(`${apiBaseUrl}/products`, data, {
-        headers: { 'auth-token': token }
-      })
+      const response = await axios.post(
+        `${apiBaseUrl}/products`,
+        { ...data, category },
+        {
+          headers: { 'auth-token': token }
+        }
+      )
 
       if (response && response.data) {
         resetForm()
@@ -231,7 +284,7 @@ const NewProduct = () => {
                 <CardContent>
                   <Grid container spacing={5} className='mbe-5'>
                     <Grid item xs={12} sm={6}>
-                      <FormControl fullWidth>
+                      {/* <FormControl fullWidth>
                         <InputLabel>Select Category</InputLabel>
                         <Select label='Select Category' value={category} onChange={e => setCategory(e.target.value)}>
                           {categoryList.map((type, index) => (
@@ -240,8 +293,39 @@ const NewProduct = () => {
                             </MenuItem>
                           ))}
                         </Select>
-                      </FormControl>
+                      </FormControl> */}
+                      <Controller
+                        name='category'
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <Autocomplete
+                            onKeyPress={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                              e.key === 'Enter' && e.preventDefault()
+                            }}
+                            options={categoryList}
+                            getOptionLabel={option =>
+                              ((option as CategoryListType).name ?? option)?.split('(').join(' (')
+                            }
+                            freeSolo
+                            value={value}
+                            onChange={(_, value) => onChange(value)}
+                            renderInput={params => (
+                              <TextField
+                                {...params}
+                                variant='outlined'
+                                label='Category'
+                                {...(errors.category && {
+                                  error: true,
+                                  helperText: errors.category.message || 'This field is required'
+                                })}
+                              />
+                            )}
+                          />
+                        )}
+                      />
                     </Grid>
+
                     <Grid item xs={12} sm={6}>
                       <Controller
                         name='productName'

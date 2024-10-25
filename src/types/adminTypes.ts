@@ -135,7 +135,7 @@ export type ProductDataType = {
 export type NewProductDataType = {
   productName: string
   description: string
-  category: string
+  category: CategoryListType | string
   barcode?: string
   sku: string
   basePrice: string | number
