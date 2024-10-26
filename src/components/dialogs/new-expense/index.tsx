@@ -73,7 +73,7 @@ const NewExpense = ({ open, setOpen, getAllExpenseData }: NewExpenseProps) => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/category/expense`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/category/expanse`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         const data = response.data.map((category: { _id: string; name: string }) => {
           return {
@@ -115,7 +115,7 @@ const NewExpense = ({ open, setOpen, getAllExpenseData }: NewExpenseProps) => {
     const token = localStorage.getItem('token')
     try {
       const response = await axios.post(
-        `${apiBaseUrl}/expense`,
+        `${apiBaseUrl}/expanse`,
         { ...data, category },
         { headers: { 'auth-token': token } }
       )

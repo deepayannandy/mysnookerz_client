@@ -39,9 +39,9 @@ import NewExpense from '@/components/dialogs/new-expense'
 import SearchInput from '@/components/Search'
 import { ExpenseDataType } from '@/types/adminTypes'
 import tableStyles from '@core/styles/table.module.css'
+import { Chip } from '@mui/material'
 import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
-import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
 import { DateTime } from 'luxon'
@@ -63,8 +63,9 @@ type StatusChipDetailsType = {
 }
 
 export const statusChipDetails: { [key: string]: StatusChipDetailsType } = {
-  paid: { title: 'Paid', color: 'success' },
-  due: { title: 'Due', color: 'warning' }
+  Paid: { title: 'Paid', color: 'success' },
+  Due: { title: 'Due', color: 'error' },
+  'Partial Due': { title: 'Partial Due', color: 'warning' }
 }
 
 type ExpenseDataWithAction = ExpenseDataType & {
@@ -104,7 +105,7 @@ const ExpenseListTable = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/expense`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/expanse`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         setData(response.data)
       }
@@ -127,7 +128,7 @@ const ExpenseListTable = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.delete(`${apiBaseUrl}/expense/${expenseId}`, { headers: { 'auth-token': token } })
+      const response = await axios.delete(`${apiBaseUrl}/expanse/${expenseId}`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         getAllExpenseData()
         setDeleteConfirmationDialogOpen(false)
@@ -194,9 +195,9 @@ const ExpenseListTable = () => {
         header: 'Category',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.category?.name}</Typography>
       }),
-      columnHelper.accessor('invoiceNo', {
+      columnHelper.accessor('invoiceNumber', {
         header: 'Invoice No',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.invoiceNo}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.invoiceNumber}</Typography>
       }),
       columnHelper.accessor('vendorName', {
         header: 'Vendor Name',
@@ -226,12 +227,16 @@ const ExpenseListTable = () => {
         header: 'Status',
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
-            <Chip
-              label={statusChipDetails[row.original.status?.toLowerCase()]?.title ?? ''}
-              variant='tonal'
-              color={statusChipDetails[row.original.status?.toLowerCase()]?.color ?? ''}
-              size='small'
-            />
+            {statusChipDetails[row.original.status]?.title ? (
+              <Chip
+                label={statusChipDetails[row.original.status]?.title}
+                variant='tonal'
+                color={statusChipDetails[row.original.status]?.color}
+                size='small'
+              />
+            ) : (
+              <></>
+            )}
           </div>
         )
       }),
@@ -400,7 +405,7 @@ const ExpenseListTable = () => {
       </Card>
       <DeleteConfirmation
         open={deleteConfirmationDialogOpen}
-        name={`Expense invoice (${expenseData.invoiceNo})`}
+        name={`Expense invoice (${expenseData.invoiceNumber})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteExpense}
       />

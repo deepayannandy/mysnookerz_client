@@ -1,7 +1,7 @@
 'use client'
 
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
-import { CategoryListType, ExpenseDataType } from '@/types/adminTypes'
+import { ExpenseDataType } from '@/types/adminTypes'
 // React Imports
 
 // MUI Imports
@@ -18,7 +18,7 @@ import { toast } from 'react-toastify'
 
 type EditExpenseDataType = {
   date: Date
-  category: CategoryListType
+  category: string
   invoiceNumber: string
   vendorName: string
   description: string
@@ -57,8 +57,8 @@ const EditExpenseInfo = ({ open, setOpen, getAllExpenseData, expenseData }: Edit
   useEffect(() => {
     resetForm({
       date: expenseData.date ? new Date(expenseData.date) : new Date(),
-      category: expenseData.category,
-      invoiceNumber: expenseData.invoiceNo,
+      category: expenseData.category?.name ?? '',
+      invoiceNumber: expenseData.invoiceNumber,
       vendorName: expenseData.vendorName,
       description: expenseData.description,
       amount: expenseData.amount,
@@ -82,7 +82,7 @@ const EditExpenseInfo = ({ open, setOpen, getAllExpenseData, expenseData }: Edit
     const token = localStorage.getItem('token')
     try {
       const response = await axios.patch(
-        `${apiBaseUrl}/expense`,
+        `${apiBaseUrl}/expanse`,
         { paid: data.paid },
         { headers: { 'auth-token': token } }
       )
