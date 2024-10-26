@@ -105,7 +105,7 @@ const ExpenseListTable = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/expanse`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/expense`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         setData(response.data)
       }
@@ -128,7 +128,7 @@ const ExpenseListTable = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.delete(`${apiBaseUrl}/expanse/${expenseId}`, { headers: { 'auth-token': token } })
+      const response = await axios.delete(`${apiBaseUrl}/expense/${expenseId}`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         getAllExpenseData()
         setDeleteConfirmationDialogOpen(false)

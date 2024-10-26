@@ -80,9 +80,10 @@ const EditExpenseInfo = ({ open, setOpen, getAllExpenseData, expenseData }: Edit
 
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
+    const expenseId = expenseData._id
     try {
       const response = await axios.patch(
-        `${apiBaseUrl}/expanse`,
+        `${apiBaseUrl}/expense/${expenseId}`,
         { paid: data.paid },
         { headers: { 'auth-token': token } }
       )
@@ -256,6 +257,7 @@ const EditExpenseInfo = ({ open, setOpen, getAllExpenseData, expenseData }: Edit
                     fullWidth
                     label='Quantity'
                     value={value ?? ''}
+                    inputProps={{ type: 'number', min: 0 }}
                     onChange={onChange}
                     {...(errors.quantity && {
                       error: true,

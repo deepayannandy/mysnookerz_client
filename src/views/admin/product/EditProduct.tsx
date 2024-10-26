@@ -136,42 +136,27 @@ const EditProduct = ({ productId }: { productId: string }) => {
   }
 
   const getAllCategoryData = async () => {
-    const data = [
-      {
-        categoryId: 'qedasdas',
-        name: 'snacks'
-      },
-      {
-        categoryId: '123e3easdas',
-        name: 'Cold Drink'
-      },
-      {
-        categoryId: '636gvsg',
-        name: 'Burger'
-      }
-    ]
-    setCategoryList(data)
-    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    // const token = localStorage.getItem('token')
-    // try {
-    //   const response = await axios.get(`${apiBaseUrl}/category`, { headers: { 'auth-token': token } })
-    //   if (response && response.data) {
-    //     const data = response.data.map((category: CategoryListType) => {
-    //       return {
-    //         categoryId: category.categoryId,
-    //         name: category.name
-    //       }
-    //     })
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/category/expense`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        const data = response.data.map((category: { _id: string; name: string }) => {
+          return {
+            categoryId: category._id,
+            name: category.name
+          }
+        })
 
-    //     setCategoryList(data)
-    //   }
-    // } catch (error: any) {
-    //   // if (error?.response?.status === 401) {
-    //   //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-    //   //   return router.replace(redirectUrl)
-    //   // }
-    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    // }
+        setCategoryList(data)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 401) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
   }
 
   useEffect(() => {

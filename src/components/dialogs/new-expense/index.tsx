@@ -73,7 +73,7 @@ const NewExpense = ({ open, setOpen, getAllExpenseData }: NewExpenseProps) => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/category/expanse`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/category/expense`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         const data = response.data.map((category: { _id: string; name: string }) => {
           return {
@@ -96,7 +96,7 @@ const NewExpense = ({ open, setOpen, getAllExpenseData }: NewExpenseProps) => {
   useEffect(() => {
     getAllCategoryData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [open])
 
   const onSubmit = async (data: NewExpenseDataType) => {
     if (Number(data.paid ?? 0) > total) {
@@ -115,7 +115,7 @@ const NewExpense = ({ open, setOpen, getAllExpenseData }: NewExpenseProps) => {
     const token = localStorage.getItem('token')
     try {
       const response = await axios.post(
-        `${apiBaseUrl}/expanse`,
+        `${apiBaseUrl}/expense`,
         { ...data, category },
         { headers: { 'auth-token': token } }
       )
@@ -294,6 +294,7 @@ const NewExpense = ({ open, setOpen, getAllExpenseData }: NewExpenseProps) => {
                   <TextField
                     fullWidth
                     label='Quantity'
+                    inputProps={{ type: 'number', min: 0 }}
                     value={value}
                     onChange={onChange}
                     {...(errors.quantity && {
