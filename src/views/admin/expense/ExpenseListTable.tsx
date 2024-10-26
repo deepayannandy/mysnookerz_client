@@ -101,48 +101,20 @@ const ExpenseListTable = () => {
   const router = useRouter()
 
   const getAllExpenseData = async () => {
-    setData([
-      {
-        _id: '32432423432sa',
-        date: '2024-10-03',
-        category: 'Cold Drink',
-        invoiceNo: '2424sdsd',
-        vendorName: 'wmaj234',
-        description: 'esdasdrewrwdas',
-        amount: 100,
-        quantity: 8,
-        total: 800,
-        note: 'r32cewrewre',
-        status: 'Paid'
-      },
-      {
-        _id: '3243242343qwr2sa',
-        date: '2024-09-06',
-        category: 'Snacks',
-        invoiceNo: '233dsf43',
-        vendorName: 'dsfdwef',
-        description: '12sdfe544352',
-        amount: 40,
-        quantity: 6,
-        total: 600,
-        note: 'afddsf',
-        status: 'Due'
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/expense`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setData(response.data)
       }
-    ])
-    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    // const token = localStorage.getItem('token')
-    // try {
-    //   const response = await axios.get(`${apiBaseUrl}/expense`, { headers: { 'auth-token': token } })
-    //   if (response && response.data) {
-    //     setData(response.data)
-    //   }
-    // } catch (error: any) {
-    //   if (error?.response?.status === 400) {
-    //     const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-    //     return router.replace(redirectUrl)
-    //   }
-    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    // }
+    } catch (error: any) {
+      if (error?.response?.status === 401) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
   }
 
   useEffect(() => {
@@ -220,7 +192,7 @@ const ExpenseListTable = () => {
       }),
       columnHelper.accessor('category', {
         header: 'Category',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.category}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.category?.name}</Typography>
       }),
       columnHelper.accessor('invoiceNo', {
         header: 'Invoice No',
@@ -242,9 +214,9 @@ const ExpenseListTable = () => {
         header: 'Quantity',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.quantity}</Typography>
       }),
-      columnHelper.accessor('total', {
+      columnHelper.accessor('invoiceAmount', {
         header: 'Total',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.total}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.invoiceAmount}</Typography>
       }),
       columnHelper.accessor('note', {
         header: 'Note',

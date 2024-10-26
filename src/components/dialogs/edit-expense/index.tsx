@@ -1,7 +1,7 @@
 'use client'
 
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
-import { ExpenseDataType } from '@/types/adminTypes'
+import { CategoryListType, ExpenseDataType } from '@/types/adminTypes'
 // React Imports
 
 // MUI Imports
@@ -11,13 +11,14 @@ import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import axios from 'axios'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 type EditExpenseDataType = {
   date: Date
-  category: string
+  category: CategoryListType
   invoiceNumber: string
   vendorName: string
   description: string
@@ -72,38 +73,33 @@ const EditExpenseInfo = ({ open, setOpen, getAllExpenseData, expenseData }: Edit
   }
 
   const onSubmit = async (data: EditExpenseDataType) => {
-    console.log(data)
-
-    if (Number(data.paid ?? 0) > Number(expenseData.total ?? 0)) {
+    if (Number(data.paid ?? 0) > Number(expenseData.invoiceAmount ?? 0)) {
       toast.error('Paid amount cannot be more than total amount', { hideProgressBar: false })
       return
     }
-    // const storeId = localStorage.getItem('storeId')
-    // const profileImage = '-'
-    // const userDesignation = 'Staff'
-    // const requestData = _.omit(data, 'confirmPassword')
-    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    // const token = localStorage.getItem('token')
-    // try {
-    //   const response = await axios.patch(
-    //     `${apiBaseUrl}/user/${staffData._id}`,
-    //     { ...requestData, userDesignation, profileImage },
-    //     { headers: { 'auth-token': token } }
-    //   )
-    //   if (response && response.data) {
-    //     getStaffData()
-    //     resetForm()
-    //     setOpen(false)
-    //     toast.success('Staff info updated successfully')
-    //   }
-    // } catch (error: any) {
-    //   // if (error?.response?.status === 400) {
-    //   //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-    //   //   console.log(redirectUrl)
-    //   //   return router.replace(redirectUrl)
-    //   // }
-    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    // }
+
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.patch(
+        `${apiBaseUrl}/expense`,
+        { paid: data.paid },
+        { headers: { 'auth-token': token } }
+      )
+      if (response && response.data) {
+        getAllExpenseData()
+        resetForm()
+        setOpen(false)
+        toast.success('Expense info updated successfully')
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   console.log(redirectUrl)
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
   }
 
   return (
@@ -272,7 +268,7 @@ const EditExpenseInfo = ({ open, setOpen, getAllExpenseData, expenseData }: Edit
 
             <div className='w-full grid grid-cols-2 gap-2 p-4 mt-2 border rounded-lg'>
               <p>Total</p>
-              <p>{`₹${expenseData.total ? expenseData.total.toFixed(2) : 0}`}</p>
+              <p>{`₹${expenseData.invoiceAmount ? expenseData.invoiceAmount.toFixed(2) : 0}`}</p>
             </div>
 
             <Controller

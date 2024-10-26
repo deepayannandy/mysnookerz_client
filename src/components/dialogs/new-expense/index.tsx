@@ -10,13 +10,14 @@ import Drawer from '@mui/material/Drawer'
 import IconButton from '@mui/material/IconButton'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 type NewExpenseDataType = {
   date: Date
-  category: string
+  category: CategoryListType | string
   invoiceNumber: string
   vendorName: string
   description: string
@@ -69,42 +70,27 @@ const NewExpense = ({ open, setOpen, getAllExpenseData }: NewExpenseProps) => {
   }
 
   const getAllCategoryData = async () => {
-    const data = [
-      {
-        categoryId: 'qedasdas',
-        name: 'Cold Drink'
-      },
-      {
-        categoryId: '123e3easdas',
-        name: 'snacks'
-      },
-      {
-        categoryId: '636gvsg',
-        name: 'Burger'
-      }
-    ]
-    setCategoryList(data)
-    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    // const token = localStorage.getItem('token')
-    // try {
-    //   const response = await axios.get(`${apiBaseUrl}/category`, { headers: { 'auth-token': token } })
-    //   if (response && response.data) {
-    //     const data = response.data.map((category: CategoryListType) => {
-    //       return {
-    //         categoryId: category.categoryId,
-    //         name: category.name
-    //       }
-    //     })
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/category/expense`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        const data = response.data.map((category: { _id: string; name: string }) => {
+          return {
+            categoryId: category._id,
+            name: category.name
+          }
+        })
 
-    //     setCategoryList(data)
-    //   }
-    // } catch (error: any) {
-    //   // if (error?.response?.status === 401) {
-    //   //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-    //   //   return router.replace(redirectUrl)
-    //   // }
-    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    // }
+        setCategoryList(data)
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 401) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
   }
 
   useEffect(() => {
@@ -113,39 +99,41 @@ const NewExpense = ({ open, setOpen, getAllExpenseData }: NewExpenseProps) => {
   }, [])
 
   const onSubmit = async (data: NewExpenseDataType) => {
-    console.log(data)
-
     if (Number(data.paid ?? 0) > total) {
       toast.error('Paid amount cannot be more than total amount', { hideProgressBar: false })
       return
     }
-    // const storeId = localStorage.getItem('storeId')
-    // const profileImage = '-'
-    // const userDesignation = 'Staff'
-    // const requestData = _.omit(data, 'confirmPassword')
-    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    // const token = localStorage.getItem('token')
-    // try {
-    //   const response = await axios.post(
-    //     `${apiBaseUrl}/admin/expense`,
-    //     { ...requestData, storeId, userDesignation, profileImage },
-    //     { headers: { 'auth-token': token } }
-    //   )
 
-    //   if (response && response.data) {
-    //     getAllExpenseData()
-    //     resetForm()
-    //     setOpen(false)
-    //     toast.success('Expense added successfully')
-    //   }
-    // } catch (error: any) {
-    //   // if (error?.response?.status === 400) {
-    //   //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-    //   //   console.log(redirectUrl)
-    //   //   return router.replace(redirectUrl)
-    //   // }
-    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    // }
+    let category = {}
+    if (typeof data.category === 'string') {
+      category = { name: data.category }
+    } else {
+      category = data.category
+    }
+
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.post(
+        `${apiBaseUrl}/expense`,
+        { ...data, category },
+        { headers: { 'auth-token': token } }
+      )
+
+      if (response && response.data) {
+        getAllExpenseData()
+        resetForm()
+        setOpen(false)
+        toast.success('Expense added successfully')
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   console.log(redirectUrl)
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
   }
 
   return (

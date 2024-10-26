@@ -180,15 +180,19 @@ export type CollectionReportDataType = {
 
 export type ExpenseDataType = {
   _id: string
+  userId: string
+  storeId: string
+  userName: string
   date: string
-  category: string
+  category: CategoryListType
   invoiceNo: string
   vendorName: string
   description: string
   amount: number
   quantity: number
-  total: number
+  invoiceAmount: number
   note: string
+  paid: number
   status: string
 }
 
