@@ -180,7 +180,7 @@ const ProductListTable = () => {
       }),
       columnHelper.accessor('category', {
         header: 'Category',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.category}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.category?.name ?? ''}</Typography>
       }),
       columnHelper.accessor('quantity', {
         header: 'Stock',

@@ -110,6 +110,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
       sku: '',
       basePrice: '',
       salePrice: '',
+      tax: '',
       quantity: '',
       isOutOfStock: false
     }
@@ -462,6 +463,27 @@ const EditProduct = ({ productId }: { productId: string }) => {
                       />
                     )}
                   />
+
+                  <Controller
+                    name='tax'
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        fullWidth
+                        className='mbe-5'
+                        label='Tax'
+                        inputProps={{ type: 'number', min: 0 }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.tax && {
+                          error: true,
+                          helperText: errors.tax.message || 'This field is required'
+                        })}
+                      />
+                    )}
+                  />
+
                   <Divider className='mlb-2' />
                   <div className='flex items-center justify-between'>
                     <Typography>In stock</Typography>

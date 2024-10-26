@@ -122,7 +122,7 @@ export type ProductDataType = {
   productName: string
   productImage: string
   description: string
-  category: string
+  category: CategoryListType
   stock: string
   sku: string
   storeId: string
@@ -140,6 +140,7 @@ export type NewProductDataType = {
   sku: string
   basePrice: string | number
   salePrice: string | number
+  tax: string | number
   quantity: number | string
   isOutOfStock?: boolean
   isQntRequired?: boolean
