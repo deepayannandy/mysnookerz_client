@@ -128,6 +128,7 @@ export type ProductDataType = {
   storeId: string
   basePrice: string
   salePrice: string
+  tax: number
   quantity: number
   isOutOfStock: boolean
 }

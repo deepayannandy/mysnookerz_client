@@ -102,13 +102,15 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
   }
 
   let subTotal = 0
+  let tax = 0
   fields.slice(0, -1).map(orderItem => {
     if (orderItem.product?.salePrice && orderItem.quantity) {
-      subTotal = subTotal + Number(orderItem.product.salePrice) * Number(orderItem.quantity)
+      const itemPrice = Number(orderItem.product.salePrice) * Number(orderItem.quantity)
+      tax = tax + (itemPrice * Number(orderItem.product.tax ?? 0)) / 100
+      subTotal = subTotal + itemPrice
     }
   })
 
-  const tax = ((subTotal * 10) / 100).toFixed(2)
   const total = (Number(subTotal) + Number(tax)).toFixed(2)
   // const cashOut = (Number(inputData.cashIn ?? 0) - Number(total ?? 0)).toFixed(2)
 
@@ -358,8 +360,8 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
               <p className='col-span-2'>Sub Total</p>
               <p>{`₹${subTotal.toFixed(2)}`}</p>
 
-              <p className='col-span-2'>Tax 10%(VAT included)</p>
-              <p>{`₹${tax}`}</p>
+              <p className='col-span-2'>Tax</p>
+              <p>{`₹${tax.toFixed(2)}`}</p>
               <Divider className='border-dashed col-span-3' />
               <p className='col-span-2'>Total</p>
               <p>{`₹${total}`}</p>
