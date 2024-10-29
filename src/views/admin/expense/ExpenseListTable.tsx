@@ -203,9 +203,9 @@ const ExpenseListTable = () => {
         header: 'Vendor Name',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.vendorName}</Typography>
       }),
-      columnHelper.accessor('description', {
-        header: 'Description',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.description}</Typography>
+      columnHelper.accessor('name', {
+        header: 'Name',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.name}</Typography>
       }),
       columnHelper.accessor('amount', {
         header: 'Amount',
@@ -218,6 +218,10 @@ const ExpenseListTable = () => {
       columnHelper.accessor('invoiceAmount', {
         header: 'Total',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.invoiceAmount}</Typography>
+      }),
+      columnHelper.accessor('paid', {
+        header: 'Paid',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.paid}</Typography>
       }),
       columnHelper.accessor('note', {
         header: 'Note',

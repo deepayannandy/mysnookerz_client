@@ -21,7 +21,7 @@ type EditExpenseDataType = {
   category: string
   invoiceNumber: string
   vendorName: string
-  description: string
+  name: string
   amount: string | number
   quantity: string | number
   note: string
@@ -60,10 +60,11 @@ const EditExpenseInfo = ({ open, setOpen, getAllExpenseData, expenseData }: Edit
       category: expenseData.category?.name ?? '',
       invoiceNumber: expenseData.invoiceNumber,
       vendorName: expenseData.vendorName,
-      description: expenseData.description,
+      name: expenseData.name,
       amount: expenseData.amount,
       quantity: expenseData.quantity,
-      note: expenseData.note
+      note: expenseData.note,
+      paid: expenseData.invoiceAmount - expenseData.paid
     })
   }, [expenseData, resetForm])
 
@@ -165,6 +166,25 @@ const EditExpenseInfo = ({ open, setOpen, getAllExpenseData, expenseData }: Edit
                 />
               )}
             />
+            <Controller
+              name='name'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  disabled
+                  fullWidth
+                  multiline
+                  label='Name'
+                  value={value ?? ''}
+                  onChange={onChange}
+                  {...(errors.name && {
+                    error: true,
+                    helperText: errors.name.message || 'This field is required'
+                  })}
+                />
+              )}
+            />
 
             <div className='flex flex-col sm:flex-row items-start gap-3'>
               <Controller
@@ -205,26 +225,6 @@ const EditExpenseInfo = ({ open, setOpen, getAllExpenseData, expenseData }: Edit
                 )}
               />
             </div>
-
-            <Controller
-              name='description'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  disabled
-                  fullWidth
-                  multiline
-                  label='Description'
-                  value={value ?? ''}
-                  onChange={onChange}
-                  {...(errors.description && {
-                    error: true,
-                    helperText: errors.description.message || 'This field is required'
-                  })}
-                />
-              )}
-            />
 
             <div className='flex flex-col sm:flex-row items-start gap-3'>
               <Controller
@@ -298,7 +298,7 @@ const EditExpenseInfo = ({ open, setOpen, getAllExpenseData, expenseData }: Edit
                 <TextField
                   fullWidth
                   label='Paid'
-                  inputProps={{ type: 'number', min: 0 }}
+                  inputProps={{ type: 'number', min: 0, max: expenseData.invoiceAmount - expenseData.paid }}
                   value={value ?? ''}
                   onChange={onChange}
                   {...(errors.paid && { error: true, helperText: errors.paid.message || 'This field is required' })}

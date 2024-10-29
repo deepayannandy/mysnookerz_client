@@ -20,7 +20,7 @@ type NewExpenseDataType = {
   category: CategoryListType | string
   invoiceNumber: string
   vendorName: string
-  description: string
+  name: string
   amount: string | number
   quantity: string | number
   note: string
@@ -54,11 +54,11 @@ const NewExpense = ({ open, setOpen, getAllExpenseData }: NewExpenseProps) => {
       category: '',
       invoiceNumber: '',
       vendorName: '',
-      description: '',
+      name: '',
       amount: '',
       quantity: '',
       note: '',
-      paid: ''
+      paid: '0'
     }
   })
 
@@ -208,7 +208,24 @@ const NewExpense = ({ open, setOpen, getAllExpenseData }: NewExpenseProps) => {
                 />
               )}
             />
-
+            <Controller
+              name='name'
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  fullWidth
+                  multiline
+                  label='Name'
+                  value={value}
+                  onChange={onChange}
+                  {...(errors.name && {
+                    error: true,
+                    helperText: errors.name.message || 'This field is required'
+                  })}
+                />
+              )}
+            />
             <div className='flex flex-col sm:flex-row items-start gap-3'>
               <Controller
                 name='invoiceNumber'
@@ -246,25 +263,6 @@ const NewExpense = ({ open, setOpen, getAllExpenseData }: NewExpenseProps) => {
                 )}
               />
             </div>
-
-            <Controller
-              name='description'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <TextField
-                  fullWidth
-                  multiline
-                  label='Description'
-                  value={value}
-                  onChange={onChange}
-                  {...(errors.description && {
-                    error: true,
-                    helperText: errors.description.message || 'This field is required'
-                  })}
-                />
-              )}
-            />
 
             <div className='flex flex-col sm:flex-row items-start gap-3'>
               <Controller

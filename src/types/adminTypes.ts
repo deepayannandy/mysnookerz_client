@@ -189,7 +189,7 @@ export type ExpenseDataType = {
   category: CategoryListType
   invoiceNumber: string
   vendorName: string
-  description: string
+  name: string
   amount: number
   quantity: number
   invoiceAmount: number
