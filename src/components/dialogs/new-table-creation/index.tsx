@@ -38,6 +38,11 @@ type NewTableCreationDataType = Partial<{
     slotCharge: number | null
     nightSlotCharge: number | null
   }[]
+  countdownRules: {
+    uptoMin: number | null
+    countdownDayCharge: number | null
+    countdownNightCharge: number | null
+  }[]
   deviceId: string
   nodeID: string
 }>
@@ -61,6 +66,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
   const [nodeId, setNodeId] = useState('')
   const [isMinuteBillingSelected, setIsMinuteBillingSelected] = useState(true)
   const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(true)
+  const [isCountdownBillingSelected, setIsCountdownBillingSelected] = useState(true)
 
   // States
   // const { lang: locale } = useParams()
@@ -91,14 +97,34 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
           nightSlotCharge: null
         }
       ],
+      countdownRules: [
+        {
+          uptoMin: null,
+          countdownDayCharge: null,
+          countdownNightCharge: null
+        }
+      ],
       deviceId: '',
       nodeID: ''
     }
   })
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: slotFields,
+    append: slotAppend,
+    remove: slotRemove
+  } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormProvider)
     name: 'slotWiseRules' // unique name for your Field Array
+  })
+
+  const {
+    fields: countdownFields,
+    append: countdownAppend,
+    remove: countdownRemove
+  } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormProvider)
+    name: 'countdownRules' // unique name for your Field Array
   })
 
   const handleClose = () => {
@@ -107,6 +133,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     setNodeId('')
     setIsMinuteBillingSelected(true)
     setIsSlotBillingSelected(true)
+    setIsCountdownBillingSelected(true)
     getTableData()
     setOpen(false)
   }
@@ -118,6 +145,9 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     }
     if (isSlotBillingSelected) {
       gameTypes.push('Slot Billing')
+    }
+    if (isCountdownBillingSelected) {
+      gameTypes.push('Countdown Billing')
     }
 
     if (!gameTypes.length) {
@@ -131,6 +161,10 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
 
     if (!isSlotBillingSelected) {
       data.slotWiseRules = []
+    }
+
+    if (!isCountdownBillingSelected) {
+      data.countdownRules = []
     }
 
     data.deviceId = deviceId
@@ -225,6 +259,16 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                   />
                 }
                 label='Slot Billing'
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    defaultChecked
+                    checked={isCountdownBillingSelected}
+                    onChange={event => setIsCountdownBillingSelected(event.target.checked)}
+                  />
+                }
+                label='Countdown Billing'
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -402,7 +446,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                   </Divider>
                 </Grid>
                 <Grid item xs={12}>
-                  {fields.map((field, index) => (
+                  {slotFields.map((field, index) => (
                     <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
                       <Controller
                         name={`slotWiseRules.${index}.uptoMin`}
@@ -464,8 +508,8 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                         )}
                       />
 
-                      {fields.length > 1 ? (
-                        <CustomIconButton onClick={() => remove(index)} className='min-is-fit'>
+                      {slotFields.length > 1 ? (
+                        <CustomIconButton onClick={() => slotRemove(index)} className='min-is-fit'>
                           <i className='ri-close-line' />
                         </CustomIconButton>
                       ) : (
@@ -477,7 +521,105 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     className='min-is-fit'
                     size='small'
                     variant='contained'
-                    onClick={() => append({ uptoMin: null, slotCharge: null, nightSlotCharge: null })}
+                    onClick={() => slotAppend({ uptoMin: null, slotCharge: null, nightSlotCharge: null })}
+                    startIcon={<i className='ri-add-line' />}
+                  >
+                    Add Item
+                  </Button>
+                </Grid>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {isCountdownBillingSelected ? (
+              <>
+                <Grid item xs={12}>
+                  <Divider>
+                    <span className='mx-3 font-bold'>Countdown Billing</span>
+                  </Divider>
+                </Grid>
+                <Grid item xs={12}>
+                  {countdownFields.map((field, index) => (
+                    <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
+                      <Controller
+                        name={`countdownRules.${index}.uptoMin`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Up To Minute'
+                            inputProps={{ type: 'number', min: 0 }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.countdownRules?.[index]?.uptoMin && {
+                              error: true,
+                              helperText: errors.countdownRules?.[index]?.uptoMin?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`countdownRules.${index}.countdownDayCharge`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Day Charge'
+                            inputProps={{ type: 'number', min: 0, step: 'any' }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.countdownRules?.[index]?.countdownDayCharge && {
+                              error: true,
+                              helperText:
+                                errors.countdownRules?.[index]?.countdownDayCharge?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`countdownRules.${index}.countdownNightCharge`}
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Night Charge'
+                            inputProps={{ type: 'number', min: 0, step: 'any' }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.countdownRules?.[index]?.countdownNightCharge && {
+                              error: true,
+                              helperText:
+                                errors.countdownRules?.[index]?.countdownNightCharge?.message ||
+                                'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      {countdownFields.length > 1 ? (
+                        <CustomIconButton onClick={() => countdownRemove(index)} className='min-is-fit'>
+                          <i className='ri-close-line' />
+                        </CustomIconButton>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  ))}
+                  <Button
+                    className='min-is-fit'
+                    size='small'
+                    variant='contained'
+                    onClick={() =>
+                      countdownAppend({ uptoMin: null, countdownDayCharge: null, countdownNightCharge: null })
+                    }
                     startIcon={<i className='ri-add-line' />}
                   >
                     Add Item

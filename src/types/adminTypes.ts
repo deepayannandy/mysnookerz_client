@@ -63,6 +63,11 @@ export type TableDataType = {
     slotCharge: number | null
     nightSlotCharge: number | null
   }>[]
+  countdownRules: Partial<{
+    uptoMin: number | null
+    countdownDayCharge: number | null
+    countdownNightCharge: number | null
+  }>[]
   deviceId: string
   nodeID: string
   isOccupied?: boolean
