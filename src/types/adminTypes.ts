@@ -44,6 +44,7 @@ export type TableDataType = {
     startTime: string
     endTime: string
     gameType: string
+    countdownMin: number
     players: {
       customerId?: string
       fullName: string

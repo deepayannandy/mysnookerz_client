@@ -5,6 +5,7 @@ import axios from 'axios'
 import { DateTime } from 'luxon'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import CountdownTimer from '../count-down-timer'
 import CountUpTimer from '../count-up-timer'
 import OrderMeals from '../dialogs/order-meals'
 import SwitchTable from '../dialogs/switch-table'
@@ -21,8 +22,21 @@ const PoolCard = ({
   allTablesData: TableDataType[]
   getAllTablesData: () => void
 }) => {
+  const gameTypes: string[] = tableData.gameData?.gameType ? tableData.gameTypes : []
+  if (!tableData.gameData?.gameType) {
+    tableData.gameTypes?.map(type => {
+      if (type === 'Countdown Billing') {
+        tableData.countdownRules?.map(rule => {
+          gameTypes.push(`Countdown Billing (${rule.uptoMin} mins)`)
+        })
+      } else {
+        gameTypes.push(type)
+      }
+    })
+  }
+
   const [showBill, setShowBill] = useState(false)
-  const [gameType, setGameType] = useState(tableData.gameData?.gameType || tableData.gameTypes[0])
+  const [gameType, setGameType] = useState(tableData.gameData?.gameType || gameTypes[0])
   const [customers, setCustomers] = useState(
     (tableData.gameData?.players?.length ? tableData.gameData.players : ['CASH']) as (string | CustomerListType)[]
   )
@@ -76,7 +90,7 @@ const PoolCard = ({
     setCustomers(
       (tableData.gameData?.players?.length ? tableData.gameData.players : ['CASH']) as (string | CustomerListType)[]
     )
-    setGameType(tableData.gameData?.gameType || tableData.gameTypes[0])
+    setGameType(tableData.gameData?.gameType || gameTypes[0])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData])
 
@@ -95,12 +109,21 @@ const PoolCard = ({
       toast.error('Please add at least one customer name')
       return
     }
+
+    let countdownTime = {}
+    let selectedGameType = gameType
+    if (gameType.startsWith('Countdown')) {
+      selectedGameType = 'Countdown Billing'
+      const min = gameType.split('(')?.[1].split(' ')?.[0]
+      countdownTime = { countdownMin: min }
+    }
+
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
       const response = await axios.post(
         `${apiBaseUrl}/games/startGame/${tableData._id}`,
-        { gameType: gameType, players },
+        { gameType: selectedGameType, players, ...countdownTime },
         {
           headers: { 'auth-token': token }
         }
@@ -278,7 +301,7 @@ const PoolCard = ({
               }
             }}
           >
-            {tableData.gameTypes?.map(type => (
+            {gameTypes?.map(type => (
               <MenuItem key={type} value={type}>
                 {type}
               </MenuItem>
@@ -513,13 +536,25 @@ const PoolCard = ({
 
           {tableData.gameData?.startTime && !tableData.gameData?.endTime ? (
             <div className='w-full grid grid-cols-1 gap-2 place-items-center text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
-              <CountUpTimer
-                startTime={tableData.gameData?.startTime}
-                endTime={tableData.gameData?.endTime}
-                pauseTime={tableData?.pauseTime}
-                pauseMinute={tableData?.pauseMin}
-                running={!!tableData.isOccupied && !tableData.gameData?.endTime && !tableData?.pauseTime}
-              ></CountUpTimer>
+              {tableData.gameData?.countdownMin ? (
+                <CountdownTimer
+                  startTime={tableData.gameData?.startTime}
+                  endTime={tableData.gameData?.endTime}
+                  pauseTime={tableData?.pauseTime}
+                  pauseMinute={tableData?.pauseMin}
+                  countdownMin={tableData.gameData?.countdownMin}
+                  running={!!tableData.isOccupied && !tableData.gameData?.endTime && !tableData?.pauseTime}
+                  stopGame={stopGame}
+                ></CountdownTimer>
+              ) : (
+                <CountUpTimer
+                  startTime={tableData.gameData?.startTime}
+                  endTime={tableData.gameData?.endTime}
+                  pauseTime={tableData?.pauseTime}
+                  pauseMinute={tableData?.pauseMin}
+                  running={!!tableData.isOccupied && !tableData.gameData?.endTime && !tableData?.pauseTime}
+                ></CountUpTimer>
+              )}
             </div>
           ) : (
             <></>
