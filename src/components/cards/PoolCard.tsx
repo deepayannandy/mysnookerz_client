@@ -258,9 +258,13 @@ const PoolCard = ({
         <div className='grid place-items-center'>
           <div className='bg-[url("/images/snooker-table/background-trapezoid.svg")] flex justify-center gap-3 bg-contain text-black bg-no-repeat bg-center w-full lg:w-11/12'>
             {tableData?.gameData?.endTime ? (
-              <Tooltip title='Restart Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
-                <span className='ri-restart-line' onClick={restartGame}></span>
-              </Tooltip>
+              tableData?.gameData?.gameType !== 'Countdown Billing' ? (
+                <Tooltip title='Restart Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
+                  <span className='ri-restart-line' onClick={restartGame}></span>
+                </Tooltip>
+              ) : (
+                <></>
+              )
             ) : (
               <Tooltip title='Switch Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
                 <span className='ri-arrow-left-right-line' onClick={() => setShowSwitchTable(true)}></span>

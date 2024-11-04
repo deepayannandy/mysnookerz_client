@@ -598,7 +598,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                         )}
                       />
 
-                      {slotFields.length > 1 ? (
+                      {countdownFields.length > 1 ? (
                         <CustomIconButton onClick={() => countdownRemove(index)} className='min-is-fit'>
                           <i className='ri-close-line' />
                         </CustomIconButton>
