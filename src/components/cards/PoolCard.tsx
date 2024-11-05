@@ -45,21 +45,21 @@ const PoolCard = ({
   const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false)
   const [showMealCart, setShowMealCart] = useState(false)
 
-  let totalSeconds =
-    tableData.gameData?.startTime && tableData.gameData?.endTime
-      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['seconds'])
-          .seconds
-      : 0
+  // let totalSeconds =
+  //   tableData.gameData?.startTime && tableData.gameData?.endTime
+  //     ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['seconds'])
+  //         .seconds
+  //     : 0
 
-  if (tableData?.pauseMin) {
-    totalSeconds = totalSeconds - tableData.pauseMin * 60
-  }
+  // if (tableData?.pauseMin) {
+  //   totalSeconds = totalSeconds - tableData.pauseMin * 60
+  // }
 
-  const totalMinutes = Math.ceil(totalSeconds / 60)
+  // const totalMinutes = Math.ceil(totalSeconds / 60)
 
   // Now break down total minutes into hours and minutes
-  const hours = Math.floor(totalMinutes / 60) // full hours
-  const minutes = totalMinutes % 60
+  // const hours = Math.floor(totalMinutes / 60) // full hours
+  // const minutes = totalMinutes % 60
 
   const getBillData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -527,7 +527,7 @@ const PoolCard = ({
                   <Divider className='col-span-2' />
                   <p className='text-xs'>Total Time</p>
                   <p className='text-xs'>
-                    {hours || '00'}hrs {minutes || '00'}mins
+                    {Math.floor(billData.timeDelta / 60) || '00'}hrs {billData.timeDelta % 60 || '00'}mins
                   </p>
                 </>
               ) : (
