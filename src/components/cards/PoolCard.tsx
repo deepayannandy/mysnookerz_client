@@ -548,7 +548,7 @@ const PoolCard = ({
                   pauseMinute={tableData?.pauseMin}
                   countdownMin={tableData.gameData?.countdownMin}
                   running={!!tableData.isOccupied && !tableData.gameData?.endTime && !tableData?.pauseTime}
-                  stopGame={stopGame}
+                  getAllTablesData={getAllTablesData}
                 ></CountdownTimer>
               ) : (
                 <CountUpTimer

@@ -8,7 +8,7 @@ const CountdownTimer = ({
   pauseMinute,
   countdownMin,
   running,
-  stopGame
+  getAllTablesData
 }: {
   startTime: string
   endTime?: string
@@ -16,7 +16,7 @@ const CountdownTimer = ({
   pauseMinute?: number
   countdownMin: number
   running: boolean
-  stopGame: () => void
+  getAllTablesData: () => void
 }) => {
   const timeDiff = endTime
     ? DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime), 'minutes').minutes
@@ -43,7 +43,7 @@ const CountdownTimer = ({
   }, [running])
 
   if (time < 1) {
-    stopGame()
+    getAllTablesData()
   }
 
   const formatTime = (time: number) => {
