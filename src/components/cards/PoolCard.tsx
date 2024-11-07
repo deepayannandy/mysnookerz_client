@@ -265,13 +265,19 @@ const PoolCard = ({
               ) : (
                 <></>
               )
-            ) : (
+            ) : tableData?.gameData?.gameType !== 'Countdown Billing' ? (
               <Tooltip title='Switch Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
                 <span className='ri-arrow-left-right-line' onClick={() => setShowSwitchTable(true)}></span>
               </Tooltip>
+            ) : (
+              <></>
             )}
             <Tooltip title={tableData.tableName} placement='top' className='cursor-pointer'>
-              <span className='text-base line-clamp-1 w-24 col-span-2 pl-3'>{tableData.tableName}</span>
+              <span
+                className={`text-base line-clamp-1 w-24 col-span-2 ${tableData?.gameData?.gameType !== 'Countdown Billing' ? 'pl-3' : 'text-center'}`}
+              >
+                {tableData.tableName}
+              </span>
             </Tooltip>
           </div>
 
