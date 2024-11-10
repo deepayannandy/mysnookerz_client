@@ -1,5 +1,6 @@
 'use client'
 
+import useVerticalNav from '@/@menu/hooks/useVerticalNav'
 import PoolCard from '@/components/cards/PoolCard'
 import { TableDataType } from '@/types/adminTypes'
 import { CustomerDataType, CustomerListType } from '@/types/staffTypes'
@@ -7,6 +8,7 @@ import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import { useMedia } from 'react-use'
 
 const BookingPage = () => {
   //const [showBill, setShowBill] = useState(false)
@@ -19,6 +21,10 @@ const BookingPage = () => {
   const { lang: locale } = useParams()
   const pathname = usePathname()
   const router = useRouter()
+  const verticalNavOptions = useVerticalNav()
+
+  const { isCollapsed } = verticalNavOptions
+  const isLargeAndPopoutExpanded = !useMedia('(max-width: 1200px)', false) && !isCollapsed
 
   const getAllTablesData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -105,7 +111,9 @@ const BookingPage = () => {
 
   return (
     <>
-      <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+      <div
+        className={`grid grid-cols-1 md:grid-cols-3 ${isLargeAndPopoutExpanded ? 'grid-cols-3' : 'lg:grid-cols-4'} gap-4`}
+      >
         {!allTablesData.length ? (
           <p className='text-center md:col-span-3 lg:col-span-4'> No Table data available</p>
         ) : (

@@ -38,7 +38,7 @@ const PoolCard = ({
   const [showBill, setShowBill] = useState(false)
   const [gameType, setGameType] = useState(tableData.gameData?.gameType || gameTypes[0])
   const [customers, setCustomers] = useState(
-    (tableData.gameData?.players?.length ? tableData.gameData.players : ['CASH']) as (string | CustomerListType)[]
+    (tableData.gameData?.players?.length ? tableData.gameData.players : []) as (string | CustomerListType)[]
   )
   const [billData, setBillData] = useState({} as CustomerInvoiceType)
   const [showSwitchTable, setShowSwitchTable] = useState(false)
@@ -88,7 +88,7 @@ const PoolCard = ({
     }
 
     setCustomers(
-      (tableData.gameData?.players?.length ? tableData.gameData.players : ['CASH']) as (string | CustomerListType)[]
+      (tableData.gameData?.players?.length ? tableData.gameData.players : []) as (string | CustomerListType)[]
     )
     setGameType(tableData.gameData?.gameType || gameTypes[0])
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -98,7 +98,7 @@ const PoolCard = ({
     setIsStartButtonDisabled(true)
     setTimeout(() => setIsStartButtonDisabled(false), 5000)
 
-    const players = customers.map(customer => {
+    let players = customers.map(customer => {
       if (typeof customer === 'string') {
         return { fullName: customer }
       }
@@ -106,8 +106,7 @@ const PoolCard = ({
     })
 
     if (!players.length) {
-      toast.error('Please add at least one customer name')
-      return
+      players = [{ fullName: 'CASH' }]
     }
 
     let countdownTime = {}
