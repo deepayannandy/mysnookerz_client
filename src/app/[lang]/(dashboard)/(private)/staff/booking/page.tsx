@@ -24,7 +24,7 @@ const BookingPage = () => {
   const verticalNavOptions = useVerticalNav()
 
   const { isCollapsed } = verticalNavOptions
-  const isLargeAndPopoutExpanded = !useMedia('(max-width: 1200px)', false) && !isCollapsed
+  const isLargeAndPopoutExpanded = useMedia('(min-width: 1200px) and (max-width: 1350px)', true) && !isCollapsed
 
   const getAllTablesData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
