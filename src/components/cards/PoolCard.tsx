@@ -83,7 +83,7 @@ const PoolCard = ({
   }
 
   useEffect(() => {
-    if (tableData.gameData?.endTime) {
+    if (tableData.gameData?.endTime && tableData.isOccupied) {
       getBillData()
     }
 
@@ -572,7 +572,7 @@ const PoolCard = ({
             <p className='text-xs'>Amount</p>
             <p className='text-xs'>400</p>
           </div> */}
-          {tableData.gameData?.endTime ? (
+          {tableData.gameData?.endTime && tableData.isOccupied ? (
             <>
               <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
                 <p className='text-xs'>Table Amount</p>

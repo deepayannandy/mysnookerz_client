@@ -122,7 +122,7 @@ const NewProduct = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/category/expense`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/category/product`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         const data = response.data.map((category: { _id: string; name: string }) => {
           return {
@@ -357,7 +357,7 @@ const NewProduct = () => {
                       <Controller
                         name='barcode'
                         control={control}
-                        rules={{ required: true }}
+                        rules={{ required: false }}
                         render={({ field: { value, onChange } }) => (
                           <TextField
                             fullWidth
