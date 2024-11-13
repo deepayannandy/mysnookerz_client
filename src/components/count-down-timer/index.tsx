@@ -36,15 +36,18 @@ const CountdownTimer = ({
     let timer: NodeJS.Timeout
     if (running) {
       timer = setInterval(() => {
-        setTime(prevTime => prevTime - 1)
+        let remainingTime = time - 1
+        if (remainingTime <= 0) {
+          remainingTime = 0
+          clearInterval(timer)
+          getAllTablesData()
+        }
+
+        setTime(remainingTime)
       }, 1000)
     }
     return () => clearInterval(timer)
-  }, [running])
-
-  if (time < 1) {
-    getAllTablesData()
-  }
+  }, [running, time])
 
   const formatTime = (time: number) => {
     const formattedTime = Duration.fromObject({ seconds: time }).toFormat('hh:mm:ss')
