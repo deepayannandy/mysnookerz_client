@@ -317,116 +317,20 @@ const PoolCard = ({
             ))}
           </TextField>
 
-          <Autocomplete
-            disabled={!!tableData.gameData?.startTime}
-            size='small'
-            className='w-full text-xs bg-green-900 md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
-            limitTags={1}
-            multiple
-            sx={{
-              // '& .MuiOutlinedInput-root': {
-              //   // border: "1px solid yellow",
-              //   borderRadius: '4px'
-              // },
-              '& .MuiAutocomplete-paper': {
-                overflowY: 'auto' // Ensure the dropdown becomes scrollable
-              },
-              // '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              //   borderColor: '#0FED11',
-              //   borderWidth: '1px'
-              // },
-              '& .MuiInputLabel-root.Mui-disabled': {
-                color: '#FFFFFF'
-              },
-              '& .MuiInputLabel-outlined': {
-                color: '#FFFFFF',
-                '&.Mui-focused': {
-                  color: '#FFFFFF'
+          <Tooltip
+            title={customers
+              .map(name => {
+                if (typeof name === 'string') {
+                  return name
                 }
-              },
-              '& .MuiInputBase-root-MuiOutlinedInput-root': {
-                color: 'white'
-              },
-              '& .MuiInputBase-root-MuiOutlinedInput-root.Mui-disabled': {
-                color: 'white'
-              },
-              '& .MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled': {
-                WebkitTextFillColor: '#F5F7F8'
-              },
-              '& .MuiAutocomplete-tag': {
-                color: 'white'
-              }
-            }}
-            options={customersList}
-            getOptionLabel={option => ((option as CustomerListType).fullName ?? option)?.split('(').join(' (')}
-            freeSolo
-            value={customers}
-            onChange={(_, value) => setCustomers(value)}
-            renderTags={(value, getTagProps) =>
-              value.map((option, index) => {
-                const { key, ...tagProps } = getTagProps({ index })
-                return (
-                  <Chip
-                    size='small'
-                    variant='outlined'
-                    label={(option as CustomerListType).fullName ?? option}
-                    {...tagProps}
-                    key={key}
-                    sx={{
-                      borderColor: 'white',
-                      '& .MuiAvatar-root': {
-                        margin: '4px 0px'
-                      },
-                      '& .MuiChip-label': {
-                        wordWrap: 'break-word',
-                        whiteSpace: 'normal',
-                        textOverflow: 'clip',
-                        textAlign: 'center',
-                        maxWidth: '111px',
-                        height: '20px',
-                        color: 'white'
-                      },
-                      '& .MuiChip-deleteIcon': {
-                        color: 'white' // Customize the cancel button color
-                      }
-                      // '& .MuiButtonBase-root.Mui-disabled': {
-                      //   opacity: 1,
-                      //   backgroundColor: 'red'
-                      // }
-                    }}
-                  />
-                )
+                return name.fullName
               })
-            }
-            renderInput={params => (
-              <TextField
-                {...params}
-                sx={{
-                  '& .MuiInputBase-root': {
-                    ...(tableData.gameData?.startTime ? {} : { height: '60px' }), // Set the fixed height for the TextField
-                    overflowY: 'auto',
-                    border: 'none',
-                    color: 'white'
-                  },
-                  fieldset: {
-                    border: 'none'
-                  }
-                }}
-                variant='outlined'
-                placeholder='Customers'
-              />
-            )}
-          />
-          {/* {tableData.gameData?.players?.length ? (
-            <div className='w-full grid grid-cols-2 gap-2 border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
-              <p>Customers</p>
-              <p>{`${tableData.gameData?.players[0]?.fullName} +${tableData.gameData?.players?.length - 1}`}</p>
-            </div>
-          ) : (
+              .join(',')}
+          >
             <Autocomplete
               disabled={!!tableData.gameData?.startTime}
               size='small'
-              className='w-full border-[#0FED11] text-xs bg-green-900 md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
+              className='w-full text-xs bg-green-900 md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
               limitTags={1}
               multiple
               sx={{
@@ -437,19 +341,34 @@ const PoolCard = ({
                 '& .MuiAutocomplete-paper': {
                   overflowY: 'auto' // Ensure the dropdown becomes scrollable
                 },
-                '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#0FED11',
-                  borderWidth: '1px'
+                // '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                //   borderColor: '#0FED11',
+                //   borderWidth: '1px'
+                // },
+                '& .MuiInputLabel-root.Mui-disabled': {
+                  color: '#FFFFFF'
                 },
                 '& .MuiInputLabel-outlined': {
-                  color: '#0FED11',
+                  color: '#FFFFFF',
                   '&.Mui-focused': {
-                    color: '#0FED11'
+                    color: '#FFFFFF'
                   }
+                },
+                '& .MuiInputBase-root-MuiOutlinedInput-root': {
+                  color: 'white'
+                },
+                '& .MuiInputBase-root-MuiOutlinedInput-root.Mui-disabled': {
+                  color: 'white'
+                },
+                '& .MuiInputBase-input-MuiOutlinedInput-input.Mui-disabled': {
+                  WebkitTextFillColor: '#F5F7F8'
+                },
+                '& .MuiAutocomplete-tag': {
+                  color: 'white'
                 }
               }}
               options={customersList}
-              getOptionLabel={option => (option as CustomerListType).fullName ?? option}
+              getOptionLabel={option => ((option as CustomerListType).fullName ?? option)?.split('(').join(' (')}
               freeSolo
               value={customers}
               onChange={(_, value) => setCustomers(value)}
@@ -464,17 +383,23 @@ const PoolCard = ({
                       {...tagProps}
                       key={key}
                       sx={{
+                        borderColor: 'white',
                         '& .MuiAvatar-root': {
                           margin: '4px 0px'
                         },
                         '& .MuiChip-label': {
-                          wordWrap: 'break-word',
-                          whiteSpace: 'normal',
-                          textOverflow: 'clip',
                           textAlign: 'center',
                           maxWidth: '111px',
-                          height: '20px'
+                          height: '20px',
+                          color: 'white'
+                        },
+                        '& .MuiChip-deleteIcon': {
+                          color: 'white' // Customize the cancel button color
                         }
+                        // '& .MuiButtonBase-root.Mui-disabled': {
+                        //   opacity: 1,
+                        //   backgroundColor: 'red'
+                        // }
                       }}
                     />
                   )
@@ -487,19 +412,19 @@ const PoolCard = ({
                     '& .MuiInputBase-root': {
                       ...(tableData.gameData?.startTime ? {} : { height: '60px' }), // Set the fixed height for the TextField
                       overflowY: 'auto',
-                      border: 'none'
+                      border: 'none',
+                      color: 'white'
                     },
                     fieldset: {
                       border: 'none'
                     }
                   }}
                   variant='outlined'
-                  label='Customers'
                   placeholder='Customers'
                 />
               )}
             />
-          )} */}
+          </Tooltip>
 
           {tableData.gameData?.startTime ? (
             <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>

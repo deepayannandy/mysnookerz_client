@@ -74,7 +74,7 @@ const CustomerDetails = ({
               {/* <Typography>Customer ID #{customerData?.customerId}</Typography> */}
             </div>
           </div>
-          <div className='flex items-center justify-center gap-x-12 gap-y-3 flex-wrap'>
+          {/* <div className='flex items-center justify-center gap-x-12 gap-y-3 flex-wrap'>
             <div className='flex items-center gap-4'>
               <CustomAvatar variant='rounded' skin='light' color='primary'>
                 <i className='ri-shopping-cart-2-line' />
@@ -93,10 +93,10 @@ const CustomerDetails = ({
                 <Typography>Spent</Typography>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
         <div className='flex flex-col gap-4'>
-          <Typography variant='h5'>Details</Typography>
+          {/* <Typography variant='h5'>Details</Typography> */}
           <Divider />
           <div className='flex flex-col gap-2'>
             <div className='flex items-center gap-1'>

@@ -1,16 +1,16 @@
 'use client'
 
 // MUI Imports
+import type { ButtonProps } from '@mui/material/Button'
+import MuiButton from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import MuiButton from '@mui/material/Button'
-import type { ButtonProps } from '@mui/material/Button'
 
 // Component Imports
-import UpgradePlan from '@components/dialogs/upgrade-plan'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
+import UpgradePlan from '@components/dialogs/upgrade-plan'
 
 const Button = styled(MuiButton)<ButtonProps>(() => ({
   backgroundColor: 'var(--mui-palette-common-white) !important',
@@ -21,7 +21,7 @@ const CustomerPlan = () => {
   // Vars
   const buttonProps: ButtonProps = {
     variant: 'contained',
-    children: 'Upgrade To Premium'
+    children: 'Upgrade To Subscription'
   }
 
   return (
@@ -30,9 +30,9 @@ const CustomerPlan = () => {
         <div className='flex justify-between'>
           <div className='flex flex-col gap-4'>
             <Typography variant='h5' color='common.white'>
-              Upgrade to premium
+              Upgrade to Subscription
             </Typography>
-            <Typography color='common.white'>Upgrade customer to premium membership to access pro features.</Typography>
+            <Typography color='common.white'>Upgrade customer to subscription to access pro features.</Typography>
           </div>
           <img src='/images/apps/ecommerce/3d-rocket.png' height={108} />
         </div>

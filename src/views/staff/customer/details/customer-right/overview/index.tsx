@@ -1,73 +1,57 @@
 // MUI Imports
-import { CardStatsCustomerStatsProps } from '@/types/pages/widgetTypes'
+import { CardStatsHorizontalWithAvatarProps } from '@/types/pages/widgetTypes'
 import { CustomerDetailsDataType } from '@/types/staffTypes'
 import Grid from '@mui/material/Grid'
-import axios from 'axios'
-import { useParams, usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
+import CustomerStatisticsCard from './CustomerStatisticsCard'
 
 // Component Imports
-import CustomerStatisticsCard from './CustomerStatisticsCard'
-import CustomerPaymentHistoryTable from './OrderListTable'
 
 const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
-  const [paymentHistoryData, setPaymentHistoryData] = useState([])
-
-  const { lang: locale } = useParams()
-  const pathname = usePathname()
-  const router = useRouter()
-
-  const getPaymentHistoryData = async () => {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    const token = localStorage.getItem('token')
-
-    if (data?.customers?._id) {
-      try {
-        const response = await axios.get(`${apiBaseUrl}/customerHistory/${data.customers._id}`, {
-          headers: { 'auth-token': token }
-        })
-        if (response && response.data) {
-          setPaymentHistoryData(response.data)
-        }
-      } catch (error: any) {
-        if (error?.response?.status === 401) {
-          const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-          return router.replace(redirectUrl)
-        }
-        toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-      }
-    }
-  }
-
-  useEffect(() => {
-    getPaymentHistoryData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
-
-  const customerStats: CardStatsCustomerStatsProps[] = [
+  const customerStats: CardStatsHorizontalWithAvatarProps[] = [
     {
-      color: 'primary',
       avatarIcon: 'ri-money-rupee-circle-line',
-      title: 'Total Credit',
-      stats: `₹${data?.customers?.credit ?? 0}`,
-      content: 'Total Due',
-      description: `₹${data?.customers?.maxCredit !== undefined ? `${data?.customers?.maxCredit}` : 0} Credit limit`
+      title: 'Dues',
+      stats: `₹${data?.customers?.credit ?? 0}`
     },
     {
-      color: 'success',
       avatarIcon: 'ri-gift-line',
-      title: 'Membership',
-      chipLabel: `${data?.membership?.membershipName ?? 'NA'}`,
-      description: `${data?.membership?.membershipMin !== undefined ? `${data?.membership?.membershipMin}` : 0} membership minutes`
+      title: `Membership - ${data?.membership?.membershipName ?? 'NA'}`,
+      stats: `${data?.membership?.membershipMin !== undefined ? `${data?.membership?.membershipMin}` : 0} minutes`
     },
     {
-      color: 'warning',
+      avatarIcon: 'ri-money-rupee-circle-line',
+      title: 'Hours Spent',
+      stats: `${data?.hoursSpent ?? 0}`
+    },
+    {
+      avatarIcon: 'ri-money-rupee-circle-line',
+      title: 'Amount Spent',
+      stats: `₹${data?.totalSpend ?? 0}`
+    },
+    {
       avatarIcon: 'ri-star-smile-line',
       title: 'Games',
-      stats: `${data?.gameWin ?? 0}`,
-      content: 'Winner',
-      description: `${data?.customers?.rewardPoint !== undefined ? `${data?.customers?.rewardPoint}` : 0} Reward point`
+      stats: `${data?.gamesPlayed ?? 0}`
+    },
+    {
+      avatarIcon: 'ri-vip-crown-line',
+      title: 'Winner',
+      stats: `${data?.gameWin ?? 0}`
+    },
+    {
+      avatarIcon: 'ri-star-smile-line',
+      title: 'Reward Points',
+      stats: `${data?.customers?.rewardPoint !== undefined ? `${data?.customers?.rewardPoint}` : 0}`
+    },
+    {
+      avatarIcon: 'ri-vip-crown-line',
+      title: 'Orders',
+      stats: `${data?.orders ?? 0}`
+    },
+    {
+      avatarIcon: 'ri-vip-crown-line',
+      title: 'Credit Limit',
+      stats: `₹${data?.customers?.maxCredit !== undefined ? `${data?.customers?.maxCredit}` : 0}`
     }
     // {
     //   color: 'info',
@@ -82,10 +66,7 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
-        <CustomerStatisticsCard customerStatData={customerStats} />
-      </Grid>
-      <Grid item xs={12}>
-        <CustomerPaymentHistoryTable paymentHistoryData={paymentHistoryData} />
+        <CustomerStatisticsCard data={customerStats} />
       </Grid>
     </Grid>
   )

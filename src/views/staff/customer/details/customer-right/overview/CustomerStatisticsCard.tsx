@@ -2,17 +2,17 @@
 import Grid from '@mui/material/Grid'
 
 // Types Imports
-import type { CardStatsCustomerStatsProps } from '@/types/pages/widgetTypes'
+import type { CardStatsHorizontalWithAvatarProps } from '@/types/pages/widgetTypes'
 
 // Component Imports
-import CustomerStats from '@components/card-statistics/CustomerStats'
+import CardStatsHorizontalWithAvatar from '@components/card-statistics/HorizontalWithAvatar'
 
-const CustomerStatisticsCard = ({ customerStatData }: { customerStatData?: CardStatsCustomerStatsProps[] }) => {
+const CustomerStatisticsCard = ({ data }: { data: CardStatsHorizontalWithAvatarProps[] }) => {
   return (
     <Grid container spacing={6}>
-      {customerStatData?.map((item, index) => (
-        <Grid item xs={12} md={6} key={index}>
-          <CustomerStats {...item} />
+      {data.map((item, index) => (
+        <Grid key={index} item xs={12} sm={4}>
+          <CardStatsHorizontalWithAvatar {...item} avatarSkin='light' />
         </Grid>
       ))}
     </Grid>

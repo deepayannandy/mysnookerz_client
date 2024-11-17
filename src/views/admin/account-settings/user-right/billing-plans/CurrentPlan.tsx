@@ -19,7 +19,6 @@ import type { ThemeColor } from '@core/types'
 
 // Component Imports
 import { UserDataType } from '@/types/adminTypes'
-import ConfirmationDialog from '@components/dialogs/confirmation-dialog'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
 import UpgradePlan from '@components/dialogs/upgrade-plan'
 import axios from 'axios'
@@ -136,12 +135,12 @@ const CurrentPlan = ({ data }: { data?: PricingPlanType[] }) => {
                 dialog={UpgradePlan}
                 dialogProps={{ data: data }}
               />
-              <OpenDialogOnElementClick
+              {/* <OpenDialogOnElementClick
                 element={Button}
                 elementProps={buttonProps('Cancel Subscription', 'outlined', 'error')}
                 dialog={ConfirmationDialog}
                 dialogProps={{ type: 'unsubscribe' }}
-              />
+              /> */}
             </Grid>
           </Grid>
         </CardContent>

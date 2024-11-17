@@ -47,6 +47,8 @@ export type CustomerDetailsDataType = {
   gameWin: number
   orders: number
   totalSpend: number
+  hoursSpent: number
+  gamesPlayed: number
   membership: {
     membershipName: string
     membershipMin: string

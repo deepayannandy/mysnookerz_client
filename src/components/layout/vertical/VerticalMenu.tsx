@@ -94,34 +94,21 @@ const VerticalMenu = ({ dictionary, scrollMenu, userDesignation }: Props) => {
             <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
 
             <SubMenu label={dictionary['navigation'].cafeManagement} icon={<i className='ri-shopping-bag-3-line' />}>
-              <MenuItem href={`/${locale}/admin/cafe-management/inventory-purchases`}>
-                {dictionary['navigation'].inventoryAndPurchases}
-              </MenuItem>
-              <MenuItem href={`/${locale}/admin/cafe-management/customer-orders`}>
-                {dictionary['navigation'].customerOrders}
-              </MenuItem>
-              <MenuItem href={`/${locale}/admin/cafe-management/pricing-discounts`}>
-                {dictionary['navigation'].pricingAndDiscounts}
-              </MenuItem>
+              <MenuItem href={`/${locale}/admin/product-list`}>{dictionary['navigation'].productList}</MenuItem>
+              <MenuItem href={`/${locale}/admin/new-product`}>{dictionary['navigation'].newProduct}</MenuItem>
+              <MenuItem href={`/${locale}/admin/expense`}>{dictionary['navigation'].expense}</MenuItem>
               <MenuItem href={`/${locale}/admin/cafe-management/food-order-history`}>
                 {dictionary['navigation'].foodOrderHistory}
               </MenuItem>
             </SubMenu>
-            <MenuItem href={`/${locale}/admin/new-product`}>{dictionary['navigation'].newProduct}</MenuItem>
-            <MenuItem href={`/${locale}/admin/product-list`}>{dictionary['navigation'].productList}</MenuItem>
-            <MenuItem href={`/${locale}/admin/expense`}>{dictionary['navigation'].expense}</MenuItem>
+
             {/* <SubMenu label={dictionary['navigation'].expense} icon={<i className='ri-bill-line' />}>
               <MenuItem href={`/${locale}/admin/expense/create-category`}>
                 {dictionary['navigation'].createCategory}
               </MenuItem>
               <MenuItem href={`/${locale}/admin/expense/add`}>{dictionary['navigation'].addExpense}</MenuItem>
             </SubMenu> */}
-            <SubMenu label={dictionary['navigation'].storeSettings} icon={<i className='ri-shopping-bag-3-line' />}>
-              <MenuItem href={`/${locale}/admin/store-settings/table`}>{dictionary['navigation'].table}</MenuItem>
-              <MenuItem href={`/${locale}/admin/store-settings/master`}>{dictionary['navigation'].master}</MenuItem>
-              <MenuItem href={`/${locale}/admin/store-settings/control`}>{dictionary['navigation'].control}</MenuItem>
-              <MenuItem href={`/${locale}/admin/store-settings/devices`}>{dictionary['navigation'].devices}</MenuItem>
-            </SubMenu>
+
             <SubMenu label={dictionary['navigation'].reports} icon={<i className='ri-file-chart-line' />}>
               <MenuItem href={`/${locale}/admin/reports/transaction`}>
                 {dictionary['navigation'].transactionReport}
@@ -129,6 +116,12 @@ const VerticalMenu = ({ dictionary, scrollMenu, userDesignation }: Props) => {
               <MenuItem href={`/${locale}/admin/reports/collection`}>
                 {dictionary['navigation'].collectionReport}
               </MenuItem>
+            </SubMenu>
+            <SubMenu label={dictionary['navigation'].storeSettings} icon={<i className='ri-shopping-bag-3-line' />}>
+              <MenuItem href={`/${locale}/admin/store-settings/table`}>{dictionary['navigation'].table}</MenuItem>
+              <MenuItem href={`/${locale}/admin/store-settings/master`}>{dictionary['navigation'].master}</MenuItem>
+              <MenuItem href={`/${locale}/admin/store-settings/control`}>{dictionary['navigation'].control}</MenuItem>
+              <MenuItem href={`/${locale}/admin/store-settings/devices`}>{dictionary['navigation'].devices}</MenuItem>
             </SubMenu>
             <MenuItem href={`/${locale}/admin/account-settings`}>{dictionary['navigation'].accountSettings}</MenuItem>
             {/* </MenuSection> */}

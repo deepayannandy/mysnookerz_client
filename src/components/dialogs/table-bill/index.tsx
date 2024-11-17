@@ -287,7 +287,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       </div>
       <Divider />
       <div className='p-5'>
-        <div className='flex flex-col gap-5'>
+        <div className='flex flex-col gap-3'>
           {tableData.gameData?.gameType ? (
             <TextField disabled id='gameType' label='Billing' defaultValue={tableData.gameData.gameType}></TextField>
           ) : (
@@ -355,7 +355,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
           )}
 
           {invoiceTo.length > 1 ? (
-            <div className='w-full grid grid-cols-1 border mt-2 rounded-lg overflow-x-auto '>
+            <div className='w-full grid grid-cols-1 border rounded-lg overflow-x-auto '>
               <div className='w-full grid grid-cols-4 text-center font-bold border-b divide-x'>
                 <div className='size-full grid place-items-center  p-1 sm:p-2 '>
                   <p>Customer</p>
@@ -435,7 +435,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
           )}
 
           {data.selectedTable?.gameData?.startTime ? (
-            <div className='w-full grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
+            <div className='w-full grid grid-cols-2 gap-2 border p-3 rounded-lg'>
               {data.selectedTable.gameData?.startTime ? (
                 <p>
                   Start Time
@@ -478,7 +478,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
 
           {data.selectedTable?.gameData?.endTime ? (
             <>
-              <div className='w-full grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
+              <div className='w-full grid grid-cols-2 gap-2 border p-3 rounded-lg'>
                 <p>Table Amount</p>
                 <p>{`₹${data.totalBillAmt || 0}`}</p>
                 <Divider className='col-span-2' />
@@ -495,11 +495,12 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             <></>
           )}
 
-          <div className='w-full grid grid-cols-2 gap-2 mt-2 rounded-lg'>
+          <div className='w-full grid grid-cols-2 gap-2 rounded-lg'>
             <TextField
               //placeholder='₹_._'
               inputProps={{ type: 'number', min: 0, step: 'any' }}
               label='Discount'
+              size='small'
               value={inputData.discount}
               onChange={event =>
                 setInputData({
@@ -511,6 +512,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             <TextField
               //className='w-full bg-[#E73434] rounded-lg'
               label='Net Pay'
+              size='small'
               value={`₹${netPay}`}
               InputProps={
                 {
@@ -535,6 +537,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             /> */}
             {invoiceTo?.length <= 1 ? (
               <TextField
+                size='small'
                 className='col-span-2'
                 label='Payment Method'
                 select
@@ -555,6 +558,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             <TextField
               disabled={invoiceTo?.length > 1}
               label='Cash In'
+              size='small'
               //placeholder='₹_._'
               inputProps={{ type: 'number', min: 0, step: 'any' }}
               value={inputData.cashIn}
@@ -568,6 +572,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             <TextField
               //className='w-full bg-[#E73434] rounded-lg'
               label='Cash Out'
+              size='small'
               value={`₹${cashOut}`}
               InputProps={
                 {
@@ -578,7 +583,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
           </div>
 
           {data.productList?.length ? (
-            <div className='w-full grid grid-cols-1 border mt-2 rounded-lg overflow-x-auto '>
+            <div className='w-full grid grid-cols-1 border rounded-lg overflow-x-auto '>
               <div className='w-full text-center font-bold border-b p-1 sm:p-2'>Meal Order Details</div>
               <div className='w-full grid grid-cols-4 text-center font-bold border-b divide-x'>
                 <div className='size-full grid place-items-center p-1 sm:p-2 '>

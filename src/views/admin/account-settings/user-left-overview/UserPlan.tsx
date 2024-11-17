@@ -1,6 +1,9 @@
 // MUI Imports
 //import UpgradePlan from '@/components/dialogs/upgrade-plan'
+import OpenDialogOnElementClick from '@/components/dialogs/OpenDialogOnElementClick'
+import UpgradePlan from '@/components/dialogs/upgrade-plan'
 import { UserDataType } from '@/types/adminTypes'
+import { Button, ButtonProps } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
@@ -12,10 +15,10 @@ import { DateTime } from 'luxon'
 
 const UserPlan = ({ data }: { data: UserDataType }) => {
   //Vars
-  // const buttonProps: ButtonProps = {
-  //   variant: 'contained',
-  //   children: 'Upgrade Plan'
-  // }
+  const buttonProps: ButtonProps = {
+    variant: 'contained',
+    children: 'Upgrade Plan'
+  }
 
   const daysPast =
     typeof data?.SubscriptionData === 'object' && data?.SubscriptionData?.startDate
@@ -78,7 +81,7 @@ const UserPlan = ({ data }: { data: UserDataType }) => {
               />
               <Typography variant='body2'>{`${(data?.SubscriptionData?.subscriptionValidity || 0) - daysPast} days remaining`}</Typography>
             </div>
-            {/* <OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={UpgradePlan} /> */}
+            <OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={UpgradePlan} />
           </CardContent>
         )}
       </Card>
