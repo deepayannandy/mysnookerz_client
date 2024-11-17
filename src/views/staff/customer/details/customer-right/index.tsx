@@ -1,7 +1,7 @@
 'use client'
 
 // React Imports
-import type { ReactElement, SyntheticEvent } from 'react'
+import type { ReactElement } from 'react'
 import { useState } from 'react'
 
 // MUI Imports
@@ -13,11 +13,11 @@ import Grid from '@mui/material/Grid'
 
 const CustomerRight = ({ tabContentList }: { tabContentList: { [key: string]: ReactElement } }) => {
   // States
-  const [activeTab, setActiveTab] = useState('overview')
+  const [activeTab] = useState('overview')
 
-  const handleChange = (event: SyntheticEvent, value: string) => {
-    setActiveTab(value)
-  }
+  // const handleChange = (event: SyntheticEvent, value: string) => {
+  //   setActiveTab(value)
+  // }
 
   return (
     <>

@@ -3,7 +3,8 @@
 import OpenDialogOnElementClick from '@/components/dialogs/OpenDialogOnElementClick'
 import UpgradePlan from '@/components/dialogs/upgrade-plan'
 import { UserDataType } from '@/types/adminTypes'
-import { Button, ButtonProps } from '@mui/material'
+import * as mui from '@mui/material'
+import { Button } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
@@ -15,7 +16,7 @@ import { DateTime } from 'luxon'
 
 const UserPlan = ({ data }: { data: UserDataType }) => {
   //Vars
-  const buttonProps: ButtonProps = {
+  const buttonProps: mui.ButtonProps = {
     variant: 'contained',
     children: 'Upgrade Plan'
   }
