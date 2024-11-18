@@ -278,6 +278,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <TextField
+                    size='small'
                     fullWidth
                     label='Table Name'
                     placeholder='Enter table name'
@@ -318,6 +319,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Up To Minute'
                         inputProps={{ type: 'number', min: 0 }}
@@ -338,6 +340,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Minimum Charge'
                         inputProps={{ type: 'number', min: 0, step: 'any' }}
@@ -358,6 +361,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Per Minute Charge'
                         inputProps={{ type: 'number', min: 0, step: 'any' }}
@@ -382,6 +386,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Up To Minute'
                         inputProps={{ type: 'number', min: 0 }}
@@ -401,6 +406,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Minimum Charge'
                         inputProps={{ type: 'number', min: 0, step: 'any' }}
@@ -420,6 +426,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Per Minute Charge'
                         inputProps={{ type: 'number', min: 0, step: 'any' }}

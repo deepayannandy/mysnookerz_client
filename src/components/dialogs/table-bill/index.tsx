@@ -289,7 +289,13 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
       <div className='p-5'>
         <div className='flex flex-col gap-3'>
           {tableData.gameData?.gameType ? (
-            <TextField disabled id='gameType' label='Billing' defaultValue={tableData.gameData.gameType}></TextField>
+            <TextField
+              disabled
+              id='gameType'
+              label='Billing'
+              size='small'
+              defaultValue={tableData.gameData.gameType}
+            ></TextField>
           ) : (
             <></>
           )}
@@ -321,6 +327,8 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
 
           {data.selectedTable?.gameData?.players ? (
             <Autocomplete
+              size='small'
+              disableClearable
               options={data.selectedTable.gameData.players}
               getOptionLabel={option => option.fullName as string}
               multiple
@@ -511,6 +519,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             />
             <TextField
               //className='w-full bg-[#E73434] rounded-lg'
+              disabled
               label='Net Pay'
               size='small'
               value={`₹${netPay}`}
@@ -559,6 +568,9 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
               disabled={invoiceTo?.length > 1}
               label='Cash In'
               size='small'
+              InputProps={{
+                startAdornment: <p className='m-1'>₹</p>
+              }}
               //placeholder='₹_._'
               inputProps={{ type: 'number', min: 0, step: 'any' }}
               value={inputData.cashIn}
@@ -571,6 +583,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             />
             <TextField
               //className='w-full bg-[#E73434] rounded-lg'
+              disabled
               label='Cash Out'
               size='small'
               value={`₹${cashOut}`}

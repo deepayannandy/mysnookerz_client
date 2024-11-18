@@ -272,6 +272,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <TextField
+                    size='small'
                     fullWidth
                     label='Table Name'
                     placeholder='Enter table name'
@@ -311,6 +312,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Up To Minute'
                         inputProps={{ type: 'number', min: 0 }}
@@ -331,6 +333,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Minimum Charge'
                         inputProps={{ type: 'number', min: 0, step: 'any' }}
@@ -351,6 +354,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Per Minute Charge'
                         inputProps={{ type: 'number', min: 0, step: 'any' }}
@@ -375,6 +379,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Up To Minute'
                         inputProps={{ type: 'number', min: 0 }}
@@ -394,6 +399,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Minimum Charge'
                         inputProps={{ type: 'number', min: 0, step: 'any' }}
@@ -413,6 +419,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
+                        size='small'
                         fullWidth
                         label='Per Minute Charge'
                         inputProps={{ type: 'number', min: 0, step: 'any' }}
