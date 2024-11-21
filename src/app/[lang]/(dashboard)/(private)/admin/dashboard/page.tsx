@@ -3,9 +3,8 @@
 import CardStatVertical from '@/components/card-statistics/Vertical'
 import { DashboardDataType } from '@/types/staffTypes'
 // MUI Imports
-import Award from '@/views/staff/dashboard/Award'
-import DueAmountTable from '@/views/staff/dashboard/DueAmountTable'
-import Transactions from '@/views/staff/dashboard/Transactions'
+import Award from '@/views/admin/dashboard/Award'
+import Transactions from '@/views/admin/dashboard/Transactions'
 import { Skeleton } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import axios from 'axios'
@@ -96,9 +95,9 @@ const DashboardDetails = () => {
               // trend='positive'
             />
           </Grid>
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <DueAmountTable data={dashboardData.creditHistoryToday ?? []} getDashboardData={getDashboardData} />
-          </Grid>
+          </Grid> */}
           {/* <Grid item xs={12}>
             <TotalRevenueStackedBar />
           </Grid> */}

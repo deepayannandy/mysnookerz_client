@@ -10,19 +10,14 @@ const horizontalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>
     children: [
       // This is how you will normally render menu item
       {
-        label: dictionary['navigation'].dashboard,
-        icon: 'ri-pie-chart-2-line',
-        href: '/staff/dashboard'
-      },
-      {
         label: dictionary['navigation'].booking,
         icon: 'ri-bar-chart-line',
         href: '/staff/booking'
       },
       {
-        label: dictionary['navigation'].history,
+        label: dictionary['navigation'].gameHistory,
         icon: 'ri-shopping-bag-3-line',
-        href: '/staff/history'
+        href: '/staff/game-history'
       },
       {
         label: dictionary['navigation'].customer,
@@ -35,6 +30,11 @@ const horizontalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>
     label: dictionary['navigation'].adminMenu,
     icon: 'ri-mail-open-line',
     children: [
+      {
+        label: dictionary['navigation'].dashboard,
+        icon: 'ri-pie-chart-2-line',
+        href: '/admin/dashboard'
+      },
       {
         label: dictionary['navigation'].staff,
         icon: 'ri-user-line',

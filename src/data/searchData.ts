@@ -12,9 +12,9 @@ const data: SearchData[] = [
   {
     id: '1',
     name: 'Dashboard',
-    url: '/staff/dashboard',
+    url: '/admin/dashboard',
     icon: 'ri-bar-chart-line',
-    section: 'Staff Interface'
+    section: 'Admin Interface'
   },
   {
     id: '2',
@@ -25,8 +25,8 @@ const data: SearchData[] = [
   },
   {
     id: '3',
-    name: 'History',
-    url: '/staff/history',
+    name: 'Game History',
+    url: '/staff/game-history',
     icon: 'ri-list-unordered',
     section: 'Staff Interface'
   },

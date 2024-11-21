@@ -23,8 +23,8 @@ const defaultSuggestions = [
         icon: 'ri-pie-chart-2-line'
       },
       {
-        label: 'History',
-        href: '/staff/history',
+        label: 'Game History',
+        href: '/staff/game-history',
         icon: 'ri-list-unordered'
       },
       {
@@ -38,11 +38,6 @@ const defaultSuggestions = [
     sectionLabel: 'Staff Interface',
     items: [
       {
-        label: 'Dashboard',
-        href: '/staff/dashboard',
-        icon: 'ri-bar-chart-line'
-      },
-      {
         label: 'Booking',
         href: '/staff/booking',
         icon: 'ri-book-open-line'
@@ -53,15 +48,25 @@ const defaultSuggestions = [
         icon: 'ri-pie-chart-2-line'
       },
       {
-        label: 'History',
-        href: '/staff/history',
+        label: 'Game History',
+        href: '/staff/game-history',
         icon: 'ri-list-unordered'
+      },
+      {
+        label: 'Cafe History',
+        href: '/staff/cafe-history',
+        icon: 'ri-bar-chart-line'
       }
     ]
   },
   {
     sectionLabel: 'Admin Interface',
     items: [
+      {
+        label: 'Dashboard',
+        href: '/admin/dashboard',
+        icon: 'ri-bar-chart-line'
+      },
       {
         label: 'Staff',
         href: '/admin/staff',
@@ -76,11 +81,6 @@ const defaultSuggestions = [
         label: 'Table',
         href: '/admin/store-settings/table',
         icon: 'ri-file-list-line'
-      },
-      {
-        label: 'Master',
-        href: '/admin/store-settings/master',
-        icon: 'ri-settings-2-line'
       }
     ]
   },

@@ -19,8 +19,8 @@ type NoResultData = {
 
 const noResultData: NoResultData[] = [
   {
-    label: 'Dashboard',
-    href: '/staff/dashboard',
+    label: 'Booking',
+    href: '/staff/booking',
     icon: 'ri-pie-chart-2-line'
   }
 ]

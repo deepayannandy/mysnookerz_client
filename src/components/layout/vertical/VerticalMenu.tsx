@@ -84,22 +84,22 @@ const VerticalMenu = ({ dictionary, scrollMenu, userDesignation }: Props) => {
       >
         <MenuSection label={dictionary['navigation'].staffInterface}>
           <MenuItem href={`/${locale}/staff/booking`}>{dictionary['navigation'].booking}</MenuItem>
-          <MenuItem href={`/${locale}/staff/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
-          <MenuItem href={`/${locale}/staff/history`}>{dictionary['navigation'].history}</MenuItem>
+          <MenuItem href={`/${locale}/staff/dues`}>{dictionary['navigation'].dues}</MenuItem>
+          <MenuItem href={`/${locale}/staff/game-history`}>{dictionary['navigation'].gameHistory}</MenuItem>
+          <MenuItem href={`/${locale}/staff/cafe-history`}>{dictionary['navigation'].cafeHistory}</MenuItem>
           <MenuItem href={`/${locale}/staff/customer`}>{dictionary['navigation'].customer}</MenuItem>
         </MenuSection>
 
         {userDesignation !== 'Staff' ? (
           <MenuSection label={dictionary['navigation'].adminInterface}>
+            <MenuItem href={`/${locale}/admin/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
+            <MenuItem href={`/${locale}/admin/analytics`}>{dictionary['navigation'].analytics}</MenuItem>
             <MenuItem href={`/${locale}/admin/expense`}>{dictionary['navigation'].expense}</MenuItem>
             <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
 
             <SubMenu label={dictionary['navigation'].cafeManagement} icon={<i className='ri-shopping-bag-3-line' />}>
               <MenuItem href={`/${locale}/admin/product-list`}>{dictionary['navigation'].productList}</MenuItem>
               <MenuItem href={`/${locale}/admin/new-product`}>{dictionary['navigation'].newProduct}</MenuItem>
-              <MenuItem href={`/${locale}/admin/cafe-management/food-order-history`}>
-                {dictionary['navigation'].foodOrderHistory}
-              </MenuItem>
             </SubMenu>
 
             {/* <SubMenu label={dictionary['navigation'].expense} icon={<i className='ri-bill-line' />}>

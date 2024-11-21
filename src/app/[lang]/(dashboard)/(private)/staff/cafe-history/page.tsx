@@ -1,4 +1,4 @@
-import FoodOrderHistoryTable from '@/views/admin/cafe-management/FoodOrderHistoryTable'
+import FoodOrderHistoryTable from '@/views/staff/cafe-history/FoodOrderHistoryTable'
 
 const FoodOrderHistoryPage = async () => {
   return <FoodOrderHistoryTable />

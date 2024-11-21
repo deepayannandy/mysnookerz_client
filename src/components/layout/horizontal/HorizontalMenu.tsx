@@ -98,17 +98,17 @@ const HorizontalMenu = ({ dictionary }: { dictionary: Awaited<ReturnType<typeof 
           <MenuItem href={`/${locale}/staff/booking`} icon={<i className='ri-bar-chart-line' />}>
             {dictionary['navigation'].booking}
           </MenuItem>
-          <MenuItem href={`/${locale}/staff/dashboard`} icon={<i className='ri-pie-chart-2-line' />}>
-            {dictionary['navigation'].dashboard}
-          </MenuItem>
-          <MenuItem href={`/${locale}/staff/history`} icon={<i className='ri-shopping-bag-3-line' />}>
-            {dictionary['navigation'].history}
+          <MenuItem href={`/${locale}/staff/game-history`} icon={<i className='ri-shopping-bag-3-line' />}>
+            {dictionary['navigation'].gameHistory}
           </MenuItem>
           <MenuItem href={`/${locale}/staff/customer`} icon={<i className='ri-car-line' />}>
             {dictionary['navigation'].customer}
           </MenuItem>
         </MenuSection>
         <MenuSection label={dictionary['navigation'].adminMenu}>
+          <MenuItem href={`/${locale}/admin/dashboard`} icon={<i className='ri-pie-chart-2-line' />}>
+            {dictionary['navigation'].dashboard}
+          </MenuItem>
           <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
           <SubMenu label={dictionary['navigation'].settings} icon={<i className='ri-shopping-bag-3-line' />}>
             <MenuItem href={`/${locale}/admin/settings/master`}>{dictionary['navigation'].master}</MenuItem>

@@ -10,16 +10,12 @@ const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>)
     children: [
       // This is how you will normally render menu item
       {
-        label: dictionary['navigation'].dashboard,
-        href: '/staff/dashboard'
-      },
-      {
         label: dictionary['navigation'].booking,
         href: '/staff/booking'
       },
       {
-        label: dictionary['navigation'].history,
-        href: '/staff/history'
+        label: dictionary['navigation'].gameHistory,
+        href: '/staff/game-history'
       },
       {
         label: dictionary['navigation'].customer,
@@ -31,6 +27,10 @@ const verticalMenuData = (dictionary: Awaited<ReturnType<typeof getDictionary>>)
     label: dictionary['navigation'].adminMenu,
     icon: 'ri-mail-open-line',
     children: [
+      {
+        label: dictionary['navigation'].dashboard,
+        href: '/admin/dashboard'
+      },
       {
         label: dictionary['navigation'].staff,
         href: '/admin/staff'
