@@ -44,11 +44,11 @@ export type CustomerDetailsDataType = {
   }
   tableCredit: number
   cafeCredit: number
-  gameWin: number
+  winner: number
   orders: number
   totalSpend: number
-  hoursSpent: number
-  gamesPlayed: number
+  hoursSpend: number
+  gameCount: number
   membership: {
     membershipName: string
     membershipMin: string

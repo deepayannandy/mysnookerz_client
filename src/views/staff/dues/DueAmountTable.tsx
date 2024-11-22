@@ -38,7 +38,7 @@ import { DueAmountDataType } from '@/types/staffTypes'
 import { getInitials } from '@/utils/getInitials'
 import { getLocalizedUrl } from '@/utils/i18n'
 import tableStyles from '@core/styles/table.module.css'
-import { Button, CardContent, TablePagination } from '@mui/material'
+import { Button, CardContent, TablePagination, ToggleButton } from '@mui/material'
 import * as matchSortedUtils from '@tanstack/match-sorter-utils'
 import axios from 'axios'
 import Link from 'next/link'
@@ -105,6 +105,7 @@ const DueAmountTable = () => {
   const [data, setData] = useState([] as DueAmountDataType[])
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')
+  const [isTodayFilterApplied, setIsTodayFilterApplied] = useState(false)
 
   const { lang: locale } = useParams()
   const pathname = usePathname()
@@ -113,8 +114,13 @@ const DueAmountTable = () => {
   const getDueData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
+    const storeId = localStorage.getItem('storeId')
+    const apiEndpoint = isTodayFilterApplied
+      ? `${apiBaseUrl}/dues/today/${storeId}`
+      : `${apiBaseUrl}/dues/alltime/${storeId}`
+
     try {
-      const response = await axios.get(`${apiBaseUrl}/dues/`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiEndpoint}`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         setData(response.data)
       }
@@ -130,7 +136,7 @@ const DueAmountTable = () => {
   useEffect(() => {
     getDueData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [isTodayFilterApplied])
 
   const columns = useMemo<ColumnDef<DueAmountDataType, any>[]>(
     () => [
@@ -235,6 +241,15 @@ const DueAmountTable = () => {
         <CardContent className='flex justify-between flex-col items-start sm:flex-row sm:items-end gap-y-2'>
           <Typography className='text-xl font-bold'>Dues</Typography>
           <div className='flex gap-x-4'>
+            <ToggleButton
+              value={isTodayFilterApplied}
+              color='success'
+              size='small'
+              selected={isTodayFilterApplied}
+              onChange={() => setIsTodayFilterApplied(!isTodayFilterApplied)}
+            >
+              Today
+            </ToggleButton>
             <SearchInput
               value={globalFilter ?? ''}
               onChange={value => setGlobalFilter(String(value))}

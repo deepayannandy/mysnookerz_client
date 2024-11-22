@@ -23,7 +23,7 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
     {
       avatarIcon: 'ri-money-rupee-circle-line',
       title: 'Hours Spent',
-      stats: `${data?.hoursSpent ?? 0}`,
+      stats: `${data?.hoursSpend ?? 0}`,
       avatarColor: 'error'
     },
     {
@@ -35,13 +35,13 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
     {
       avatarIcon: 'ri-star-smile-line',
       title: 'Games',
-      stats: `${data?.gamesPlayed ?? 0}`,
+      stats: `${data?.gameCount ?? 0}`,
       avatarColor: 'warning'
     },
     {
       avatarIcon: 'ri-vip-crown-line',
       title: 'Winner',
-      stats: `${data?.gameWin ?? 0}`,
+      stats: `${data?.winner ?? 0}`,
       avatarColor: 'primary'
     },
     {
