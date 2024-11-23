@@ -105,7 +105,7 @@ const DueAmountTable = () => {
   const [data, setData] = useState([] as DueAmountDataType[])
   const [rowSelection, setRowSelection] = useState({})
   const [globalFilter, setGlobalFilter] = useState('')
-  const [isTodayFilterApplied, setIsTodayFilterApplied] = useState(false)
+  const [isAllFilterApplied, setIsAllFilterApplied] = useState(false)
 
   const { lang: locale } = useParams()
   const pathname = usePathname()
@@ -115,9 +115,9 @@ const DueAmountTable = () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     const storeId = localStorage.getItem('storeId')
-    const apiEndpoint = isTodayFilterApplied
-      ? `${apiBaseUrl}/dues/today/${storeId}`
-      : `${apiBaseUrl}/dues/alltime/${storeId}`
+    const apiEndpoint = isAllFilterApplied
+      ? `${apiBaseUrl}/dues/alltime/${storeId}`
+      : `${apiBaseUrl}/dues/today/${storeId}`
 
     try {
       const response = await axios.get(`${apiEndpoint}`, { headers: { 'auth-token': token } })
@@ -136,7 +136,7 @@ const DueAmountTable = () => {
   useEffect(() => {
     getDueData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isTodayFilterApplied])
+  }, [isAllFilterApplied])
 
   const columns = useMemo<ColumnDef<DueAmountDataType, any>[]>(
     () => [
@@ -242,13 +242,13 @@ const DueAmountTable = () => {
           <Typography className='text-xl font-bold'>Dues</Typography>
           <div className='flex gap-x-4'>
             <ToggleButton
-              value={isTodayFilterApplied}
+              value={isAllFilterApplied}
               color='success'
               size='small'
-              selected={isTodayFilterApplied}
-              onChange={() => setIsTodayFilterApplied(!isTodayFilterApplied)}
+              selected={isAllFilterApplied}
+              onChange={() => setIsAllFilterApplied(!isAllFilterApplied)}
             >
-              Today
+              All Time
             </ToggleButton>
             <SearchInput
               value={globalFilter ?? ''}
