@@ -79,7 +79,8 @@ type PaymentHistoryDataType = {
   customerName: string
   description: string
   quantity: number
-  startEndTime: string
+  startTime: string
+  endTime: string
   netPay: number
   discount: number
   paid: number
@@ -164,9 +165,24 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
         cell: ({ row }) => <Typography>{row.original.quantity}</Typography>
       }),
 
-      columnHelper.accessor('startEndTime', {
-        header: 'Start-End Time',
-        cell: ({ row }) => <Typography>{row.original.startEndTime}</Typography>
+      columnHelper.accessor('startTime', {
+        header: 'Time',
+        cell: ({ row }) => (
+          <div className='flex flex-col'>
+            {row.original.startTime && row.original.endTime ? (
+              <>
+                <Typography className='font-medium' color='text.primary'>
+                  {DateTime.fromISO(row.original.startTime).toFormat('hh:mm:ss a')}
+                </Typography>
+                <Typography className='font-medium' color='text.primary'>
+                  {DateTime.fromISO(row.original.endTime).toFormat('hh:mm:ss a')}
+                </Typography>
+              </>
+            ) : (
+              <>-</>
+            )}
+          </div>
+        )
       }),
       columnHelper.accessor('netPay', {
         header: 'Net Pay',
@@ -181,12 +197,8 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
         cell: ({ row }) => <Typography>₹{row.original.paid ?? 0}</Typography>
       }),
       columnHelper.accessor('due', {
-        header: 'Due(Credit)',
+        header: 'Due',
         cell: ({ row }) => <Typography>₹{row.original.due ?? 0}</Typography>
-      }),
-      columnHelper.accessor('paidBy', {
-        header: 'Paid By',
-        cell: ({ row }) => <Typography>{row.original.paidBy}</Typography>
       })
 
       // columnHelper.accessor('action', {
