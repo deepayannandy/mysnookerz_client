@@ -75,6 +75,7 @@ export const statusChipColor: { [key: string]: StatusChipColorType } = {
 }
 
 type PaymentHistoryDataType = {
+  transactionId: string
   date: string
   customerName: string
   description: string
@@ -148,6 +149,10 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
 
   const columns = useMemo<ColumnDef<PaymentHistoryDataTypeWithAction, any>[]>(
     () => [
+      columnHelper.accessor('transactionId', {
+        header: 'transactionId',
+        cell: ({ row }) => <Typography>{`${row.original.transactionId ?? 'NA'}`}</Typography>
+      }),
       columnHelper.accessor('date', {
         header: 'Date',
         cell: ({ row }) => <Typography>{`${DateTime.fromISO(row.original.date).toFormat('dd LLL yyyy')}`}</Typography>
