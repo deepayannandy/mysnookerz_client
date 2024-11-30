@@ -39,9 +39,7 @@ const TableBill = ({
 }: TableBillPropType) => {
   // States
   const [data, setData] = useState({} as CustomerInvoiceType)
-  const [invoiceTo, setInvoiceTo] = useState(
-    (data.selectedTable?.gameData?.players || []) as { fullName?: string; customerId?: string }[]
-  )
+  const [invoiceTo, setInvoiceTo] = useState((data.selectedTable?.gameData?.players || []) as CustomerListType[])
 
   const [errors, setErrors] = useState({} as { invoiceTo: string })
   const [inputData, setInputData] = useState({
@@ -279,6 +277,24 @@ const TableBill = ({
     })
   }
 
+  const getOptionLabel = (props: any, option: CustomerListType) => {
+    const isAlreadyAPlayer = data.selectedTable?.gameData?.players?.find(
+      ({ customerId }) => customerId === option.customerId
+    )
+    return isAlreadyAPlayer ? (
+      <li key={option.customerId} {..._.omit(props, 'key')}>
+        <span className='text-green-600'>
+          {option.fullName}
+          <span className='ri-circle-fill bg-green-700 size-3 ml-2'></span>
+        </span>
+      </li>
+    ) : (
+      <li key={option.customerId} {..._.omit(props, 'key')}>
+        {option.fullName}
+      </li>
+    )
+  }
+
   return (
     <Drawer
       open={open}
@@ -339,7 +355,8 @@ const TableBill = ({
               size='small'
               disableClearable
               options={customersList}
-              getOptionLabel={option => option.fullName as string}
+              getOptionLabel={option => option.fullName}
+              renderOption={(props, option) => getOptionLabel(props, option)}
               multiple
               value={invoiceTo}
               onChange={(_, value) => setInvoiceTo(value)}
