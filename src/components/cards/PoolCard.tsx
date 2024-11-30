@@ -94,6 +94,36 @@ const PoolCard = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData])
 
+  const validatePlayers = async (
+    players: (CustomerListType | { fullName: string })[],
+    gameType: string
+  ): Promise<{ success: boolean }> => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.post(
+        `${apiBaseUrl}/games/validatePlayers/${tableData._id}`,
+        { gameType, players },
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+
+      if (response && response.data) {
+        return { success: true }
+      }
+      return { success: false }
+    } catch (error: any) {
+      // if (error?.response?.status === 400) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   console.log(redirectUrl)
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+      return { success: false }
+    }
+  }
+
   const startGame = async () => {
     setIsStartButtonDisabled(true)
     setTimeout(() => setIsStartButtonDisabled(false), 5000)
@@ -115,6 +145,11 @@ const PoolCard = ({
       selectedGameType = 'Countdown Billing'
       const min = gameType.split('(')?.[1].split(' ')?.[0]
       countdownTime = { countdownMin: min }
+    }
+
+    const playersValidation = await validatePlayers(players, selectedGameType)
+    if (!playersValidation?.success) {
+      return
     }
 
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -602,6 +637,7 @@ const PoolCard = ({
           open={showBill}
           setOpen={setShowBill}
           tableData={tableData}
+          customersList={customersList}
           getAllTablesData={getAllTablesData}
           setGameType={setGameType}
           setCustomers={setCustomers}

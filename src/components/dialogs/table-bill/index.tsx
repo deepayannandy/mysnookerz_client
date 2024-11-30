@@ -20,6 +20,7 @@ type TableBillPropType = {
   open: boolean
   setOpen: (open: boolean) => void
   tableData: TableDataType
+  customersList: CustomerListType[]
   getAllTablesData: () => void
   setGameType: (value: string) => void
   setCustomers: (value: string[]) => void
@@ -27,7 +28,15 @@ type TableBillPropType = {
 
 const paymentMethods = ['CASH', 'UPI', 'CARD']
 
-const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, setCustomers }: TableBillPropType) => {
+const TableBill = ({
+  open,
+  setOpen,
+  tableData,
+  customersList,
+  getAllTablesData,
+  setGameType,
+  setCustomers
+}: TableBillPropType) => {
   // States
   const [data, setData] = useState({} as CustomerInvoiceType)
   const [invoiceTo, setInvoiceTo] = useState(
@@ -329,7 +338,7 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             <Autocomplete
               size='small'
               disableClearable
-              options={data.selectedTable.gameData.players}
+              options={customersList}
               getOptionLabel={option => option.fullName as string}
               multiple
               value={invoiceTo}
@@ -484,6 +493,78 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
             <></>
           )}
 
+          {data.productList?.length ? (
+            <div className='w-full grid grid-cols-1 border rounded-lg overflow-x-auto '>
+              <div className='w-full text-center font-bold border-b p-1 sm:p-2'>Meal Order Details</div>
+              <div className='w-full grid grid-cols-4 text-center font-bold border-b divide-x'>
+                <div className='size-full grid place-items-center p-1 sm:p-2 '>
+                  <p>Customer</p>
+                </div>
+                <div className='size-full grid place-items-center p-1 sm:p-2'>
+                  <p>Amount</p>
+                </div>
+                <div className='size-full grid place-items-center p-1 sm:p-2'>
+                  <p>Paid</p>
+                </div>
+                <div className='size-full grid place-items-center p-1 sm:p-2'>
+                  <p>Payment Method</p>
+                </div>
+              </div>
+
+              {data.productList.map((orderItem, index) => (
+                <div
+                  key={orderItem._id}
+                  className={`w-full grid grid-cols-4 divide-x ${(data.productList?.length ?? 0) - 1 !== index ? 'border-b' : ''}`}
+                >
+                  <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
+                    <p>{orderItem?.customerDetails?.fullName}</p>
+                  </div>
+                  <div className='size-full grid place-items-center p-1 sm:p-2'>
+                    <p>{`₹${orderItem.orderTotal}`}</p>
+                  </div>
+                  <div className='size-full grid place-items-center p-1 sm:p-2'>
+                    <TextField
+                      size='small'
+                      //placeholder='₹_._'
+                      inputProps={{ type: 'number', min: 0, step: 'any' }}
+                      value={mealsPaymentData[orderItem.customerDetails.customerId]?.paid || ''}
+                      onChange={event =>
+                        handleMealsPaymentDataChange({
+                          value: event.target.value,
+                          customerId: orderItem.customerDetails.customerId,
+                          field: 'paid'
+                        })
+                      }
+                    />
+                  </div>
+                  <div className='size-full grid place-items-center p-1 sm:p-2'>
+                    <TextField
+                      className='min-w-fit'
+                      size='small'
+                      select
+                      value={mealsPaymentData[orderItem.customerDetails.customerId]?.paymentMethod || paymentMethods[0]}
+                      onChange={e => {
+                        handleMealsPaymentDataChange({
+                          value: e.target.value,
+                          customerId: orderItem.customerDetails.customerId,
+                          field: 'paymentMethod'
+                        })
+                      }}
+                    >
+                      {paymentMethods.map((paymentMethod, index) => (
+                        <MenuItem key={index} value={paymentMethod}>
+                          {paymentMethod}
+                        </MenuItem>
+                      ))}
+                    </TextField>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <></>
+          )}
+
           {data.selectedTable?.gameData?.endTime ? (
             <>
               <div className='w-full grid grid-cols-2 gap-2 border p-3 rounded-lg'>
@@ -594,78 +675,6 @@ const TableBill = ({ open, setOpen, tableData, getAllTablesData, setGameType, se
               }
             />
           </div>
-
-          {data.productList?.length ? (
-            <div className='w-full grid grid-cols-1 border rounded-lg overflow-x-auto '>
-              <div className='w-full text-center font-bold border-b p-1 sm:p-2'>Meal Order Details</div>
-              <div className='w-full grid grid-cols-4 text-center font-bold border-b divide-x'>
-                <div className='size-full grid place-items-center p-1 sm:p-2 '>
-                  <p>Customer</p>
-                </div>
-                <div className='size-full grid place-items-center p-1 sm:p-2'>
-                  <p>Amount</p>
-                </div>
-                <div className='size-full grid place-items-center p-1 sm:p-2'>
-                  <p>Paid</p>
-                </div>
-                <div className='size-full grid place-items-center p-1 sm:p-2'>
-                  <p>Payment Method</p>
-                </div>
-              </div>
-
-              {data.productList.map((orderItem, index) => (
-                <div
-                  key={orderItem._id}
-                  className={`w-full grid grid-cols-4 divide-x ${(data.productList?.length ?? 0) - 1 !== index ? 'border-b' : ''}`}
-                >
-                  <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
-                    <p>{orderItem?.customerDetails?.fullName}</p>
-                  </div>
-                  <div className='size-full grid place-items-center p-1 sm:p-2'>
-                    <p>{`₹${orderItem.orderTotal}`}</p>
-                  </div>
-                  <div className='size-full grid place-items-center p-1 sm:p-2'>
-                    <TextField
-                      size='small'
-                      //placeholder='₹_._'
-                      inputProps={{ type: 'number', min: 0, step: 'any' }}
-                      value={mealsPaymentData[orderItem.customerDetails.customerId]?.paid || ''}
-                      onChange={event =>
-                        handleMealsPaymentDataChange({
-                          value: event.target.value,
-                          customerId: orderItem.customerDetails.customerId,
-                          field: 'paid'
-                        })
-                      }
-                    />
-                  </div>
-                  <div className='size-full grid place-items-center p-1 sm:p-2'>
-                    <TextField
-                      className='min-w-fit'
-                      size='small'
-                      select
-                      value={mealsPaymentData[orderItem.customerDetails.customerId]?.paymentMethod || paymentMethods[0]}
-                      onChange={e => {
-                        handleMealsPaymentDataChange({
-                          value: e.target.value,
-                          customerId: orderItem.customerDetails.customerId,
-                          field: 'paymentMethod'
-                        })
-                      }}
-                    >
-                      {paymentMethods.map((paymentMethod, index) => (
-                        <MenuItem key={index} value={paymentMethod}>
-                          {paymentMethod}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <></>
-          )}
 
           <div className='flex items-center gap-4'>
             <Button
