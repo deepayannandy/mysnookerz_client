@@ -277,22 +277,22 @@ const TableBill = ({
     })
   }
 
-  const getOptionLabel = (props: any, option: CustomerListType) => {
-    const isAlreadyAPlayer = data.selectedTable?.gameData?.players?.find(
-      ({ customerId }) => customerId === option.customerId
-    )
-    return isAlreadyAPlayer ? (
-      <li key={option.customerId} {..._.omit(props, 'key')}>
-        <span className='text-green-600'>
-          {option.fullName}
-          <span className='ri-circle-fill bg-green-700 size-3 ml-2'></span>
-        </span>
-      </li>
-    ) : (
-      <li key={option.customerId} {..._.omit(props, 'key')}>
-        {option.fullName}
-      </li>
-    )
+  const getOptions = () => {
+    const list = customersList.map(customer => {
+      if (data.selectedTable?.gameData?.players?.find(player => player.customerId === customer.customerId)) {
+        return {
+          ...customer,
+          group: 'Playing Customer'
+        }
+      }
+
+      return {
+        ...customer,
+        group: 'Search'
+      }
+    })
+
+    return _.sortBy(list, 'group')
   }
 
   return (
@@ -354,9 +354,9 @@ const TableBill = ({
             <Autocomplete
               size='small'
               disableClearable
-              options={customersList}
+              options={getOptions()}
               getOptionLabel={option => option.fullName}
-              renderOption={(props, option) => getOptionLabel(props, option)}
+              groupBy={option => (option as CustomerListType & { group: string }).group}
               multiple
               value={invoiceTo}
               onChange={(_, value) => setInvoiceTo(value)}
