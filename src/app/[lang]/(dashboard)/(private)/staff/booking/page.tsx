@@ -125,6 +125,7 @@ const BookingPage = () => {
                 customersList={customersList}
                 allTablesData={allTablesData}
                 getAllTablesData={getAllTablesData}
+                getCustomerData={getCustomerData}
               />
             ))}
           </>

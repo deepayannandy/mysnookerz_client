@@ -18,7 +18,7 @@ const UserPlan = ({ data }: { data: UserDataType }) => {
   //Vars
   const buttonProps: mui.ButtonProps = {
     variant: 'contained',
-    children: 'Upgrade Plan'
+    children: 'Renew Plan'
   }
 
   const daysPast =

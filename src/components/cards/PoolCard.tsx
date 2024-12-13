@@ -15,12 +15,14 @@ const PoolCard = ({
   tableData,
   customersList,
   allTablesData,
-  getAllTablesData
+  getAllTablesData,
+  getCustomerData
 }: {
   tableData: TableDataType
   customersList: CustomerListType[]
   allTablesData: TableDataType[]
   getAllTablesData: () => void
+  getCustomerData: () => void
 }) => {
   const gameTypes: string[] = tableData.gameData?.gameType ? tableData.gameTypes : []
   if (!tableData.gameData?.gameType) {
@@ -641,6 +643,7 @@ const PoolCard = ({
           getAllTablesData={getAllTablesData}
           setGameType={setGameType}
           setCustomers={setCustomers}
+          getCustomerData={getCustomerData}
         />
       ) : (
         <></>

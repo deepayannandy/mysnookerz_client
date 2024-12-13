@@ -24,6 +24,7 @@ type TableBillPropType = {
   getAllTablesData: () => void
   setGameType: (value: string) => void
   setCustomers: (value: string[]) => void
+  getCustomerData: () => void
 }
 
 const paymentMethods = ['CASH', 'UPI', 'CARD']
@@ -35,7 +36,8 @@ const TableBill = ({
   customersList,
   getAllTablesData,
   setGameType,
-  setCustomers
+  setCustomers,
+  getCustomerData
 }: TableBillPropType) => {
   // States
   const [data, setData] = useState({} as CustomerInvoiceType)
@@ -100,6 +102,7 @@ const TableBill = ({
 
   useEffect(() => {
     getBillData()
+    getCustomerData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData._id, open])
 
