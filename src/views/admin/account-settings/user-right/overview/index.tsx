@@ -20,7 +20,7 @@ import Grid from '@mui/material/Grid'
   return res.json()
 } */
 
-const OverViewTab = async () => {
+const OverViewTab = () => {
   // Vars
 
   return (

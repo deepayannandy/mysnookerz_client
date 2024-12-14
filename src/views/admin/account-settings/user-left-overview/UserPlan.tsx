@@ -14,7 +14,7 @@ import { DateTime } from 'luxon'
 
 // Component Imports
 
-const UserPlan = ({ data }: { data: UserDataType }) => {
+const UserPlan = ({ data, getUserData }: { data: UserDataType; getUserData: () => void }) => {
   //Vars
   const buttonProps: mui.ButtonProps = {
     variant: 'contained',
@@ -36,6 +36,17 @@ const UserPlan = ({ data }: { data: UserDataType }) => {
             <Typography className='font-medium' color='text.primary'>
               No active subscription
             </Typography>
+            <OpenDialogOnElementClick
+              element={Button}
+              elementProps={{
+                variant: 'contained',
+                children: 'Buy Subscription'
+              }}
+              dialog={UpgradePlan}
+              dialogProps={{
+                getUserData
+              }}
+            />
           </CardContent>
         ) : (
           <CardContent className='flex flex-col gap-6'>
@@ -82,7 +93,15 @@ const UserPlan = ({ data }: { data: UserDataType }) => {
               />
               <Typography variant='body2'>{`${(data?.SubscriptionData?.subscriptionValidity || 0) - daysPast} days remaining`}</Typography>
             </div>
-            <OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={UpgradePlan} />
+            <OpenDialogOnElementClick
+              element={Button}
+              elementProps={buttonProps}
+              dialog={UpgradePlan}
+              dialogProps={{
+                currentPlan: data?.SubscriptionData,
+                getUserData
+              }}
+            />
           </CardContent>
         )}
       </Card>

@@ -99,14 +99,17 @@ export type StoreDataType = {
     nightEndTime: string
     nightStartTime: string
   }
-  SubscriptionData?: {
-    _id: string
-    subscriptionName: string
-    subscriptionAmount: number
-    subscriptionValidity: number
-    startDate: string
-    endDate: string
-  }
+  SubscriptionData?: SubscriptionPlanType
+}
+
+export type SubscriptionPlanType = {
+  _id: string
+  subscriptionName: string
+  subscriptionAmount: number
+  subscriptionValidity: number
+  subscriptionId: string
+  startDate: string
+  endDate: string
 }
 
 export type DeviceDataType = {
