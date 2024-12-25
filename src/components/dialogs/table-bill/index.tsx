@@ -59,6 +59,7 @@ const TableBill = ({
   const [mealsPaymentData, setMealsPaymentData] = useState(
     {} as { [x: string]: { paid?: number | string; paymentMethod?: string } }
   )
+  const [isCheckoutButtonDisabled, setIsCheckoutButtonDisabled] = useState(false)
 
   const netPay = (data.totalBillAmt - Number(inputData.discount ?? 0)).toFixed(2)
   const cashOut = (Number(inputData.cashIn ?? 0) - Number(netPay ?? 0)).toFixed(2)
@@ -112,6 +113,9 @@ const TableBill = ({
   }
 
   const handleSubmit = async () => {
+    setIsCheckoutButtonDisabled(true)
+    setTimeout(() => setIsCheckoutButtonDisabled(false), 3000)
+
     if (invoiceTo.length < 1) {
       setErrors({ invoiceTo: 'This field is required' })
       return
@@ -700,7 +704,7 @@ const TableBill = ({
             <Button
               variant='contained'
               onClick={handleSubmit}
-              disabled={invoiceTo?.length > 1 && Number(cashOut) !== 0}
+              disabled={isCheckoutButtonDisabled || (invoiceTo?.length > 1 && Number(cashOut) !== 0)}
             >
               Checkout
             </Button>
