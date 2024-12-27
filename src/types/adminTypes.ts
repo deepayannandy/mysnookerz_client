@@ -98,6 +98,7 @@ export type StoreDataType = {
     transactionCounter: number
     nightEndTime: string
     nightStartTime: string
+    defaultCustomer: boolean
   }
   SubscriptionData?: SubscriptionPlanType
 }

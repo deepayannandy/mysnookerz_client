@@ -48,9 +48,6 @@ const DeviceCard = ({
   const theme = useTheme()
 
   const handleSwitch = async ({ deviceId, node, checked }: { deviceId: string; node: string; checked: boolean }) => {
-    console.log(node)
-    console.log(checked)
-
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {

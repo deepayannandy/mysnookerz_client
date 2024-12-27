@@ -3,6 +3,7 @@
 import { StoreDataType } from '@/types/adminTypes'
 // MUI Imports
 import HappyHours from '@/views/admin/store-settings/master/HappyHours'
+import MasterControl from '@/views/admin/store-settings/master/MasterControl'
 import NightTime from '@/views/admin/store-settings/master/NightTime'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -50,6 +51,9 @@ const MasterDetails = () => {
       </div>
       <div className='border rounded-lg'>
         <HappyHours />
+      </div>
+      <div className='border rounded-lg col-span-2'>
+        <MasterControl storeData={data} getStoreData={getStoreData} />
       </div>
       {/* <div className='border rounded-lg'>
         <ProductInformation />

@@ -33,9 +33,10 @@ import type { ThemeColor } from '@core/types'
 // Style Imports
 
 import SearchInput from '@/components/Search'
+import { TableDataType } from '@/types/adminTypes'
 import { HistoryDataType } from '@/types/staffTypes'
 import tableStyles from '@core/styles/table.module.css'
-import { CardContent, Tooltip } from '@mui/material'
+import { CardContent, FormControl, InputLabel, MenuItem, Select, Tooltip } from '@mui/material'
 import Chip from '@mui/material/Chip'
 import axios from 'axios'
 import { DateTime } from 'luxon'
@@ -83,7 +84,10 @@ const columnHelper = createColumnHelper<HistoryDataWithAction>()
 const HistoryTable = () => {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as HistoryDataType[])
+  const [completeHistoryData, setCompleteHistoryData] = useState([] as HistoryDataType[])
   const [globalFilter, setGlobalFilter] = useState('')
+  const [tableNameFilter, setTableNameFilter] = useState([] as string[])
+  const [tableList, setTableList] = useState([] as string[])
 
   // Hooks
   const { lang: locale } = useParams()
@@ -105,6 +109,25 @@ const HistoryTable = () => {
       const response = await axios.get(`${apiBaseUrl}/history/`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         setData(response.data)
+        setCompleteHistoryData(response.data)
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 401) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  const getAllTableData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.get(`${apiBaseUrl}/table`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        const names = response.data.map((table: TableDataType) => table.tableName)
+        setTableList(names)
       }
     } catch (error: any) {
       if (error?.response?.status === 401) {
@@ -117,8 +140,21 @@ const HistoryTable = () => {
 
   useEffect(() => {
     getHistoryData()
+    getAllTableData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const applyTableNameFilter = (filterValue: string | string[]) => {
+    const filterValuesArray = typeof filterValue === 'string' ? filterValue.split(',') : filterValue
+    setTableNameFilter(filterValuesArray)
+
+    if (filterValuesArray.length) {
+      const filteredData = completeHistoryData.filter(historyData => {
+        return filterValuesArray.some(value => historyData.description.includes(value))
+      })
+      setData(filteredData)
+    }
+  }
 
   const columns = useMemo<ColumnDef<HistoryDataWithAction, any>[]>(
     () => [
@@ -255,6 +291,23 @@ const HistoryTable = () => {
               placeholder='Search'
               //className='is-full sm:is-auto'
             />
+            <FormControl size='small'>
+              <InputLabel>Table Name</InputLabel>
+              <Select
+                className='w-40'
+                label='Table Name'
+                fullWidth
+                multiple
+                value={tableNameFilter}
+                onChange={event => applyTableNameFilter(event.target.value)}
+              >
+                {tableList.map(name => (
+                  <MenuItem key={name} value={name}>
+                    {name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </div>
         </CardContent>
         <div className='overflow-x-auto'>
