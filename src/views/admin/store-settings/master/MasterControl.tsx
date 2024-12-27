@@ -32,7 +32,7 @@ const MasterControl = ({ storeData, getStoreData }: { storeData: StoreDataType; 
   const { handleSubmit } = useForm<MasterControlDataType>({})
 
   useEffect(() => {
-    setIsDefaultCustomerSwitch(storeData?.StoreData?.defaultCustomer ? storeData.StoreData.defaultCustomer : true)
+    setIsDefaultCustomerSwitch(!!storeData?.StoreData?.defaultCustomer)
   }, [storeData])
 
   const onSubmit = async () => {
