@@ -51,7 +51,7 @@ const CustomerDetails = ({ params }: { params: { id: string } }) => {
         setCustomerData(response.data)
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 409) {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }
@@ -71,7 +71,7 @@ const CustomerDetails = ({ params }: { params: { id: string } }) => {
         setPaymentHistoryData(response.data)
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 409) {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }
@@ -102,7 +102,7 @@ const CustomerDetails = ({ params }: { params: { id: string } }) => {
         return router.replace(redirectUrl)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   return router.replace(redirectUrl)
       // }

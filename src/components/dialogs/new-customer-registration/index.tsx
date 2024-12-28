@@ -92,7 +92,7 @@ const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomer
         toast.success('Customer added successfully')
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)

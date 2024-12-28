@@ -94,7 +94,7 @@ const ChangePassword = () => {
         router.replace(getLocalizedUrl(redirectURL, locale as Locale))
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)

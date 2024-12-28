@@ -128,7 +128,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
         setInStockSwitch(!response.data.isOutOfStock)
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 409) {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }
@@ -152,7 +152,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
         setCategoryList(data)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 401) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   return router.replace(redirectUrl)
       // }
@@ -202,7 +202,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
         return router.replace(redirectUrl)
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 409) {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }

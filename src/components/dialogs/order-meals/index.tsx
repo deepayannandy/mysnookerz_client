@@ -139,7 +139,7 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
         })
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   return router.replace(redirectUrl)
       // }
@@ -189,7 +189,7 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
         toast.success('Good Job!', { icon: <>👏</> })
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   return router.replace(redirectUrl)
       // }

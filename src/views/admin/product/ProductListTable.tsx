@@ -110,7 +110,7 @@ const ProductListTable = () => {
         setData(response.data)
       }
     } catch (error: any) {
-      if (error?.response?.status === 400) {
+      if (error?.response?.status === 409) {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }
@@ -135,7 +135,7 @@ const ProductListTable = () => {
         toast.success('Product deleted successfully')
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 409) {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }

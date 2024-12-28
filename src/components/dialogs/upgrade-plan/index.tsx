@@ -68,7 +68,7 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData }: UpgradePlanPro
         setSelectedPlanId(currentPlan?.subscriptionId ?? list[0]?.id)
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 409) {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }
@@ -98,7 +98,7 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData }: UpgradePlanPro
         toast.success('Plan updated successfully')
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 409) {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }

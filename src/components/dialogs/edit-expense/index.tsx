@@ -95,7 +95,7 @@ const EditExpenseInfo = ({ open, setOpen, getAllExpenseData, expenseData }: Edit
         toast.success('Expense info updated successfully')
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)

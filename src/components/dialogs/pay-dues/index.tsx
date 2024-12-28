@@ -86,7 +86,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
         toast.success('Dues paid successfully')
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)

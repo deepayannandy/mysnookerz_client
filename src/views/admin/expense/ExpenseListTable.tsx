@@ -110,7 +110,7 @@ const ExpenseListTable = () => {
         setData(response.data)
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 409) {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }
@@ -135,7 +135,7 @@ const ExpenseListTable = () => {
         toast.success('Expense deleted successfully')
       }
     } catch (error: any) {
-      if (error?.response?.status === 401) {
+      if (error?.response?.status === 409) {
         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         return router.replace(redirectUrl)
       }

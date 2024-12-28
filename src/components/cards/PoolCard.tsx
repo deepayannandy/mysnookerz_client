@@ -75,7 +75,7 @@ const PoolCard = ({
           setBillData(response.data)
         }
       } catch (error: any) {
-        // if (error?.response?.status === 400) {
+        // if (error?.response?.status === 409) {
         //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
         //   return router.replace(redirectUrl)
         // }
@@ -116,7 +116,7 @@ const PoolCard = ({
       }
       return { success: false }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)
@@ -170,7 +170,7 @@ const PoolCard = ({
         toast.success(`${tableData.tableName} started`, { icon: <>😁</> })
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)
@@ -197,7 +197,7 @@ const PoolCard = ({
         toast.success(`${tableData.tableName} stopped`)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)
@@ -223,7 +223,7 @@ const PoolCard = ({
         toast.success(`${tableData.tableName} paused`)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)
@@ -249,7 +249,7 @@ const PoolCard = ({
         toast.success(`${tableData.tableName} resumed`)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)
@@ -275,7 +275,7 @@ const PoolCard = ({
         toast.success(`${tableData.tableName} restarted`)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 400) {
+      // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   console.log(redirectUrl)
       //   return router.replace(redirectUrl)
