@@ -175,6 +175,7 @@ export type TransactionReportTableDataType = {
   netPay: number
   discount: number
   due: number
+  paymentMethod?: string
 }
 
 export type CollectionReportDataType = {

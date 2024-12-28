@@ -107,6 +107,12 @@ const TransactionReportTable = ({
   const [endDate, setEndDate] = useState(null as Date | null)
   const [isDateFilterApplied, setIsDateFilterApplied] = useState(false)
   const [selectedStoreName, setSelectedStoreName] = useState(storeName)
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState('')
+  const [transactionData, setTransactionData] = useState(data)
+
+  useEffect(() => {
+    setTransactionData(data)
+  }, [data])
 
   const columns = useMemo<ColumnDef<TransactionReportTableDataType, any>[]>(
     () => [
@@ -138,7 +144,7 @@ const TransactionReportTable = ({
         header: 'Dues',
         cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.due || 0}`}</Typography>
       }),
-      columnHelper.accessor('description', {
+      columnHelper.accessor('paymentMethod', {
         header: 'Payment Method',
         cell: ({ row }) => (
           <Typography color='text.primary'>
@@ -154,7 +160,7 @@ const TransactionReportTable = ({
   )
 
   const table = useReactTable({
-    data: data as TransactionReportTableDataType[],
+    data: transactionData as TransactionReportTableDataType[],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter
@@ -211,6 +217,28 @@ const TransactionReportTable = ({
     // getReportData({ startDate, endDate })
   }
 
+  const applyFilter = (value: string) => {
+    setPaymentMethodFilter(value)
+
+    if (value) {
+      const filteredData = data.filter(reportData => {
+        const descriptionArr = reportData.description?.split(' ')
+        if (descriptionArr?.length) {
+          const paymentMethod = descriptionArr[descriptionArr.length - 1]
+          if (paymentMethod.toLowerCase().includes(value.toLowerCase())) {
+            return true
+          }
+        }
+
+        return false
+      })
+
+      setTransactionData(filteredData)
+    } else if (data.length) {
+      setTransactionData(data)
+    }
+  }
+
   return (
     <>
       <Card>
@@ -262,36 +290,31 @@ const TransactionReportTable = ({
           >
             Clear Filters
           </Button>
-          <div className='flex flex-col sm:flex-row items-center gap-2'>
-            <DebouncedInput
-              fullWidth
-              value={globalFilter ?? ''}
-              onChange={value => setGlobalFilter(String(value))}
-              placeholder='Transaction Id'
-            />
-            <FormControl fullWidth size='small'>
-              <InputLabel id='status-select'>Store Name</InputLabel>
-              <Select
-                size='small'
-                id='select-status'
-                value={selectedStoreName ?? ''}
-                onChange={e => setSelectedStoreName(e.target.value)}
-                label='Store Name'
-                labelId='store-select'
-              >
-                <MenuItem value={storeName ?? ''}>{storeName}</MenuItem>
-              </Select>
-            </FormControl>
-          </div>
-          {/* <Typography className='text-xl font-bold'>Transaction Report</Typography>
-          <div className='flex gap-x-4'>
-            <SearchInput
-              value={globalFilter ?? ''}
-              onChange={value => setGlobalFilter(String(value))}
-              placeholder='Transaction Id'
-              //className='is-full sm:is-auto'
-            />
-          </div> */}
+          <DebouncedInput
+            size='small'
+            value={globalFilter ?? ''}
+            onChange={value => setGlobalFilter(String(value))}
+            placeholder='Transaction Id'
+          />
+          <FormControl className='sm:w-40' size='small'>
+            <InputLabel id='status-select'>Store Name</InputLabel>
+            <Select
+              size='small'
+              id='select-status'
+              value={selectedStoreName ?? ''}
+              onChange={e => setSelectedStoreName(e.target.value)}
+              label='Store Name'
+              labelId='store-select'
+            >
+              <MenuItem value={storeName ?? ''}>{storeName}</MenuItem>
+            </Select>
+          </FormControl>
+          <DebouncedInput
+            size='small'
+            value={paymentMethodFilter}
+            onChange={value => applyFilter(value as string)}
+            placeholder='Payment Method'
+          />
         </CardContent>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>

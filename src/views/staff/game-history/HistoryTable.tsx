@@ -153,6 +153,8 @@ const HistoryTable = () => {
         return filterValuesArray.some(value => historyData.description.includes(value))
       })
       setData(filteredData)
+    } else if (completeHistoryData.length) {
+      setData(completeHistoryData)
     }
   }
 
