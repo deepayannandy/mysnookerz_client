@@ -93,6 +93,8 @@ const DebouncedInput = ({
 
 const storeName = localStorage.getItem('storeName')
 
+const paymentMethods = ['CASH', 'CARD', 'UPI', 'GEMS']
+
 const TransactionReportTable = ({
   data,
   getReportData
@@ -107,7 +109,7 @@ const TransactionReportTable = ({
   const [endDate, setEndDate] = useState(null as Date | null)
   const [isDateFilterApplied, setIsDateFilterApplied] = useState(false)
   const [selectedStoreName, setSelectedStoreName] = useState(storeName)
-  const [paymentMethodFilter, setPaymentMethodFilter] = useState('')
+  const [paymentMethodFilter, setPaymentMethodFilter] = useState([] as string[])
   const [transactionData, setTransactionData] = useState(data)
 
   useEffect(() => {
@@ -217,17 +219,17 @@ const TransactionReportTable = ({
     // getReportData({ startDate, endDate })
   }
 
-  const applyFilter = (value: string) => {
-    setPaymentMethodFilter(value)
+  const applyFilter = (filterValue: string | string[]) => {
+    const filterValuesArray = typeof filterValue === 'string' ? filterValue.split(',') : filterValue
+    setPaymentMethodFilter(filterValuesArray)
 
-    if (value) {
+    if (filterValuesArray.length) {
       const filteredData = data.filter(reportData => {
         const descriptionArr = reportData.description?.split(' ')
         if (descriptionArr?.length) {
           const paymentMethod = descriptionArr[descriptionArr.length - 1]
-          if (paymentMethod.toLowerCase().includes(value.toLowerCase())) {
-            return true
-          }
+
+          return filterValuesArray.some(value => paymentMethod.includes(value))
         }
 
         return false
@@ -309,12 +311,29 @@ const TransactionReportTable = ({
               <MenuItem value={storeName ?? ''}>{storeName}</MenuItem>
             </Select>
           </FormControl>
-          <DebouncedInput
+          {/* <DebouncedInput
             size='small'
             value={paymentMethodFilter}
             onChange={value => applyFilter(value as string)}
             placeholder='Payment Method'
-          />
+          /> */}
+          <FormControl size='small'>
+            <InputLabel>Payment Method</InputLabel>
+            <Select
+              size='small'
+              className='sm:w-44'
+              label='Payment Method'
+              multiple
+              value={paymentMethodFilter}
+              onChange={event => applyFilter(event.target.value)}
+            >
+              {paymentMethods.map(method => (
+                <MenuItem key={method} value={method}>
+                  {method}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </CardContent>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>
