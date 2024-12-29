@@ -73,6 +73,7 @@ export type TableDataType = {
   nodeID: string
   isOccupied?: boolean
   isBooked?: boolean
+  isHold?: boolean
   productList?: {
     customerDetails: { fullName: string; customerId: string }
     orders: { productId: string; productName: string; productSalePrice: number; qnt: number; _id: string }[]

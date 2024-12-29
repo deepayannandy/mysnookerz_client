@@ -46,6 +46,7 @@ const PoolCard = ({
   const [showSwitchTable, setShowSwitchTable] = useState(false)
   const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false)
   const [showMealCart, setShowMealCart] = useState(false)
+  const [showOnHoldBill, setShowOnHoldBill] = useState(false)
 
   // let totalSeconds =
   //   tableData.gameData?.startTime && tableData.gameData?.endTime
@@ -302,9 +303,21 @@ const PoolCard = ({
                 <></>
               )
             ) : tableData?.gameData?.gameType !== 'Countdown Billing' ? (
-              <Tooltip title='Switch Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
-                <span className='ri-arrow-left-right-line' onClick={() => setShowSwitchTable(true)}></span>
-              </Tooltip>
+              tableData?.isHold ? (
+                <Tooltip title='Checkout Pending' placement='top' className='cursor-pointer text-xl text-center pt-6'>
+                  <span
+                    className='ri-bill-line'
+                    onClick={() => {
+                      setShowOnHoldBill(true)
+                      setShowBill(true)
+                    }}
+                  ></span>
+                </Tooltip>
+              ) : (
+                <Tooltip title='Switch Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
+                  <span className='ri-arrow-left-right-line' onClick={() => setShowSwitchTable(true)}></span>
+                </Tooltip>
+              )
             ) : (
               <></>
             )}
@@ -638,6 +651,7 @@ const PoolCard = ({
         <TableBill
           open={showBill}
           setOpen={setShowBill}
+          isOnHoldBill={showOnHoldBill}
           tableData={tableData}
           customersList={customersList}
           getAllTablesData={getAllTablesData}

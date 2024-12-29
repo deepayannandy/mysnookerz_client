@@ -19,6 +19,7 @@ import { toast } from 'react-toastify'
 type TableBillPropType = {
   open: boolean
   setOpen: (open: boolean) => void
+  isOnHoldBill: boolean
   tableData: TableDataType
   customersList: CustomerListType[]
   getAllTablesData: () => void
@@ -32,6 +33,7 @@ const paymentMethods = ['CASH', 'UPI', 'CARD']
 const TableBill = ({
   open,
   setOpen,
+  isOnHoldBill,
   tableData,
   customersList,
   getAllTablesData,
@@ -60,6 +62,7 @@ const TableBill = ({
     {} as { [x: string]: { paid?: number | string; paymentMethod?: string } }
   )
   const [isCheckoutButtonDisabled, setIsCheckoutButtonDisabled] = useState(false)
+  const [isHoldButtonDisabled, setIsHoldButtonDisabled] = useState(false)
 
   const netPay = (data.totalBillAmt - Number(inputData.discount ?? 0)).toFixed(2)
   const cashOut = (Number(inputData.cashIn ?? 0) - Number(netPay ?? 0)).toFixed(2)
@@ -85,7 +88,8 @@ const TableBill = ({
     const token = localStorage.getItem('token')
     if (open && tableData._id) {
       try {
-        const response = await axios.get(`${apiBaseUrl}/games/getBilling/${tableData._id}`, {
+        const endpoint = isOnHoldBill ? 'getOnHold' : 'getBilling'
+        const response = await axios.get(`${apiBaseUrl}/games/${endpoint}/${tableData._id}`, {
           headers: { 'auth-token': token }
         })
         if (response && response.data) {
@@ -196,12 +200,40 @@ const TableBill = ({
       totalBillAmt: data.totalBillAmt,
       cashOut,
       checkoutPlayers,
-      mealSettlement
+      mealSettlement,
+      ...(isOnHoldBill ? { fromHold: true } : {})
     }
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
       const response = await axios.patch(`${apiBaseUrl}/games/checkoutTable/${tableData._id}`, requestData, {
+        headers: { 'auth-token': token }
+      })
+
+      if (response && response.data) {
+        setGameType(tableData.gameTypes[0] || '')
+        setCustomers(['CASH'])
+        getAllTablesData()
+        handleClose()
+        toast.success('Good Job!', { icon: <>👏</> })
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 409) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  const holdCheckout = async () => {
+    setIsHoldButtonDisabled(true)
+    setTimeout(() => setIsHoldButtonDisabled(false), 3000)
+
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.post(`${apiBaseUrl}/games/putOnHold/${tableData._id}`, data, {
         headers: { 'auth-token': token }
       })
 
@@ -708,6 +740,20 @@ const TableBill = ({
             >
               Checkout
             </Button>
+
+            {!isOnHoldBill ? (
+              <Button
+                variant='outlined'
+                color='warning'
+                disabled={isHoldButtonDisabled || tableData.isHold}
+                onClick={holdCheckout}
+              >
+                Hold
+              </Button>
+            ) : (
+              <></>
+            )}
+
             <Button variant='outlined' color='error' onClick={handleClose}>
               Cancel
             </Button>
