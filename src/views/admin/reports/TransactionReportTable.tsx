@@ -35,7 +35,7 @@ import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import { TransactionReportTableDataType } from '@/types/adminTypes'
 import tableStyles from '@core/styles/table.module.css'
 import * as mui from '@mui/material'
-import { Button, CardContent, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { Button, CardContent, Checkbox, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { DateTime } from 'luxon'
 
 declare module '@tanstack/table-core' {
@@ -319,6 +319,17 @@ const TransactionReportTable = ({
           /> */}
           <FormControl size='small'>
             <InputLabel>Payment Method</InputLabel>
+            {/* <NativeSelect
+              id='demo-customized-select-native'
+              value={paymentMethodFilter}
+              onChange={event => applyFilter(event.target.value)}
+            >
+              {paymentMethods.map(method => (
+                <option key={method} value={method}>
+                  {method}
+                </option>
+              ))}
+            </NativeSelect> */}
             <Select
               size='small'
               className='sm:w-44'
@@ -326,9 +337,11 @@ const TransactionReportTable = ({
               multiple
               value={paymentMethodFilter}
               onChange={event => applyFilter(event.target.value)}
+              renderValue={selected => selected.map(value => value).join(', ')}
             >
               {paymentMethods.map(method => (
                 <MenuItem key={method} value={method}>
+                  <Checkbox checked={paymentMethodFilter.indexOf(method) > -1} />
                   {method}
                 </MenuItem>
               ))}

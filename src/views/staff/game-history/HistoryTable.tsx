@@ -36,7 +36,7 @@ import SearchInput from '@/components/Search'
 import { TableDataType } from '@/types/adminTypes'
 import { HistoryDataType } from '@/types/staffTypes'
 import tableStyles from '@core/styles/table.module.css'
-import { CardContent, FormControl, InputLabel, MenuItem, Select, Tooltip } from '@mui/material'
+import { CardContent, Checkbox, FormControl, InputLabel, MenuItem, Select, Tooltip } from '@mui/material'
 import Chip from '@mui/material/Chip'
 import axios from 'axios'
 import { DateTime } from 'luxon'
@@ -302,9 +302,11 @@ const HistoryTable = () => {
                 multiple
                 value={tableNameFilter}
                 onChange={event => applyTableNameFilter(event.target.value)}
+                renderValue={selected => selected.map(value => value).join(', ')}
               >
                 {tableList.map(name => (
                   <MenuItem key={name} value={name}>
+                    <Checkbox checked={tableNameFilter.indexOf(name) > -1} />
                     {name}
                   </MenuItem>
                 ))}
