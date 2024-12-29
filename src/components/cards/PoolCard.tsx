@@ -294,24 +294,20 @@ const PoolCard = ({
       >
         <div className='grid place-items-center'>
           <div className='bg-[url("/images/snooker-table/background-trapezoid.svg")] flex justify-center gap-3 bg-contain text-black bg-no-repeat bg-center w-full lg:w-11/12'>
-            {tableData?.gameData?.endTime ? (
-              tableData?.gameData?.gameType !== 'Countdown Billing' ? (
+            {tableData?.isHold ? (
+              <Tooltip title='Checkout Pending' placement='top' className='cursor-pointer text-xl text-center pt-6'>
+                <span
+                  className='ri-bill-line'
+                  onClick={() => {
+                    setShowOnHoldBill(true)
+                    setShowBill(true)
+                  }}
+                ></span>
+              </Tooltip>
+            ) : tableData?.gameData?.gameType !== 'Countdown Billing' ? (
+              tableData?.gameData?.endTime ? (
                 <Tooltip title='Restart Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
                   <span className='ri-restart-line' onClick={restartGame}></span>
-                </Tooltip>
-              ) : (
-                <></>
-              )
-            ) : tableData?.gameData?.gameType !== 'Countdown Billing' ? (
-              tableData?.isHold ? (
-                <Tooltip title='Checkout Pending' placement='top' className='cursor-pointer text-xl text-center pt-6'>
-                  <span
-                    className='ri-bill-line'
-                    onClick={() => {
-                      setShowOnHoldBill(true)
-                      setShowBill(true)
-                    }}
-                  ></span>
                 </Tooltip>
               ) : (
                 <Tooltip title='Switch Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
@@ -652,6 +648,7 @@ const PoolCard = ({
           open={showBill}
           setOpen={setShowBill}
           isOnHoldBill={showOnHoldBill}
+          setShowOnHoldBill={setShowOnHoldBill}
           tableData={tableData}
           customersList={customersList}
           getAllTablesData={getAllTablesData}

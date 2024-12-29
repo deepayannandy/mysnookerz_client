@@ -20,6 +20,7 @@ type TableBillPropType = {
   open: boolean
   setOpen: (open: boolean) => void
   isOnHoldBill: boolean
+  setShowOnHoldBill: (value: boolean) => void
   tableData: TableDataType
   customersList: CustomerListType[]
   getAllTablesData: () => void
@@ -34,6 +35,7 @@ const TableBill = ({
   open,
   setOpen,
   isOnHoldBill,
+  setShowOnHoldBill,
   tableData,
   customersList,
   getAllTablesData,
@@ -72,9 +74,11 @@ const TableBill = ({
   const router = useRouter()
 
   const totalSeconds =
-    tableData.gameData?.startTime && tableData.gameData?.endTime
-      ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['seconds'])
-          .seconds
+    data?.selectedTable?.gameData?.startTime && data?.selectedTable?.gameData?.endTime
+      ? DateTime.fromISO(data.selectedTable.gameData.endTime).diff(
+          DateTime.fromISO(data.selectedTable.gameData.startTime),
+          ['seconds']
+        ).seconds
       : 0
 
   // const totalMinutes = Math.ceil(totalSeconds / 60)
@@ -113,6 +117,7 @@ const TableBill = ({
 
   const handleClose = () => {
     setInputData({ discount: '', paymentMethod: paymentMethods[0], cashIn: '' })
+    setShowOnHoldBill(false)
     setOpen(false)
   }
 
@@ -352,13 +357,13 @@ const TableBill = ({
       <Divider />
       <div className='p-5'>
         <div className='flex flex-col gap-3'>
-          {tableData.gameData?.gameType ? (
+          {data?.selectedTable?.gameData?.gameType ? (
             <TextField
               disabled
               id='gameType'
               label='Billing'
               size='small'
-              defaultValue={tableData.gameData.gameType}
+              defaultValue={data?.selectedTable?.gameData?.gameType}
             ></TextField>
           ) : (
             <></>

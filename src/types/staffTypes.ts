@@ -107,6 +107,7 @@ export type CustomerInvoiceType = {
     gameData: {
       startTime: string
       endTime: string
+      gameType: string
       players: {
         fullName: string
         customerId: string
