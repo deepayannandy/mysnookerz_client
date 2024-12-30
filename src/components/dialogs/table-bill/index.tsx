@@ -45,7 +45,9 @@ const TableBill = ({
 }: TableBillPropType) => {
   // States
   const [data, setData] = useState({} as CustomerInvoiceType)
-  const [invoiceTo, setInvoiceTo] = useState((data.selectedTable?.gameData?.players || []) as CustomerListType[])
+  const [invoiceTo, setInvoiceTo] = useState(
+    (data.selectedTable?.gameData?.players || []) as (CustomerListType | string)[]
+  )
 
   const [errors, setErrors] = useState({} as { invoiceTo: string })
   const [inputData, setInputData] = useState({
@@ -130,8 +132,15 @@ const TableBill = ({
       return
     }
 
+    const players = invoiceTo.map(customer => {
+      if (typeof customer === 'string') {
+        return { fullName: customer }
+      }
+      return customer
+    })
+
     const checkoutPlayers = []
-    if (invoiceTo.length > 1) {
+    if (players.length > 1) {
       let totalAmount = 0
       for (const name of Object.keys(customerPaymentData)) {
         if (!customerPaymentData[name]?.amount) {
@@ -140,7 +149,7 @@ const TableBill = ({
 
         totalAmount = totalAmount + Number(customerPaymentData[name].amount)
 
-        const customerData = invoiceTo.find(data => data.fullName === name)
+        const customerData = players.find(data => data.fullName === name)
 
         if (!customerData) {
           toast.error('Incorrect customer data')
@@ -159,7 +168,7 @@ const TableBill = ({
           cashIn: customerPaymentData[name].cashIn ?? 0
         })
       }
-      if (checkoutPlayers?.length !== invoiceTo?.length) {
+      if (checkoutPlayers?.length !== players?.length) {
         toast.error('Please provide complete payment details for the customers')
         return
       }
@@ -174,7 +183,7 @@ const TableBill = ({
       }
 
       checkoutPlayers.push({
-        ...invoiceTo[0],
+        ...players[0],
         amount: netPay,
         paymentMethod: inputData.paymentMethod,
         cashIn: inputData.cashIn ?? 0
@@ -399,9 +408,10 @@ const TableBill = ({
               size='small'
               disableClearable
               options={getOptions()}
-              getOptionLabel={option => option.fullName}
+              getOptionLabel={option => (option as CustomerListType)?.fullName ?? option}
               groupBy={option => (option as CustomerListType & { group: string }).group}
               multiple
+              freeSolo
               value={invoiceTo}
               onChange={(_, value) => setInvoiceTo(value)}
               renderTags={(value, getTagProps) =>
@@ -411,8 +421,14 @@ const TableBill = ({
                     <Chip
                       size='small'
                       variant='outlined'
-                      avatar={option.fullName ? <Avatar>{getInitials(option.fullName)}</Avatar> : <></>}
-                      label={option.fullName}
+                      avatar={
+                        (option as CustomerListType).fullName ? (
+                          <Avatar>{getInitials((option as CustomerListType).fullName)}</Avatar>
+                        ) : (
+                          <></>
+                        )
+                      }
+                      label={(option as CustomerListType).fullName ?? option}
                       {...tagProps}
                       key={key}
                     />
@@ -450,20 +466,41 @@ const TableBill = ({
               </div>
 
               {invoiceTo.map(customer => (
-                <div key={customer.fullName} className='w-full grid grid-cols-4 border-b divide-x'>
+                <div
+                  key={
+                    ((customer as CustomerListType).fullName
+                      ? (customer as CustomerListType).fullName
+                      : customer) as string
+                  }
+                  className='w-full grid grid-cols-4 border-b divide-x'
+                >
                   <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
-                    <p>{customer.fullName}</p>
+                    <p>
+                      {
+                        ((customer as CustomerListType).fullName
+                          ? (customer as CustomerListType).fullName
+                          : customer) as string
+                      }
+                    </p>
                   </div>
                   <div className='size-full grid place-items-center p-1 sm:p-2'>
                     <TextField
                       size='small'
                       //placeholder='₹_._'
                       inputProps={{ type: 'number', min: 0, step: 'any' }}
-                      value={customerPaymentData[customer.fullName as string]?.amount || ''}
+                      value={
+                        customerPaymentData[
+                          ((customer as CustomerListType).fullName
+                            ? (customer as CustomerListType).fullName
+                            : customer) as string
+                        ]?.amount || ''
+                      }
                       onChange={event =>
                         handleCustomerPaymentDataChange({
                           value: event.target.value,
-                          fullName: customer.fullName,
+                          fullName: ((customer as CustomerListType).fullName
+                            ? (customer as CustomerListType).fullName
+                            : customer) as string,
                           field: 'amount'
                         })
                       }
@@ -474,11 +511,19 @@ const TableBill = ({
                       size='small'
                       //placeholder='₹_._'
                       inputProps={{ type: 'number', min: 0, step: 'any' }}
-                      value={customerPaymentData[customer.fullName as string]?.cashIn || ''}
+                      value={
+                        customerPaymentData[
+                          ((customer as CustomerListType).fullName
+                            ? (customer as CustomerListType).fullName
+                            : customer) as string
+                        ]?.cashIn || ''
+                      }
                       onChange={event =>
                         handleCustomerPaymentDataChange({
                           value: event.target.value,
-                          fullName: customer.fullName,
+                          fullName: ((customer as CustomerListType).fullName
+                            ? (customer as CustomerListType).fullName
+                            : customer) as string,
                           field: 'cashIn'
                         })
                       }
@@ -489,11 +534,19 @@ const TableBill = ({
                       className='min-w-fit'
                       size='small'
                       select
-                      value={customerPaymentData[customer.fullName as string]?.paymentMethod || paymentMethods[0]}
+                      value={
+                        customerPaymentData[
+                          ((customer as CustomerListType).fullName
+                            ? (customer as CustomerListType).fullName
+                            : customer) as string
+                        ]?.paymentMethod || paymentMethods[0]
+                      }
                       onChange={e => {
                         handleCustomerPaymentDataChange({
                           value: e.target.value,
-                          fullName: customer.fullName,
+                          fullName: ((customer as CustomerListType).fullName
+                            ? (customer as CustomerListType).fullName
+                            : customer) as string,
                           field: 'paymentMethod'
                         })
                       }}
