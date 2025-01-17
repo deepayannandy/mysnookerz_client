@@ -19,11 +19,10 @@ type BlacklistConfirmationDataType = {
 type BlacklistConfirmationInfoProps = {
   open: boolean
   setOpen: (open: boolean) => void
-  message?: string
   api: (reason: string) => void
 }
 
-const BlacklistConfirmation = ({ open, setOpen, message, api }: BlacklistConfirmationInfoProps) => {
+const BlacklistConfirmation = ({ open, setOpen, api }: BlacklistConfirmationInfoProps) => {
   // States
 
   // const { lang: locale } = useParams()
