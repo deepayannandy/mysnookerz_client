@@ -88,6 +88,9 @@ const VerticalMenu = ({ dictionary, scrollMenu, userDesignation }: Props) => {
           <MenuItem href={`/${locale}/staff/game-history`}>{dictionary['navigation'].gameHistory}</MenuItem>
           <MenuItem href={`/${locale}/staff/cafe-history`}>{dictionary['navigation'].cafeHistory}</MenuItem>
           <MenuItem href={`/${locale}/staff/customer`}>{dictionary['navigation'].customer}</MenuItem>
+          <MenuItem href={`/${locale}/staff/customer/blacklisted`}>
+            {dictionary['navigation'].blacklistedCustomer}
+          </MenuItem>
         </MenuSection>
 
         {userDesignation !== 'Staff' ? (

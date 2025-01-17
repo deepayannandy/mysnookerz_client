@@ -24,6 +24,7 @@ export type CustomerDataType = {
   credit: number
   isBlackListed: boolean
   reasonOfBlackList: string
+  dateOfBlackList: string
 }
 
 export type CustomerDetailsDataType = {

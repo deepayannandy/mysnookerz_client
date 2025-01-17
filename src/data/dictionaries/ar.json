@@ -17,6 +17,7 @@
     "devices": "الأجهزة",
     "client": "عميل",
     "customer": "عميل",
+    "blacklistedCustomer": "Blacklisted Customer",
     "device": "جهاز",
     "dashboards": "لوحات القيادة",
     "cafeManagement": "إدارة المقهى",

@@ -17,6 +17,7 @@
     "devices": "Devices",
     "client": "Client",
     "customer": "Customer",
+    "blacklistedCustomer": "Blacklisted Customer",
     "device": "Device",
     "dashboards": "Dashboards",
     "cafeManagement": "Cafe Management",

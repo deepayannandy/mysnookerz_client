@@ -17,6 +17,7 @@
     "devices": "appareils",
     "client": "Cliente",
     "customer": "Consommateur",
+    "blacklistedCustomer": "Blacklisted Customer",
     "device": "Appareil",
     "dashboards": "Tableaux de bord",
     "cafeManagement": "Gestion du café",
