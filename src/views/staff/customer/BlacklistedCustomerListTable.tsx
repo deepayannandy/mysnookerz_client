@@ -94,7 +94,6 @@ const BlacklistedCustomerListTable = () => {
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
   const [globalFilter, setGlobalFilter] = useState('')
   const [newCustomerRegistrationDialogOpen, setNewCustomerRegistrationDialogOpen] = useState(false)
-  const [editCustomerInfoDialogOpen, setEditCustomerInfoDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
