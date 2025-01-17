@@ -13,9 +13,10 @@ type DeleteConfirmationProps = {
   setOpen: (open: boolean) => void
   name: string
   deleteApiCall: () => void
+  message?: string
 }
 
-const DeleteConfirmation = ({ open, setOpen, name, deleteApiCall }: DeleteConfirmationProps) => {
+const DeleteConfirmation = ({ open, setOpen, name, deleteApiCall, message }: DeleteConfirmationProps) => {
   // States
 
   // const { lang: locale } = useParams()
@@ -28,10 +29,9 @@ const DeleteConfirmation = ({ open, setOpen, name, deleteApiCall }: DeleteConfir
 
   return (
     <Dialog fullWidth open={open} onClose={handleClose} maxWidth='xs' scroll='body'>
-      <DialogTitle
-        id='alert-dialog-title'
-        className='flex gap-2 flex-col items-center'
-      >{`Are you sure you want to delete this ${name}?`}</DialogTitle>
+      <DialogTitle id='alert-dialog-title' className='flex gap-2 flex-col items-center'>
+        {message?.length ? message : `Are you sure you want to delete this ${name}?`}
+      </DialogTitle>
       {/* <DialogContent>
         <DialogContentText id='alert-dialog-description'>
           Let Google help apps determine location. This means sending anonymous location data to Google, even when no

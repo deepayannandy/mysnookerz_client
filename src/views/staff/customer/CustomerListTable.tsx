@@ -33,6 +33,7 @@ import type { ThemeColor } from '@core/types'
 
 import CustomAvatar from '@/@core/components/mui/Avatar'
 import OptionMenu from '@/@core/components/option-menu'
+import BlacklistConfirmation from '@/components/dialogs/blacklist-confirmation'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import EditCustomerInfo from '@/components/dialogs/edit-customer-info'
 import NewCustomerRegistration from '@/components/dialogs/new-customer-registration'
@@ -97,6 +98,7 @@ const CustomerListTable = () => {
   const [globalFilter, setGlobalFilter] = useState('')
   const [newCustomerRegistrationDialogOpen, setNewCustomerRegistrationDialogOpen] = useState(false)
   const [editCustomerInfoDialogOpen, setEditCustomerInfoDialogOpen] = useState(false)
+  const [blacklistConfirmationDialogOpen, setBlacklistConfirmationDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -145,9 +147,42 @@ const CustomerListTable = () => {
     }
   }
 
+  const blacklistCustomer = async (reason: string) => {
+    const customerId = customerData._id
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.patch(
+        `${apiBaseUrl}/customer/${customerId}`,
+        { isBlackListed: true, reasonOfBlackList: reason },
+        { headers: { 'auth-token': token } }
+      )
+      if (response && response.data) {
+        getCustomerData()
+        setBlacklistConfirmationDialogOpen(false)
+        toast.success('Customer blacklisted successfully')
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 409) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
   const openDeleteConfirmation = (customer: CustomerDataType) => {
     setCustomerData(customer)
     setDeleteConfirmationDialogOpen(true)
+  }
+
+  const openBlacklistConfirmation = (customer: CustomerDataType) => {
+    if (customer.isBlackListed) {
+      toast.error('Customer is already blacklisted', { hideProgressBar: false })
+    } else {
+      setCustomerData(customer)
+      setBlacklistConfirmationDialogOpen(true)
+    }
   }
 
   const editCustomerData = (rowData: CustomerDataType) => {
@@ -238,9 +273,15 @@ const CustomerListTable = () => {
                     className: 'gap-2',
                     onClick: () => openDeleteConfirmation(row.original)
                   }
+                },
+                {
+                  text: 'Blacklist',
+                  icon: 'ri-stack-line',
+                  menuItemProps: {
+                    className: 'gap-2',
+                    onClick: () => openBlacklistConfirmation(row.original)
+                  }
                 }
-
-                // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
               ]}
             />
           </div>
@@ -397,6 +438,11 @@ const CustomerListTable = () => {
         name={`customer (${customerData.fullName})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteCustomer}
+      />
+      <BlacklistConfirmation
+        open={blacklistConfirmationDialogOpen}
+        setOpen={setBlacklistConfirmationDialogOpen}
+        api={blacklistCustomer}
       />
     </>
   )
