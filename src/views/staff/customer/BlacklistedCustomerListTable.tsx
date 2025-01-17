@@ -40,7 +40,6 @@ import { CustomerDataType } from '@/types/staffTypes'
 import { getInitials } from '@/utils/getInitials'
 import { getLocalizedUrl } from '@/utils/i18n'
 import tableStyles from '@core/styles/table.module.css'
-import Button from '@mui/material/Button'
 import CardContent from '@mui/material/CardContent'
 import * as matchSortedUtils from '@tanstack/match-sorter-utils'
 import axios from 'axios'
@@ -93,7 +92,6 @@ const BlacklistedCustomerListTable = () => {
   const [customerData, setCustomerData] = useState({} as CustomerDataType)
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
   const [globalFilter, setGlobalFilter] = useState('')
-  const [newCustomerRegistrationDialogOpen, setNewCustomerRegistrationDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -293,19 +291,6 @@ const BlacklistedCustomerListTable = () => {
             placeholder='Search'
             //className='is-full sm:is-auto'
           />
-          <div className='flex gap-x-4'>
-            {/* <Button variant='outlined' color='secondary' startIcon={<i className='ri-upload-2-line' />}>
-              Export
-            </Button> */}
-            <Button
-              variant='contained'
-              color='primary'
-              startIcon={<i className='ri-add-line' />}
-              onClick={() => setNewCustomerRegistrationDialogOpen(!newCustomerRegistrationDialogOpen)}
-            >
-              Add Customer
-            </Button>
-          </div>
         </CardContent>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>
