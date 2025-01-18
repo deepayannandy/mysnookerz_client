@@ -100,6 +100,9 @@ export type StoreDataType = {
     nightEndTime: string
     nightStartTime: string
     defaultCustomer: boolean
+    happyHrsStartTime: string
+    happyHrsEndTime: string
+    happyHrsDiscount: number
   }
   SubscriptionData?: SubscriptionPlanType
 }

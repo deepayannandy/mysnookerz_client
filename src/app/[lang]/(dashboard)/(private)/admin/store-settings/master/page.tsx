@@ -39,6 +39,26 @@ const MasterDetails = () => {
     }
   }
 
+  const submitData = async <T,>(data: T, message: string) => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    const storeId = localStorage.getItem('storeId')
+    try {
+      const response = await axios.patch(`${apiBaseUrl}/store/${storeId}`, data, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        getStoreData()
+        // resetForm()
+        toast.success(`${message}`)
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 409) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
   useEffect(() => {
     getStoreData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,10 +67,10 @@ const MasterDetails = () => {
   return (
     <div className='grid grid-cols-1 sm:grid-cols-3 gap-4'>
       <div className='border rounded-lg'>
-        <NightTime storeData={data} getStoreData={getStoreData} />
+        <NightTime storeData={data} submitData={submitData} />
       </div>
       <div className='border rounded-lg'>
-        <HappyHours />
+        <HappyHours storeData={data} submitData={submitData} />
       </div>
       <div className='border rounded-lg col-span-2'>
         <MasterControl storeData={data} getStoreData={getStoreData} />

@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react'
 
 // MUI Imports
-import { TableDataType } from '@/types/adminTypes'
+import { StoreDataType, TableDataType } from '@/types/adminTypes'
 import { CustomerInvoiceType, CustomerListType } from '@/types/staffTypes'
 import { getInitials } from '@/utils/getInitials'
 import { Autocomplete, Avatar, Chip, Divider, Drawer, MenuItem, TextField, Typography } from '@mui/material'
@@ -45,6 +45,8 @@ const TableBill = ({
 }: TableBillPropType) => {
   // States
   const [data, setData] = useState({} as CustomerInvoiceType)
+  const [storeData, setStoreData] = useState({} as StoreDataType)
+
   const [invoiceTo, setInvoiceTo] = useState(
     (data.selectedTable?.gameData?.players || []) as (CustomerListType | string)[]
   )
@@ -67,6 +69,8 @@ const TableBill = ({
   )
   const [isCheckoutButtonDisabled, setIsCheckoutButtonDisabled] = useState(false)
   const [isHoldButtonDisabled, setIsHoldButtonDisabled] = useState(false)
+  const [isHappyHour, setIsHappyHour] = useState(false)
+  const [happyHourDiscount, setHappyHourDiscount] = useState(0)
 
   const netPay = (data.totalBillAmt - Number(inputData.discount ?? 0)).toFixed(2)
   const cashOut = (Number(inputData.cashIn ?? 0) - Number(netPay ?? 0)).toFixed(2)
@@ -111,11 +115,65 @@ const TableBill = ({
     }
   }
 
+  const getStoreData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    const storeId = localStorage.getItem('storeId')
+
+    try {
+      const response = await axios.get(`${apiBaseUrl}/store/${storeId}`, { headers: { 'auth-token': token } })
+      if (response && response.data) {
+        setStoreData(response.data)
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 409) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
   useEffect(() => {
     getBillData()
     getCustomerData()
+    getStoreData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData._id, open])
+
+  useEffect(() => {
+    if (
+      storeData?.StoreData?.happyHrsStartTime &&
+      storeData?.StoreData?.happyHrsEndTime &&
+      storeData?.StoreData?.happyHrsDiscount &&
+      data?.totalBillAmt &&
+      data.selectedTable?.gameData?.startTime
+    ) {
+      const tableStartTime = DateTime.fromISO(data.selectedTable.gameData.startTime)
+      const formattedStartDate = tableStartTime.toFormat('dd-MM-yyyy')
+      const happyHourStartTime = DateTime.fromFormat(
+        `${formattedStartDate} ${storeData.StoreData.happyHrsStartTime}`,
+        'dd-MM-yyyy HH:mm'
+      )
+      const happyHourEndTime = DateTime.fromFormat(
+        `${formattedStartDate} ${storeData.StoreData.happyHrsEndTime}`,
+        'dd-MM-yyyy HH:mm'
+      )
+
+      if (happyHourStartTime <= tableStartTime && tableStartTime <= happyHourEndTime) {
+        const happyHourDiscount =
+          ((Number(data.totalBillAmt) ?? 0) * Number(storeData.StoreData.happyHrsDiscount)) / 100
+
+        setIsHappyHour(true)
+        setHappyHourDiscount(happyHourDiscount)
+        setInputData({
+          ...inputData,
+          discount: happyHourDiscount
+        })
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeData])
 
   const handleClose = () => {
     setInputData({ discount: '', paymentMethod: paymentMethods[0], cashIn: '' })
@@ -684,6 +742,15 @@ const TableBill = ({
               <div className='w-full grid grid-cols-2 gap-2 border p-3 rounded-lg'>
                 <p>Table Amount</p>
                 <p>{`₹${data.totalBillAmt || 0}`}</p>
+
+                {isHappyHour && happyHourDiscount ? (
+                  <>
+                    <p>{`Happy Hour Discount @${storeData?.StoreData?.happyHrsDiscount}%`}</p>
+                    <p>{`₹${happyHourDiscount}`}</p>
+                  </>
+                ) : (
+                  <></>
+                )}
                 <Divider className='col-span-2' />
 
                 <p>Meals Amount</p>

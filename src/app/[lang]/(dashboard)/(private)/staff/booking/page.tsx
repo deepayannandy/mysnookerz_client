@@ -49,12 +49,17 @@ const BookingPage = () => {
     try {
       const response = await axios.get(`${apiBaseUrl}/customer/myCustomers`, { headers: { 'auth-token': token } })
       if (response && response.data) {
-        const data = response.data.map((customer: CustomerDataType) => {
-          return {
-            customerId: customer._id,
-            fullName: `${customer.fullName}(${customer.contact})`
+        const data = [] as CustomerListType[]
+
+        response.data.forEach((customer: CustomerDataType) => {
+          if (!customer.isBlackListed) {
+            data.push({
+              customerId: customer._id,
+              fullName: `${customer.fullName}(${customer.contact})`
+            })
           }
         })
+
         setCustomersList(data)
       }
     } catch (error: any) {
@@ -71,43 +76,6 @@ const BookingPage = () => {
     getCustomerData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  // const handleCheckout = (tableData: TableDataType) => {
-  //   setTableData(tableData)
-  //   setShowBill(true)
-  // }
-
-  // const handleStart = (tableData: TableDataType) => {
-  //   setTableData(tableData)
-  //   setShowStartForm(true)
-  // }
-
-  // const handleStop = async (tableData: TableDataType) => {
-  //   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-  //   const token = localStorage.getItem('token')
-  //   try {
-  //     const response = await axios.patch(
-  //       `${apiBaseUrl}/games/stopGame/${tableData._id}`,
-  //       {},
-  //       {
-  //         headers: { 'auth-token': token }
-  //       }
-  //     )
-
-  //     if (response && response.data) {
-  //       getAllTablesData()
-  //     }
-  //   } catch (error: any) {
-  //     // if (error?.response?.status === 409) {
-  //     //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-  //     //   console.log(redirectUrl)
-  //     //   return router.replace(redirectUrl)
-  //     // }
-  //     toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-  //   }
-  //   setTableData(tableData)
-  //   setShowBill(true)
-  // }
 
   return (
     <>

@@ -414,7 +414,7 @@ const PoolCard = ({
                 }
               }}
               options={customersList}
-              getOptionLabel={option => ((option as CustomerListType).fullName ?? option)?.split('(').join(' (')}
+              getOptionLabel={option => ((option as CustomerListType)?.fullName ?? option)?.split('(').join(' (')}
               freeSolo
               value={customers}
               onChange={(_, value) => setCustomers(value)}
@@ -425,7 +425,7 @@ const PoolCard = ({
                     <Chip
                       size='small'
                       variant='outlined'
-                      label={(option as CustomerListType).fullName ?? option}
+                      label={(option as CustomerListType)?.fullName ?? option}
                       {...tagProps}
                       key={key}
                       sx={{

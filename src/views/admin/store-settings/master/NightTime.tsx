@@ -12,24 +12,22 @@ import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import '@/libs/styles/tiptapEditor.css'
 import { StoreDataType } from '@/types/adminTypes'
 import Button from '@mui/material/Button'
-import axios from 'axios'
 import { DateTime } from 'luxon'
-import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
 
 type NightTimeDataType = {
   nightStartTime: Date
   nightEndTime: Date
 }
 
-const NightTime = ({ storeData, getStoreData }: { storeData: StoreDataType; getStoreData: () => void }) => {
-  //Hooks
-  const { lang: locale } = useParams()
-  const pathname = usePathname()
-  const router = useRouter()
-
+const NightTime = ({
+  storeData,
+  submitData
+}: {
+  storeData: StoreDataType
+  submitData: <T>(data: T, message: string) => void
+}) => {
   const {
     control,
     reset: resetForm,
@@ -57,27 +55,10 @@ const NightTime = ({ storeData, getStoreData }: { storeData: StoreDataType; getS
     const nightStartTime = DateTime.fromJSDate(data.nightStartTime).toFormat('HH:mm')
     const nightEndTime = DateTime.fromJSDate(data.nightEndTime).toFormat('HH:mm')
 
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    const token = localStorage.getItem('token')
-    const storeId = localStorage.getItem('storeId')
-    try {
-      const response = await axios.patch(
-        `${apiBaseUrl}/store/${storeId}`,
-        { nightStartTime, nightEndTime },
-        { headers: { 'auth-token': token } }
-      )
-      if (response && response.data) {
-        getStoreData()
-        resetForm()
-        toast.success('Night time updated successfully')
-      }
-    } catch (error: any) {
-      if (error?.response?.status === 409) {
-        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-        return router.replace(redirectUrl)
-      }
-      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    }
+    submitData<{ nightStartTime: string; nightEndTime: string }>(
+      { nightStartTime, nightEndTime },
+      'Night time updated successfully'
+    )
   }
 
   return (
