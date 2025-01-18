@@ -209,7 +209,7 @@ const BlacklistedCustomerListTable = () => {
       }),
       columnHelper.accessor('reasonOfBlackList', {
         header: 'Remarks',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.reasonOfBlackList}`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.reasonOfBlackList}</Typography>
       }),
       // columnHelper.accessor('status', {
       //   header: 'Status',

@@ -198,11 +198,9 @@ const PoolCard = ({
         toast.success(`${tableData.tableName} stopped`)
       }
     } catch (error: any) {
-      // if (error?.response?.status === 409) {
-      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-      //   console.log(redirectUrl)
-      //   return router.replace(redirectUrl)
-      // }
+      if (error?.response?.status === 422) {
+        getAllTablesData()
+      }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }

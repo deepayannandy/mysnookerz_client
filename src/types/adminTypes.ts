@@ -99,10 +99,20 @@ export type StoreDataType = {
     transactionCounter: number
     nightEndTime: string
     nightStartTime: string
-    defaultCustomer: boolean
     happyHrsStartTime: string
     happyHrsEndTime: string
     happyHrsDiscount: number
+    defaultCustomer: boolean
+    cancelMins: number
+    isCancel: boolean
+    isPauseResume: boolean
+    isRoundOff: boolean
+    isBillPrint: boolean
+    isPrepaidMode: boolean
+    isSwitchTable: boolean
+    isMultipleBilling: boolean
+    isSelfStart: boolean
+    isBreakGame: boolean
   }
   SubscriptionData?: SubscriptionPlanType
 }
