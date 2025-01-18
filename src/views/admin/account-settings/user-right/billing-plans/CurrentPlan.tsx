@@ -63,7 +63,7 @@ const CurrentPlan = ({ data, getUserData }: { data: UserDataType; getUserData: (
               <div className='flex flex-col gap-1'>
                 <div className='flex items-center gap-2'>
                   <Typography className='font-medium' color='text.primary'>
-                    {`₹${data?.SubscriptionData?.subscriptionAmount} Per Month`}
+                    {`₹${data?.SubscriptionData?.subscriptionAmount} Per ${data?.SubscriptionData?.isYearly ? 'Year' : 'Month'}`}
                   </Typography>
                   <Chip color='primary' label='Popular' size='small' variant='tonal' />
                 </div>

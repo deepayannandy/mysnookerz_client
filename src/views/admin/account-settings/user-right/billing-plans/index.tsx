@@ -3,8 +3,8 @@ import { UserDataType } from '@/types/adminTypes'
 import Grid from '@mui/material/Grid'
 
 // Component Imports
-import InvoiceListTable from '../overview/InvoiceListTable'
 import CurrentPlan from './CurrentPlan'
+import SubscriptionHistoryTable from './SubscriptionHistoryTable'
 
 const BillingPlans = ({ data, getUserData }: { data: UserDataType; getUserData: () => void }) => {
   return (
@@ -13,7 +13,7 @@ const BillingPlans = ({ data, getUserData }: { data: UserDataType; getUserData: 
         <CurrentPlan data={data} getUserData={getUserData} />
       </Grid>
       <Grid item xs={12}>
-        <InvoiceListTable />
+        <SubscriptionHistoryTable />
       </Grid>
       {/* <Grid item xs={12}>
         <PaymentMethod />

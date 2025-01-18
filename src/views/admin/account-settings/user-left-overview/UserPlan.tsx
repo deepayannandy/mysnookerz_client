@@ -60,7 +60,7 @@ const UserPlan = ({ data, getUserData }: { data: UserDataType; getUserData: () =
                   {data?.SubscriptionData?.subscriptionAmount}
                 </Typography>
                 <Typography component='sub' className='self-end' color='text.primary'>
-                  /month
+                  {data?.SubscriptionData?.isYearly ? '/year' : '/month'}
                 </Typography>
               </div>
             </div>

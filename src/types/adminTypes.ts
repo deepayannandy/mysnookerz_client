@@ -123,8 +123,11 @@ export type SubscriptionPlanType = {
   subscriptionAmount: number
   subscriptionValidity: number
   subscriptionId: string
+  storeId: string
   startDate: string
   endDate: string
+  isActive: boolean
+  isYearly: boolean
 }
 
 export type DeviceDataType = {

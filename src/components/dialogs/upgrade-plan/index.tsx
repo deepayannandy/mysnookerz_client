@@ -150,7 +150,7 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, renewPlan }: Upg
               </Select>
             </FormControl>
             <Button variant='contained' className='capitalize sm:is-auto is-full' onClick={upgradeSubscriptionPLan}>
-              Upgrade
+              {renewPlan ? 'Renew' : 'Upgrade'}
             </Button>
           </div>
           <Divider className='mlb-6' />
