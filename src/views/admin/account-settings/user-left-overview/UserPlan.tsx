@@ -18,7 +18,7 @@ const UserPlan = ({ data, getUserData }: { data: UserDataType; getUserData: () =
   //Vars
   const buttonProps: mui.ButtonProps = {
     variant: 'contained',
-    children: 'Renew Plan'
+    children: 'Renew Subscription'
   }
 
   const daysPast =
@@ -99,7 +99,8 @@ const UserPlan = ({ data, getUserData }: { data: UserDataType; getUserData: () =
               dialog={UpgradePlan}
               dialogProps={{
                 currentPlan: data?.SubscriptionData,
-                getUserData
+                getUserData,
+                renewPlan: true
               }}
             />
           </CardContent>

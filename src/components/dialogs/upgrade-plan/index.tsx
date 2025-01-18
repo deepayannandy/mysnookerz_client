@@ -28,9 +28,10 @@ type UpgradePlanProps = {
   setOpen: (open: boolean) => void
   currentPlan?: SubscriptionPlanType
   getUserData: () => void
+  renewPlan: boolean
 }
 
-const UpgradePlan = ({ open, setOpen, currentPlan, getUserData }: UpgradePlanProps) => {
+const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, renewPlan }: UpgradePlanProps) => {
   // States
   const [openConfirmation, setOpenConfirmation] = useState(false)
   const [subscriptionList, setSubscriptionList] = useState(
@@ -57,15 +58,18 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData }: UpgradePlanPro
     try {
       const response = await axios.get(`${apiBaseUrl}/subscription`, { headers: { 'auth-token': token } })
       if (response && response.data) {
-        const list = response.data.map((data: any) => {
-          return {
-            ...data,
-            displayName: `${data.subscriptionName} - ₹${data.subscriptionPrice}`
-          }
+        const list = [] as { _id: string; displayName: string; subscriptionName: string; subscriptionPrice: number }[]
+
+        response.data.forEach((data: any) => {
+          if (renewPlan || Number(data.subscriptionPrice ?? 0) >= Number(currentPlan?.subscriptionAmount ?? 0))
+            list.push({
+              ...data,
+              displayName: `${data.subscriptionName} - ₹${data.subscriptionPrice}`
+            })
         })
         setSubscriptionList(list)
 
-        setSelectedPlanId(currentPlan?.subscriptionId ?? list[0]?.id)
+        setSelectedPlanId(currentPlan?.subscriptionId ?? list[0]?._id)
       }
     } catch (error: any) {
       if (error?.response?.status === 409) {
@@ -123,6 +127,7 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData }: UpgradePlanPro
             <FormControl fullWidth size='small'>
               <InputLabel id='user-view-plans-select-label'>Choose Plan</InputLabel>
               <Select
+                disabled={renewPlan}
                 label='Choose Plan'
                 defaultValue='Standard'
                 id='user-view-plans-select'

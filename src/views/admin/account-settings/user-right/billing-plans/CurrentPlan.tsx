@@ -101,11 +101,12 @@ const CurrentPlan = ({ data, getUserData }: { data: UserDataType; getUserData: (
             <Grid item xs={12} className='flex gap-4 flex-wrap'>
               <OpenDialogOnElementClick
                 element={Button}
-                elementProps={buttonProps('Renew plan', 'contained', 'primary')}
+                elementProps={buttonProps('Upgrade Subscription', 'contained', 'primary')}
                 dialog={UpgradePlan}
                 dialogProps={{
                   currentPlan: data?.SubscriptionData,
-                  getUserData
+                  getUserData,
+                  renewPlan: false
                 }}
               />
               {/* <OpenDialogOnElementClick
