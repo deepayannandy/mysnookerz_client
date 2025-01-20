@@ -172,7 +172,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
                   )}
                 </div>
                 <FormControl>
-                  <Switch onChange={e => field.setMethod(e.target.checked)} checked={field.value} />
+                  <Switch size='medium' onChange={e => field.setMethod(e.target.checked)} checked={field.value} />
                 </FormControl>
               </Grid>
             ))}
