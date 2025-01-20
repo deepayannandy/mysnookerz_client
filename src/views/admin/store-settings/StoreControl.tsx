@@ -146,10 +146,31 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
         <CardContent>
           <Grid container spacing={5} className='mbe-5'>
             {controlFields.map(field => (
-              <Grid item key={field.name} xs={12} className='flex w-full justify-between'>
-                <Typography className='flex font-medium w-fit items-center' color='text.primary'>
-                  {field.name}
-                </Typography>
+              <Grid item key={field.name} xs={12} className='flex justify-between'>
+                <div className='flex justify-start gap-4'>
+                  <Typography className='flex font-medium w-fit items-center' color='text.primary'>
+                    {field.name}
+                  </Typography>
+                  {isCancelGameSwitch && field.name === 'Cancel Game' ? (
+                    <FormControl fullWidth size='small' className='w-32'>
+                      <InputLabel id='cancel-min'>Cancel Minutes</InputLabel>
+                      <Select
+                        label='Cancel Minutes'
+                        defaultValue='Standard'
+                        value={cancelMinutes}
+                        onChange={event => setCancelMinutes(event.target.value)}
+                      >
+                        {Array.from({ length: 11 }, (_, i) => i).map((id: number) => (
+                          <MenuItem key={id} value={id}>
+                            {id}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  ) : (
+                    <></>
+                  )}
+                </div>
                 <FormControl>
                   <Switch onChange={e => field.setMethod(e.target.checked)} checked={field.value} />
                 </FormControl>
@@ -157,26 +178,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
             ))}
 
             <Grid item xs={12}>
-              <div className='flex justify-end gap-4'>
-                {isCancelGameSwitch ? (
-                  <FormControl fullWidth size='small' className='w-32'>
-                    <InputLabel id='cancel-min'>Cancel Minutes</InputLabel>
-                    <Select
-                      label='Cancel Minutes'
-                      defaultValue='Standard'
-                      value={cancelMinutes}
-                      onChange={event => setCancelMinutes(event.target.value)}
-                    >
-                      {Array.from({ length: 11 }, (_, i) => i).map((id: number) => (
-                        <MenuItem key={id} value={id}>
-                          {id}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                ) : (
-                  <></>
-                )}
+              <div className='flex justify-end'>
                 <Button variant='contained' type='submit'>
                   Submit
                 </Button>

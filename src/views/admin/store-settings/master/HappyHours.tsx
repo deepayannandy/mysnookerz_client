@@ -70,88 +70,90 @@ const HappyHours = ({
       <CardHeader title='Setup Happy Hours' />
       <form onSubmit={handleSubmit(data => onSubmit(data))}>
         <CardContent>
-          <Grid container spacing={5} className='mbe-5'>
-            <Grid item xs={12} md={4}>
-              <Controller
-                name='happyHoursStartTime'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <AppReactDatepicker
-                    showTimeSelect
-                    timeIntervals={15}
-                    showTimeSelectOnly
-                    dateFormat='hh:mm aa'
-                    boxProps={{ className: 'is-full' }}
-                    selected={value}
-                    onChange={onChange}
-                    customInput={
-                      <TextField
-                        label='Start Time'
-                        size='small'
-                        fullWidth
-                        {...(errors.happyHoursStartTime && {
-                          error: true,
-                          helperText: errors.happyHoursStartTime.message || 'This field is required'
-                        })}
-                      />
-                    }
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Controller
-                name='happyHoursEndTime'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <AppReactDatepicker
-                    showTimeSelect
-                    timeIntervals={15}
-                    showTimeSelectOnly
-                    dateFormat='hh:mm aa'
-                    boxProps={{ className: 'is-full' }}
-                    selected={value}
-                    onChange={onChange}
-                    customInput={
-                      <TextField
-                        label='End Time'
-                        size='small'
-                        fullWidth
-                        {...(errors.happyHoursEndTime && {
-                          error: true,
-                          helperText: errors.happyHoursEndTime.message || 'This field is required'
-                        })}
-                      />
-                    }
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Controller
-                name='discount'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    label='Discount'
-                    size='small'
-                    fullWidth
-                    inputProps={{ type: 'number', min: 0 }}
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.discount && {
-                      error: true,
-                      helperText: errors.discount?.message || 'This field is required'
-                    })}
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <div className='flex justify-center'>
+          <Grid container className='flex flex-col gap-4'>
+            <div className='flex md:flex-row flex-col gap-2'>
+              <Grid item xs={12} md={4}>
+                <Controller
+                  name='happyHoursStartTime'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <AppReactDatepicker
+                      showTimeSelect
+                      timeIntervals={15}
+                      showTimeSelectOnly
+                      dateFormat='hh:mm aa'
+                      boxProps={{ className: 'is-full' }}
+                      selected={value}
+                      onChange={onChange}
+                      customInput={
+                        <TextField
+                          label='Start Time'
+                          size='small'
+                          fullWidth
+                          {...(errors.happyHoursStartTime && {
+                            error: true,
+                            helperText: errors.happyHoursStartTime.message || 'This field is required'
+                          })}
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Controller
+                  name='happyHoursEndTime'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <AppReactDatepicker
+                      showTimeSelect
+                      timeIntervals={15}
+                      showTimeSelectOnly
+                      dateFormat='hh:mm aa'
+                      boxProps={{ className: 'is-full' }}
+                      selected={value}
+                      onChange={onChange}
+                      customInput={
+                        <TextField
+                          label='End Time'
+                          size='small'
+                          fullWidth
+                          {...(errors.happyHoursEndTime && {
+                            error: true,
+                            helperText: errors.happyHoursEndTime.message || 'This field is required'
+                          })}
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Controller
+                  name='discount'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <TextField
+                      label='Discount'
+                      size='small'
+                      fullWidth
+                      inputProps={{ type: 'number', min: 0 }}
+                      value={value}
+                      onChange={onChange}
+                      {...(errors.discount && {
+                        error: true,
+                        helperText: errors.discount?.message || 'This field is required'
+                      })}
+                    />
+                  )}
+                />
+              </Grid>
+            </div>
+            <Grid item xs={12}>
+              <div className='flex md:justify-end justify-center'>
                 <Button variant='contained' type='submit'>
                   Submit
                 </Button>

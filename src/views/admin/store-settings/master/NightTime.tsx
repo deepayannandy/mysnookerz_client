@@ -62,71 +62,73 @@ const NightTime = ({
   }
 
   return (
-    <Card>
+    <Card className='h-full'>
       <CardHeader title='Setup Night Time' />
       <form onSubmit={handleSubmit(data => onSubmit(data))}>
         <CardContent>
-          <Grid container spacing={5} className='mbe-5'>
-            <Grid item xs={12} md={4}>
-              <Controller
-                name='nightStartTime'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <AppReactDatepicker
-                    showTimeSelect
-                    timeIntervals={15}
-                    showTimeSelectOnly
-                    dateFormat='hh:mm aa'
-                    boxProps={{ className: 'is-full' }}
-                    selected={value}
-                    onChange={onChange}
-                    customInput={
-                      <TextField
-                        label='Start Time'
-                        size='small'
-                        fullWidth
-                        {...(errors.nightStartTime && {
-                          error: true,
-                          helperText: errors.nightStartTime.message || 'This field is required'
-                        })}
-                      />
-                    }
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <Controller
-                name='nightEndTime'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <AppReactDatepicker
-                    showTimeSelect
-                    timeIntervals={15}
-                    showTimeSelectOnly
-                    dateFormat='hh:mm aa'
-                    boxProps={{ className: 'is-full' }}
-                    selected={value}
-                    onChange={onChange}
-                    customInput={
-                      <TextField
-                        label='End Time'
-                        size='small'
-                        fullWidth
-                        {...(errors.nightEndTime && {
-                          error: true,
-                          helperText: errors.nightEndTime.message || 'This field is required'
-                        })}
-                      />
-                    }
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <div className='flex justify-center'>
+          <Grid container className='flex flex-col gap-4'>
+            <div className='flex md:flex-row flex-col gap-5'>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name='nightStartTime'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <AppReactDatepicker
+                      showTimeSelect
+                      timeIntervals={15}
+                      showTimeSelectOnly
+                      dateFormat='hh:mm aa'
+                      boxProps={{ className: 'is-full' }}
+                      selected={value}
+                      onChange={onChange}
+                      customInput={
+                        <TextField
+                          label='Start Time'
+                          size='small'
+                          fullWidth
+                          {...(errors.nightStartTime && {
+                            error: true,
+                            helperText: errors.nightStartTime.message || 'This field is required'
+                          })}
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Controller
+                  name='nightEndTime'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <AppReactDatepicker
+                      showTimeSelect
+                      timeIntervals={15}
+                      showTimeSelectOnly
+                      dateFormat='hh:mm aa'
+                      boxProps={{ className: 'is-full' }}
+                      selected={value}
+                      onChange={onChange}
+                      customInput={
+                        <TextField
+                          label='End Time'
+                          size='small'
+                          fullWidth
+                          {...(errors.nightEndTime && {
+                            error: true,
+                            helperText: errors.nightEndTime.message || 'This field is required'
+                          })}
+                        />
+                      }
+                    />
+                  )}
+                />
+              </Grid>
+            </div>
+            <Grid item xs={12}>
+              <div className='flex justify-center md:justify-end'>
                 <Button variant='contained' type='submit'>
                   Submit
                 </Button>
