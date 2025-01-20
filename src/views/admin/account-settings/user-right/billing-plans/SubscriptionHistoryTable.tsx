@@ -78,7 +78,8 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 // Vars
 const statusObj: StatusObj = {
   Active: { color: 'success', icon: 'ri-check-line' },
-  Expired: { color: 'error', icon: 'ri-information-line' }
+  Expired: { color: 'error', icon: 'ri-information-line' },
+  Upcoming: { color: 'warning', icon: 'ri-send-plane-2-line' }
 }
 
 // Column Definitions
@@ -121,6 +122,19 @@ const SubscriptionHistoryTable = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const getStatus = (startDate: string, endDate: string) => {
+    const startDateValue = DateTime.fromISO(startDate)
+    const endDateValue = DateTime.fromISO(endDate)
+
+    if (startDateValue > DateTime.now()) {
+      return 'Upcoming'
+    } else if (startDateValue < DateTime.now() && DateTime.now() < endDateValue) {
+      return 'Active'
+    } else {
+      return 'Expired'
+    }
+  }
+
   const columns = useMemo<ColumnDef<SubscriptionPlanType, any>[]>(
     () => [
       columnHelper.accessor('subscriptionName', {
@@ -143,20 +157,29 @@ const SubscriptionHistoryTable = () => {
         header: 'Amount',
         cell: ({ row }) => <Typography>{`₹${row.original.subscriptionAmount}`}</Typography>
       }),
-      columnHelper.accessor('isActive', {
+      columnHelper.accessor('startDate', {
         header: 'Status',
         cell: ({ row }) => (
           <Tooltip
             title={
               <div>
                 <Typography variant='body2' component='span' className='text-inherit'>
-                  {row.original.isActive ? 'Active' : 'Expired'}
+                  {getStatus(row.original.startDate, row.original.endDate)}
                 </Typography>
               </div>
             }
           >
-            <CustomAvatar skin='light' color={statusObj[row.original.isActive ? 'Active' : 'Expired'].color} size={28}>
-              <i className={classnames('text-base', statusObj[row.original.isActive ? 'Active' : 'Expired'].icon)} />
+            <CustomAvatar
+              skin='light'
+              color={statusObj[getStatus(row.original.startDate, row.original.endDate)].color}
+              size={28}
+            >
+              <i
+                className={classnames(
+                  'text-base',
+                  statusObj[getStatus(row.original.startDate, row.original.endDate)].icon
+                )}
+              />
             </CustomAvatar>
           </Tooltip>
         )

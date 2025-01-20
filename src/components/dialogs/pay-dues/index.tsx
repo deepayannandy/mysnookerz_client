@@ -1,6 +1,6 @@
 'use client'
 
-import { FormControl, FormHelperText, FormLabel, MenuItem } from '@mui/material'
+import { Checkbox, FormControl, FormControlLabel, FormHelperText, FormLabel, MenuItem } from '@mui/material'
 // React Imports
 
 // MUI Imports
@@ -12,6 +12,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import axios from 'axios'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
@@ -33,6 +34,7 @@ type PayDueInfoProps = {
 const paymentMethods = ['CASH', 'UPI', 'CARD']
 
 const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProps) => {
+  const [isSettleAmount, setIsSettleAmount] = useState(false)
   // States
 
   // const { lang: locale } = useParams()
@@ -43,7 +45,8 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
     control,
     reset: resetForm,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    watch
   } = useForm<PayDueDataType>({
     defaultValues: {
       amount: '',
@@ -104,7 +107,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
         </Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit(data => onSubmit(data))}>
-        <DialogContent className='overflow-visible flex justify-center sm:justify-start'>
+        <DialogContent className='overflow-visible flex justify-center sm:justify-start flex-col'>
           {/* <IconButton onClick={handleClose} className='absolute block-start-4 inline-end-4'>
             <i className='ri-close-line text-textSecondary' />
           </IconButton> */}
@@ -151,6 +154,22 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
               </FormControl>
             </div>
           </div>
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                defaultChecked
+                checked={isSettleAmount}
+                onChange={event => setIsSettleAmount(event.target.checked)}
+              />
+            }
+            label='Settle Amount'
+          />
+          {isSettleAmount ? (
+            <Typography>{`Settlement amount is ${Number(customerData?.credit ?? 0) - Number(watch('amount') ?? 0)}`}</Typography>
+          ) : (
+            <></>
+          )}
         </DialogContent>
         <DialogActions className='justify-center sm:justify-end'>
           <Button size='small' variant='outlined' color='secondary' type='reset' onClick={handleClose}>

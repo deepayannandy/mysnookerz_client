@@ -147,6 +147,11 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
   // Hooks
   // const { lang: locale } = useParams()
 
+  const getTime = (startTime: string, endTime: string) => {
+    const diff = DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime), ['hours', 'minutes', 'seconds']).toObject()
+    return `${diff.hours}h ${diff.minutes}m ${diff.seconds}s`
+  }
+
   const columns = useMemo<ColumnDef<PaymentHistoryDataTypeWithAction, any>[]>(
     () => [
       columnHelper.accessor('transactionId', {
@@ -175,14 +180,9 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
         cell: ({ row }) => (
           <div className='flex flex-col'>
             {row.original.startTime && row.original.endTime ? (
-              <>
-                <Typography className='font-medium' color='text.primary'>
-                  {DateTime.fromISO(row.original.startTime).toFormat('hh:mm:ss a')}
-                </Typography>
-                <Typography className='font-medium' color='text.primary'>
-                  {DateTime.fromISO(row.original.endTime).toFormat('hh:mm:ss a')}
-                </Typography>
-              </>
+              <Typography className='font-medium' color='text.primary'>
+                {getTime(row.original.startTime, row.original.endTime)}
+              </Typography>
             ) : (
               <>-</>
             )}

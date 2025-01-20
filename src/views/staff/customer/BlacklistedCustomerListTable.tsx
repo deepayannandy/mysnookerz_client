@@ -100,11 +100,15 @@ const BlacklistedCustomerListTable = () => {
 
   const getCustomerData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/customer/myCustomers`, { headers: { 'auth-token': token } })
+      const response = await axios.get(`${apiBaseUrl}/customer/blackListedCustomers`)
       if (response && response.data) {
-        const filteredData = response.data.filter((value: CustomerDataType) => value.isBlackListed)
+        const filteredData = response.data.map((value: CustomerDataType) => {
+          return {
+            ...value,
+            contact: value.contact ? `######${value.contact.slice(6)}` : '-'
+          }
+        })
         setData(filteredData)
       }
     } catch (error: any) {

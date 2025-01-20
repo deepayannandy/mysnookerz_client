@@ -1,4 +1,4 @@
-import { TableDataType } from '@/types/adminTypes'
+import { StoreDataType, TableDataType } from '@/types/adminTypes'
 import { CustomerInvoiceType, CustomerListType } from '@/types/staffTypes'
 import { Autocomplete, Button, Chip, Divider, MenuItem, TextField, Tooltip } from '@mui/material'
 import axios from 'axios'
@@ -15,12 +15,14 @@ const PoolCard = ({
   tableData,
   customersList,
   allTablesData,
+  storeData,
   getAllTablesData,
   getCustomerData
 }: {
   tableData: TableDataType
   customersList: CustomerListType[]
   allTablesData: TableDataType[]
+  storeData: StoreDataType
   getAllTablesData: () => void
   getCustomerData: () => void
 }) => {
@@ -610,14 +612,18 @@ const PoolCard = ({
                   <span className='ri-restaurant-2-fill text-base'></span>
                   Add Meals
                 </Button>
-                {tableData?.pauseTime ? (
-                  <Button variant='contained' className='bg-[#FFCA00] text-black h-8' onClick={resumeGame}>
-                    <span className='ri-play-mini-fill'></span>Resume
-                  </Button>
+                {storeData?.StoreData?.isPauseResume ? (
+                  tableData?.pauseTime ? (
+                    <Button variant='contained' className='bg-[#FFCA00] text-black h-8' onClick={resumeGame}>
+                      <span className='ri-play-mini-fill'></span>Resume
+                    </Button>
+                  ) : (
+                    <Button variant='contained' className='bg-[#FFCA00] text-black h-8' onClick={pauseGame}>
+                      <span className='ri-pause-mini-fill'></span>Pause
+                    </Button>
+                  )
                 ) : (
-                  <Button variant='contained' className='bg-[#FFCA00] text-black h-8' onClick={pauseGame}>
-                    <span className='ri-pause-mini-fill'></span>Pause
-                  </Button>
+                  <></>
                 )}
                 <Button variant='contained' className='bg-[#E73434] text-white h-8' onClick={stopGame}>
                   <span className='ri-stop-mini-fill'></span>Stop
