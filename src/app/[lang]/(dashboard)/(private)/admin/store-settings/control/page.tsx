@@ -43,8 +43,8 @@ const ControlDetails = () => {
   }, [])
 
   return (
-    <div className='grid grid-cols-1'>
-      <div className='border rounded-lg'>
+    <div className='grid grid-cols-1 place-items-center'>
+      <div className='border rounded-lg w-1/2'>
         <StoreControl storeData={data} getStoreData={getStoreData} />
       </div>
     </div>
