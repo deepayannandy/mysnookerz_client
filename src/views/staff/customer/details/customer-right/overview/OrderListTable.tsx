@@ -149,7 +149,7 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
 
   const getTime = (startTime: string, endTime: string) => {
     const diff = DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime), ['hours', 'minutes', 'seconds']).toObject()
-    return `${diff.hours}h ${diff.minutes}m ${diff.seconds}s`
+    return `${diff.hours}h ${diff.minutes}m ${Math.ceil(diff.seconds ?? 0)}s`
   }
 
   const columns = useMemo<ColumnDef<PaymentHistoryDataTypeWithAction, any>[]>(
