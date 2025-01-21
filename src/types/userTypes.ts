@@ -4,6 +4,7 @@ export type UserDetailsType = {
   email: string
   userDesignation: string
   mobile: string
+  subscription: string
 }
 
 export type DailyCollectionDataType = {

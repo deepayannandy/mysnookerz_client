@@ -90,6 +90,7 @@ const ChangePassword = () => {
         localStorage.removeItem('storeName')
         localStorage.removeItem('clientId')
         localStorage.removeItem('clientName')
+        localStorage.removeItem('subscription')
         const redirectURL = '/login'
         router.replace(getLocalizedUrl(redirectURL, locale as Locale))
       }

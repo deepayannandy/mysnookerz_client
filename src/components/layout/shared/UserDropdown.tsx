@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 
 // MUI Imports
+import type { PrimaryColorConfig } from '@configs/primaryColorConfig'
 import Avatar from '@mui/material/Avatar'
 import Badge from '@mui/material/Badge'
 import Button from '@mui/material/Button'
@@ -45,6 +46,34 @@ const BadgeContentSpan = styled('span')({
   boxShadow: '0 0 0 2px var(--mui-palette-background-paper)'
 })
 
+// Primary color config object
+const primaryColorConfig: Record<string, PrimaryColorConfig> = {
+  Starter: {
+    name: 'primary-1',
+    light: '#A379FF',
+    main: '#008000',
+    dark: '#7E4EE6'
+  },
+  Professional: {
+    name: 'primary-2',
+    light: '#4EB0B1',
+    main: '#8C57FF',
+    dark: '#096B6C'
+  },
+  Ultimate: {
+    name: 'primary-3',
+    light: '#F0718D',
+    main: '#D37F00',
+    dark: '#AC2D48'
+  },
+  Enterprise: {
+    name: 'primary-4',
+    light: '#FFC25A',
+    main: '#FF4500',
+    dark: '#BA7D15'
+  }
+}
+
 const UserDropdown = () => {
   // States
   const [open, setOpen] = useState(false)
@@ -57,9 +86,9 @@ const UserDropdown = () => {
 
   // Hooks
   const router = useRouter()
-  const { settings } = useSettings()
   const { lang: locale } = useParams()
   const pathname = usePathname()
+  const { settings, updateSettings } = useSettings()
 
   const handleDropdownOpen = () => {
     !open ? setOpen(true) : setOpen(false)
@@ -101,11 +130,17 @@ const UserDropdown = () => {
       const response = await axios.get(`${apiBaseUrl}/user/whoAmI`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         setUserDetails(response.data)
+
+        if (response.data.subscription && primaryColorConfig[response.data.subscription]) {
+          updateSettings({ primaryColor: primaryColorConfig[response.data.subscription].main })
+        }
+
         if (response.data.storeId) {
           localStorage.setItem('storeId', response.data.storeId)
           localStorage.setItem('storeName', response.data.storeName)
           localStorage.setItem('clientId', response.data._id)
           localStorage.setItem('clientName', response.data.fullName)
+          localStorage.setItem('subscription', response.data.subscription)
         }
         if (response.data.userDesignation) {
           localStorage.setItem('userDesignation', response.data.userDesignation)
@@ -122,6 +157,7 @@ const UserDropdown = () => {
       localStorage.removeItem('storeName')
       localStorage.removeItem('clientId')
       localStorage.removeItem('clientName')
+      localStorage.removeItem('subscription')
 
       const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       return router.replace(redirectUrl)
