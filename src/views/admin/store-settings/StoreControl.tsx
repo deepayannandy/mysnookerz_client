@@ -147,12 +147,12 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
           <Grid container spacing={5} className='mbe-5'>
             {controlFields.map(field => (
               <Grid item key={field.name} xs={12} className='flex justify-between'>
-                <div className='flex justify-start gap-4'>
+                <div className='flex justify-start md:gap-4 gap-2 w-3/4'>
                   <Typography className='flex font-medium w-fit items-center' color='text.primary'>
                     {field.name}
                   </Typography>
                   {isCancelGameSwitch && field.name === 'Cancel Game' ? (
-                    <FormControl fullWidth size='small' className='w-32'>
+                    <FormControl fullWidth size='small' className='md:w-32 w-24'>
                       <InputLabel id='cancel-min'>Cancel Minutes</InputLabel>
                       <Select
                         label='Cancel Minutes'
