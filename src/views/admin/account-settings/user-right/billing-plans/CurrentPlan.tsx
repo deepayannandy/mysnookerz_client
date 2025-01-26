@@ -106,6 +106,7 @@ const CurrentPlan = ({ data, getUserData }: { data: UserDataType; getUserData: (
                 dialogProps={{
                   currentPlan: data?.SubscriptionData,
                   getUserData,
+                  userData: data,
                   renewPlan: false
                 }}
               />

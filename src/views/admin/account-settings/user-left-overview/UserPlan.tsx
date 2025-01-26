@@ -44,7 +44,8 @@ const UserPlan = ({ data, getUserData }: { data: UserDataType; getUserData: () =
               }}
               dialog={UpgradePlan}
               dialogProps={{
-                getUserData
+                getUserData,
+                userData: data
               }}
             />
           </CardContent>
@@ -100,6 +101,7 @@ const UserPlan = ({ data, getUserData }: { data: UserDataType; getUserData: () =
               dialogProps={{
                 currentPlan: data?.SubscriptionData,
                 getUserData,
+                userData: data,
                 renewPlan: true
               }}
             />

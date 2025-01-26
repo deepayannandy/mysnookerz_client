@@ -17,23 +17,25 @@ import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 
 // Style Imports
-import { SubscriptionPlanType } from '@/types/adminTypes'
+import { SubscriptionPlanType, UserDataType } from '@/types/adminTypes'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
+import Script from 'next/script'
 import { toast } from 'react-toastify'
-import ConfirmationDialog from '../confirmation-dialog'
 
 type UpgradePlanProps = {
   open: boolean
   setOpen: (open: boolean) => void
   currentPlan?: SubscriptionPlanType
   getUserData: () => void
+  userData: UserDataType
   renewPlan: boolean
 }
 
-const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, renewPlan }: UpgradePlanProps) => {
+type OrderDetailsType = { orderId: string; amount: string; currency: string; receipt: string }
+
+const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, userData, renewPlan }: UpgradePlanProps) => {
   // States
-  const [openConfirmation, setOpenConfirmation] = useState(false)
   const [subscriptionList, setSubscriptionList] = useState(
     [] as { _id: string; displayName: string; subscriptionName: string; subscriptionPrice: number }[]
   )
@@ -85,7 +87,7 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, renewPlan }: Upg
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
-  const upgradeSubscriptionPLan = async () => {
+  const upgradeSubscriptionPlan = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     const storeId = localStorage.getItem('storeId')
@@ -110,8 +112,89 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, renewPlan }: Upg
     }
   }
 
+  const createOrderId = async (amount: number) => {
+    try {
+      const response = await axios.post(
+        '/api/order',
+        { amount },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
+      )
+
+      if (response && response.data) {
+        return response.data
+      }
+    } catch (error: any) {
+      toast.error(
+        `We are facing some problem at this moment, please try after sometime. ${error?.response?.data?.message ?? error?.message}`,
+        { hideProgressBar: false }
+      )
+    }
+  }
+
+  const verifyPayment = async (response: any, orderDetails: OrderDetailsType) => {
+    const data = {
+      orderCreationId: orderDetails.orderId,
+      razorpayPaymentId: response.razorpay_payment_id,
+      razorpayOrderId: response.razorpay_order_id,
+      razorpaySignature: response.razorpay_signature
+    }
+
+    try {
+      const result = await axios.post('/api/payment/verify', data, {
+        headers: { 'Content-Type': 'application/json' }
+      })
+      if (result && result.data && result.data.success) {
+        toast.success('Payment successful')
+        upgradeSubscriptionPlan()
+      } else {
+        toast.error(result?.data?.message ?? 'Something went wrong. Please try again.')
+      }
+    } catch (error: any) {
+      toast.error(
+        `We are facing some problem at this moment, please try after sometime. ${error?.response?.data?.message ?? error?.message}`,
+        { hideProgressBar: false }
+      )
+    }
+  }
+
+  const processPayment = async () => {
+    try {
+      const amount = `${((selectedPlan?.subscriptionPrice || 0) + ((selectedPlan?.subscriptionPrice || 0) * 18) / 100).toFixed(2)}`
+      const orderDetails: OrderDetailsType = await createOrderId(Number(amount))
+
+      const options = {
+        key: process.env.RAZORPAY_KEY_ID,
+        amount: orderDetails.amount,
+        currency: orderDetails.currency,
+        name: 'CueKeeper Subscription',
+        description: `Payment for subscription`,
+        order_id: orderDetails.orderId,
+        handler: (response: any) => verifyPayment(response, orderDetails),
+        prefill: {
+          name: userData?.clientName,
+          contact: userData?.StoreData?.contact
+        }
+        // theme: {
+        //   color: '#3399cc'
+        // }
+      }
+      const paymentObject = new (window as any).Razorpay(options)
+      paymentObject.on('payment.failed', function (response: any) {
+        toast.error(response.error.description)
+      })
+      paymentObject.open()
+    } catch (error: any) {
+      toast.error(error)
+    }
+  }
+
   return (
     <>
+      <Script id='razorpay-checkout-js' src='https://checkout.razorpay.com/v1/checkout.js' />
       <Dialog fullWidth open={open} onClose={handleClose}>
         <DialogTitle variant='h4' className='flex flex-col gap-2 text-center sm:pbs-16 sm:pbe-6 sm:pli-16'>
           {currentPlan?.subscriptionName ? 'Renew Plan' : 'Buy Subscription'}
@@ -149,7 +232,7 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, renewPlan }: Upg
                 )}
               </Select>
             </FormControl>
-            <Button variant='contained' className='capitalize sm:is-auto is-full' onClick={upgradeSubscriptionPLan}>
+            <Button variant='contained' className='capitalize sm:is-auto is-full' onClick={processPayment}>
               {renewPlan ? 'Renew' : 'Upgrade'}
             </Button>
           </div>
@@ -171,7 +254,7 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, renewPlan }: Upg
                   <p>{`₹${((selectedPlan?.subscriptionPrice || 0) * 18) / 100}`}</p>
 
                   <p>Net Pay</p>
-                  <p>{`₹${(selectedPlan?.subscriptionPrice || 0) + ((selectedPlan?.subscriptionPrice || 0) * 18) / 100}`}</p>
+                  <p>{`₹${((selectedPlan?.subscriptionPrice || 0) + ((selectedPlan?.subscriptionPrice || 0) * 18) / 100).toFixed(2)}`}</p>
                 </div>
                 {/* <div className='flex justify-center items-baseline gap-1'>
                   <Typography component='sup' className='self-start' color='primary'>
@@ -199,7 +282,6 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, renewPlan }: Upg
           )}
         </DialogContent>
       </Dialog>
-      <ConfirmationDialog open={openConfirmation} setOpen={setOpenConfirmation} type='unsubscribe' />
     </>
   )
 }
