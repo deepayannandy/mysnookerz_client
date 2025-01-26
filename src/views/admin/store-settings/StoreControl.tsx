@@ -153,7 +153,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
                   </Typography>
                   {isCancelGameSwitch && field.name === 'Cancel Game' ? (
                     <FormControl fullWidth size='small' className='md:w-32 w-24'>
-                      <InputLabel id='cancel-min'>Cancel Minutes</InputLabel>
+                      <InputLabel id='cancel-min'>Minutes</InputLabel>
                       <Select
                         label='Cancel Minutes'
                         defaultValue='Standard'
