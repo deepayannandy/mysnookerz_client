@@ -19,6 +19,7 @@ import Typography from '@mui/material/Typography'
 // Style Imports
 import { SubscriptionPlanType, UserDataType } from '@/types/adminTypes'
 import axios from 'axios'
+import _ from 'lodash'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import Script from 'next/script'
 import { toast } from 'react-toastify'
@@ -33,6 +34,13 @@ type UpgradePlanProps = {
 }
 
 type OrderDetailsType = { orderId: string; amount: string; currency: string; receipt: string }
+
+type PaymentDetailsType = {
+  orderCreationId: string
+  razorpayPaymentId: string
+  razorpayOrderId: string
+  razorpaySignature: string
+}
 
 const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, userData, renewPlan }: UpgradePlanProps) => {
   // States
@@ -87,7 +95,52 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, userData, renewP
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
-  const upgradeSubscriptionPlan = async () => {
+  const createPaymentLogs = async (orderDetails: OrderDetailsType): Promise<{ success: boolean } | void> => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+
+    try {
+      const response = await axios.post(`${apiBaseUrl}/paymentLogs`, orderDetails, {
+        headers: { 'auth-token': token }
+      })
+      if (response && response.data) {
+        return { success: true }
+      }
+      throw new Error('Something went wrong. Please try after sometime.')
+    } catch (error: any) {
+      if (error?.response?.status === 409) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      throw new Error(error?.response?.data?.message ?? error?.message)
+    }
+  }
+
+  const updatePaymentLogs = async (paymentDetails: PaymentDetailsType) => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+
+    try {
+      const response = await axios.patch(
+        `${apiBaseUrl}/paymentLogs/${paymentDetails.orderCreationId}`,
+        _.omit(paymentDetails, 'orderCreationId'),
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+      if (response && response.data) {
+        return { success: true }
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 409) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      throw new Error(error?.response?.data?.message ?? error?.message)
+    }
+  }
+
+  const upgradeSubscriptionPlan = async (orderId: string) => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     const storeId = localStorage.getItem('storeId')
@@ -95,7 +148,7 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, userData, renewP
     try {
       const response = await axios.post(
         `${apiBaseUrl}/storeSubscription`,
-        { storeId, subscriptionId: selectedPlanId },
+        { storeId, subscriptionId: selectedPlanId, transactionRef: orderId },
         { headers: { 'auth-token': token } }
       )
       if (response && response.data) {
@@ -125,13 +178,13 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, userData, renewP
       )
 
       if (response && response.data) {
+        await createPaymentLogs(response.data)
         return response.data
       }
+      return {}
     } catch (error: any) {
-      toast.error(
-        `We are facing some problem at this moment, please try after sometime. ${error?.response?.data?.message ?? error?.message}`,
-        { hideProgressBar: false }
-      )
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+      return {}
     }
   }
 
@@ -148,8 +201,9 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, userData, renewP
         headers: { 'Content-Type': 'application/json' }
       })
       if (result && result.data && result.data.success) {
+        await updatePaymentLogs(data)
         toast.success('Payment successful')
-        upgradeSubscriptionPlan()
+        upgradeSubscriptionPlan(orderDetails.orderId)
       } else {
         toast.error(result?.data?.message ?? 'Something went wrong. Please try again.')
       }
@@ -166,27 +220,29 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, userData, renewP
       const amount = `${((selectedPlan?.subscriptionPrice || 0) + ((selectedPlan?.subscriptionPrice || 0) * 18) / 100).toFixed(2)}`
       const orderDetails: OrderDetailsType = await createOrderId(Number(amount))
 
-      const options = {
-        key: process.env.RAZORPAY_KEY_ID,
-        amount: orderDetails.amount,
-        currency: orderDetails.currency,
-        name: 'CueKeeper Subscription',
-        description: `Payment for subscription`,
-        order_id: orderDetails.orderId,
-        handler: (response: any) => verifyPayment(response, orderDetails),
-        prefill: {
-          name: userData?.clientName,
-          contact: userData?.StoreData?.contact
+      if (orderDetails.orderId) {
+        const options = {
+          key: process.env.RAZORPAY_KEY_ID,
+          amount: orderDetails.amount,
+          currency: orderDetails.currency,
+          name: 'CueKeeper Subscription',
+          description: `Payment for subscription`,
+          order_id: orderDetails.orderId,
+          handler: (response: any) => verifyPayment(response, orderDetails),
+          prefill: {
+            name: userData?.clientName,
+            contact: userData?.StoreData?.contact
+          }
+          // theme: {
+          //   color: '#3399cc'
+          // }
         }
-        // theme: {
-        //   color: '#3399cc'
-        // }
+        const paymentObject = new (window as any).Razorpay(options)
+        paymentObject.on('payment.failed', function (response: any) {
+          toast.error(response.error.description)
+        })
+        paymentObject.open()
       }
-      const paymentObject = new (window as any).Razorpay(options)
-      paymentObject.on('payment.failed', function (response: any) {
-        toast.error(response.error.description)
-      })
-      paymentObject.open()
     } catch (error: any) {
       toast.error(error)
     }
