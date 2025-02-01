@@ -169,7 +169,15 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
   }, [])
 
   useEffect(() => {
-    resetForm({ customer: '', order: [] })
+    resetForm({
+      customer: '',
+      order: [
+        {
+          product: productList[0],
+          quantity: 1
+        }
+      ]
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customersList, productList])
 
