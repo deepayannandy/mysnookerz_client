@@ -148,14 +148,17 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
   // const { lang: locale } = useParams()
 
   const getTime = (startTime: string, endTime: string) => {
-    const diff = DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime), ['hours', 'minutes', 'seconds']).toObject()
-    return `${diff.hours}h ${diff.minutes}m ${Math.ceil(diff.seconds ?? 0)}s`
+    // const diff = DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime), ['hours', 'minutes', 'seconds']).toObject()
+    // return `${diff.hours}h ${diff.minutes}m ${Math.ceil(diff.seconds ?? 0)}s`
+
+    const diff = DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime), 'minutes').minutes
+    return `${diff?.toFixed(2) ?? 0}mins`
   }
 
   const columns = useMemo<ColumnDef<PaymentHistoryDataTypeWithAction, any>[]>(
     () => [
       columnHelper.accessor('transactionId', {
-        header: 'transactionId',
+        header: 'Transaction Id',
         cell: ({ row }) => <Typography>{`${row.original.transactionId ?? 'NA'}`}</Typography>
       }),
       columnHelper.accessor('date', {

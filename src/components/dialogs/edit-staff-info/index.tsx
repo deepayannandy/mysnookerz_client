@@ -161,7 +161,11 @@ const EditStaffInfo = ({ open, setOpen, getStaffData, staffData }: EditStaffInfo
                   label='Mobile'
                   inputProps={{ type: 'number', min: 0 }}
                   value={value || ''}
-                  onChange={onChange}
+                  onChange={event => {
+                    if (event.target.value.length <= 10) {
+                      onChange(event)
+                    }
+                  }}
                   {...(errors.mobile && { error: true, helperText: errors.mobile.message })}
                 />
               )}

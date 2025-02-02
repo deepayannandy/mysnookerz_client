@@ -148,7 +148,11 @@ const EditCustomerInfo = ({ open, setOpen, getCustomerData, customerData }: Edit
                   label='Contact'
                   inputProps={{ type: 'number', min: 0 }}
                   value={value || ''}
-                  onChange={onChange}
+                  onChange={event => {
+                    if (event.target.value.length <= 10) {
+                      onChange(event)
+                    }
+                  }}
                   {...(errors.contact && { error: true, helperText: errors.contact.message })}
                 />
               )}
