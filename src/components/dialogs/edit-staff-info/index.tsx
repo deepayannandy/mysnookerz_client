@@ -41,7 +41,7 @@ const schema: yup.ObjectSchema<Omit<EditStaffDataType, '_id'>> = yup.object().sh
   profileImage: yup.string(),
   password: yup
     .string()
-    .transform((value, originalValue) => (originalValue.trim() === '' ? null : value))
+    .transform((value, originalValue) => (originalValue?.trim() === '' ? null : value))
     .min(8, 'Password must be at least 8 characters long')
     .notRequired()
     .nullable(),

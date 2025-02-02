@@ -87,7 +87,6 @@ const columnHelper = createColumnHelper<SubscriptionPlanType>()
 
 const SubscriptionHistoryTable = () => {
   // States
-  const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as SubscriptionPlanType[])
   const [globalFilter, setGlobalFilter] = useState('')
 
@@ -157,7 +156,7 @@ const SubscriptionHistoryTable = () => {
         header: 'Amount',
         cell: ({ row }) => <Typography>{`₹${row.original.subscriptionAmount}`}</Typography>
       }),
-      columnHelper.accessor('startDate', {
+      columnHelper.accessor('_id', {
         header: 'Status',
         cell: ({ row }) => (
           <Tooltip
@@ -196,7 +195,6 @@ const SubscriptionHistoryTable = () => {
       fuzzy: fuzzyFilter
     },
     state: {
-      rowSelection,
       globalFilter
     },
     initialState: {
@@ -207,7 +205,6 @@ const SubscriptionHistoryTable = () => {
     enableRowSelection: true, //enable row selection for all rows
     // enableRowSelection: row => row.original.age > 18, // or enable row selection conditionally per row
     globalFilterFn: fuzzyFilter,
-    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
     onGlobalFilterChange: setGlobalFilter,
     getFilteredRowModel: getFilteredRowModel(),

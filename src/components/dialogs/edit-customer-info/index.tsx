@@ -41,7 +41,7 @@ const schema: yup.ObjectSchema<Omit<EditCustomerDataType, '_id'>> = yup.object()
     .string()
     .notRequired()
     .nullable()
-    .transform((value, originalValue) => (originalValue.trim() === '' ? null : value))
+    .transform((value, originalValue) => (originalValue?.trim() === '' ? null : value))
     .email('Please enter a valid email address'),
   profileImage: yup.string(),
   dob: yup.date().notRequired(),

@@ -231,13 +231,7 @@ const Login = ({ mode }: { mode: Mode }) => {
             />
             <div className='flex justify-between items-center flex-wrap gap-x-3 gap-y-1'>
               <FormControlLabel
-                control={
-                  <Checkbox
-                    defaultChecked
-                    checked={rememberMe}
-                    onChange={event => setRememberMe(event.target.checked)}
-                  />
-                }
+                control={<Checkbox checked={rememberMe} onChange={event => setRememberMe(event.target.checked)} />}
                 label='Remember me'
               />
               <Typography className='text-end' color='primary' component={Link} href='/forgot-password'>
