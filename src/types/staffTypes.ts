@@ -25,6 +25,7 @@ export type CustomerDataType = {
   isBlackListed: boolean
   reasonOfBlackList: string
   dateOfBlackList: string
+  storeId: string
 }
 
 export type CustomerDetailsDataType = {

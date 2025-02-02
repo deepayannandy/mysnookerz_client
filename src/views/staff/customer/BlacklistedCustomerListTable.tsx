@@ -93,6 +93,8 @@ const BlacklistedCustomerListTable = () => {
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
   const [globalFilter, setGlobalFilter] = useState('')
 
+  const storeId = localStorage.getItem('storeId')
+
   // Hooks
   const { lang: locale } = useParams()
   const pathname = usePathname()
@@ -232,21 +234,25 @@ const BlacklistedCustomerListTable = () => {
         header: 'Actions',
         cell: ({ row }) => (
           <div className='flex items-center'>
-            <OptionMenu
-              iconButtonProps={{ size: 'medium' }}
-              iconClassName='text-textSecondary text-[22px]'
-              options={[
-                // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
-                {
-                  text: 'Remove from Blacklist',
-                  icon: 'ri-stack-line',
-                  menuItemProps: {
-                    className: 'gap-2',
-                    onClick: () => openDeleteConfirmation(row.original)
+            {row.original.storeId === storeId ? (
+              <OptionMenu
+                iconButtonProps={{ size: 'medium' }}
+                iconClassName='text-textSecondary text-[22px]'
+                options={[
+                  // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
+                  {
+                    text: 'Remove from Blacklist',
+                    icon: 'ri-stack-line',
+                    menuItemProps: {
+                      className: 'gap-2',
+                      onClick: () => openDeleteConfirmation(row.original)
+                    }
                   }
-                }
-              ]}
-            />
+                ]}
+              />
+            ) : (
+              <>-</>
+            )}
           </div>
         ),
         enableSorting: false
