@@ -57,7 +57,7 @@ type StatusChipColorType = {
 
 export const statusChipColor: { [key: string]: StatusChipColorType } = {
   Paid: { color: 'success' },
-  Running: { color: 'primary' },
+  'Partial Paid': { color: 'warning' },
   Due: { color: 'error' }
 }
 
@@ -185,9 +185,9 @@ const FoodOrderHistoryTable = () => {
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             <Chip
-              label={row.original.status ? 'Paid' : 'Due'}
+              label={row.original.status}
               variant='tonal'
-              color={statusChipColor[row.original.status ? 'Paid' : 'Due']?.color}
+              color={statusChipColor[row.original.status]?.color}
               size='small'
             />
           </div>

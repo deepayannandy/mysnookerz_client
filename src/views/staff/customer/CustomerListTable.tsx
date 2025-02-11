@@ -239,7 +239,9 @@ const CustomerListTable = () => {
       }),
       columnHelper.accessor('credit', {
         header: 'Credit',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.credit}`}</Typography>
+        cell: ({ row }) => (
+          <Typography color='text.primary'>{`₹${row.original.credit ? row.original.credit.toFixed(2) : 0}`}</Typography>
+        )
       }),
       // columnHelper.accessor('status', {
       //   header: 'Status',

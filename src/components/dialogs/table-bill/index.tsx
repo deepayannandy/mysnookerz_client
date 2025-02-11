@@ -388,6 +388,24 @@ const TableBill = ({
     })
   }
 
+  const handleCustomerChange = (value: (string | CustomerListType)[]) => {
+    if (value.length > 1) {
+      let paymentMethodData = customerPaymentData
+      for (const customer of value) {
+        paymentMethodData = {
+          ...paymentMethodData,
+          [(customer as CustomerListType).fullName ?? customer]: {
+            ...customerPaymentData[(customer as CustomerListType).fullName ?? customer],
+            paymentMethod: 'CASH'
+          }
+        }
+      }
+      setCustomerPaymentData(paymentMethodData)
+    }
+
+    setInvoiceTo(value)
+  }
+
   const getOptions = () => {
     const list = customersList.map(customer => {
       if (data.selectedTable?.gameData?.players?.find(player => player.customerId === customer.customerId)) {
@@ -471,7 +489,7 @@ const TableBill = ({
               multiple
               freeSolo
               value={invoiceTo}
-              onChange={(_, value) => setInvoiceTo(value)}
+              onChange={(_, value) => handleCustomerChange(value)}
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => {
                   const { key, ...tagProps } = getTagProps({ index })
