@@ -455,6 +455,7 @@ const PoolCard = ({
                 <TextField
                   {...params}
                   inputProps={{
+                    ...params.inputProps,
                     enterKeyHint: 'enter'
                   }}
                   sx={{
