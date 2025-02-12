@@ -454,6 +454,9 @@ const PoolCard = ({
               renderInput={params => (
                 <TextField
                   {...params}
+                  inputProps={{
+                    enterKeyHint: 'enter'
+                  }}
                   sx={{
                     '& .MuiInputBase-root': {
                       ...(tableData.gameData?.startTime ? {} : { height: '60px' }), // Set the fixed height for the TextField
