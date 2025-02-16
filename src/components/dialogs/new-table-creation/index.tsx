@@ -320,16 +320,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                 control={
                   <Checkbox
                     defaultChecked
-                    checked={isCountdownBillingSelected}
-                    onChange={event => setIsCountdownBillingSelected(event.target.checked)}
-                  />
-                }
-                label='Countdown Billing'
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    defaultChecked
                     checked={isFrameBillingSelected}
                     onChange={event => setIsFrameBillingSelected(event.target.checked)}
                   />
@@ -345,6 +335,16 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                   />
                 }
                 label='Fixed Billing'
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    defaultChecked
+                    checked={isCountdownBillingSelected}
+                    onChange={event => setIsCountdownBillingSelected(event.target.checked)}
+                  />
+                }
+                label='Countdown Billing'
               />
             </Grid>
             <Grid item xs={12} sm={6}>
