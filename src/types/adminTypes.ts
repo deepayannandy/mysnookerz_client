@@ -142,6 +142,7 @@ export type DeviceDataType = {
   ipAddress?: string
   warrantyAvailingDate?: string[]
   isActive: boolean
+  isManualEnable: boolean
 }
 
 export type ProductDataType = {

@@ -3,10 +3,11 @@ import { DeviceDataType } from '@/types/adminTypes'
 import AddNewCard from '@components/dialogs/billing-card'
 import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
 import * as mui from '@mui/material'
-import { Card, Collapse, Grid, IconButton, Switch, Typography } from '@mui/material'
+import { Card, Chip, Collapse, Grid, IconButton, Switch, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import axios from 'axios'
 import { DateTime } from 'luxon'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 
@@ -29,6 +30,11 @@ const DeviceCard = ({
   // States
   const [expanded, setExpanded] = useState(isDefault ? true : false)
   //const [nodeData, setNodeData] = useState()
+
+  //Hooks
+  const { lang: locale } = useParams()
+  const pathname = usePathname()
+  const router = useRouter()
 
   // Vars
   const iconButtonProps: mui.IconButtonProps = {
@@ -69,6 +75,28 @@ const DeviceCard = ({
     }
   }
 
+  const enableOrDisable = async (deviceId: string) => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    const storeId = localStorage.getItem('storeId')
+    try {
+      const response = await axios.post(
+        `${apiBaseUrl}/games/SendMqtt`,
+        { topic: `${deviceId}/manualenable`, message: deviceDetails.isManualEnable ? '0' : '1' },
+        { headers: { 'auth-token': token } }
+      )
+      if (response && response.data) {
+        getDevicesData()
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 409) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
   return (
     <>
       <div className='flex flex-wrap justify-between items-center mlb-3 gap-y-2'>
@@ -97,10 +125,14 @@ const DeviceCard = ({
             </div> */}
             <div className='flex flex-col gap-1'>
               <div className='flex flex-wrap items-center gap-x-2 gap-y-1'>
-                <Typography color='text.primary' className='font-medium'>
+                <Typography color='text.primary' className='font-medium' fontSize={'18px'}>
                   {deviceDetails?.deviceType ?? ''}
                 </Typography>
-                {/* {isDefault && <Chip variant='tonal' color='success' label='Default Card' size='small' />} */}
+                {deviceDetails.isManualEnable ? (
+                  <Chip variant='tonal' color='success' label='Manual Enable' size='small' />
+                ) : (
+                  <Chip variant='tonal' color='error' label='Manual Disable' size='small' />
+                )}
               </div>
               <Typography>
                 {`Expires
@@ -126,7 +158,19 @@ const DeviceCard = ({
           <OptionMenu
             iconClassName='text-textSecondary'
             iconButtonProps={{ size: 'medium' }}
-            options={['Set as Default Card']}
+            options={[
+              // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
+              {
+                text: deviceDetails.isManualEnable ? 'Disable' : 'Enable',
+                menuItemProps: {
+                  className: 'gap-2',
+                  onClick: () => enableOrDisable(deviceDetails.deviceId)
+                }
+              }
+
+              // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
+            ]}
+            //options={deviceDetails.isManualEnable ? ['Disable'] : ['Enable']}
           />
         </div>
       </div>
