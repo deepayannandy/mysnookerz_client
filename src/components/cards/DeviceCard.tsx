@@ -78,7 +78,6 @@ const DeviceCard = ({
   const enableOrDisable = async (deviceId: string) => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
-    const storeId = localStorage.getItem('storeId')
     try {
       const response = await axios.post(
         `${apiBaseUrl}/games/SendMqtt`,
