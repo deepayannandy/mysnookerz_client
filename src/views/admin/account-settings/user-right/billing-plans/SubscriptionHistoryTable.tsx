@@ -122,8 +122,8 @@ const SubscriptionHistoryTable = () => {
   }, [])
 
   const getStatus = (startDate: string, endDate: string) => {
-    const startDateValue = DateTime.fromISO(startDate)
-    const endDateValue = DateTime.fromISO(endDate)
+    const startDateValue = DateTime.fromISO(startDate).startOf('day')
+    const endDateValue = DateTime.fromISO(endDate).endOf('day')
 
     if (startDateValue > DateTime.now()) {
       return 'Upcoming'

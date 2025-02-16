@@ -168,16 +168,18 @@ const DueAmountTable = () => {
       // }),
       columnHelper.accessor('credit', {
         header: 'Due',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.credit ?? 0}`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.credit?.toFixed(2) ?? 0}`}</Typography>
       }),
       columnHelper.accessor('cafeCredit', {
         header: 'Cafe Due',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.cafeCredit ?? 0}`}</Typography>
+        cell: ({ row }) => (
+          <Typography color='text.primary'>{`₹${row.original.cafeCredit?.toFixed(2) ?? 0}`}</Typography>
+        )
       }),
       columnHelper.accessor('totalDue', {
         header: 'Total Due',
         cell: ({ row }) => (
-          <Typography color='text.primary'>{`₹${Number(row.original.credit ?? 0) + Number(row.original.cafeCredit ?? 0)}`}</Typography>
+          <Typography color='text.primary'>{`₹${(Number(row.original.credit ?? 0) + Number(row.original.cafeCredit ?? 0)).toFixed(2)}`}</Typography>
         )
       }),
       columnHelper.accessor('action', {
