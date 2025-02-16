@@ -54,9 +54,9 @@ export type Config = {
 }
 
 const themeConfig: Config = {
-  templateName: 'Snooker',
+  templateName: 'Cuekeeper',
   homePageUrl: '/staff/booking',
-  settingsCookieName: 'my-snooker-client',
+  settingsCookieName: 'cuekeeper-client',
   mode: 'system', // 'system', 'light', 'dark'
   skin: 'default', // 'default', 'bordered'
   semiDark: false, // true, false

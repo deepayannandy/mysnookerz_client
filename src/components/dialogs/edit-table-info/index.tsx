@@ -45,6 +45,14 @@ type EditTableDataType = {
     countdownDayCharge: number | null
     countdownNightCharge: number | null
   }>[]
+  frameRules: Partial<{
+    frameDayCharge: number | null
+    frameNightCharge: number | null
+  }>[]
+  fixedRules: Partial<{
+    fixedDayCharge: number | null
+    fixedNightCharge: number | null
+  }>[]
   deviceId: string
   nodeID: string
 }
@@ -64,6 +72,8 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   const isMinuteBilling = tableData?.gameTypes?.includes('Minute Billing') ?? false
   const isSlotBilling = tableData?.gameTypes?.includes('Slot Billing') ?? false
   const isCountdownBilling = tableData?.gameTypes?.includes('Countdown Billing') ?? false
+  const isFrameBilling = tableData?.gameTypes?.includes('Frame Billing') ?? false
+  const isFixedBilling = tableData?.gameTypes?.includes('Fixed Billing') ?? false
 
   const [devices, setDevices] = useState([] as string[])
   const [nodes, setNodes] = useState({} as Record<string, string[]>)
@@ -72,6 +82,8 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   const [isMinuteBillingSelected, setIsMinuteBillingSelected] = useState(false)
   const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(false)
   const [isCountdownBillingSelected, setIsCountdownBillingSelected] = useState(false)
+  const [isFrameBillingSelected, setIsFrameBillingSelected] = useState(false)
+  const [isFixedBillingSelected, setIsFixedBillingSelected] = useState(false)
 
   // States
   // const { lang: locale } = useParams()
@@ -105,6 +117,24 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     name: 'countdownRules' // unique name for your Field Array
   })
 
+  const {
+    fields: frameFields,
+    append: frameAppend,
+    remove: frameRemove
+  } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormProvider)
+    name: 'frameRules' // unique name for your Field Array
+  })
+
+  const {
+    fields: fixedFields,
+    append: fixedAppend,
+    remove: fixedRemove
+  } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormProvider)
+    name: 'fixedRules' // unique name for your Field Array
+  })
+
   useEffect(() => {
     resetForm(_.omit(tableData, 'deviceId', 'nodeID', 'gameType'))
     setDeviceId(tableData.deviceId)
@@ -112,6 +142,8 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     setIsMinuteBillingSelected(isMinuteBilling)
     setIsSlotBillingSelected(isSlotBilling)
     setIsCountdownBillingSelected(isCountdownBilling)
+    setIsFrameBillingSelected(isFrameBilling)
+    setIsFixedBillingSelected(isFixedBilling)
 
     if (!isSlotBilling) {
       slotAppend({ uptoMin: null, slotCharge: null, nightSlotCharge: null })
@@ -119,6 +151,14 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
 
     if (!isCountdownBilling) {
       countdownAppend({ uptoMin: null, countdownDayCharge: null, countdownNightCharge: null })
+    }
+
+    if (!isFrameBilling) {
+      frameAppend({ frameDayCharge: null, frameNightCharge: null })
+    }
+
+    if (!isFixedBilling) {
+      fixedAppend({ fixedDayCharge: null, fixedNightCharge: null })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData, resetForm])
@@ -143,6 +183,12 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     if (isCountdownBillingSelected) {
       gameTypes.push('Countdown Billing')
     }
+    if (isFrameBillingSelected) {
+      gameTypes.push('Frame Billing')
+    }
+    if (isFixedBillingSelected) {
+      gameTypes.push('Fixed Billing')
+    }
 
     if (!gameTypes.length) {
       toast.error('Please select at least one billing type')
@@ -159,6 +205,14 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
 
     if (!isCountdownBillingSelected) {
       data.countdownRules = []
+    }
+
+    if (!isFrameBillingSelected) {
+      data.frameRules = []
+    }
+
+    if (!isFixedBillingSelected) {
+      data.fixedRules = []
     }
 
     const requestData: Omit<EditTableDataType, '_id'> = {
@@ -263,6 +317,26 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                   />
                 }
                 label='Countdown Billing'
+              />
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isFrameBillingSelected}
+                    onChange={event => setIsFrameBillingSelected(event.target.checked)}
+                  />
+                }
+                label='Frame Billing'
+              />
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isFixedBillingSelected}
+                    onChange={event => setIsFixedBillingSelected(event.target.checked)}
+                  />
+                }
+                label='Fixed Billing'
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -622,6 +696,158 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     onClick={() =>
                       countdownAppend({ uptoMin: null, countdownDayCharge: null, countdownNightCharge: null })
                     }
+                    startIcon={<i className='ri-add-line' />}
+                  >
+                    Add Item
+                  </Button>
+                </Grid>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {isFrameBillingSelected ? (
+              <>
+                <Grid item xs={12}>
+                  <Divider>
+                    <span className='mx-3 font-bold'>Frame Billing</span>
+                  </Divider>
+                </Grid>
+                <Grid item xs={12}>
+                  {frameFields.map((field, index) => (
+                    <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
+                      <Controller
+                        name={`frameRules.${index}.frameDayCharge`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Day Charge'
+                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.frameRules?.[index]?.frameDayCharge && {
+                              error: true,
+                              helperText:
+                                errors.frameRules?.[index]?.frameDayCharge?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`frameRules.${index}.frameNightCharge`}
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Night Charge'
+                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.frameRules?.[index]?.frameNightCharge && {
+                              error: true,
+                              helperText:
+                                errors.frameRules?.[index]?.frameNightCharge?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      {frameFields.length > 1 ? (
+                        <CustomIconButton onClick={() => frameRemove(index)} className='min-is-fit'>
+                          <i className='ri-close-line' />
+                        </CustomIconButton>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  ))}
+
+                  <Button
+                    className='min-is-fit'
+                    size='small'
+                    variant='contained'
+                    onClick={() => frameAppend({ frameDayCharge: null, frameNightCharge: null })}
+                    startIcon={<i className='ri-add-line' />}
+                  >
+                    Add Item
+                  </Button>
+                </Grid>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {isFixedBillingSelected ? (
+              <>
+                <Grid item xs={12}>
+                  <Divider>
+                    <span className='mx-3 font-bold'>Fixed Billing</span>
+                  </Divider>
+                </Grid>
+                <Grid item xs={12}>
+                  {fixedFields.map((field, index) => (
+                    <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
+                      <Controller
+                        name={`fixedRules.${index}.fixedDayCharge`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Day Charge'
+                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.fixedRules?.[index]?.fixedDayCharge && {
+                              error: true,
+                              helperText:
+                                errors.fixedRules?.[index]?.fixedDayCharge?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`fixedRules.${index}.fixedNightCharge`}
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Night Charge'
+                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.fixedRules?.[index]?.fixedNightCharge && {
+                              error: true,
+                              helperText:
+                                errors.fixedRules?.[index]?.fixedNightCharge?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      {fixedFields.length > 1 ? (
+                        <CustomIconButton onClick={() => fixedRemove(index)} className='min-is-fit'>
+                          <i className='ri-close-line' />
+                        </CustomIconButton>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  ))}
+
+                  <Button
+                    className='min-is-fit'
+                    size='small'
+                    variant='contained'
+                    onClick={() => fixedAppend({ fixedDayCharge: null, fixedNightCharge: null })}
                     startIcon={<i className='ri-add-line' />}
                   >
                     Add Item
