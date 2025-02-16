@@ -312,16 +312,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={isCountdownBillingSelected}
-                    onChange={event => setIsCountdownBillingSelected(event.target.checked)}
-                  />
-                }
-                label='Countdown Billing'
-              />
-
-              <FormControlLabel
-                control={
-                  <Checkbox
                     checked={isFrameBillingSelected}
                     onChange={event => setIsFrameBillingSelected(event.target.checked)}
                   />
@@ -337,6 +327,16 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                   />
                 }
                 label='Fixed Billing'
+              />
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isCountdownBillingSelected}
+                    onChange={event => setIsCountdownBillingSelected(event.target.checked)}
+                  />
+                }
+                label='Countdown Billing'
               />
             </Grid>
             <Grid item xs={12} sm={6}>
