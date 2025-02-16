@@ -70,9 +70,13 @@ const Logo = ({}: { color?: CSSProperties['color'] }) => {
     <div className='flex items-center min-bs-[24px]'>
       {/* <MaterioLogo className='text-[22px] text-primary' /> */}
       <img
-        className={`${mode === 'light' ? 'invert' : ''} w-fit`}
+        className='w-fit'
         height={40}
-        src={'/images/website-logo/cuekeeperlogo.png'}
+        src={
+          mode === 'light'
+            ? '/images/website-logo/cuekeeperlogo-light.png'
+            : '/images/website-logo/cuekeeperlogo-dark.png'
+        }
       ></img>
       {/* <LogoText
         color={color}
