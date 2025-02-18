@@ -1,9 +1,11 @@
 'use client'
 
+import { StaffDataType } from '@/types/adminTypes'
 // React Imports
 
 // MUI Imports
 import { yupResolver } from '@hookform/resolvers/yup'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
@@ -19,6 +21,7 @@ import * as yup from 'yup'
 
 type EditStaffDataType = {
   _id: string
+  role: string
   fullName: string
   mobile: string | null
   email: string
@@ -30,11 +33,14 @@ type EditStaffDataType = {
 type EditStaffInfoProps = {
   open: boolean
   setOpen: (open: boolean) => void
-  staffData: EditStaffDataType
+  staffData: StaffDataType
   getStaffData: () => void
 }
 
+const Roles = ['Admin', 'Staff']
+
 const schema: yup.ObjectSchema<Omit<EditStaffDataType, '_id'>> = yup.object().shape({
+  role: yup.string().required('This field is required').min(1),
   fullName: yup.string().required('This field is required').min(1),
   mobile: yup.string().required('This field is required').min(10).max(10),
   email: yup.string().required('This field is required').email('Please enter a valid email address'),
@@ -69,6 +75,7 @@ const EditStaffInfo = ({ open, setOpen, getStaffData, staffData }: EditStaffInfo
   } = useForm<Omit<EditStaffDataType, '_id'>>({
     resolver: yupResolver(schema),
     defaultValues: {
+      role: Roles[0],
       fullName: '',
       mobile: '',
       email: '',
@@ -79,7 +86,13 @@ const EditStaffInfo = ({ open, setOpen, getStaffData, staffData }: EditStaffInfo
   })
 
   useEffect(() => {
-    resetForm({ ..._.omit(staffData, 'password'), password: '', confirmPassword: '' })
+    console.log(staffData)
+    resetForm({
+      ..._.omit(staffData, 'password'),
+      password: '',
+      confirmPassword: '',
+      role: staffData.userDesignation ?? ''
+    })
   }, [staffData, resetForm])
 
   const handleClose = () => {
@@ -90,8 +103,8 @@ const EditStaffInfo = ({ open, setOpen, getStaffData, staffData }: EditStaffInfo
   const onSubmit = async (data: Omit<EditStaffDataType, '_id'>) => {
     // const storeId = localStorage.getItem('storeId')
     const profileImage = '-'
-    const userDesignation = 'Staff'
-    const requestData = _.omit(data, 'confirmPassword')
+    const userDesignation = data.role
+    const requestData = _.omit(data, 'confirmPassword', 'role')
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -136,6 +149,24 @@ const EditStaffInfo = ({ open, setOpen, getStaffData, staffData }: EditStaffInfo
       <div className='p-5'>
         <form onSubmit={handleSubmit(data => onSubmit(data))}>
           <div className='flex flex-col gap-5'>
+            <FormControl fullWidth>
+              <InputLabel>Role</InputLabel>
+              <Controller
+                name='role'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <Select label='Role' value={value} onChange={onChange}>
+                    {Roles.map((role, index) => (
+                      <MenuItem key={index} value={role}>
+                        {role}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            </FormControl>
+
             <Controller
               name='fullName'
               control={control}

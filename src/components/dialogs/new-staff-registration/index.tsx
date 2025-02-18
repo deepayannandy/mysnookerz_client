@@ -2,6 +2,7 @@
 
 // MUI Imports
 import { yupResolver } from '@hookform/resolvers/yup'
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
 import Drawer from '@mui/material/Drawer'
@@ -15,6 +16,7 @@ import { toast } from 'react-toastify'
 import * as yup from 'yup'
 
 type NewStaffRegistrationDataType = {
+  role: string
   fullName: string
   mobile: string | null
   email: string
@@ -30,7 +32,10 @@ type NewStaffRegistrationProps = {
   getStaffData: () => void
 }
 
+const Roles = ['Admin', 'Staff']
+
 const schema: yup.ObjectSchema<NewStaffRegistrationDataType> = yup.object().shape({
+  role: yup.string().required('This field is required').min(1),
   fullName: yup.string().required('This field is required').min(1),
   mobile: yup.string().required('This field is required').min(10).max(10),
   email: yup.string().required('This field is required').email('Please enter a valid email address'),
@@ -57,6 +62,7 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
   } = useForm<NewStaffRegistrationDataType>({
     resolver: yupResolver(schema),
     defaultValues: {
+      role: Roles[0],
       fullName: '',
       mobile: '',
       email: '',
@@ -74,8 +80,8 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
   const onSubmit = async (data: NewStaffRegistrationDataType) => {
     const storeId = localStorage.getItem('storeId')
     const profileImage = '-'
-    const userDesignation = 'Staff'
-    const requestData = _.omit(data, 'confirmPassword')
+    const userDesignation = data.role
+    const requestData = _.omit(data, 'confirmPassword', 'role')
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -120,6 +126,24 @@ const NewStaffRegistration = ({ open, setOpen, getStaffData }: NewStaffRegistrat
       <div className='p-5'>
         <form onSubmit={handleSubmit(data => onSubmit(data))}>
           <div className='flex flex-col gap-5'>
+            <FormControl fullWidth>
+              <InputLabel>Role</InputLabel>
+              <Controller
+                name='role'
+                control={control}
+                rules={{ required: true }}
+                render={({ field: { value, onChange } }) => (
+                  <Select label='Role' value={value} onChange={onChange}>
+                    {Roles.map((role, index) => (
+                      <MenuItem key={index} value={role}>
+                        {role}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            </FormControl>
+
             <Controller
               name='fullName'
               control={control}
