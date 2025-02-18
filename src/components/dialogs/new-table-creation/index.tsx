@@ -43,14 +43,14 @@ type NewTableCreationDataType = Partial<{
     countdownDayCharge: number | null
     countdownNightCharge: number | null
   }[]
-  frameRules: {
+  frameRules: Partial<{
     frameDayCharge: number | null
     frameNightCharge: number | null
-  }[]
-  fixedRules: {
+  }>
+  fixedRules: Partial<{
     fixedDayCharge: number | null
     fixedNightCharge: number | null
-  }[]
+  }>
   deviceId: string
   nodeID: string
 }>
@@ -114,18 +114,14 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
           countdownNightCharge: null
         }
       ],
-      frameRules: [
-        {
-          frameDayCharge: null,
-          frameNightCharge: null
-        }
-      ],
-      fixedRules: [
-        {
-          fixedDayCharge: null,
-          fixedNightCharge: null
-        }
-      ],
+      frameRules: {
+        frameDayCharge: null,
+        frameNightCharge: null
+      },
+      fixedRules: {
+        fixedDayCharge: null,
+        fixedNightCharge: null
+      },
       deviceId: '',
       nodeID: ''
     }
@@ -147,24 +143,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
   } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormProvider)
     name: 'countdownRules' // unique name for your Field Array
-  })
-
-  const {
-    fields: frameFields,
-    append: frameAppend,
-    remove: frameRemove
-  } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormProvider)
-    name: 'frameRules' // unique name for your Field Array
-  })
-
-  const {
-    fields: fixedFields,
-    append: fixedAppend,
-    remove: fixedRemove
-  } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormProvider)
-    name: 'fixedRules' // unique name for your Field Array
   })
 
   const handleClose = () => {
@@ -216,11 +194,11 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     }
 
     if (!isFrameBillingSelected) {
-      data.frameRules = []
+      data.frameRules = {}
     }
 
     if (!isFixedBillingSelected) {
-      data.fixedRules = []
+      data.fixedRules = {}
     }
 
     data.deviceId = deviceId
@@ -720,68 +698,46 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     <span className='mx-3 font-bold'>Frame Billing</span>
                   </Divider>
                 </Grid>
-                <Grid item xs={12}>
-                  {frameFields.map((field, index) => (
-                    <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
-                      <Controller
-                        name={`frameRules.${index}.frameDayCharge`}
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            size='small'
-                            fullWidth
-                            label='Day Charge'
-                            inputProps={{ type: 'number', min: 0, step: 'any' }}
-                            value={value}
-                            onChange={onChange}
-                            {...(errors.frameRules?.[index]?.frameDayCharge && {
-                              error: true,
-                              helperText:
-                                errors.frameRules?.[index]?.frameDayCharge?.message || 'This field is required'
-                            })}
-                          />
-                        )}
+                <Grid item xs={6}>
+                  <Controller
+                    name={`frameRules.frameDayCharge`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Day Charge'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.frameRules?.frameDayCharge && {
+                          error: true,
+                          helperText: errors.frameRules?.frameDayCharge?.message || 'This field is required'
+                        })}
                       />
-
-                      <Controller
-                        name={`frameRules.${index}.frameNightCharge`}
-                        control={control}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            size='small'
-                            fullWidth
-                            label='Night Charge'
-                            inputProps={{ type: 'number', min: 0, step: 'any' }}
-                            value={value}
-                            onChange={onChange}
-                            {...(errors.frameRules?.[index]?.frameNightCharge && {
-                              error: true,
-                              helperText:
-                                errors.frameRules?.[index]?.frameNightCharge?.message || 'This field is required'
-                            })}
-                          />
-                        )}
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`frameRules.frameNightCharge`}
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Night Charge'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.frameRules?.frameNightCharge && {
+                          error: true,
+                          helperText: errors.frameRules?.frameNightCharge?.message || 'This field is required'
+                        })}
                       />
-
-                      {frameFields.length > 1 ? (
-                        <CustomIconButton onClick={() => frameRemove(index)} className='min-is-fit'>
-                          <i className='ri-close-line' />
-                        </CustomIconButton>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  ))}
-                  <Button
-                    className='min-is-fit'
-                    size='small'
-                    variant='contained'
-                    onClick={() => frameAppend({ frameDayCharge: null, frameNightCharge: null })}
-                    startIcon={<i className='ri-add-line' />}
-                  >
-                    Add Item
-                  </Button>
+                    )}
+                  />
                 </Grid>
               </>
             ) : (
@@ -795,68 +751,46 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     <span className='mx-3 font-bold'>Fixed Billing</span>
                   </Divider>
                 </Grid>
-                <Grid item xs={12}>
-                  {fixedFields.map((field, index) => (
-                    <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
-                      <Controller
-                        name={`fixedRules.${index}.fixedDayCharge`}
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            size='small'
-                            fullWidth
-                            label='Day Charge'
-                            inputProps={{ type: 'number', min: 0, step: 'any' }}
-                            value={value}
-                            onChange={onChange}
-                            {...(errors.fixedRules?.[index]?.fixedDayCharge && {
-                              error: true,
-                              helperText:
-                                errors.fixedRules?.[index]?.fixedDayCharge?.message || 'This field is required'
-                            })}
-                          />
-                        )}
+                <Grid item xs={6}>
+                  <Controller
+                    name={`fixedRules.fixedDayCharge`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Day Charge'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.fixedRules?.fixedDayCharge && {
+                          error: true,
+                          helperText: errors.fixedRules?.fixedDayCharge?.message || 'This field is required'
+                        })}
                       />
-
-                      <Controller
-                        name={`fixedRules.${index}.fixedNightCharge`}
-                        control={control}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            size='small'
-                            fullWidth
-                            label='Night Charge'
-                            inputProps={{ type: 'number', min: 0, step: 'any' }}
-                            value={value}
-                            onChange={onChange}
-                            {...(errors.fixedRules?.[index]?.fixedNightCharge && {
-                              error: true,
-                              helperText:
-                                errors.fixedRules?.[index]?.fixedNightCharge?.message || 'This field is required'
-                            })}
-                          />
-                        )}
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`fixedRules.fixedNightCharge`}
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Night Charge'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.fixedRules?.fixedNightCharge && {
+                          error: true,
+                          helperText: errors.fixedRules?.fixedNightCharge?.message || 'This field is required'
+                        })}
                       />
-
-                      {fixedFields.length > 1 ? (
-                        <CustomIconButton onClick={() => fixedRemove(index)} className='min-is-fit'>
-                          <i className='ri-close-line' />
-                        </CustomIconButton>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  ))}
-                  <Button
-                    className='min-is-fit'
-                    size='small'
-                    variant='contained'
-                    onClick={() => fixedAppend({ fixedDayCharge: null, fixedNightCharge: null })}
-                    startIcon={<i className='ri-add-line' />}
-                  >
-                    Add Item
-                  </Button>
+                    )}
+                  />
                 </Grid>
               </>
             ) : (
