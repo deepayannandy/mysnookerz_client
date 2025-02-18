@@ -48,11 +48,11 @@ type EditTableDataType = {
   frameRules: Partial<{
     frameDayCharge: number | null
     frameNightCharge: number | null
-  }>[]
+  }>
   fixedRules: Partial<{
     fixedDayCharge: number | null
     fixedNightCharge: number | null
-  }>[]
+  }>
   deviceId: string
   nodeID: string
 }
@@ -117,24 +117,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     name: 'countdownRules' // unique name for your Field Array
   })
 
-  const {
-    fields: frameFields,
-    append: frameAppend,
-    remove: frameRemove
-  } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormProvider)
-    name: 'frameRules' // unique name for your Field Array
-  })
-
-  const {
-    fields: fixedFields,
-    append: fixedAppend,
-    remove: fixedRemove
-  } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormProvider)
-    name: 'fixedRules' // unique name for your Field Array
-  })
-
   useEffect(() => {
     resetForm(_.omit(tableData, 'deviceId', 'nodeID', 'gameType'))
     setDeviceId(tableData.deviceId)
@@ -153,13 +135,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
       countdownAppend({ uptoMin: null, countdownDayCharge: null, countdownNightCharge: null })
     }
 
-    if (!isFrameBilling) {
-      frameAppend({ frameDayCharge: null, frameNightCharge: null })
-    }
-
-    if (!isFixedBilling) {
-      fixedAppend({ fixedDayCharge: null, fixedNightCharge: null })
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData, resetForm])
 
@@ -208,11 +183,11 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     }
 
     if (!isFrameBillingSelected) {
-      data.frameRules = []
+      data.frameRules = {}
     }
 
     if (!isFixedBillingSelected) {
-      data.fixedRules = []
+      data.fixedRules = {}
     }
 
     const requestData: Omit<EditTableDataType, '_id'> = {
@@ -713,69 +688,46 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     <span className='mx-3 font-bold'>Frame Billing</span>
                   </Divider>
                 </Grid>
-                <Grid item xs={12}>
-                  {frameFields.map((field, index) => (
-                    <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
-                      <Controller
-                        name={`frameRules.${index}.frameDayCharge`}
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            size='small'
-                            fullWidth
-                            label='Day Charge'
-                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
-                            value={value}
-                            onChange={onChange}
-                            {...(errors.frameRules?.[index]?.frameDayCharge && {
-                              error: true,
-                              helperText:
-                                errors.frameRules?.[index]?.frameDayCharge?.message || 'This field is required'
-                            })}
-                          />
-                        )}
+                <Grid item xs={6}>
+                  <Controller
+                    name={`frameRules.frameDayCharge`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Day Charge'
+                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.frameRules?.frameDayCharge && {
+                          error: true,
+                          helperText: errors.frameRules?.frameDayCharge?.message || 'This field is required'
+                        })}
                       />
-
-                      <Controller
-                        name={`frameRules.${index}.frameNightCharge`}
-                        control={control}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            size='small'
-                            fullWidth
-                            label='Night Charge'
-                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
-                            value={value}
-                            onChange={onChange}
-                            {...(errors.frameRules?.[index]?.frameNightCharge && {
-                              error: true,
-                              helperText:
-                                errors.frameRules?.[index]?.frameNightCharge?.message || 'This field is required'
-                            })}
-                          />
-                        )}
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`frameRules.frameNightCharge`}
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Night Charge'
+                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.frameRules?.frameNightCharge && {
+                          error: true,
+                          helperText: errors.frameRules?.frameNightCharge?.message || 'This field is required'
+                        })}
                       />
-
-                      {frameFields.length > 1 ? (
-                        <CustomIconButton onClick={() => frameRemove(index)} className='min-is-fit'>
-                          <i className='ri-close-line' />
-                        </CustomIconButton>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  ))}
-
-                  <Button
-                    className='min-is-fit'
-                    size='small'
-                    variant='contained'
-                    onClick={() => frameAppend({ frameDayCharge: null, frameNightCharge: null })}
-                    startIcon={<i className='ri-add-line' />}
-                  >
-                    Add Item
-                  </Button>
+                    )}
+                  />
                 </Grid>
               </>
             ) : (
@@ -789,69 +741,46 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     <span className='mx-3 font-bold'>Fixed Billing</span>
                   </Divider>
                 </Grid>
-                <Grid item xs={12}>
-                  {fixedFields.map((field, index) => (
-                    <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
-                      <Controller
-                        name={`fixedRules.${index}.fixedDayCharge`}
-                        control={control}
-                        rules={{ required: true }}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            size='small'
-                            fullWidth
-                            label='Day Charge'
-                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
-                            value={value}
-                            onChange={onChange}
-                            {...(errors.fixedRules?.[index]?.fixedDayCharge && {
-                              error: true,
-                              helperText:
-                                errors.fixedRules?.[index]?.fixedDayCharge?.message || 'This field is required'
-                            })}
-                          />
-                        )}
+                <Grid item xs={6}>
+                  <Controller
+                    name={`fixedRules.fixedDayCharge`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Day Charge'
+                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.fixedRules?.fixedDayCharge && {
+                          error: true,
+                          helperText: errors.fixedRules?.fixedDayCharge?.message || 'This field is required'
+                        })}
                       />
-
-                      <Controller
-                        name={`fixedRules.${index}.fixedNightCharge`}
-                        control={control}
-                        render={({ field: { value, onChange } }) => (
-                          <TextField
-                            size='small'
-                            fullWidth
-                            label='Night Charge'
-                            inputProps={{ type: 'tel', min: 0, step: 'any' }}
-                            value={value}
-                            onChange={onChange}
-                            {...(errors.fixedRules?.[index]?.fixedNightCharge && {
-                              error: true,
-                              helperText:
-                                errors.fixedRules?.[index]?.fixedNightCharge?.message || 'This field is required'
-                            })}
-                          />
-                        )}
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`fixedRules.fixedNightCharge`}
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Night Charge'
+                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.fixedRules?.fixedNightCharge && {
+                          error: true,
+                          helperText: errors.fixedRules?.fixedNightCharge?.message || 'This field is required'
+                        })}
                       />
-
-                      {fixedFields.length > 1 ? (
-                        <CustomIconButton onClick={() => fixedRemove(index)} className='min-is-fit'>
-                          <i className='ri-close-line' />
-                        </CustomIconButton>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  ))}
-
-                  <Button
-                    className='min-is-fit'
-                    size='small'
-                    variant='contained'
-                    onClick={() => fixedAppend({ fixedDayCharge: null, fixedNightCharge: null })}
-                    startIcon={<i className='ri-add-line' />}
-                  >
-                    Add Item
-                  </Button>
+                    )}
+                  />
                 </Grid>
               </>
             ) : (
