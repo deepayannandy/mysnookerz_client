@@ -45,6 +45,14 @@ type EditTableDataType = {
     countdownDayCharge: number | null
     countdownNightCharge: number | null
   }>[]
+  frameRules: Partial<{
+    frameDayCharge: number | null
+    frameNightCharge: number | null
+  }>
+  fixedBillingRules: Partial<{
+    dayAmt: number | null
+    nightAmt: number | null
+  }>
   deviceId: string
   nodeID: string
 }
@@ -64,6 +72,8 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   const isMinuteBilling = tableData?.gameTypes?.includes('Minute Billing') ?? false
   const isSlotBilling = tableData?.gameTypes?.includes('Slot Billing') ?? false
   const isCountdownBilling = tableData?.gameTypes?.includes('Countdown Billing') ?? false
+  const isFrameBilling = tableData?.gameTypes?.includes('Frame Billing') ?? false
+  const isFixedBilling = tableData?.gameTypes?.includes('Fixed Billing') ?? false
 
   const [devices, setDevices] = useState([] as string[])
   const [nodes, setNodes] = useState({} as Record<string, string[]>)
@@ -72,6 +82,8 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   const [isMinuteBillingSelected, setIsMinuteBillingSelected] = useState(false)
   const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(false)
   const [isCountdownBillingSelected, setIsCountdownBillingSelected] = useState(false)
+  const [isFrameBillingSelected, setIsFrameBillingSelected] = useState(false)
+  const [isFixedBillingSelected, setIsFixedBillingSelected] = useState(false)
 
   // States
   // const { lang: locale } = useParams()
@@ -112,6 +124,8 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     setIsMinuteBillingSelected(isMinuteBilling)
     setIsSlotBillingSelected(isSlotBilling)
     setIsCountdownBillingSelected(isCountdownBilling)
+    setIsFrameBillingSelected(isFrameBilling)
+    setIsFixedBillingSelected(isFixedBilling)
 
     if (!isSlotBilling) {
       slotAppend({ uptoMin: null, slotCharge: null, nightSlotCharge: null })
@@ -120,6 +134,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     if (!isCountdownBilling) {
       countdownAppend({ uptoMin: null, countdownDayCharge: null, countdownNightCharge: null })
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData, resetForm])
 
@@ -143,6 +158,12 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     if (isCountdownBillingSelected) {
       gameTypes.push('Countdown Billing')
     }
+    if (isFrameBillingSelected) {
+      gameTypes.push('Frame Billing')
+    }
+    if (isFixedBillingSelected) {
+      gameTypes.push('Fixed Billing')
+    }
 
     if (!gameTypes.length) {
       toast.error('Please select at least one billing type')
@@ -159,6 +180,14 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
 
     if (!isCountdownBillingSelected) {
       data.countdownRules = []
+    }
+
+    if (!isFrameBillingSelected) {
+      data.frameRules = {}
+    }
+
+    if (!isFixedBillingSelected) {
+      data.fixedBillingRules = {}
     }
 
     const requestData: Omit<EditTableDataType, '_id'> = {
@@ -253,6 +282,26 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                   />
                 }
                 label='Slot Billing'
+              />
+
+              {/* <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isFrameBillingSelected}
+                    onChange={event => setIsFrameBillingSelected(event.target.checked)}
+                  />
+                }
+                label='Frame Billing'
+              /> */}
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isFixedBillingSelected}
+                    onChange={event => setIsFixedBillingSelected(event.target.checked)}
+                  />
+                }
+                label='Fixed Billing'
               />
 
               <FormControlLabel
@@ -626,6 +675,112 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                   >
                     Add Item
                   </Button>
+                </Grid>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {isFrameBillingSelected ? (
+              <>
+                <Grid item xs={12}>
+                  <Divider>
+                    <span className='mx-3 font-bold'>Frame Billing</span>
+                  </Divider>
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`frameRules.frameDayCharge`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Day Charge'
+                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.frameRules?.frameDayCharge && {
+                          error: true,
+                          helperText: errors.frameRules?.frameDayCharge?.message || 'This field is required'
+                        })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`frameRules.frameNightCharge`}
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Night Charge'
+                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.frameRules?.frameNightCharge && {
+                          error: true,
+                          helperText: errors.frameRules?.frameNightCharge?.message || 'This field is required'
+                        })}
+                      />
+                    )}
+                  />
+                </Grid>
+              </>
+            ) : (
+              <></>
+            )}
+
+            {isFixedBillingSelected ? (
+              <>
+                <Grid item xs={12}>
+                  <Divider>
+                    <span className='mx-3 font-bold'>Fixed Billing</span>
+                  </Divider>
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`fixedBillingRules.dayAmt`}
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Day Charge'
+                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.fixedBillingRules?.dayAmt && {
+                          error: true,
+                          helperText: errors.fixedBillingRules?.dayAmt?.message || 'This field is required'
+                        })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={6}>
+                  <Controller
+                    name={`fixedBillingRules.nightAmt`}
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Night Charge'
+                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.fixedBillingRules?.nightAmt && {
+                          error: true,
+                          helperText: errors.fixedBillingRules?.nightAmt?.message || 'This field is required'
+                        })}
+                      />
+                    )}
+                  />
                 </Grid>
               </>
             ) : (
