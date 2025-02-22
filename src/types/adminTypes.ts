@@ -72,11 +72,11 @@ export type TableDataType = {
   frameRules: Partial<{
     frameDayCharge: number | null
     frameNightCharge: number | null
-  }>[]
-  fixedRules: Partial<{
-    fixedDayCharge: number | null
-    fixedNightCharge: number | null
-  }>[]
+  }>
+  fixedBillingRules: Partial<{
+    dayAmt: number | null
+    nightAmt: number | null
+  }>
   deviceId: string
   nodeID: string
   isOccupied?: boolean
