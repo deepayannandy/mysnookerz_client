@@ -47,9 +47,9 @@ type NewTableCreationDataType = Partial<{
     frameDayCharge: number | null
     frameNightCharge: number | null
   }>
-  fixedRules: Partial<{
-    fixedDayCharge: number | null
-    fixedNightCharge: number | null
+  fixedBillingRules: Partial<{
+    dayAmt: number | null
+    nightAmt: number | null
   }>
   deviceId: string
   nodeID: string
@@ -75,7 +75,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
   const [isMinuteBillingSelected, setIsMinuteBillingSelected] = useState(true)
   const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(true)
   const [isCountdownBillingSelected, setIsCountdownBillingSelected] = useState(true)
-  const [isFrameBillingSelected, setIsFrameBillingSelected] = useState(true)
+  const [isFrameBillingSelected, setIsFrameBillingSelected] = useState(false)
   const [isFixedBillingSelected, setIsFixedBillingSelected] = useState(true)
 
   // States
@@ -118,9 +118,9 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
         frameDayCharge: null,
         frameNightCharge: null
       },
-      fixedRules: {
-        fixedDayCharge: null,
-        fixedNightCharge: null
+      fixedBillingRules: {
+        dayAmt: null,
+        nightAmt: null
       },
       deviceId: '',
       nodeID: ''
@@ -198,7 +198,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     }
 
     if (!isFixedBillingSelected) {
-      data.fixedRules = {}
+      data.fixedBillingRules = {}
     }
 
     data.deviceId = deviceId
@@ -294,7 +294,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                 }
                 label='Slot Billing'
               />
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={
                   <Checkbox
                     defaultChecked
@@ -303,7 +303,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                   />
                 }
                 label='Frame Billing'
-              />
+              /> */}
               <FormControlLabel
                 control={
                   <Checkbox
@@ -753,7 +753,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                 </Grid>
                 <Grid item xs={6}>
                   <Controller
-                    name={`fixedRules.fixedDayCharge`}
+                    name={`fixedBillingRules.dayAmt`}
                     control={control}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
@@ -764,9 +764,9 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                         inputProps={{ type: 'number', min: 0, step: 'any' }}
                         value={value}
                         onChange={onChange}
-                        {...(errors.fixedRules?.fixedDayCharge && {
+                        {...(errors.fixedBillingRules?.dayAmt && {
                           error: true,
-                          helperText: errors.fixedRules?.fixedDayCharge?.message || 'This field is required'
+                          helperText: errors.fixedBillingRules?.dayAmt?.message || 'This field is required'
                         })}
                       />
                     )}
@@ -774,7 +774,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                 </Grid>
                 <Grid item xs={6}>
                   <Controller
-                    name={`fixedRules.fixedNightCharge`}
+                    name={`fixedBillingRules.nightAmt`}
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
@@ -784,9 +784,9 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                         inputProps={{ type: 'number', min: 0, step: 'any' }}
                         value={value}
                         onChange={onChange}
-                        {...(errors.fixedRules?.fixedNightCharge && {
+                        {...(errors.fixedBillingRules?.nightAmt && {
                           error: true,
-                          helperText: errors.fixedRules?.fixedNightCharge?.message || 'This field is required'
+                          helperText: errors.fixedBillingRules?.nightAmt?.message || 'This field is required'
                         })}
                       />
                     )}

@@ -49,9 +49,9 @@ type EditTableDataType = {
     frameDayCharge: number | null
     frameNightCharge: number | null
   }>
-  fixedRules: Partial<{
-    fixedDayCharge: number | null
-    fixedNightCharge: number | null
+  fixedBillingRules: Partial<{
+    dayAmt: number | null
+    nightAmt: number | null
   }>
   deviceId: string
   nodeID: string
@@ -187,7 +187,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     }
 
     if (!isFixedBillingSelected) {
-      data.fixedRules = {}
+      data.fixedBillingRules = {}
     }
 
     const requestData: Omit<EditTableDataType, '_id'> = {
@@ -284,7 +284,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 label='Slot Billing'
               />
 
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={
                   <Checkbox
                     checked={isFrameBillingSelected}
@@ -292,7 +292,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                   />
                 }
                 label='Frame Billing'
-              />
+              /> */}
 
               <FormControlLabel
                 control={
@@ -743,7 +743,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 </Grid>
                 <Grid item xs={6}>
                   <Controller
-                    name={`fixedRules.fixedDayCharge`}
+                    name={`fixedBillingRules.dayAmt`}
                     control={control}
                     rules={{ required: true }}
                     render={({ field: { value, onChange } }) => (
@@ -754,9 +754,9 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                         inputProps={{ type: 'tel', min: 0, step: 'any' }}
                         value={value}
                         onChange={onChange}
-                        {...(errors.fixedRules?.fixedDayCharge && {
+                        {...(errors.fixedBillingRules?.dayAmt && {
                           error: true,
-                          helperText: errors.fixedRules?.fixedDayCharge?.message || 'This field is required'
+                          helperText: errors.fixedBillingRules?.dayAmt?.message || 'This field is required'
                         })}
                       />
                     )}
@@ -764,7 +764,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 </Grid>
                 <Grid item xs={6}>
                   <Controller
-                    name={`fixedRules.fixedNightCharge`}
+                    name={`fixedBillingRules.nightAmt`}
                     control={control}
                     render={({ field: { value, onChange } }) => (
                       <TextField
@@ -774,9 +774,9 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                         inputProps={{ type: 'tel', min: 0, step: 'any' }}
                         value={value}
                         onChange={onChange}
-                        {...(errors.fixedRules?.fixedNightCharge && {
+                        {...(errors.fixedBillingRules?.nightAmt && {
                           error: true,
-                          helperText: errors.fixedRules?.fixedNightCharge?.message || 'This field is required'
+                          helperText: errors.fixedBillingRules?.nightAmt?.message || 'This field is required'
                         })}
                       />
                     )}
