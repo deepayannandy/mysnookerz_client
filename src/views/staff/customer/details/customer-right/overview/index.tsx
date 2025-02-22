@@ -11,7 +11,7 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
     {
       avatarIcon: 'ri-money-rupee-circle-line',
       title: 'Dues',
-      stats: `₹${data?.customers?.credit ?? 0}`,
+      stats: `₹${Number(data?.customers?.credit ?? 0).toFixed(2)}`,
       avatarColor: 'primary'
     },
     {
@@ -23,43 +23,43 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
     {
       avatarIcon: 'ri-money-rupee-circle-line',
       title: 'Hours Spent',
-      stats: `${data?.hoursSpend ?? 0}`,
+      stats: `${Number(data?.hoursSpend ?? 0).toFixed(2)}`,
       avatarColor: 'error'
     },
     {
       avatarIcon: 'ri-money-rupee-circle-line',
       title: 'Amount Spent',
-      stats: `₹${data?.totalSpend ?? 0}`,
+      stats: `₹${Number(data?.totalSpend ?? 0).toFixed(2)}`,
       avatarColor: 'info'
     },
     {
       avatarIcon: 'ri-star-smile-line',
       title: 'Games',
-      stats: `${data?.gameCount ?? 0}`,
+      stats: `${Number(data?.gameCount ?? 0).toFixed(2)}`,
       avatarColor: 'warning'
     },
     {
       avatarIcon: 'ri-vip-crown-line',
       title: 'Winner',
-      stats: `${data?.winner ?? 0}`,
+      stats: `${Number(data?.winner ?? 0).toFixed(2)}`,
       avatarColor: 'primary'
     },
     {
       avatarIcon: 'ri-star-smile-line',
       title: 'Reward Points',
-      stats: `${data?.customers?.rewardPoint !== undefined ? `${data?.customers?.rewardPoint}` : 0}`,
+      stats: `${(data?.customers?.rewardPoint !== undefined ? Number(data.customers.rewardPoint) : 0).toFixed(2)}`,
       avatarColor: 'success'
     },
     {
       avatarIcon: 'ri-vip-crown-line',
       title: 'Orders',
-      stats: `${data?.orders ?? 0}`,
+      stats: `${Number(data?.orders ?? 0).toFixed(2)}`,
       avatarColor: 'info'
     },
     {
       avatarIcon: 'ri-vip-crown-line',
       title: 'Credit Limit',
-      stats: `₹${data?.customers?.maxCredit !== undefined ? `${data?.customers?.maxCredit}` : 0}`,
+      stats: `₹${(data?.customers?.maxCredit !== undefined ? Number(data.customers.maxCredit) : 0).toFixed(2)}`,
       avatarColor: 'warning'
     }
     // {

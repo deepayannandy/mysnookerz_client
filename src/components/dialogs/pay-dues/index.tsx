@@ -64,10 +64,18 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
   }
 
   const onSubmit = async (data: PayDueDataType) => {
-    const credit = (customerData?.credit ?? 0) - (Number(data.amount) ? Number(data.amount) : 0)
+    let credit = Number(customerData?.credit ?? 0) - (Number(data.amount) ? Number(data.amount) : 0)
     if (credit < 0) {
       toast.error('Amount cannot be more than due')
       return
+    }
+
+    let settlementAmount = {}
+    if (isSettleAmount) {
+      credit = 0
+      settlementAmount = {
+        settlementAmount: (Number(customerData?.credit ?? 0) - Number(watch('amount') ?? 0)).toFixed(2)
+      }
     }
 
     const description = 'Pay Dues'
@@ -76,7 +84,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
     try {
       const response = await axios.patch(
         `${apiBaseUrl}/customer/${customerData?.customerId}`,
-        { credit, paymentMethods: data.paymentMethod, description },
+        { credit, paymentMethods: data.paymentMethod, description, ...settlementAmount },
         {
           headers: { 'auth-token': token }
         }
@@ -103,7 +111,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
       <DialogTitle variant='h4' className='flex gap-2 flex-col text-center sm:items-start pb-0'>
         <div className='text-center sm:text-start'>Pay Dues</div>
         <Typography component='span' className='flex flex-col text-center'>
-          {`Payment Due: ₹${customerData?.credit ?? 0}`}
+          {`Payment Due: ₹${Number(customerData?.credit ?? 0).toFixed(2)}`}
         </Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit(data => onSubmit(data))}>
@@ -166,7 +174,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
             label='Settle Amount'
           />
           {isSettleAmount ? (
-            <Typography>{`Settlement amount is ${Number(customerData?.credit ?? 0) - Number(watch('amount') ?? 0)}`}</Typography>
+            <Typography>{`Settlement amount is ${(Number(customerData?.credit ?? 0) - Number(watch('amount') ?? 0)).toFixed(2)}`}</Typography>
           ) : (
             <></>
           )}
