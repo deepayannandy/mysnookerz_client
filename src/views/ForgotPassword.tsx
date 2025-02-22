@@ -41,6 +41,7 @@ const ForgotPasswordV2 = ({ mode }: { mode: Mode }) => {
   const [email, setEmail] = useState('')
   const [isPasswordShown, setIsPasswordShown] = useState(false)
   const [isConfirmPasswordShown, setIsConfirmPasswordShown] = useState(false)
+  const [clientId, setClientId] = useState('')
 
   // Vars
   const darkImg = '/images/pages/auth-v2-mask-dark.png'
@@ -67,9 +68,11 @@ const ForgotPasswordV2 = ({ mode }: { mode: Mode }) => {
   const generateOTP = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const data = new FormData(event.currentTarget)
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const formData = new FormData(event.currentTarget)
+    const data = Object.fromEntries(formData.entries())
+    event.currentTarget.reset()
 
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     try {
       const response = await axios.post(`${apiBaseUrl}/user/generateOTP`, data)
 
@@ -86,7 +89,10 @@ const ForgotPasswordV2 = ({ mode }: { mode: Mode }) => {
   const verifyOTP = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
 
-    const data = new FormData(event.currentTarget)
+    const formData = new FormData(event.currentTarget)
+    const data = Object.fromEntries(formData.entries())
+    event.currentTarget.reset()
+
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
 
     try {
@@ -95,7 +101,8 @@ const ForgotPasswordV2 = ({ mode }: { mode: Mode }) => {
       if (response && response.data) {
         setIsCodeSent(false)
         setIsOtpValidated(true)
-        toast.success('Verified', { hideProgressBar: false })
+        setClientId(response.data.UserId)
+        toast.success('OTP verified successfully', { hideProgressBar: false })
       }
     } catch (error: any) {
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
@@ -104,7 +111,6 @@ const ForgotPasswordV2 = ({ mode }: { mode: Mode }) => {
 
   const updatePassword = async (data: ChangePasswordDataType) => {
     const newPassword = data.password
-    const clientId = localStorage.getItem('clientId')
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     try {
       const response = await axios.patch(`${apiBaseUrl}/user/updatePassword/${clientId}`, { newPassword })
@@ -113,6 +119,7 @@ const ForgotPasswordV2 = ({ mode }: { mode: Mode }) => {
         resetForm()
         toast.success('Password changed successfully', { hideProgressBar: false })
 
+        localStorage.removeItem('clientPassword')
         localStorage.removeItem('token')
         localStorage.removeItem('storeId')
         localStorage.removeItem('storeName')
