@@ -262,29 +262,30 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
           <IconButton onClick={handleClose} className='absolute block-start-4 inline-end-4'>
             <i className='ri-close-line text-textSecondary' />
           </IconButton>
-          <Grid container spacing={5}>
-            <Grid item xs={12} sm={6}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={isMinuteBillingSelected}
-                    onChange={event => setIsMinuteBillingSelected(event.target.checked)}
-                  />
-                }
-                label='Minute Billing'
-              />
+          <Grid container gap={2}>
+            <Grid container item justifyContent='space-between' gap={2} className='p-4'>
+              <Grid item xs={12} sm={5}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isMinuteBillingSelected}
+                      onChange={event => setIsMinuteBillingSelected(event.target.checked)}
+                    />
+                  }
+                  label='Minute Billing'
+                />
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={isSlotBillingSelected}
-                    onChange={event => setIsSlotBillingSelected(event.target.checked)}
-                  />
-                }
-                label='Slot Billing'
-              />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isSlotBillingSelected}
+                      onChange={event => setIsSlotBillingSelected(event.target.checked)}
+                    />
+                  }
+                  label='Slot Billing'
+                />
 
-              {/* <FormControlLabel
+                {/* <FormControlLabel
                 control={
                   <Checkbox
                     checked={isFrameBillingSelected}
@@ -294,48 +295,48 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 label='Frame Billing'
               /> */}
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={isFixedBillingSelected}
-                    onChange={event => setIsFixedBillingSelected(event.target.checked)}
-                  />
-                }
-                label='Fixed Billing'
-              />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isFixedBillingSelected}
+                      onChange={event => setIsFixedBillingSelected(event.target.checked)}
+                    />
+                  }
+                  label='Fixed Billing'
+                />
 
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={isCountdownBillingSelected}
-                    onChange={event => setIsCountdownBillingSelected(event.target.checked)}
-                  />
-                }
-                label='Countdown Billing'
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Controller
-                name='tableName'
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    size='small'
-                    fullWidth
-                    label='Table Name'
-                    placeholder='Enter table name'
-                    value={value}
-                    onChange={onChange}
-                    {...(errors.tableName && {
-                      error: true,
-                      helperText: errors.tableName.message || 'This field is required'
-                    })}
-                  />
-                )}
-              />
-            </Grid>
-            {/* <Grid item xs={12} sm={6}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isCountdownBillingSelected}
+                      onChange={event => setIsCountdownBillingSelected(event.target.checked)}
+                    />
+                  }
+                  label='Countdown Billing'
+                />
+              </Grid>
+              <Grid item xs={12} sm={5} alignContent='center'>
+                <Controller
+                  name='tableName'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <TextField
+                      size='small'
+                      fullWidth
+                      label='Table Name'
+                      placeholder='Enter table name'
+                      value={value}
+                      onChange={onChange}
+                      {...(errors.tableName && {
+                        error: true,
+                        helperText: errors.tableName.message || 'This field is required'
+                      })}
+                    />
+                  )}
+                />
+              </Grid>
+              {/* <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Billing</InputLabel>
                 <Select disabled={true} label='Billing' value={gameType} onChange={e => setGameType(e.target.value)}>
@@ -347,8 +348,10 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 </Select>
               </FormControl>
             </Grid> */}
+            </Grid>
             {isMinuteBillingSelected ? (
-              <>
+              <Grid container item rowGap={2} columnSpacing={2} className='border-2 p-4'>
+                <div className='grid place-content-center w-full font-bold text-lg'>Minute Billing</div>
                 <Grid item xs={12}>
                   <Divider>
                     <span className='mx-3 font-bold'>Day</span>
@@ -482,18 +485,14 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     )}
                   />
                 </Grid>
-              </>
+              </Grid>
             ) : (
               <></>
             )}
 
             {isSlotBillingSelected ? (
-              <>
-                <Grid item xs={12}>
-                  <Divider>
-                    <span className='mx-3 font-bold'>Slot Billing</span>
-                  </Divider>
-                </Grid>
+              <Grid container item rowGap={2} columnSpacing={2} className='border-2 p-4'>
+                <div className='grid place-content-center w-full font-bold text-lg'>Slot Billing</div>
                 <Grid item xs={12}>
                   {slotFields.map((field, index) => (
                     <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
@@ -577,18 +576,14 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     Add Item
                   </Button>
                 </Grid>
-              </>
+              </Grid>
             ) : (
               <></>
             )}
 
             {isCountdownBillingSelected ? (
-              <>
-                <Grid item xs={12}>
-                  <Divider>
-                    <span className='mx-3 font-bold'>Countdown Billing</span>
-                  </Divider>
-                </Grid>
+              <Grid container item rowGap={2} columnSpacing={2} className='border-2 p-4'>
+                <div className='grid place-content-center w-full font-bold text-lg'>Countdown Billing</div>
                 <Grid item xs={12}>
                   {countdownFields.map((field, index) => (
                     <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
@@ -676,19 +671,15 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     Add Item
                   </Button>
                 </Grid>
-              </>
+              </Grid>
             ) : (
               <></>
             )}
 
             {isFrameBillingSelected ? (
-              <>
-                <Grid item xs={12}>
-                  <Divider>
-                    <span className='mx-3 font-bold'>Frame Billing</span>
-                  </Divider>
-                </Grid>
-                <Grid item xs={6}>
+              <Grid container item rowGap={2} columnSpacing={2} className='border-2 p-4'>
+                <div className='grid place-content-center w-full font-bold text-lg'>Frame Billing</div>
+                <Grid item xs={12} sm={6}>
                   <Controller
                     name={`frameRules.frameDayCharge`}
                     control={control}
@@ -709,7 +700,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     )}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                   <Controller
                     name={`frameRules.frameNightCharge`}
                     control={control}
@@ -729,19 +720,15 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     )}
                   />
                 </Grid>
-              </>
+              </Grid>
             ) : (
               <></>
             )}
 
             {isFixedBillingSelected ? (
-              <>
-                <Grid item xs={12}>
-                  <Divider>
-                    <span className='mx-3 font-bold'>Fixed Billing</span>
-                  </Divider>
-                </Grid>
-                <Grid item xs={6}>
+              <Grid container item rowGap={2} columnSpacing={2} className='border-2 p-4'>
+                <div className='grid place-content-center w-full font-bold text-lg'>Fixed Billing</div>
+                <Grid item xs={12} sm={6}>
                   <Controller
                     name={`fixedBillingRules.dayAmt`}
                     control={control}
@@ -762,7 +749,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     )}
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                   <Controller
                     name={`fixedBillingRules.nightAmt`}
                     control={control}
@@ -782,37 +769,36 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     )}
                   />
                 </Grid>
-              </>
+              </Grid>
             ) : (
               <></>
             )}
 
-            <Grid item xs={12}>
-              <Divider />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Device</InputLabel>
-                <Select label='Device' value={deviceId} onChange={e => setDeviceId(e.target.value)}>
-                  {devices.map((type, index) => (
-                    <MenuItem key={index} value={type}>
-                      {type}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Node</InputLabel>
-                <Select label='Node' value={nodeId} onChange={e => setNodeId(e.target.value)}>
-                  {nodes[deviceId]?.map((type, index) => (
-                    <MenuItem key={index} value={type}>
-                      {type}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+            <Grid container item rowGap={2} columnSpacing={2} className='border-2 p-4'>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Device</InputLabel>
+                  <Select label='Device' value={deviceId} onChange={e => setDeviceId(e.target.value)}>
+                    {devices.map((type, index) => (
+                      <MenuItem key={index} value={type}>
+                        {type}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth>
+                  <InputLabel>Node</InputLabel>
+                  <Select label='Node' value={nodeId} onChange={e => setNodeId(e.target.value)}>
+                    {nodes[deviceId]?.map((type, index) => (
+                      <MenuItem key={index} value={type}>
+                        {type}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
             </Grid>
           </Grid>
         </DialogContent>
