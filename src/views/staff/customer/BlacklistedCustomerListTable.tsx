@@ -102,8 +102,11 @@ const BlacklistedCustomerListTable = () => {
 
   const getCustomerData = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
     try {
-      const response = await axios.get(`${apiBaseUrl}/customer/blackListedCustomers`)
+      const response = await axios.get(`${apiBaseUrl}/customer/blackListedCustomers`, {
+        headers: { 'auth-token': token }
+      })
       if (response && response.data) {
         const filteredData = response.data.map((value: CustomerDataType) => {
           return {
@@ -128,6 +131,12 @@ const BlacklistedCustomerListTable = () => {
   }, [])
 
   const removeFromBlacklist = async () => {
+    const storeId = localStorage.getItem('storeId')
+    if (customerData.storeId !== storeId) {
+      toast.error('You are not authorized to remove this customer from blacklist.', { hideProgressBar: false })
+      return
+    }
+
     const customerId = customerData._id
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
