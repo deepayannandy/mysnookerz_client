@@ -91,13 +91,13 @@ const VerticalMenu = ({ dictionary, scrollMenu, userDesignation }: Props) => {
           <MenuItem href={`/${locale}/staff/customer/blacklisted`}>
             {dictionary['navigation'].blacklistedCustomer}
           </MenuItem>
+          <MenuItem href={`/${locale}/staff/expense`}>{dictionary['navigation'].expense}</MenuItem>
         </MenuSection>
 
         {userDesignation !== 'Staff' ? (
           <MenuSection label={dictionary['navigation'].adminInterface}>
             <MenuItem href={`/${locale}/admin/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
             <MenuItem href={`/${locale}/admin/analytics`}>{dictionary['navigation'].analytics}</MenuItem>
-            <MenuItem href={`/${locale}/admin/expense`}>{dictionary['navigation'].expense}</MenuItem>
             <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
 
             <SubMenu label={dictionary['navigation'].cafeManagement} icon={<i className='ri-shopping-bag-3-line' />}>

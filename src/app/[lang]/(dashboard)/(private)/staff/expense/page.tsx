@@ -1,4 +1,4 @@
-import ExpenseListTable from '@/views/admin/expense/ExpenseListTable'
+import ExpenseListTable from '@/views/staff/expense/ExpenseListTable'
 
 const ExpensePage = async () => {
   return <ExpenseListTable />
