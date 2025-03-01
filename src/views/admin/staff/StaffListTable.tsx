@@ -65,7 +65,7 @@ type StatusChipColorType = {
 
 export const statusChipColor: { [key: string]: StatusChipColorType } = {
   Active: { color: 'success' },
-  InActive: { color: 'error' }
+  Suspended: { color: 'error' }
 }
 
 type StaffDataWithAction = StaffDataType & {
@@ -95,6 +95,7 @@ const StaffListTable = () => {
   const [newStaffRegistrationDialogOpen, setNewStaffRegistrationDialogOpen] = useState(false)
   const [editStaffInfoDialogOpen, setEditStaffInfoDialogOpen] = useState(false)
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
+  const [suspendConfirmationDialogOpen, setSuspendConfirmationDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -143,9 +144,38 @@ const StaffListTable = () => {
     }
   }
 
+  const suspendStaff = async () => {
+    const staffId = staffData._id
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.patch(
+        `${apiBaseUrl}/user/${staffId}`,
+        { userStatus: !staffData.userStatus },
+        { headers: { 'auth-token': token } }
+      )
+      if (response && response.data) {
+        getStaffData()
+        setSuspendConfirmationDialogOpen(false)
+        toast.success('Staff suspended successfully')
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 409) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
   const openDeleteConfirmation = (staff: StaffDataType) => {
     setStaffData(staff)
     setDeleteConfirmationDialogOpen(true)
+  }
+
+  const openSuspendConfirmation = (staff: StaffDataType) => {
+    setStaffData(staff)
+    setSuspendConfirmationDialogOpen(true)
   }
 
   const getAvatar = (params: Pick<StaffDataType, 'profileImage' | 'fullName'>) => {
@@ -212,9 +242,9 @@ const StaffListTable = () => {
         cell: ({ row }) => (
           <div className='flex items-center gap-3'>
             <Chip
-              label={row.original.userStatus ? 'Active' : 'In Active'}
+              label={row.original.userStatus ? 'Active' : 'Suspended'}
               variant='tonal'
-              color={statusChipColor[row.original.userStatus ? 'Active' : 'Inactive']?.color}
+              color={statusChipColor[row.original.userStatus ? 'Active' : 'Suspended']?.color}
               size='small'
             />
           </div>
@@ -239,9 +269,17 @@ const StaffListTable = () => {
                     className: 'gap-2',
                     onClick: () => openDeleteConfirmation(row.original)
                   }
+                },
+                {
+                  text: 'Suspend',
+                  icon: 'ri-close-circle-line',
+                  menuItemProps: {
+                    className: 'gap-2',
+                    onClick: () => openSuspendConfirmation(row.original)
+                  }
                 }
 
-                // { text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
+                //{ text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
               ]}
             />
           </div>
@@ -399,6 +437,14 @@ const StaffListTable = () => {
         name={`staff (${staffData.fullName})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteStaff}
+      />
+      <DeleteConfirmation
+        open={suspendConfirmationDialogOpen}
+        name={`staff (${staffData.fullName})`}
+        setOpen={setSuspendConfirmationDialogOpen}
+        deleteApiCall={suspendStaff}
+        message={`Are you sure you want to suspend this (${staffData.fullName}) staff?`}
+        confirmationButtonText={'Suspend'}
       />
     </>
   )

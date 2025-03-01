@@ -14,9 +14,17 @@ type DeleteConfirmationProps = {
   name: string
   deleteApiCall: () => void
   message?: string
+  confirmationButtonText?: string
 }
 
-const DeleteConfirmation = ({ open, setOpen, name, deleteApiCall, message }: DeleteConfirmationProps) => {
+const DeleteConfirmation = ({
+  open,
+  setOpen,
+  name,
+  deleteApiCall,
+  message,
+  confirmationButtonText
+}: DeleteConfirmationProps) => {
   // States
 
   // const { lang: locale } = useParams()
@@ -43,7 +51,7 @@ const DeleteConfirmation = ({ open, setOpen, name, deleteApiCall, message }: Del
           Cancel
         </Button>
         <Button variant='contained' color='error' onClick={deleteApiCall} autoFocus>
-          Delete
+          {confirmationButtonText ? confirmationButtonText : 'Delete'}
         </Button>
       </DialogActions>
     </Dialog>

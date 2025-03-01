@@ -392,7 +392,8 @@ const BlacklistedCustomerListTable = () => {
         name={`customer (${customerData.fullName})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={removeFromBlacklist}
-        message={`Are you sure you want to remove this (${customerData.fullName}) customer form blacklist?`}
+        message={`Are you sure you want to remove this (${customerData.fullName}) customer from blacklist?`}
+        confirmationButtonText={'Remove'}
       />
     </>
   )
