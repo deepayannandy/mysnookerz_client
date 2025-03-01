@@ -514,6 +514,10 @@ const TableBill = ({
               renderInput={params => (
                 <TextField
                   {...params}
+                  inputProps={{
+                    ...params.inputProps,
+                    enterKeyHint: 'enter'
+                  }}
                   variant='outlined'
                   label='Customers'
                   {...(errors.invoiceTo && invoiceTo.length < 1 && { error: true, helperText: errors.invoiceTo })}
