@@ -43,10 +43,6 @@ type NewTableCreationDataType = Partial<{
     countdownDayCharge: number | null
     countdownNightCharge: number | null
   }[]
-  frameRules: Partial<{
-    frameDayCharge: number | null
-    frameNightCharge: number | null
-  }>
   fixedBillingRules: Partial<{
     dayAmt: number | null
     nightAmt: number | null
@@ -75,7 +71,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
   const [isMinuteBillingSelected, setIsMinuteBillingSelected] = useState(true)
   const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(true)
   const [isCountdownBillingSelected, setIsCountdownBillingSelected] = useState(true)
-  const [isFrameBillingSelected, setIsFrameBillingSelected] = useState(false)
   const [isFixedBillingSelected, setIsFixedBillingSelected] = useState(true)
 
   // States
@@ -114,10 +109,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
           countdownNightCharge: null
         }
       ],
-      frameRules: {
-        frameDayCharge: null,
-        frameNightCharge: null
-      },
       fixedBillingRules: {
         dayAmt: null,
         nightAmt: null
@@ -152,7 +143,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     setIsMinuteBillingSelected(true)
     setIsSlotBillingSelected(true)
     setIsCountdownBillingSelected(true)
-    setIsFrameBillingSelected(true)
     setIsFixedBillingSelected(true)
     getTableData()
     setOpen(false)
@@ -168,9 +158,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     }
     if (isCountdownBillingSelected) {
       gameTypes.push('Countdown Billing')
-    }
-    if (isFrameBillingSelected) {
-      gameTypes.push('Frame Billing')
     }
     if (isFixedBillingSelected) {
       gameTypes.push('Fixed Billing')
@@ -191,10 +178,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
 
     if (!isCountdownBillingSelected) {
       data.countdownRules = []
-    }
-
-    if (!isFrameBillingSelected) {
-      data.frameRules = {}
     }
 
     if (!isFixedBillingSelected) {
@@ -685,59 +668,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                   >
                     Add Item
                   </Button>
-                </Grid>
-              </>
-            ) : (
-              <></>
-            )}
-
-            {isFrameBillingSelected ? (
-              <>
-                <Grid item xs={12}>
-                  <Divider>
-                    <span className='mx-3 font-bold'>Frame Billing</span>
-                  </Divider>
-                </Grid>
-                <Grid item xs={6}>
-                  <Controller
-                    name={`frameRules.frameDayCharge`}
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        size='small'
-                        fullWidth
-                        label='Day Charge'
-                        inputProps={{ type: 'number', min: 0, step: 'any' }}
-                        value={value}
-                        onChange={onChange}
-                        {...(errors.frameRules?.frameDayCharge && {
-                          error: true,
-                          helperText: errors.frameRules?.frameDayCharge?.message || 'This field is required'
-                        })}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Controller
-                    name={`frameRules.frameNightCharge`}
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        size='small'
-                        fullWidth
-                        label='Night Charge'
-                        inputProps={{ type: 'number', min: 0, step: 'any' }}
-                        value={value}
-                        onChange={onChange}
-                        {...(errors.frameRules?.frameNightCharge && {
-                          error: true,
-                          helperText: errors.frameRules?.frameNightCharge?.message || 'This field is required'
-                        })}
-                      />
-                    )}
-                  />
                 </Grid>
               </>
             ) : (

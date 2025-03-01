@@ -45,10 +45,6 @@ type EditTableDataType = {
     countdownDayCharge: number | null
     countdownNightCharge: number | null
   }>[]
-  frameRules: Partial<{
-    frameDayCharge: number | null
-    frameNightCharge: number | null
-  }>
   fixedBillingRules: Partial<{
     dayAmt: number | null
     nightAmt: number | null
@@ -72,7 +68,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   const isMinuteBilling = tableData?.gameTypes?.includes('Minute Billing') ?? false
   const isSlotBilling = tableData?.gameTypes?.includes('Slot Billing') ?? false
   const isCountdownBilling = tableData?.gameTypes?.includes('Countdown Billing') ?? false
-  const isFrameBilling = tableData?.gameTypes?.includes('Frame Billing') ?? false
   const isFixedBilling = tableData?.gameTypes?.includes('Fixed Billing') ?? false
 
   const [devices, setDevices] = useState([] as string[])
@@ -82,7 +77,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   const [isMinuteBillingSelected, setIsMinuteBillingSelected] = useState(false)
   const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(false)
   const [isCountdownBillingSelected, setIsCountdownBillingSelected] = useState(false)
-  const [isFrameBillingSelected, setIsFrameBillingSelected] = useState(false)
   const [isFixedBillingSelected, setIsFixedBillingSelected] = useState(false)
 
   // States
@@ -124,7 +118,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     setIsMinuteBillingSelected(isMinuteBilling)
     setIsSlotBillingSelected(isSlotBilling)
     setIsCountdownBillingSelected(isCountdownBilling)
-    setIsFrameBillingSelected(isFrameBilling)
     setIsFixedBillingSelected(isFixedBilling)
 
     if (!isSlotBilling) {
@@ -158,9 +151,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     if (isCountdownBillingSelected) {
       gameTypes.push('Countdown Billing')
     }
-    if (isFrameBillingSelected) {
-      gameTypes.push('Frame Billing')
-    }
     if (isFixedBillingSelected) {
       gameTypes.push('Fixed Billing')
     }
@@ -180,10 +170,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
 
     if (!isCountdownBillingSelected) {
       data.countdownRules = []
-    }
-
-    if (!isFrameBillingSelected) {
-      data.frameRules = {}
     }
 
     if (!isFixedBillingSelected) {
@@ -675,59 +661,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                   >
                     Add Item
                   </Button>
-                </Grid>
-              </>
-            ) : (
-              <></>
-            )}
-
-            {isFrameBillingSelected ? (
-              <>
-                <Grid item xs={12}>
-                  <Divider>
-                    <span className='mx-3 font-bold'>Frame Billing</span>
-                  </Divider>
-                </Grid>
-                <Grid item xs={6}>
-                  <Controller
-                    name={`frameRules.frameDayCharge`}
-                    control={control}
-                    rules={{ required: true }}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        size='small'
-                        fullWidth
-                        label='Day Charge'
-                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
-                        value={value}
-                        onChange={onChange}
-                        {...(errors.frameRules?.frameDayCharge && {
-                          error: true,
-                          helperText: errors.frameRules?.frameDayCharge?.message || 'This field is required'
-                        })}
-                      />
-                    )}
-                  />
-                </Grid>
-                <Grid item xs={6}>
-                  <Controller
-                    name={`frameRules.frameNightCharge`}
-                    control={control}
-                    render={({ field: { value, onChange } }) => (
-                      <TextField
-                        size='small'
-                        fullWidth
-                        label='Night Charge'
-                        inputProps={{ type: 'tel', min: 0, step: 'any' }}
-                        value={value}
-                        onChange={onChange}
-                        {...(errors.frameRules?.frameNightCharge && {
-                          error: true,
-                          helperText: errors.frameRules?.frameNightCharge?.message || 'This field is required'
-                        })}
-                      />
-                    )}
-                  />
                 </Grid>
               </>
             ) : (
