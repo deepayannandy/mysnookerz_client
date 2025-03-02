@@ -1,13 +1,24 @@
 'use client'
 
 // React Imports
-import { useEffect, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 
 // MUI Imports
 import { StoreDataType, TableDataType } from '@/types/adminTypes'
 import { CustomerInvoiceType, CustomerListType } from '@/types/staffTypes'
 import { getInitials } from '@/utils/getInitials'
-import { Autocomplete, Avatar, Chip, Divider, Drawer, MenuItem, TextField, Typography } from '@mui/material'
+import {
+  Autocomplete,
+  Avatar,
+  Checkbox,
+  Chip,
+  Divider,
+  Drawer,
+  FormControlLabel,
+  MenuItem,
+  TextField,
+  Typography
+} from '@mui/material'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
@@ -46,6 +57,7 @@ const TableBill = ({
   // States
   const [data, setData] = useState({} as CustomerInvoiceType)
   const [storeData, setStoreData] = useState({} as StoreDataType)
+  const [isAutoSplitSelected, setIsAutoSplitSelected] = useState(false)
 
   const [invoiceTo, setInvoiceTo] = useState(
     (data.selectedTable?.gameData?.players || []) as (CustomerListType | string)[]
@@ -406,6 +418,53 @@ const TableBill = ({
     setInvoiceTo(value)
   }
 
+  const handleAutoSplit = (event: ChangeEvent<HTMLInputElement>) => {
+    setIsAutoSplitSelected(event.target.checked)
+
+    if (event.target.checked) {
+      const value = Number(netPay ?? 0) / (invoiceTo.length ?? 1)
+
+      const paymentData = customerPaymentData
+
+      invoiceTo.map(customer => {
+        const name = (customer as CustomerListType)?.fullName ?? (customer as string)
+        let resetCashIn = {}
+        if (Number(value ?? 0) < (Number(customerPaymentData[name]?.cashIn ?? 0) ?? 0)) {
+          resetCashIn = { cashIn: '' }
+        }
+
+        paymentData[name] = {
+          ...paymentData[name],
+          amount: value.toFixed(2),
+          ...resetCashIn
+        }
+      })
+
+      setCustomerPaymentData(paymentData)
+      setInputData({
+        ...inputData,
+        cashIn: netPay ?? 0
+      })
+    } else {
+      const paymentData = customerPaymentData
+
+      invoiceTo.map(customer => {
+        const name = (customer as CustomerListType)?.fullName ?? (customer as string)
+
+        paymentData[name] = {
+          ...paymentData[name],
+          amount: ''
+        }
+      })
+
+      setCustomerPaymentData(paymentData)
+      setInputData({
+        ...inputData,
+        cashIn: ''
+      })
+    }
+  }
+
   const getOptions = () => {
     const list = customersList.map(customer => {
       if (data.selectedTable?.gameData?.players?.find(player => player.customerId === customer.customerId)) {
@@ -529,118 +588,124 @@ const TableBill = ({
           )}
 
           {invoiceTo.length > 1 ? (
-            <div className='w-full grid grid-cols-1 border rounded-lg overflow-x-auto '>
-              <div className='w-full grid grid-cols-4 text-center font-bold border-b divide-x'>
-                <div className='size-full grid place-items-center  p-1 sm:p-2 '>
-                  <p>Customer</p>
+            <>
+              <FormControlLabel
+                label='Auto split'
+                control={<Checkbox checked={isAutoSplitSelected} onChange={event => handleAutoSplit(event)} />}
+              />
+              <div className='w-full grid grid-cols-1 border rounded-lg overflow-x-auto '>
+                <div className='w-full grid grid-cols-4 text-center font-bold border-b divide-x'>
+                  <div className='size-full grid place-items-center  p-1 sm:p-2 '>
+                    <p>Customer</p>
+                  </div>
+                  <div className='size-full grid place-items-center  p-1 sm:p-2'>
+                    <p>Amount</p>
+                  </div>
+                  <div className='size-full grid place-items-center p-1 sm:p-2'>
+                    <p>Cash In</p>
+                  </div>
+                  <div className='size-full grid place-items-center p-1 sm:p-2'>
+                    <p>Payment Method</p>
+                  </div>
                 </div>
-                <div className='size-full grid place-items-center  p-1 sm:p-2'>
-                  <p>Amount</p>
-                </div>
-                <div className='size-full grid place-items-center p-1 sm:p-2'>
-                  <p>Cash In</p>
-                </div>
-                <div className='size-full grid place-items-center p-1 sm:p-2'>
-                  <p>Payment Method</p>
-                </div>
-              </div>
 
-              {invoiceTo.map(customer => (
-                <div
-                  key={
-                    ((customer as CustomerListType).fullName
-                      ? (customer as CustomerListType).fullName
-                      : customer) as string
-                  }
-                  className='w-full grid grid-cols-4 border-b divide-x'
-                >
-                  <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
-                    <p>
-                      {
-                        ((customer as CustomerListType).fullName
-                          ? (customer as CustomerListType).fullName
-                          : customer) as string
-                      }
-                    </p>
-                  </div>
-                  <div className='size-full grid place-items-center p-1 sm:p-2'>
-                    <TextField
-                      size='small'
-                      //placeholder='₹_._'
-                      inputProps={{ type: 'number', min: 0, step: 'any' }}
-                      value={
-                        customerPaymentData[
+                {invoiceTo.map(customer => (
+                  <div
+                    key={
+                      ((customer as CustomerListType).fullName
+                        ? (customer as CustomerListType).fullName
+                        : customer) as string
+                    }
+                    className='w-full grid grid-cols-4 border-b divide-x'
+                  >
+                    <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
+                      <p>
+                        {
                           ((customer as CustomerListType).fullName
                             ? (customer as CustomerListType).fullName
                             : customer) as string
-                        ]?.amount || ''
-                      }
-                      onChange={event =>
-                        handleCustomerPaymentDataChange({
-                          value: event.target.value,
-                          fullName: ((customer as CustomerListType).fullName
-                            ? (customer as CustomerListType).fullName
-                            : customer) as string,
-                          field: 'amount'
-                        })
-                      }
-                    />
+                        }
+                      </p>
+                    </div>
+                    <div className='size-full grid place-items-center p-1 sm:p-2'>
+                      <TextField
+                        size='small'
+                        //placeholder='₹_._'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={
+                          customerPaymentData[
+                            ((customer as CustomerListType).fullName
+                              ? (customer as CustomerListType).fullName
+                              : customer) as string
+                          ]?.amount || ''
+                        }
+                        onChange={event =>
+                          handleCustomerPaymentDataChange({
+                            value: event.target.value,
+                            fullName: ((customer as CustomerListType).fullName
+                              ? (customer as CustomerListType).fullName
+                              : customer) as string,
+                            field: 'amount'
+                          })
+                        }
+                      />
+                    </div>
+                    <div className='size-full grid place-items-center p-1 sm:p-2'>
+                      <TextField
+                        size='small'
+                        //placeholder='₹_._'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={
+                          customerPaymentData[
+                            ((customer as CustomerListType).fullName
+                              ? (customer as CustomerListType).fullName
+                              : customer) as string
+                          ]?.cashIn || ''
+                        }
+                        onChange={event =>
+                          handleCustomerPaymentDataChange({
+                            value: event.target.value,
+                            fullName: ((customer as CustomerListType).fullName
+                              ? (customer as CustomerListType).fullName
+                              : customer) as string,
+                            field: 'cashIn'
+                          })
+                        }
+                      />
+                    </div>
+                    <div className='size-full grid place-items-center p-1 sm:p-2'>
+                      <TextField
+                        className='min-w-fit'
+                        size='small'
+                        select
+                        value={
+                          customerPaymentData[
+                            ((customer as CustomerListType).fullName
+                              ? (customer as CustomerListType).fullName
+                              : customer) as string
+                          ]?.paymentMethod || paymentMethods[0]
+                        }
+                        onChange={e => {
+                          handleCustomerPaymentDataChange({
+                            value: e.target.value,
+                            fullName: ((customer as CustomerListType).fullName
+                              ? (customer as CustomerListType).fullName
+                              : customer) as string,
+                            field: 'paymentMethod'
+                          })
+                        }}
+                      >
+                        {paymentMethods.map((paymentMethod, index) => (
+                          <MenuItem key={index} value={paymentMethod}>
+                            {paymentMethod}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </div>
                   </div>
-                  <div className='size-full grid place-items-center p-1 sm:p-2'>
-                    <TextField
-                      size='small'
-                      //placeholder='₹_._'
-                      inputProps={{ type: 'number', min: 0, step: 'any' }}
-                      value={
-                        customerPaymentData[
-                          ((customer as CustomerListType).fullName
-                            ? (customer as CustomerListType).fullName
-                            : customer) as string
-                        ]?.cashIn || ''
-                      }
-                      onChange={event =>
-                        handleCustomerPaymentDataChange({
-                          value: event.target.value,
-                          fullName: ((customer as CustomerListType).fullName
-                            ? (customer as CustomerListType).fullName
-                            : customer) as string,
-                          field: 'cashIn'
-                        })
-                      }
-                    />
-                  </div>
-                  <div className='size-full grid place-items-center p-1 sm:p-2'>
-                    <TextField
-                      className='min-w-fit'
-                      size='small'
-                      select
-                      value={
-                        customerPaymentData[
-                          ((customer as CustomerListType).fullName
-                            ? (customer as CustomerListType).fullName
-                            : customer) as string
-                        ]?.paymentMethod || paymentMethods[0]
-                      }
-                      onChange={e => {
-                        handleCustomerPaymentDataChange({
-                          value: e.target.value,
-                          fullName: ((customer as CustomerListType).fullName
-                            ? (customer as CustomerListType).fullName
-                            : customer) as string,
-                          field: 'paymentMethod'
-                        })
-                      }}
-                    >
-                      {paymentMethods.map((paymentMethod, index) => (
-                        <MenuItem key={index} value={paymentMethod}>
-                          {paymentMethod}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            </>
           ) : (
             <></>
           )}
