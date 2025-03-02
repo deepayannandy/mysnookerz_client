@@ -157,7 +157,7 @@ const StaffListTable = () => {
       if (response && response.data) {
         getStaffData()
         setSuspendConfirmationDialogOpen(false)
-        toast.success('Staff suspended successfully')
+        toast.success(`${staffData.userStatus ? 'Staff suspended successfully' : 'Staff authorized successfully'} `)
       }
     } catch (error: any) {
       if (error?.response?.status === 409) {
@@ -271,7 +271,7 @@ const StaffListTable = () => {
                   }
                 },
                 {
-                  text: 'Suspend',
+                  text: 'Suspend/Authorize',
                   icon: 'ri-close-circle-line',
                   menuItemProps: {
                     className: 'gap-2',
@@ -443,8 +443,8 @@ const StaffListTable = () => {
         name={`staff (${staffData.fullName})`}
         setOpen={setSuspendConfirmationDialogOpen}
         deleteApiCall={suspendStaff}
-        message={`Are you sure you want to suspend this (${staffData.fullName}) staff?`}
-        confirmationButtonText={'Suspend'}
+        message={`Are you sure you want to ${staffData.userStatus ? 'suspend' : 'authorize'} this (${staffData.fullName}) staff?`}
+        confirmationButtonText={`${staffData.userStatus ? 'Suspend' : 'Authorize'}`}
       />
     </>
   )
