@@ -31,6 +31,7 @@ type UpgradePlanProps = {
   getUserData: () => void
   userData: UserDataType
   renewPlan: boolean
+  isLoginScreen?: boolean
 }
 
 type OrderDetailsType = { orderId: string; amount: string; currency: string; receipt: string }
@@ -42,7 +43,15 @@ type PaymentDetailsType = {
   razorpaySignature: string
 }
 
-const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, userData, renewPlan }: UpgradePlanProps) => {
+const UpgradePlan = ({
+  open,
+  setOpen,
+  currentPlan,
+  getUserData,
+  userData,
+  renewPlan,
+  isLoginScreen
+}: UpgradePlanProps) => {
   // States
   const [subscriptionList, setSubscriptionList] = useState(
     [] as { _id: string; displayName: string; subscriptionName: string; subscriptionPrice: number }[]
@@ -59,6 +68,9 @@ const UpgradePlan = ({ open, setOpen, currentPlan, getUserData, userData, renewP
   const handleClose = () => {
     setOpen(false)
     setSelectedPlanId('')
+    if (isLoginScreen) {
+      localStorage.removeItem('token')
+    }
   }
 
   const getSubscriptions = async () => {
