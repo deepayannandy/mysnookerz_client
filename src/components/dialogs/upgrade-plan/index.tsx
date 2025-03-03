@@ -301,7 +301,13 @@ const UpgradePlan = ({
               </Select>
             </FormControl>
             <Button variant='contained' className='capitalize sm:is-auto is-full' onClick={processPayment}>
-              {renewPlan ? 'Renew' : 'Upgrade'}
+              {isLoginScreen
+                ? selectedPlanId === currentPlan?.subscriptionId
+                  ? 'Renew'
+                  : 'Upgrade'
+                : renewPlan
+                  ? 'Renew'
+                  : 'Upgrade'}
             </Button>
           </div>
           <Divider className='mlb-6' />

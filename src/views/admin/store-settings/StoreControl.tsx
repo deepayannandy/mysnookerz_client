@@ -9,7 +9,7 @@ import Grid from '@mui/material/Grid'
 // Style Imports
 import '@/libs/styles/tiptapEditor.css'
 import { StoreDataType } from '@/types/adminTypes'
-import { FormControl, InputLabel, MenuItem, Select, Switch, Typography } from '@mui/material'
+import { Divider, FormControl, InputLabel, MenuItem, Select, Switch, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -18,7 +18,8 @@ import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 
 const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; getStoreData: () => void }) => {
-  const [isDefaultCustomerSwitch, setIsDefaultCustomerSwitch] = useState(true)
+  const [requiredCustomerCount, setRequiredCustomerCount] = useState(1)
+  const [isRequiredCustomerCountSwitch, setIsRequiredCustomerCountSwitch] = useState(true)
   const [isCancelGameSwitch, setIsCancelGameSwitch] = useState(true)
   const [isPauseAndResumeSwitch, setIsPauseAndResumeSwitch] = useState(true)
   const [isBillPrintSwitch, setIsBillPrintSwitch] = useState(true)
@@ -38,7 +39,14 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
   const { handleSubmit } = useForm({})
 
   useEffect(() => {
-    setIsDefaultCustomerSwitch(!!storeData?.StoreData?.defaultCustomer)
+    if (storeData?.StoreData?.requiredCustomerCount) {
+      setRequiredCustomerCount(storeData?.StoreData?.requiredCustomerCount)
+      setIsRequiredCustomerCountSwitch(true)
+    } else {
+      setRequiredCustomerCount(0)
+      setIsRequiredCustomerCountSwitch(false)
+    }
+
     setIsCancelGameSwitch(!!storeData?.StoreData?.isCancel)
     setIsPauseAndResumeSwitch(!!storeData?.StoreData?.isPauseResume)
     setIsBillPrintSwitch(!!storeData?.StoreData?.isBillPrint)
@@ -53,7 +61,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
 
   const onSubmit = async () => {
     const requestData = {
-      defaultCustomer: isDefaultCustomerSwitch,
+      requiredCustomerCount,
       isCancel: isCancelGameSwitch,
       isPauseResume: isPauseAndResumeSwitch,
       isRoundOff: isRoundOffSwitch,
@@ -64,6 +72,10 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
       isSelfStart: isSelfStartSwitch,
       isBreakGame: isBreakGameSwitch,
       cancelMins: isCancelGameSwitch ? cancelMinutes : 0
+    }
+
+    if (!isRequiredCustomerCountSwitch) {
+      requestData.requiredCustomerCount = 0
     }
 
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -86,11 +98,21 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
     }
   }
 
+  const handleIsRequiredCustomerCountSwitch = (value: boolean) => {
+    if (value) {
+      setIsRequiredCustomerCountSwitch(true)
+      setRequiredCustomerCount(1)
+    } else {
+      setIsRequiredCustomerCountSwitch(false)
+      setRequiredCustomerCount(0)
+    }
+  }
+
   const controlFields = [
     {
-      name: 'Default Customer',
-      setMethod: setIsDefaultCustomerSwitch,
-      value: isDefaultCustomerSwitch
+      name: 'Required Customer Count',
+      setMethod: handleIsRequiredCustomerCountSwitch,
+      value: isRequiredCustomerCountSwitch
     },
     {
       name: 'Cancel Game',
@@ -141,40 +163,65 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
 
   return (
     <Card>
-      <CardHeader title='Control' />
+      <CardHeader title='Store Control' />
       <form onSubmit={handleSubmit(() => onSubmit())}>
         <CardContent>
           <Grid container spacing={5} className='mbe-5'>
             {controlFields.map(field => (
-              <Grid item key={field.name} xs={12} className='flex justify-between'>
-                <div className='flex justify-start md:gap-4 gap-2 w-3/4'>
-                  <Typography className='flex font-medium w-fit items-center' color='text.primary'>
-                    {field.name}
-                  </Typography>
-                  {isCancelGameSwitch && field.name === 'Cancel Game' ? (
-                    <FormControl fullWidth size='small' className='md:w-32 w-24'>
-                      <InputLabel id='cancel-min'>Minutes</InputLabel>
-                      <Select
-                        label='Cancel Minutes'
-                        defaultValue='Standard'
-                        value={cancelMinutes}
-                        onChange={event => setCancelMinutes(event.target.value)}
-                      >
-                        {Array.from({ length: 11 }, (_, i) => i).map((id: number) => (
-                          <MenuItem key={id} value={id}>
-                            {id}
-                          </MenuItem>
-                        ))}
-                      </Select>
+              <>
+                <Grid item key={field.name} xs={12} className='flex justify-between'>
+                  <div className={`flex justify-start md:gap-4 gap-2 w-3/4`}>
+                    <Typography className='flex font-medium w-fit items-center' color='text.primary'>
+                      {field.name}
+                    </Typography>
+                  </div>
+                  <div className={`flex justify-end md:gap-4 gap-2 w-3/4`}>
+                    {isCancelGameSwitch && field.name === 'Cancel Game' ? (
+                      <FormControl fullWidth size='small' className='md:w-32 w-24'>
+                        <InputLabel id='cancel-min'>Minutes</InputLabel>
+                        <Select
+                          label='Minutes'
+                          defaultValue='0'
+                          value={cancelMinutes}
+                          onChange={event => setCancelMinutes(event.target.value)}
+                        >
+                          {Array.from({ length: 11 }, (_, i) => i).map((id: number) => (
+                            <MenuItem key={id} value={id}>
+                              {id}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    ) : (
+                      <></>
+                    )}
+
+                    {isRequiredCustomerCountSwitch && field.name === 'Required Customer Count' ? (
+                      <FormControl fullWidth size='small' className='md:w-32 w-24'>
+                        <Select
+                          defaultValue={1}
+                          value={requiredCustomerCount}
+                          onChange={event => setRequiredCustomerCount(event.target.value as number)}
+                        >
+                          {[1, 2].map((id: number) => (
+                            <MenuItem key={id} value={id}>
+                              {`${id} Customer`}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    ) : (
+                      <></>
+                    )}
+                    <FormControl>
+                      <Switch size='medium' onChange={e => field.setMethod(e.target.checked)} checked={field.value} />
                     </FormControl>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-                <FormControl>
-                  <Switch size='medium' onChange={e => field.setMethod(e.target.checked)} checked={field.value} />
-                </FormControl>
-              </Grid>
+                  </div>
+                </Grid>
+                <Grid item className='w-full'>
+                  <Divider />
+                </Grid>
+              </>
             ))}
 
             <Grid item xs={12}>

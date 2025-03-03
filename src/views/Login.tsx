@@ -300,7 +300,7 @@ const Login = ({ mode }: { mode: Mode }) => {
                 element={Button}
                 elementProps={{
                   variant: 'contained',
-                  children: 'Renew Subscription'
+                  children: 'Renew/Upgrade Subscription'
                 }}
                 dialog={UpgradePlan}
                 dialogProps={{

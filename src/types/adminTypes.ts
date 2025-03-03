@@ -110,7 +110,7 @@ export type StoreDataType = {
     happyHrsStartTime: string
     happyHrsEndTime: string
     happyHrsDiscount: number
-    defaultCustomer: boolean
+    requiredCustomerCount: number
     cancelMins: number
     isCancel: boolean
     isPauseResume: boolean
