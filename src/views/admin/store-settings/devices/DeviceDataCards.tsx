@@ -4,7 +4,6 @@
 import { useEffect, useState } from 'react'
 
 // MUI Imports
-import type { ButtonProps } from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -20,12 +19,12 @@ import { toast } from 'react-toastify'
 const DeviceDataCards = () => {
   const [data, setData] = useState([] as DeviceDataType[])
 
-  // Vars
-  const buttonProps: ButtonProps = {
-    variant: 'outlined',
-    children: '+ Add Device',
-    size: 'small'
-  }
+  // // Vars
+  // const buttonProps: ButtonProps = {
+  //   variant: 'outlined',
+  //   children: '+ Add Device',
+  //   size: 'small'
+  // }
 
   //Hooks
   const { lang: locale } = useParams()
