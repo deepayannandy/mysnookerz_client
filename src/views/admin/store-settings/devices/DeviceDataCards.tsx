@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 
 // MUI Imports
 import type { ButtonProps } from '@mui/material/Button'
-import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import CardHeader from '@mui/material/CardHeader'
@@ -14,8 +13,6 @@ import Divider from '@mui/material/Divider'
 // Component Imports
 import DeviceCard from '@/components/cards/DeviceCard'
 import { DeviceDataType } from '@/types/adminTypes'
-import AddNewCard from '@components/dialogs/billing-card'
-import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementClick'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
@@ -62,7 +59,7 @@ const DeviceDataCards = () => {
     <Card>
       <CardHeader
         title='Devices'
-        action={<OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={AddNewCard} />}
+        // action={<OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={AddNewCard} />}
         className='flex-wrap gap-4'
       />
       <CardContent>

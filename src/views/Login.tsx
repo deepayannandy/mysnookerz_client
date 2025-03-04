@@ -45,6 +45,7 @@ import UpgradePlan from '@/components/dialogs/upgrade-plan'
 import { UserDataType } from '@/types/adminTypes'
 import { getLocalizedUrl } from '@/utils/i18n'
 import axios from 'axios'
+import { DateTime } from 'luxon'
 import { toast } from 'react-toastify'
 
 type ErrorType = {
@@ -164,9 +165,20 @@ const Login = ({ mode }: { mode: Mode }) => {
       const response = await axios.get(`${apiBaseUrl}/store/${storeId}`, { headers: { 'auth-token': token } })
       if (response && response.data) {
         setUserData(response.data)
-        if (typeof response.data.SubscriptionData !== 'string' && response.data.SubscriptionData) {
-          setIsPlanExpired(false)
-          setSeverError('')
+
+        if (
+          response.data.SubscriptionData &&
+          typeof response.data.SubscriptionData === 'object' &&
+          response.data.SubscriptionData.startDate
+        ) {
+          const daysPast = Math.round(
+            DateTime.now().diff(DateTime.fromISO(response.data.SubscriptionData.startDate), 'days').days
+          )
+
+          if (daysPast <= (response.data.SubscriptionData.subscriptionValidity ?? 0)) {
+            setIsPlanExpired(false)
+            setSeverError('')
+          }
         }
       }
     } catch (error: any) {
