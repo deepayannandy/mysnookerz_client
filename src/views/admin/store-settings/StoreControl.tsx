@@ -7,9 +7,10 @@ import CardHeader from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid'
 
 // Style Imports
+import BaseSwitch from '@/components/BaseSwitch'
 import '@/libs/styles/tiptapEditor.css'
 import { StoreDataType } from '@/types/adminTypes'
-import { Divider, FormControl, InputLabel, MenuItem, Select, Switch, Typography } from '@mui/material'
+import { Divider, FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -111,51 +112,61 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
   const controlFields = [
     {
       name: 'Required Customer Count',
+      caption: 'Once enabled, the selected number of customer names must be filled in to start the table.',
       setMethod: handleIsRequiredCustomerCountSwitch,
       value: isRequiredCustomerCountSwitch
     },
     {
       name: 'Cancel Game',
+      caption: 'Once enabled, the game will automatically cancel if the customer exits within the set time limit.',
       setMethod: setIsCancelGameSwitch,
       value: isCancelGameSwitch
     },
     {
       name: 'Pause/Resume',
+      caption: 'Pause the timer, and the paused time is not counted in the total billing amount.',
       setMethod: setIsPauseAndResumeSwitch,
       value: isPauseAndResumeSwitch
     },
     {
       name: 'Bill Print',
+      caption: 'Prints a copy of the bill.',
       setMethod: setIsBillPrintSwitch,
       value: isBillPrintSwitch
     },
     {
       name: 'Prepaid Mode (Pay & Play Advance Payment)',
+      caption: 'Enabling this starts the game after the advance amount has been paid.',
       setMethod: setIsPrepaidModeSwitch,
       value: isPrepaidModeSwitch
     },
     {
       name: 'Round Off',
+      caption: 'Enabling this rounds off the amount.',
       setMethod: setIsRoundOffSwitch,
       value: isRoundOffSwitch
     },
     {
       name: 'Switch Table Data',
+      caption: 'Transfers the current customer playing at one table to another table.',
       setMethod: setIsSwitchTableSwitch,
       value: isSwitchTableSwitch
     },
     {
       name: 'Multiple Billing',
+      caption: '',
       setMethod: setIsMultipleBillingSwitch,
       value: isMultipleBillingSwitch
     },
     {
       name: 'Self Start',
+      caption: '',
       setMethod: setIsSelfStartSwitch,
       value: isSelfStartSwitch
     },
     {
       name: 'Break Game',
+      caption: '',
       setMethod: setIsBreakGameSwitch,
       value: isBreakGameSwitch
     }
@@ -170,9 +181,12 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
             {controlFields.map(field => (
               <>
                 <Grid item key={field.name} xs={12} className='flex justify-between'>
-                  <div className={`flex justify-start md:gap-4 gap-2 w-3/4`}>
+                  <div className={`flex flex-col justify-start w-3/4`}>
                     <Typography className='flex font-medium w-fit items-center' color='text.primary'>
                       {field.name}
+                    </Typography>
+                    <Typography className='flex font-light text-sm w-fit items-center' color='text.primary'>
+                      {field.caption}
                     </Typography>
                   </div>
                   <div className={`flex justify-end md:gap-4 gap-2 w-3/4`}>
@@ -214,7 +228,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
                       <></>
                     )}
                     <FormControl>
-                      <Switch size='medium' onChange={e => field.setMethod(e.target.checked)} checked={field.value} />
+                      <BaseSwitch onChange={field.setMethod} value={field.value} />
                     </FormControl>
                   </div>
                 </Grid>
