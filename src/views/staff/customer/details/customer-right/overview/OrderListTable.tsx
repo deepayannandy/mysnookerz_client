@@ -155,6 +155,14 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
     return `${diff?.toFixed(2) ?? 0}mins`
   }
 
+  const getPaymentMethod = (description: string): string => {
+    const descriptionArr = description?.split(' ')
+    if (descriptionArr?.length) {
+      return descriptionArr[descriptionArr.length - 1]
+    }
+    return ''
+  }
+
   const columns = useMemo<ColumnDef<PaymentHistoryDataTypeWithAction, any>[]>(
     () => [
       columnHelper.accessor('transactionId', {
@@ -207,6 +215,10 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
       columnHelper.accessor('due', {
         header: 'Due',
         cell: ({ row }) => <Typography>₹{row.original.due ?? 0}</Typography>
+      }),
+      columnHelper.accessor('description', {
+        header: 'Payment Method',
+        cell: ({ row }) => <Typography>{getPaymentMethod(row.original.description)}</Typography>
       })
 
       // columnHelper.accessor('action', {
