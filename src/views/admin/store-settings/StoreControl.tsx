@@ -200,7 +200,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
               {controlFields.map(field => (
                 <>
                   <Grid item key={field.name} xs={12} className='flex md:flex-row flex-col justify-between'>
-                    <div className={`flex flex-col justify-start w-3/4`}>
+                    <div className={`flex flex-col justify-start w-full`}>
                       <Typography
                         className='flex w-fit items-center font-semibold text-base lg:text-[18px] leading-[21.09px] mb-[5px]'
                         color='text.primary'
