@@ -15,23 +15,23 @@ const BaseSwitch = ({ value: initialValue, onChange }: { value: boolean; onChang
 
   return (
     <label
-      className='flex items-center relative cursor-pointer select-none w-[70px] h-5'
+      className='flex items-center relative cursor-pointer select-none w-[100px] h-10'
       style={{ containerType: 'inline-size' }}
     >
       <input
         type='checkbox'
         checked={value}
         onChange={handleChange}
-        className='appearance-none transition-colors cursor-pointer size-full rounded-full bg-red-500 checked:bg-green-500 peer'
+        className='appearance-none transition-colors cursor-pointer size-full rounded-full bg-red-500 checked:bg-[#134925] peer'
       />
-      <span className='absolute font-medium text-[9px] uppercase right-0 text-white peer-checked:hidden mr-1'>
+      <span className='absolute font-medium text-[12px] uppercase right-0 text-white peer-checked:hidden mr-2 duration-500'>
         DISABLED
       </span>
-      <span className='absolute font-medium text-[9px] uppercase left-0 text-white peer-checked:block hidden ml-1'>
+      <span className='absolute font-medium text-[12px] uppercase left-0 text-white peer-checked:block hidden ml-2 duration-500'>
         ENABLED
       </span>
       <div
-        className={`w-5 h-5 absolute rounded-full transform transition-transform bg-gray-950/60 grid place-items-center peer-checked:translate-x-[calc(100cqw-100%)] peer-checked:text-green-500 text-red-500 p-1`}
+        className={`w-6 h-6 absolute rounded-full transform transition-transform duration-500 bg-gray-950/60 grid place-items-center peer-checked:translate-x-[calc(100cqw-100%-8px)] peer-checked:text-green-500 text-red-500 p-px ml-1 `}
       >
         <i className='ri-shut-down-line size-full'></i>
       </div>
