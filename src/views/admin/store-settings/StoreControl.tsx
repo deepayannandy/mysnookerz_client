@@ -9,8 +9,7 @@ import Grid from '@mui/material/Grid'
 import BaseSwitch from '@/components/BaseSwitch'
 import '@/libs/styles/tiptapEditor.css'
 import { StoreDataType } from '@/types/adminTypes'
-import { Divider, FormControl, MenuItem, Select, Typography } from '@mui/material'
-import Button from '@mui/material/Button'
+import { Button, Divider, FormControl, MenuItem, Select, Typography } from '@mui/material'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -124,46 +123,47 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
 
   const controlFields = [
     {
-      name: 'Required Customer Count',
+      name: 'Required Customer Name',
       caption: 'Once enabled, the selected number of customer names must be filled in to start the table.',
       setMethod: handleIsRequiredCustomerCountSwitch,
       value: isRequiredCustomerCountSwitch
     },
     {
-      name: 'Cancel Game',
+      name: 'Game Cancellation Timeout',
       caption: 'Once enabled, the game will automatically cancel if the customer exits within the set time limit.',
       setMethod: handleCancelMinuteSwitch,
       value: isCancelGameSwitch
     },
     {
-      name: 'Pause/Resume',
-      caption: 'Pause the timer, and the paused time is not counted in the total billing amount.',
+      name: 'Pause Resume Billing Timer',
+      caption: 'Pauses the timer, and the paused time is not counted in the total billing amount.',
       setMethod: setIsPauseAndResumeSwitch,
       value: isPauseAndResumeSwitch
     },
     {
-      name: 'Bill Print',
-      caption: 'Prints a copy of the bill.',
-      setMethod: setIsBillPrintSwitch,
-      value: isBillPrintSwitch
-    },
-    {
-      name: 'Prepaid Mode (Pay & Play Advance Payment)',
+      name: 'Pay First, Play Next',
       caption: 'Enabling this starts the game after the advance amount has been paid.',
       setMethod: setIsPrepaidModeSwitch,
       value: isPrepaidModeSwitch
     },
     {
-      name: 'Round Off',
-      caption: 'Enabling this rounds off the amount.',
+      name: 'Transfer Table',
+      caption: 'Transfers the current customer playing at one table to another table.',
+      setMethod: setIsSwitchTableSwitch,
+      value: isSwitchTableSwitch
+    },
+    {
+      name: 'Enabling this rounds off the amount based on the selected type:',
+      caption: `Type 1: Rounds to the nearest whole number (e.g., 20.50 or 20.60 becomes 21, 20.40 becomes 20).`,
+      captionTwo: `Type 2: Rounds to the nearest 5 (e.g., 23 becomes 25, 22 becomes 20).`,
       setMethod: setIsRoundOffSwitch,
       value: isRoundOffSwitch
     },
     {
-      name: 'Switch Table Data',
-      caption: 'Transfers the current customer playing at one table to another table.',
-      setMethod: setIsSwitchTableSwitch,
-      value: isSwitchTableSwitch
+      name: 'Print Receipt',
+      caption: 'Prints a copy of the bill.',
+      setMethod: setIsBillPrintSwitch,
+      value: isBillPrintSwitch
     },
     {
       name: 'Multiple Billing',
@@ -187,11 +187,16 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
 
   return (
     <>
-      <Typography variant='h4' className='mb-4 font-bold'>
-        Store Control
-      </Typography>
-      <Card>
-        <form onSubmit={handleSubmit(() => onSubmit())}>
+      <form onSubmit={handleSubmit(() => onSubmit())}>
+        <div className='flex justify-between'>
+          <Typography variant='h4' className='mb-4 font-bold'>
+            Store Control
+          </Typography>
+          <Button variant='text' type='submit' className='border-0 text-base cursor-pointer mb-2'>
+            Save Settings
+          </Button>
+        </div>
+        <Card>
           <CardContent>
             <Grid container spacing={5} className='mbe-5'>
               {/* <Grid item className='w-full pt-2'>
@@ -199,7 +204,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
               </Grid> */}
               {controlFields.map(field => (
                 <>
-                  <Grid item key={field.name} xs={12} className='flex md:flex-row flex-col justify-between'>
+                  <Grid item key={field.name} xs={12} className='flex md:flex-row flex-col md:justify-between gap-3'>
                     <div className={`flex flex-col justify-start w-full`}>
                       <Typography
                         className='flex w-fit items-center font-semibold text-base lg:text-[18px] leading-[21.09px] mb-[5px]'
@@ -207,15 +212,22 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
                       >
                         {field.name}
                       </Typography>
-                      <Typography
-                        className='flex w-fit items-center text-sm lg:text-[16px] leading-[21.09px] font-normal'
-                        color='text.primary.light'
-                      >
-                        {field.caption}
-                      </Typography>
+                      {field.captionTwo ? (
+                        <ul className='list-disc pl-5 space-y-1 w-full'>
+                          <li>{field.caption}</li>
+                          <li>{field.captionTwo}</li>
+                        </ul>
+                      ) : (
+                        <Typography
+                          className='flex w-full items-center text-sm lg:text-[16px] leading-[21.09px] font-normal'
+                          color='text.primary.light'
+                        >
+                          {field.caption}
+                        </Typography>
+                      )}
                     </div>
                     <div className={`flex md:justify-end justify-start md:gap-4 gap-2 w-full`}>
-                      {isCancelGameSwitch && field.name === 'Cancel Game' ? (
+                      {isCancelGameSwitch && field.name === 'Game Cancellation Timeout' ? (
                         <FormControl fullWidth size='small' className='w-32'>
                           <Select
                             defaultValue={1}
@@ -233,7 +245,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
                         <></>
                       )}
 
-                      {isRequiredCustomerCountSwitch && field.name === 'Required Customer Count' ? (
+                      {isRequiredCustomerCountSwitch && field.name === 'Required Customer Name' ? (
                         <FormControl fullWidth size='small' className='w-32'>
                           <Select
                             defaultValue={1}
@@ -260,18 +272,10 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
                   </Grid>
                 </>
               ))}
-
-              <Grid item xs={12}>
-                <div className='flex justify-end'>
-                  <Button variant='contained' type='submit'>
-                    Submit
-                  </Button>
-                </div>
-              </Grid>
             </Grid>
           </CardContent>
-        </form>
-      </Card>
+        </Card>
+      </form>
     </>
   )
 }
