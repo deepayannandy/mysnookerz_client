@@ -49,6 +49,7 @@ const PoolCard = ({
   const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false)
   const [showMealCart, setShowMealCart] = useState(false)
   const [showOnHoldBill, setShowOnHoldBill] = useState(false)
+  const [isHoldButtonDisabled, setIsHoldButtonDisabled] = useState(false)
 
   // let totalSeconds =
   //   tableData.gameData?.startTime && tableData.gameData?.endTime
@@ -279,6 +280,32 @@ const PoolCard = ({
       // if (error?.response?.status === 409) {
       //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   console.log(redirectUrl)
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  const holdCheckout = async () => {
+    setIsHoldButtonDisabled(true)
+    setTimeout(() => setIsHoldButtonDisabled(false), 3000)
+
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.post(`${apiBaseUrl}/games/putOnHold/${tableData._id}`, billData, {
+        headers: { 'auth-token': token }
+      })
+
+      if (response && response.data) {
+        setGameType(tableData.gameTypes[0] || '')
+        setCustomers(['CASH'])
+        getAllTablesData()
+        toast.success('Good Job!', { icon: <>👏</> })
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 409) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
       //   return router.replace(redirectUrl)
       // }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
@@ -600,12 +627,26 @@ const PoolCard = ({
           </div> */}
         </div>
 
-        <div className='grid gap-y-2 mb-6'>
+        <div className='grid gap-y-1 mb-3'>
           {tableData.isOccupied ? (
             tableData.gameData?.endTime ? (
-              <Button variant='contained' className='bg-[#FFCA00] text-black h-8' onClick={() => setShowBill(true)}>
-                <span className='ri-bank-card-fill text-base -rotate-45 mr-1'></span>Checkout
-              </Button>
+              <>
+                {storeData?.StoreData?.isHoldEnable ? (
+                  <Button
+                    variant='contained'
+                    disabled={isHoldButtonDisabled || tableData.isHold}
+                    className='bg-white text-black h-7'
+                    onClick={() => holdCheckout()}
+                  >
+                    <span className='ri-bar-chart-box-fill text-base mr-1'></span>Hold
+                  </Button>
+                ) : (
+                  <></>
+                )}
+                <Button variant='contained' className='bg-[#FFCA00] text-black h-7' onClick={() => setShowBill(true)}>
+                  <span className='ri-bank-card-fill text-base -rotate-45 mr-1'></span>Checkout
+                </Button>
+              </>
             ) : (
               <>
                 <Button
