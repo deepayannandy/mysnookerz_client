@@ -26,9 +26,9 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
   const [isRoundOffSwitch, setIsRoundOffSwitch] = useState(true)
   const [isSwitchTableSwitch, setIsSwitchTableSwitch] = useState(true)
   const [isHoldCheckoutSwitch, setIsHoldCheckoutSwitch] = useState(true)
-  const [isMultipleBillingSwitch, setIsMultipleBillingSwitch] = useState(true)
+  // const [isMultipleBillingSwitch, setIsMultipleBillingSwitch] = useState(true)
   const [isSelfStartSwitch, setIsSelfStartSwitch] = useState(true)
-  const [isBreakGameSwitch, setIsBreakGameSwitch] = useState(true)
+  // const [isBreakGameSwitch, setIsBreakGameSwitch] = useState(true)
   const [cancelMinutes, setCancelMinutes] = useState(1)
 
   //Hooks
@@ -53,9 +53,9 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
     setIsPrepaidModeSwitch(!!storeData?.StoreData?.isPrepaidMode)
     setIsRoundOffSwitch(!!storeData?.StoreData?.isRoundOff)
     setIsSwitchTableSwitch(!!storeData?.StoreData?.isSwitchTable)
-    setIsMultipleBillingSwitch(!!storeData?.StoreData?.isMultipleBilling)
+    // setIsMultipleBillingSwitch(!!storeData?.StoreData?.isMultipleBilling)
     setIsSelfStartSwitch(!!storeData?.StoreData?.isSelfStart)
-    setIsBreakGameSwitch(!!storeData?.StoreData?.isBreakGame)
+    // setIsBreakGameSwitch(!!storeData?.StoreData?.isBreakGame)
     setCancelMinutes(storeData?.StoreData?.cancelMins ?? 1)
     setIsHoldCheckoutSwitch(!!storeData?.StoreData?.isHoldEnable)
   }, [storeData])
