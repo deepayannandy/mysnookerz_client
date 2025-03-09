@@ -25,6 +25,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
   const [isPrepaidModeSwitch, setIsPrepaidModeSwitch] = useState(true)
   const [isRoundOffSwitch, setIsRoundOffSwitch] = useState(true)
   const [isSwitchTableSwitch, setIsSwitchTableSwitch] = useState(true)
+  const [isHoldCheckoutSwitch, setIsHoldCheckoutSwitch] = useState(true)
   const [isMultipleBillingSwitch, setIsMultipleBillingSwitch] = useState(true)
   const [isSelfStartSwitch, setIsSelfStartSwitch] = useState(true)
   const [isBreakGameSwitch, setIsBreakGameSwitch] = useState(true)
@@ -56,6 +57,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
     setIsSelfStartSwitch(!!storeData?.StoreData?.isSelfStart)
     setIsBreakGameSwitch(!!storeData?.StoreData?.isBreakGame)
     setCancelMinutes(storeData?.StoreData?.cancelMins ?? 1)
+    setIsHoldCheckoutSwitch(!!storeData?.StoreData?.isHoldEnable)
   }, [storeData])
 
   const onSubmit = async () => {
@@ -67,10 +69,11 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
       isBillPrint: isBillPrintSwitch,
       isPrepaidMode: isPrepaidModeSwitch,
       isSwitchTable: isSwitchTableSwitch,
-      isMultipleBilling: isMultipleBillingSwitch,
+      // isMultipleBilling: isMultipleBillingSwitch,
       isSelfStart: isSelfStartSwitch,
-      isBreakGame: isBreakGameSwitch,
-      cancelMins: isCancelGameSwitch ? cancelMinutes : 0
+      // isBreakGame: isBreakGameSwitch,
+      cancelMins: isCancelGameSwitch ? cancelMinutes : 0,
+      isHoldEnable: isHoldCheckoutSwitch
     }
 
     if (!isRequiredCustomerCountSwitch) {
@@ -166,23 +169,29 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
       value: isBillPrintSwitch
     },
     {
-      name: 'Multiple Billing',
-      caption: '',
-      setMethod: setIsMultipleBillingSwitch,
-      value: isMultipleBillingSwitch
+      name: 'Hold Checkout',
+      caption: 'Temporarily reserves an checkout for a customer, allowing them to finalize the purchase later.',
+      setMethod: setIsHoldCheckoutSwitch,
+      value: isHoldCheckoutSwitch
     },
+    // {
+    //   name: 'Multiple Billing',
+    //   caption: '',
+    //   setMethod: setIsMultipleBillingSwitch,
+    //   value: isMultipleBillingSwitch
+    // },
     {
       name: 'Self Start',
       caption: '',
       setMethod: setIsSelfStartSwitch,
       value: isSelfStartSwitch
-    },
-    {
-      name: 'Break Game',
-      caption: '',
-      setMethod: setIsBreakGameSwitch,
-      value: isBreakGameSwitch
     }
+    // {
+    //   name: 'Break Game',
+    //   caption: '',
+    //   setMethod: setIsBreakGameSwitch,
+    //   value: isBreakGameSwitch
+    // }
   ]
 
   return (

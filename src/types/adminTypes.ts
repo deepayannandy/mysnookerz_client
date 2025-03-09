@@ -121,6 +121,7 @@ export type StoreDataType = {
     isMultipleBilling: boolean
     isSelfStart: boolean
     isBreakGame: boolean
+    isHoldEnable: boolean
   }
   SubscriptionData?: SubscriptionPlanType
 }

@@ -109,7 +109,7 @@ const DailyCollectionData = ({
 
           <div className='grid grid-cols-2 gap-2 border-b divide-x'>
             <p className='text-center p-2'>GEMS</p>
-            <p className='text-center p-2'>{`₹${data.upi || 0}`}</p>
+            <p className='text-center p-2'>{`₹${data.gems || 0}`}</p>
           </div>
 
           <div className='grid grid-cols-2 gap-2 divide-x'>

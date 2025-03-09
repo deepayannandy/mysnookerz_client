@@ -106,6 +106,8 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed
 }
 
+const paymentMethods = ['UPI', 'CASH', 'CARD']
+
 const DebouncedInput = ({
   value: initialValue,
   onChange,
@@ -155,12 +157,28 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
     return `${diff?.toFixed(2) ?? 0}mins`
   }
 
-  const getPaymentMethod = (description: string): string => {
-    const descriptionArr = description?.split(' ')
+  const getPaymentMethod = (rowData: PaymentHistoryDataType): string => {
+    if (!rowData.paid) {
+      return 'DUE'
+    }
+
+    const descriptionArr = rowData.description?.split(' ')
     if (descriptionArr?.length) {
-      return descriptionArr[descriptionArr.length - 1]
+      const method = descriptionArr[descriptionArr.length - 1]
+      return paymentMethods.includes(method) ? method : ''
     }
     return ''
+  }
+
+  const getDescription = (description: string): string => {
+    const descriptionArr = description?.split(' ')
+    if (descriptionArr?.length) {
+      const method = descriptionArr[descriptionArr.length - 1]
+      return paymentMethods.includes(method)
+        ? (descriptionArr.slice(0, descriptionArr.length - 1)?.join(' ') ?? '')
+        : description
+    }
+    return description
   }
 
   const columns = useMemo<ColumnDef<PaymentHistoryDataTypeWithAction, any>[]>(
@@ -170,56 +188,58 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
         cell: ({ row }) => <Typography>{`${row.original.transactionId ?? 'NA'}`}</Typography>
       }),
       columnHelper.accessor('date', {
-        header: 'Date',
-        cell: ({ row }) => <Typography>{`${DateTime.fromISO(row.original.date).toFormat('dd LLL yyyy')}`}</Typography>
+        header: 'Date & Time',
+        cell: ({ row }) => (
+          <Typography>{`${DateTime.fromISO(row.original.date).toFormat('dd LLL yyyy HH:mm:ss')}`}</Typography>
+        )
       }),
-      columnHelper.accessor('customerName', {
-        header: 'Customer',
-        cell: ({ row }) => <Typography>{row.original.customerName}</Typography>
-      }),
+      // columnHelper.accessor('customerName', {
+      //   header: 'Customer',
+      //   cell: ({ row }) => <Typography>{row.original.customerName}</Typography>
+      // }),
       columnHelper.accessor('description', {
         header: 'Description',
-        cell: ({ row }) => <Typography>{row.original.description}</Typography>
+        cell: ({ row }) => <Typography>{getDescription(row.original.description)}</Typography>
       }),
       columnHelper.accessor('quantity', {
         header: 'Quantity',
         cell: ({ row }) => <Typography>{row.original.quantity}</Typography>
       }),
-
-      columnHelper.accessor('startTime', {
-        header: 'Time',
-        cell: ({ row }) => (
-          <div className='flex flex-col'>
-            {row.original.startTime && row.original.endTime ? (
-              <Typography className='font-medium' color='text.primary'>
-                {getTime(row.original.startTime, row.original.endTime)}
-              </Typography>
-            ) : (
-              <>-</>
-            )}
-          </div>
-        )
+      columnHelper.accessor('discount', {
+        header: 'Discount',
+        cell: ({ row }) => <Typography>₹{row.original.discount ?? 0}</Typography>
       }),
       columnHelper.accessor('netPay', {
         header: 'Net Pay',
         cell: ({ row }) => <Typography>₹{row.original.netPay ?? 0}</Typography>
       }),
-      columnHelper.accessor('discount', {
-        header: 'Discount',
-        cell: ({ row }) => <Typography>₹{row.original.discount ?? 0}</Typography>
+      columnHelper.accessor('due', {
+        header: 'Due',
+        cell: ({ row }) => <Typography>₹{row.original.due ?? 0}</Typography>
       }),
       columnHelper.accessor('paid', {
         header: 'Paid',
         cell: ({ row }) => <Typography>₹{row.original.paid ?? 0}</Typography>
       }),
-      columnHelper.accessor('due', {
-        header: 'Due',
-        cell: ({ row }) => <Typography>₹{row.original.due ?? 0}</Typography>
-      }),
       columnHelper.accessor('description', {
         header: 'Payment Method',
-        cell: ({ row }) => <Typography>{getPaymentMethod(row.original.description)}</Typography>
+        cell: ({ row }) => <Typography>{getPaymentMethod(row.original)}</Typography>
       })
+
+      // columnHelper.accessor('startTime', {
+      //   header: 'Time',
+      //   cell: ({ row }) => (
+      //     <div className='flex flex-col'>
+      //       {row.original.startTime && row.original.endTime ? (
+      //         <Typography className='font-medium' color='text.primary'>
+      //           {getTime(row.original.startTime, row.original.endTime)}
+      //         </Typography>
+      //       ) : (
+      //         <>-</>
+      //       )}
+      //     </div>
+      //   )
+      // }),
 
       // columnHelper.accessor('action', {
       //   header: 'Actions',

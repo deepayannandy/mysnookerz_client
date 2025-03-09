@@ -17,5 +17,6 @@ export type DailyCollectionDataType = {
   cash: number
   card: number
   upi: number
+  gems: number
   cashDrawerBalance: number
 }
