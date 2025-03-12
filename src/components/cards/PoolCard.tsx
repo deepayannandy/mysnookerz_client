@@ -336,10 +336,12 @@ const PoolCard = ({
                 <Tooltip title='Restart Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
                   <span className='ri-restart-line' onClick={restartGame}></span>
                 </Tooltip>
-              ) : (
+              ) : storeData.StoreData?.isSwitchTable ? (
                 <Tooltip title='Switch Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
                   <span className='ri-arrow-left-right-line' onClick={() => setShowSwitchTable(true)}></span>
                 </Tooltip>
+              ) : (
+                <></>
               )
             ) : (
               <></>
@@ -635,7 +637,7 @@ const PoolCard = ({
                   <Button
                     variant='contained'
                     disabled={isHoldButtonDisabled || tableData.isHold}
-                    className='bg-white text-black h-7'
+                    className='bg-white text-black h-6'
                     onClick={() => holdCheckout()}
                   >
                     <span className='ri-bar-chart-box-fill text-base mr-1'></span>Hold
@@ -643,7 +645,7 @@ const PoolCard = ({
                 ) : (
                   <></>
                 )}
-                <Button variant='contained' className='bg-[#FFCA00] text-black h-7' onClick={() => setShowBill(true)}>
+                <Button variant='contained' className='bg-[#FFCA00] text-black h-6' onClick={() => setShowBill(true)}>
                   <span className='ri-bank-card-fill text-base -rotate-45 mr-1'></span>Checkout
                 </Button>
               </>
