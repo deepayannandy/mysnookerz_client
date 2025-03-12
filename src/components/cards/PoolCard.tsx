@@ -317,7 +317,7 @@ const PoolCard = ({
       <img src='/images/snooker-table/snooker-table-updated.svg' className='size-full' alt='' />
 
       <div
-        className={`absolute w-full h-full top-0 flex flex-col justify-between p-8 ${!tableData.gameData?.startTime ? 'bg-backdrop rounded-t-[22px] rounded-b-[16px]' : ''}`}
+        className={`absolute w-full h-full top-0 flex flex-col justify-between p-6 ${!tableData.gameData?.startTime ? 'bg-backdrop rounded-t-[22px] rounded-b-[16px]' : ''}`}
       >
         <div className='grid place-items-center'>
           <div className='bg-[url("/images/snooker-table/background-trapezoid.svg")] flex justify-center gap-3 bg-contain text-black bg-no-repeat bg-center w-full lg:w-11/12'>
@@ -356,7 +356,7 @@ const PoolCard = ({
           </div>
 
           <TextField
-            className='w-full text-xs bg-green-900 md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
+            className='w-full text-xs bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
             disabled={!!tableData.gameData?.startTime}
             size='small'
             color='error'
@@ -405,7 +405,7 @@ const PoolCard = ({
             <Autocomplete
               disabled={!!tableData.gameData?.startTime}
               size='small'
-              className='w-full text-xs bg-green-900 md:mt-2 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
+              className='w-full text-xs bg-green-900 mt-1 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
               limitTags={1}
               multiple
               sx={{
@@ -506,7 +506,7 @@ const PoolCard = ({
           </Tooltip>
 
           {tableData.gameData?.startTime ? (
-            <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+            <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-1 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
               {tableData.gameData?.startTime ? (
                 <p className='text-[10px]'>
                   Start Time
@@ -548,7 +548,7 @@ const PoolCard = ({
           )}
 
           {tableData.gameData?.startTime && !tableData.gameData?.endTime ? (
-            <div className='w-full grid grid-cols-1 gap-2 place-items-center text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+            <div className='w-full grid grid-cols-1 gap-2 place-items-center text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-1 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
               {tableData.gameData?.countdownMin ? (
                 <CountdownTimer
                   startTime={tableData.gameData?.startTime}
@@ -578,14 +578,14 @@ const PoolCard = ({
           </div> */}
           {tableData.gameData?.endTime && tableData.isOccupied ? (
             <>
-              <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-2 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
+              <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-1 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
                 <p className='text-xs'>Table Amount</p>
                 <p className='text-xs'>{`₹${billData.totalBillAmt || 0}`}</p>
                 <Divider className='col-span-2' />
                 <p className='text-xs'>Meals Amount</p>
                 <p className='text-xs'>{`₹${billData.mealTotal || 0}`}</p>
               </div>
-              <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 text-white border border-white px-4 py-2 mt-2 shadow-[0.5px_0.5px_6px_1px_white] rounded-lg'>
+              <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 text-white border border-white px-4 py-1 mt-1 shadow-[0.5px_0.5px_6px_1px_white] rounded-lg'>
                 <p className='text-[14px]'>Net Pay</p>
                 <p className='text-[14px]'>{`₹${Number(billData.totalBillAmt || 0) + Number(billData.mealTotal || 0)}`}</p>
               </div>
