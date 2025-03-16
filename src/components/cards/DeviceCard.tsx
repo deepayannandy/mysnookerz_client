@@ -1,33 +1,21 @@
 import { DeviceDataType } from '@/types/adminTypes'
-import * as mui from '@mui/material'
-import { useTheme } from '@mui/material/styles'
 import axios from 'axios'
 import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { toast } from 'react-toastify'
 import AllSwitch from '../AllSwitch'
 import BaseSwitch from '../BaseSwitch'
 import OnOffSwitch from '../OnOffSwitch'
 
-const editCardData = {
-  cardNumber: '**** **** **** 4487',
-  name: 'Violet Mendoza ',
-  expiryDate: '04/2028',
-  cardCvv: '233'
-}
-
 const DeviceCard = ({
   deviceDetails,
-  getDevicesData,
-  isDefault
+  getDevicesData
 }: {
   deviceDetails: DeviceDataType
   getDevicesData: () => void
-  isDefault: boolean
 }) => {
   // States
-  const [expanded, setExpanded] = useState(isDefault ? true : false)
+  // const [expanded, setExpanded] = useState(isDefault ? true : false)
   //const [nodeData, setNodeData] = useState()
 
   //Hooks
@@ -36,10 +24,10 @@ const DeviceCard = ({
   const router = useRouter()
 
   // Vars
-  const iconButtonProps: mui.IconButtonProps = {
-    children: <i className='ri-edit-box-line' />,
-    className: 'text-textSecondary'
-  }
+  // const iconButtonProps: mui.IconButtonProps = {
+  //   children: <i className='ri-edit-box-line' />,
+  //   className: 'text-textSecondary'
+  // }
 
   const nodeDetails =
     deviceDetails?.nodes?.map((data, index) => {
@@ -50,7 +38,7 @@ const DeviceCard = ({
     }) ?? []
 
   // Hooks
-  const theme = useTheme()
+  // const theme = useTheme()
 
   const handleSwitch = async ({ deviceId, node, checked }: { deviceId: string; node: string; checked: boolean }) => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -93,10 +81,6 @@ const DeviceCard = ({
       }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
-  }
-
-  const handleSwitchChange = (checked: boolean, switchName: string) => {
-    console.log(`${switchName} is now ${checked ? 'ON' : 'OFF'}`)
   }
 
   // return (
@@ -324,7 +308,7 @@ const DeviceCard = ({
             <div className='mt-3 text-white space-y-2.5'>
               <h3 className='text-[16px] font-bold leading-[20px]'>Manual Enable/Disable</h3>
               <p className='text-[16px] font-normal leading-[18px]'>
-                Enabling this will activate the device's manual buttons.
+                {`Enabling this will activate the device's manual buttons.`}
               </p>
             </div>
           </div>
@@ -342,7 +326,7 @@ const DeviceCard = ({
             <div className='mt-3 text-white space-y-2.5'>
               <h3 className='text-[16px] font-bold leading-[20px]'>Auto Manual Enable/Disable</h3>
               <p className='text-[16px] font-normal leading-[18px]'>
-                Enabling this activates auto mode; manual buttons are enabled when offline and disabled when online.
+                {`Enabling this activates auto mode. Manual buttons are enabled when offline and disabled when online.`}
               </p>
             </div>
           </div>

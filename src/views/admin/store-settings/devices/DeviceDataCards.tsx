@@ -63,7 +63,11 @@ const DeviceDataCards = () => {
       <CardContent className='flex flex-col gap-5'>
         {data.map(
           (deviceDetails, index) => (
-            <DeviceCard deviceDetails={deviceDetails} getDevicesData={getDevicesData} isDefault={index === 0} />
+            <DeviceCard
+              key={`${deviceDetails._id}_${index}`}
+              deviceDetails={deviceDetails}
+              getDevicesData={getDevicesData}
+            />
           )
           /* {index !== data.length - 1 && <Divider />} */
         )}
