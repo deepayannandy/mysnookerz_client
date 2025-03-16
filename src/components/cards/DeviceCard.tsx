@@ -17,7 +17,6 @@ const DeviceCard = ({
 }) => {
   // States
   // const [expanded, setExpanded] = useState(isDefault ? true : false)
-  //const [nodeData, setNodeData] = useState()
 
   //Hooks
   const { lang: locale } = useParams()
@@ -29,9 +28,13 @@ const DeviceCard = ({
   //   children: <i className='ri-edit-box-line' />,
   //   className: 'text-textSecondary'
   // }
+  let allLightOn = true
 
   const nodeDetails =
     deviceDetails?.nodes?.map((data, index) => {
+      if (!deviceDetails?.nodeStatus?.[index]) {
+        allLightOn = false
+      }
       return {
         node: data,
         status: deviceDetails?.nodeStatus?.[index] ?? 0
@@ -250,7 +253,7 @@ const DeviceCard = ({
                   checked
                 })
               }
-              value={!!deviceDetails.isManualEnable}
+              value={allLightOn}
             />
             {/* <ResetWiFi /> */}
           </div>
@@ -331,7 +334,7 @@ const DeviceCard = ({
                     checked
                   })
                 }
-                value={!!deviceDetails.isManualEnable}
+                value={!!deviceDetails.isAutoEnable}
               />
             </div>
 

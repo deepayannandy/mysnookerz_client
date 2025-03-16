@@ -152,6 +152,7 @@ export type DeviceDataType = {
   warrantyAvailingDate?: string[]
   isActive: boolean
   isManualEnable: boolean
+  isAutoEnable: boolean
 }
 
 export type ProductDataType = {
