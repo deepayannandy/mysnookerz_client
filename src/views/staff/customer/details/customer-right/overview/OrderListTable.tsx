@@ -149,13 +149,13 @@ const CustomerPaymentHistoryTable = ({ paymentHistoryData }: { paymentHistoryDat
   // Hooks
   // const { lang: locale } = useParams()
 
-  const getTime = (startTime: string, endTime: string) => {
-    // const diff = DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime), ['hours', 'minutes', 'seconds']).toObject()
-    // return `${diff.hours}h ${diff.minutes}m ${Math.ceil(diff.seconds ?? 0)}s`
+  // const getTime = (startTime: string, endTime: string) => {
+  //   // const diff = DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime), ['hours', 'minutes', 'seconds']).toObject()
+  //   // return `${diff.hours}h ${diff.minutes}m ${Math.ceil(diff.seconds ?? 0)}s`
 
-    const diff = DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime), 'minutes').minutes
-    return `${diff?.toFixed(2) ?? 0}mins`
-  }
+  //   const diff = DateTime.fromISO(endTime).diff(DateTime.fromISO(startTime), 'minutes').minutes
+  //   return `${diff?.toFixed(2) ?? 0}mins`
+  // }
 
   const getPaymentMethod = (rowData: PaymentHistoryDataType): string => {
     if (!rowData.paid) {

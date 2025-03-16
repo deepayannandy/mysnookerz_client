@@ -93,7 +93,7 @@ const DebouncedInput = ({
 
 const storeName = localStorage.getItem('storeName')
 
-const paymentMethods = ['CASH', 'CARD', 'UPI', 'GEMS']
+const paymentMethods = ['CASH', 'CARD', 'UPI']
 
 const TransactionReportTable = ({
   data,
@@ -116,6 +116,30 @@ const TransactionReportTable = ({
     setTransactionData(data)
   }, [data])
 
+  const getPaymentMethod = (rowData: TransactionReportTableDataType): string => {
+    // if (!rowData.paid) {
+    //   return 'DUE'
+    // }
+
+    const descriptionArr = rowData.description?.split(' ')
+    if (descriptionArr?.length) {
+      const method = descriptionArr[descriptionArr.length - 1]
+      return paymentMethods.includes(method) ? method : ''
+    }
+    return ''
+  }
+
+  const getDescription = (description: string): string => {
+    const descriptionArr = description?.split(' ')
+    if (descriptionArr?.length) {
+      const method = descriptionArr[descriptionArr.length - 1]
+      return paymentMethods.includes(method)
+        ? (descriptionArr.slice(0, descriptionArr.length - 1)?.join(' ') ?? '')
+        : description
+    }
+    return description
+  }
+
   const columns = useMemo<ColumnDef<TransactionReportTableDataType, any>[]>(
     () => [
       columnHelper.accessor('transactionId', {
@@ -132,7 +156,7 @@ const TransactionReportTable = ({
       }),
       columnHelper.accessor('description', {
         header: 'Description',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.description}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{getDescription(row.original.description)}</Typography>
       }),
       columnHelper.accessor('netPay', {
         header: 'Net Amount',
@@ -148,13 +172,7 @@ const TransactionReportTable = ({
       }),
       columnHelper.accessor('paymentMethod', {
         header: 'Payment Method',
-        cell: ({ row }) => (
-          <Typography color='text.primary'>
-            {row.original.description?.split(' ')?.length
-              ? row.original.description.split(' ')[row.original.description.split(' ').length - 1]
-              : ''}
-          </Typography>
-        )
+        cell: ({ row }) => <Typography color='text.primary'>{getPaymentMethod(row.original)}</Typography>
       })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
