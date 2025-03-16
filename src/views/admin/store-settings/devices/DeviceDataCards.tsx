@@ -4,9 +4,6 @@
 import { useEffect, useState } from 'react'
 
 // MUI Imports
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardHeader from '@mui/material/CardHeader'
 
 // Component Imports
 import DeviceCard from '@/components/cards/DeviceCard'
@@ -54,25 +51,15 @@ const DeviceDataCards = () => {
   }, [])
 
   return (
-    <Card>
-      <CardHeader
-        title='Devices'
-        // action={<OpenDialogOnElementClick element={Button} elementProps={buttonProps} dialog={AddNewCard} />}
-        className='flex-wrap gap-4'
-      />
-      <CardContent className='flex flex-col gap-5'>
-        {data.map(
-          (deviceDetails, index) => (
-            <DeviceCard
-              key={`${deviceDetails._id}_${index}`}
-              deviceDetails={deviceDetails}
-              getDevicesData={getDevicesData}
-            />
-          )
-          /* {index !== data.length - 1 && <Divider />} */
-        )}
-      </CardContent>
-    </Card>
+    <div className='flex flex-col gap-5'>
+      {data.map((deviceDetails, index) => (
+        <DeviceCard
+          key={`${deviceDetails._id}_${index}`}
+          deviceDetails={deviceDetails}
+          getDevicesData={getDevicesData}
+        />
+      ))}
+    </div>
   )
 }
 
