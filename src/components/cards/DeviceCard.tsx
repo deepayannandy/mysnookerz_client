@@ -243,7 +243,13 @@ const DeviceCard = ({
           <h2 className='text-[18px] font-semibold leading-[27px]'>{deviceDetails?.deviceType ?? ''}</h2>
           <div className='flex items-center gap-2.5'>
             <AllSwitch
-              onChange={() => enableOrDisable(deviceDetails.deviceId)}
+              onChange={checked =>
+                handleSwitch({
+                  deviceId: deviceDetails.deviceId,
+                  node: 'all',
+                  checked
+                })
+              }
               value={!!deviceDetails.isManualEnable}
             />
             {/* <ResetWiFi /> */}
@@ -318,7 +324,13 @@ const DeviceCard = ({
             <div className='flex items-center justify-between gap-5'>
               <img src='/assets/setting.png' alt='box-icons' width={40} height={40} />
               <BaseSwitch
-                onChange={() => enableOrDisable(deviceDetails.deviceId)}
+                onChange={checked =>
+                  handleSwitch({
+                    deviceId: deviceDetails.deviceId,
+                    node: 'auto',
+                    checked
+                  })
+                }
                 value={!!deviceDetails.isManualEnable}
               />
             </div>
