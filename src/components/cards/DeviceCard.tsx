@@ -330,7 +330,7 @@ const DeviceCard = ({
                 onChange={checked =>
                   handleSwitch({
                     deviceId: deviceDetails.deviceId,
-                    node: 'auto',
+                    node: 'autoenable',
                     checked
                   })
                 }
