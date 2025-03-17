@@ -203,6 +203,7 @@ export type TransactionReportTableDataType = {
   netPay: number
   discount: number
   due: number
+  paid: number
   paymentMethod?: string
 }
 

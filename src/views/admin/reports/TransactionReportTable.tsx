@@ -170,6 +170,10 @@ const TransactionReportTable = ({
         header: 'Dues',
         cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.due || 0}`}</Typography>
       }),
+      columnHelper.accessor('paid', {
+        header: 'Paid',
+        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.paid || 0}`}</Typography>
+      }),
       columnHelper.accessor('paymentMethod', {
         header: 'Payment Method',
         cell: ({ row }) => <Typography color='text.primary'>{getPaymentMethod(row.original)}</Typography>
