@@ -117,9 +117,9 @@ const TransactionReportTable = ({
   }, [data])
 
   const getPaymentMethod = (rowData: TransactionReportTableDataType): string => {
-    // if (!rowData.paid) {
-    //   return 'DUE'
-    // }
+    if (!rowData.paid) {
+      return 'DUE'
+    }
 
     const descriptionArr = rowData.description?.split(' ')
     if (descriptionArr?.length) {
