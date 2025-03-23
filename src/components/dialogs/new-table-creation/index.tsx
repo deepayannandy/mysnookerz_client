@@ -47,6 +47,7 @@ type NewTableCreationDataType = Partial<{
     dayAmt: number | null
     nightAmt: number | null
   }>
+  isBreakBilling: boolean
   deviceId: string
   nodeID: string
 }>
@@ -72,6 +73,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
   const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(true)
   const [isCountdownBillingSelected, setIsCountdownBillingSelected] = useState(true)
   const [isFixedBillingSelected, setIsFixedBillingSelected] = useState(true)
+  const [isBreakBillingSelected, setIsBreakBillingSelected] = useState(true)
 
   // States
   // const { lang: locale } = useParams()
@@ -113,6 +115,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
         dayAmt: null,
         nightAmt: null
       },
+      isBreakBilling: false,
       deviceId: '',
       nodeID: ''
     }
@@ -144,6 +147,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     setIsSlotBillingSelected(true)
     setIsCountdownBillingSelected(true)
     setIsFixedBillingSelected(true)
+    setIsBreakBillingSelected(true)
     getTableData()
     setOpen(false)
   }
@@ -182,6 +186,10 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
 
     if (!isFixedBillingSelected) {
       data.fixedBillingRules = {}
+    }
+
+    if (isBreakBillingSelected) {
+      data.isBreakBilling = true
     }
 
     data.deviceId = deviceId
@@ -278,16 +286,16 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                   }
                   label='Slot Billing'
                 />
-                {/* <FormControlLabel
+                <FormControlLabel
                   control={
                     <Checkbox
                       defaultChecked
-                      checked={isFrameBillingSelected}
-                      onChange={event => setIsFrameBillingSelected(event.target.checked)}
+                      checked={isBreakBillingSelected}
+                      onChange={event => setIsBreakBillingSelected(event.target.checked)}
                     />
                   }
-                  label='Frame Billing'
-                /> */}
+                  label='Break Billing'
+                />
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -330,18 +338,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                   )}
                 />
               </Grid>
-              {/* <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
-                <InputLabel>Billing</InputLabel>
-                <Select label='Billing' value={gameType} onChange={e => setGameType(e.target.value)}>
-                  {gameTypes.map((type, index) => (
-                    <MenuItem key={index} value={type}>
-                      {type}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid> */}
             </Grid>
 
             {isMinuteBillingSelected ? (

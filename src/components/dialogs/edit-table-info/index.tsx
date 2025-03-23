@@ -49,6 +49,7 @@ type EditTableDataType = {
     dayAmt: number | null
     nightAmt: number | null
   }>
+  isBreakBilling: boolean
   deviceId: string
   nodeID: string
 }
@@ -78,6 +79,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   const [isSlotBillingSelected, setIsSlotBillingSelected] = useState(false)
   const [isCountdownBillingSelected, setIsCountdownBillingSelected] = useState(false)
   const [isFixedBillingSelected, setIsFixedBillingSelected] = useState(false)
+  const [isBreakBillingSelected, setIsBreakBillingSelected] = useState(false)
 
   // States
   // const { lang: locale } = useParams()
@@ -119,6 +121,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     setIsSlotBillingSelected(isSlotBilling)
     setIsCountdownBillingSelected(isCountdownBilling)
     setIsFixedBillingSelected(isFixedBilling)
+    setIsBreakBillingSelected(!!tableData.isBreakBilling)
 
     if (!isSlotBilling) {
       slotAppend({ uptoMin: null, slotCharge: null, nightSlotCharge: null })
@@ -174,6 +177,10 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
 
     if (!isFixedBillingSelected) {
       data.fixedBillingRules = {}
+    }
+
+    if (isBreakBillingSelected) {
+      data.isBreakBilling = true
     }
 
     const requestData: Omit<EditTableDataType, '_id'> = {
@@ -271,15 +278,16 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                   label='Slot Billing'
                 />
 
-                {/* <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={isFrameBillingSelected}
-                    onChange={event => setIsFrameBillingSelected(event.target.checked)}
-                  />
-                }
-                label='Frame Billing'
-              /> */}
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      defaultChecked
+                      checked={isBreakBillingSelected}
+                      onChange={event => setIsBreakBillingSelected(event.target.checked)}
+                    />
+                  }
+                  label='Break Billing'
+                />
 
                 <FormControlLabel
                   control={

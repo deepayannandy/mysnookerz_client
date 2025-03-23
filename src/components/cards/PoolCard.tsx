@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import CountdownTimer from '../count-down-timer'
 import CountUpTimer from '../count-up-timer'
+import BreakBill from '../dialogs/break-bill'
 import OrderMeals from '../dialogs/order-meals'
 import SwitchTable from '../dialogs/switch-table'
 import TableBill from '../dialogs/table-bill'
@@ -50,7 +51,8 @@ const PoolCard = ({
   const [showMealCart, setShowMealCart] = useState(false)
   const [showOnHoldBill, setShowOnHoldBill] = useState(false)
   const [isHoldButtonDisabled, setIsHoldButtonDisabled] = useState(false)
-
+  const [showBreakBill, setShowBreakBill] = useState(false)
+  const [isBreakGameActive, setIsBreakGameActive] = useState(false)
   // let totalSeconds =
   //   tableData.gameData?.startTime && tableData.gameData?.endTime
   //     ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['seconds'])
@@ -199,6 +201,32 @@ const PoolCard = ({
         getBillData()
         getAllTablesData()
         toast.success(`${tableData.tableName} stopped`)
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 422) {
+        getAllTablesData()
+      }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  const breakGame = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.patch(
+        `${apiBaseUrl}/games/break/${tableData._id}`,
+        {},
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+
+      if (response && response.data) {
+        setShowBreakBill(true)
+        getAllTablesData()
+        setIsBreakGameActive(true)
+        // toast.success(`${tableData.tableName} stopped`)
       }
     } catch (error: any) {
       if (error?.response?.status === 422) {
@@ -675,9 +703,16 @@ const PoolCard = ({
                 ) : (
                   <></>
                 )}
-                <Button variant='contained' className='bg-[#E73434] text-white h-8' onClick={stopGame}>
-                  <span className='ri-stop-mini-fill'></span>Stop
-                </Button>
+                {['Minute Billing', 'Slot Billing'].includes(gameType) && tableData.isBreakBilling ? (
+                  <Button variant='contained' className='bg-[#E73434] text-white h-8' onClick={breakGame}>
+                    <span className='ri-file-damage-fill'></span>
+                    {`${isBreakGameActive ? 'Break' : 'Resume'}`}
+                  </Button>
+                ) : (
+                  <Button variant='contained' className='bg-[#E73434] text-white h-8' onClick={stopGame}>
+                    <span className='ri-stop-mini-fill'></span>Stop
+                  </Button>
+                )}
               </>
             )
           ) : (
@@ -709,6 +744,19 @@ const PoolCard = ({
           setGameType={setGameType}
           setCustomers={setCustomers}
           getCustomerData={getCustomerData}
+        />
+      ) : (
+        <></>
+      )}
+      {showBreakBill ? (
+        <BreakBill
+          open={showBreakBill}
+          setOpen={setShowBreakBill}
+          tableData={tableData}
+          customersList={customersList}
+          getAllTablesData={getAllTablesData}
+          getCustomerData={getCustomerData}
+          setIsBreakGameActive={setIsBreakGameActive}
         />
       ) : (
         <></>
