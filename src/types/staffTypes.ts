@@ -133,6 +133,11 @@ export type CustomerInvoiceType = {
     orderTotal: number
     _id: string
   }[]
+  customerBillBreakup: {
+    fullName: string
+    customerId: string
+    amount: number
+  }[]
 }
 
 export type BreakBillType = {
