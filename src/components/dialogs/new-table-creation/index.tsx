@@ -47,7 +47,7 @@ type NewTableCreationDataType = Partial<{
     dayAmt: number | null
     nightAmt: number | null
   }>
-  isBreakBilling: boolean
+  isBreakGame: boolean
   deviceId: string
   nodeID: string
 }>
@@ -115,7 +115,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
         dayAmt: null,
         nightAmt: null
       },
-      isBreakBilling: false,
+      isBreakGame: false,
       deviceId: '',
       nodeID: ''
     }
@@ -188,9 +188,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
       data.fixedBillingRules = {}
     }
 
-    if (isBreakBillingSelected) {
-      data.isBreakBilling = true
-    }
+    data.isBreakGame = isBreakBillingSelected
 
     data.deviceId = deviceId
     data.nodeID = nodeId

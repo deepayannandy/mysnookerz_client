@@ -211,29 +211,32 @@ const PoolCard = ({
   }
 
   const breakGame = async () => {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    const token = localStorage.getItem('token')
-    try {
-      const response = await axios.patch(
-        `${apiBaseUrl}/games/break/${tableData._id}`,
-        {},
-        {
-          headers: { 'auth-token': token }
-        }
-      )
+    setShowBreakBill(true)
+    getAllTablesData()
+    setIsBreakGameActive(true)
+    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    // const token = localStorage.getItem('token')
+    // try {
+    //   const response = await axios.patch(
+    //     `${apiBaseUrl}/games/break/${tableData._id}`,
+    //     {},
+    //     {
+    //       headers: { 'auth-token': token }
+    //     }
+    //   )
 
-      if (response && response.data) {
-        setShowBreakBill(true)
-        getAllTablesData()
-        setIsBreakGameActive(true)
-        // toast.success(`${tableData.tableName} stopped`)
-      }
-    } catch (error: any) {
-      if (error?.response?.status === 422) {
-        getAllTablesData()
-      }
-      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    }
+    //   if (response && response.data) {
+    //     setShowBreakBill(true)
+    //     getAllTablesData()
+    //     setIsBreakGameActive(true)
+    //     // toast.success(`${tableData.tableName} stopped`)
+    //   }
+    // } catch (error: any) {
+    //   if (error?.response?.status === 422) {
+    //     getAllTablesData()
+    //   }
+    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    // }
   }
 
   const pauseGame = async () => {
@@ -703,10 +706,10 @@ const PoolCard = ({
                 ) : (
                   <></>
                 )}
-                {['Minute Billing', 'Slot Billing'].includes(gameType) && tableData.isBreakBilling ? (
+                {['Minute Billing', 'Slot Billing'].includes(gameType) && tableData.isBreakGame ? (
                   <Button variant='contained' className='bg-[#E73434] text-white h-8' onClick={breakGame}>
                     <span className='ri-file-damage-fill'></span>
-                    {`${isBreakGameActive ? 'Break' : 'Resume'}`}
+                    {`${isBreakGameActive ? 'Resume' : 'Break'}`}
                   </Button>
                 ) : (
                   <Button variant='contained' className='bg-[#E73434] text-white h-8' onClick={stopGame}>

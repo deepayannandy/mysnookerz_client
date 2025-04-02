@@ -49,7 +49,7 @@ type EditTableDataType = {
     dayAmt: number | null
     nightAmt: number | null
   }>
-  isBreakBilling: boolean
+  isBreakGame: boolean
   deviceId: string
   nodeID: string
 }
@@ -121,7 +121,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
     setIsSlotBillingSelected(isSlotBilling)
     setIsCountdownBillingSelected(isCountdownBilling)
     setIsFixedBillingSelected(isFixedBilling)
-    setIsBreakBillingSelected(!!tableData.isBreakBilling)
+    setIsBreakBillingSelected(!!tableData.isBreakGame)
 
     if (!isSlotBilling) {
       slotAppend({ uptoMin: null, slotCharge: null, nightSlotCharge: null })
@@ -179,9 +179,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
       data.fixedBillingRules = {}
     }
 
-    if (isBreakBillingSelected) {
-      data.isBreakBilling = true
-    }
+    data.isBreakGame = isBreakBillingSelected
 
     const requestData: Omit<EditTableDataType, '_id'> = {
       ..._.omit(data, '_id', 'gameTypes'),

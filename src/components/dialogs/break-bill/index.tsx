@@ -39,9 +39,7 @@ const BreakBill = ({
 }: BreakBillPropType) => {
   // States
   const [data, setData] = useState({} as CustomerInvoiceType)
-  const [invoiceTo, setInvoiceTo] = useState(
-    (data.selectedTable?.gameData?.players || []) as (CustomerListType | string)[]
-  )
+  const [invoiceTo, setInvoiceTo] = useState<CustomerListType | null>(null)
 
   const [errors, setErrors] = useState({} as { invoiceTo: string })
 
@@ -71,7 +69,7 @@ const BreakBill = ({
     const token = localStorage.getItem('token')
     if (open && tableData._id) {
       try {
-        const response = await axios.get(`${apiBaseUrl}/games/breakBilling/${tableData._id}`, {
+        const response = await axios.get(`${apiBaseUrl}/games/getBilling/${tableData._id}`, {
           headers: { 'auth-token': token }
         })
         if (response && response.data) {
@@ -101,29 +99,33 @@ const BreakBill = ({
     setIsContinueButtonDisabled(true)
     setTimeout(() => setIsContinueButtonDisabled(false), 3000)
 
-    if (invoiceTo.length < 1) {
+    if (!invoiceTo) {
       setErrors({ invoiceTo: 'This field is required' })
       return
     }
 
-    const players = invoiceTo.map(customer => {
-      if (typeof customer === 'string') {
-        return { fullName: customer }
-      }
-      return customer
-    })
+    // const players = invoiceTo.map(customer => {
+    //   if (typeof customer === 'string') {
+    //     return { fullName: customer }
+    //   }
+    //   return customer
+    // })
 
-    const requestData = {
-      timeDelta: data.timeDelta,
-      totalBillAmt: data.totalBillAmt,
-      players
-    }
+    // const requestData = {
+    //   timeDelta: data.timeDelta,
+    //   totalBillAmt: data.totalBillAmt,
+    //   players
+    // }
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.patch(`${apiBaseUrl}/games/assignCustomer/${tableData._id}`, requestData, {
-        headers: { 'auth-token': token }
-      })
+      const response = await axios.post(
+        `${apiBaseUrl}/games/break/${tableData._id}`,
+        { customerId: invoiceTo?.customerId },
+        {
+          headers: { 'auth-token': token }
+        }
+      )
 
       if (response && response.data) {
         getAllTablesData()
@@ -171,7 +173,7 @@ const BreakBill = ({
     }
   }
 
-  const handleCustomerChange = (value: (string | CustomerListType)[]) => {
+  const handleCustomerChange = (value: CustomerListType) => {
     setInvoiceTo(value)
   }
 
@@ -287,9 +289,11 @@ const BreakBill = ({
               options={getOptions()}
               getOptionLabel={option => (option as CustomerListType)?.fullName ?? option}
               groupBy={option => (option as CustomerListType & { group: string }).group}
-              multiple
-              freeSolo
-              value={invoiceTo}
+              getOptionKey={option => (option as CustomerListType).customerId}
+              isOptionEqualToValue={(option, value) => option.fullName === value.fullName}
+              // multiple
+              // freeSolo
+              value={invoiceTo ? invoiceTo : undefined}
               onChange={(_, value) => handleCustomerChange(value)}
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => {
@@ -321,7 +325,7 @@ const BreakBill = ({
                   }}
                   variant='outlined'
                   label='Assign Customer'
-                  {...(errors.invoiceTo && invoiceTo.length < 1 && { error: true, helperText: errors.invoiceTo })}
+                  {...(errors.invoiceTo && !invoiceTo ? { error: true, helperText: errors.invoiceTo } : {})}
                 />
               )}
             />
@@ -330,20 +334,11 @@ const BreakBill = ({
           )}
 
           <div className='flex items-center gap-4'>
-            <Button
-              variant='contained'
-              onClick={handleSubmit}
-              disabled={isContinueButtonDisabled || invoiceTo?.length < 1}
-            >
+            <Button variant='contained' onClick={handleSubmit} disabled={isContinueButtonDisabled || !invoiceTo}>
               Continue
             </Button>
 
-            <Button
-              variant='outlined'
-              color='error'
-              onClick={stopGame}
-              disabled={isStopButtonDisabled || invoiceTo?.length < 1}
-            >
+            <Button variant='outlined' color='error' onClick={stopGame} disabled={isStopButtonDisabled || !invoiceTo}>
               Stop Game
             </Button>
           </div>
