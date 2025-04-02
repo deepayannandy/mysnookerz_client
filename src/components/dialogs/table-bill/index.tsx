@@ -58,6 +58,7 @@ const TableBill = ({
   const [data, setData] = useState({} as CustomerInvoiceType)
   const [storeData, setStoreData] = useState({} as StoreDataType)
   const [isAutoSplitSelected, setIsAutoSplitSelected] = useState(false)
+  const [isBreakBilling, setIsBreakBilling] = useState(false)
 
   const [invoiceTo, setInvoiceTo] = useState(
     (data.selectedTable?.gameData?.players || []) as (CustomerListType | string)[]
@@ -115,6 +116,35 @@ const TableBill = ({
         })
         if (response && response.data) {
           setData(response.data)
+
+          if (response.data.customerBillBreakup?.length) {
+            setIsBreakBilling(true)
+            const players = data.selectedTable?.gameData?.players ?? []
+            setInvoiceTo(players)
+
+            if (players.length > 1) {
+              let paymentMethodData = customerPaymentData
+              for (const customer of players) {
+                const customerBill = (
+                  (response.data.customerBillBreakup as {
+                    fullName: string
+                    customerId: string
+                    amount: number
+                  }[]) ?? []
+                ).find(bill => bill.customerId === customer.customerId)
+
+                paymentMethodData = {
+                  ...paymentMethodData,
+                  [(customer as CustomerListType).fullName ?? customer]: {
+                    ...customerPaymentData[(customer as CustomerListType).fullName ?? customer],
+                    ...(customerBill?.amount ? { amount: customerBill.amount } : {}),
+                    paymentMethod: 'CASH'
+                  }
+                }
+              }
+              setCustomerPaymentData(paymentMethodData)
+            }
+          }
         }
       } catch (error: any) {
         if (error?.response?.status === 409) {
@@ -484,36 +514,12 @@ const TableBill = ({
           ) : (
             <></>
           )}
-          {/* {data.selectedTable?.gameData?.players ? (
-            <Autocomplete
-              disabled
-              clearIcon={false}
-              options={data.selectedTable.gameData.players}
-              freeSolo
-              multiple
-              value={data.selectedTable.gameData.players}
-              renderTags={(value, props) =>
-                value.map((option, index) => (
-                  <Chip
-                    size='small'
-                    variant='outlined'
-                    avatar={<Avatar>{getInitials(option.fullName)}</Avatar>}
-                    label={option.fullName}
-                    {...props({ index })}
-                    key={option.fullName}
-                  />
-                ))
-              }
-              renderInput={params => <TextField {...params} variant='outlined' label='Customers' />}
-            />
-          ) : (
-            <></>
-          )} */}
 
           {data.selectedTable?.gameData?.players ? (
             <Autocomplete
               size='small'
               disableClearable
+              disabled={isBreakBilling}
               options={getOptions()}
               getOptionLabel={option => (option as CustomerListType)?.fullName ?? option}
               groupBy={option => (option as CustomerListType & { group: string }).group}
