@@ -264,6 +264,7 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
                   }}
                   options={customersList}
                   getOptionLabel={option => ((option as CustomerListType).fullName ?? option)?.split('(').join(' (')}
+                  getOptionKey={option => (option as CustomerListType).customerId}
                   freeSolo
                   value={value}
                   onChange={(_, value) => onChange(value)}

@@ -517,6 +517,7 @@ const TableBill = ({
               options={getOptions()}
               getOptionLabel={option => (option as CustomerListType)?.fullName ?? option}
               groupBy={option => (option as CustomerListType & { group: string }).group}
+              getOptionKey={option => (option as CustomerListType).customerId}
               multiple
               freeSolo
               value={invoiceTo}

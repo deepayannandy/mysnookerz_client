@@ -1,5 +1,5 @@
 import { StoreDataType, TableDataType } from '@/types/adminTypes'
-import { CustomerDataType, CustomerInvoiceType, CustomerListType } from '@/types/staffTypes'
+import { CustomerInvoiceType, CustomerListType } from '@/types/staffTypes'
 import { Autocomplete, Button, Chip, Divider, MenuItem, TextField, Tooltip } from '@mui/material'
 import axios from 'axios'
 import { DateTime } from 'luxon'
@@ -14,7 +14,6 @@ import TableBill from '../dialogs/table-bill'
 const PoolCard = ({
   tableData,
   customersList,
-  setCustomersList,
   allTablesData,
   storeData,
   getAllTablesData,
@@ -22,7 +21,6 @@ const PoolCard = ({
 }: {
   tableData: TableDataType
   customersList: CustomerListType[]
-  setCustomersList: (value: CustomerListType[]) => void
   allTablesData: TableDataType[]
   storeData: StoreDataType
   getAllTablesData: () => void
@@ -314,45 +312,6 @@ const PoolCard = ({
     }
   }
 
-  const customerAutoComplete = async (value: string) => {
-    if (!value) {
-      getCustomerData()
-      return
-    }
-
-    if (value.length < 2) {
-      return
-    }
-
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    const token = localStorage.getItem('token')
-    try {
-      const response = await axios.get(`${apiBaseUrl}/customer/myCustomers/${value}`, {
-        headers: { 'auth-token': token }
-      })
-
-      if (response && response.data) {
-        const data = [] as CustomerListType[]
-
-        response.data.forEach((customer: CustomerDataType) => {
-          data.push({
-            customerId: customer._id,
-            fullName: `${customer.fullName}(${customer.contact})`
-          })
-        })
-
-        setCustomersList(data)
-      }
-    } catch (error: any) {
-      // if (error?.response?.status === 409) {
-      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-      //   console.log(redirectUrl)
-      //   return router.replace(redirectUrl)
-      // }
-      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    }
-  }
-
   return (
     <div className='relative'>
       <img src='/images/snooker-table/snooker-table-updated.svg' className='size-full' alt='' />
@@ -449,11 +408,6 @@ const PoolCard = ({
               className='w-full text-xs bg-green-900 mt-1 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'
               limitTags={1}
               multiple
-              onInputChange={(_, _target, reason) => {
-                if (reason === 'clear') {
-                  getCustomerData()
-                }
-              }}
               sx={{
                 // '& .MuiOutlinedInput-root': {
                 //   // border: "1px solid yellow",
@@ -490,11 +444,11 @@ const PoolCard = ({
               }}
               options={customersList}
               getOptionLabel={option => ((option as CustomerListType)?.fullName ?? option)?.split('(').join(' (')}
+              getOptionKey={option => (option as CustomerListType).customerId}
               freeSolo
               value={customers}
               onChange={(_, value) => {
                 setCustomers(value)
-                getCustomerData()
               }}
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => {
@@ -536,7 +490,6 @@ const PoolCard = ({
                     ...params.inputProps,
                     enterKeyHint: 'enter'
                   }}
-                  onChange={event => customerAutoComplete(event.target.value)}
                   sx={{
                     '& .MuiInputBase-root': {
                       ...(tableData.gameData?.startTime ? {} : { height: '60px' }), // Set the fixed height for the TextField
