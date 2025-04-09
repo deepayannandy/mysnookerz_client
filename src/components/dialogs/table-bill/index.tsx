@@ -117,33 +117,30 @@ const TableBill = ({
         if (response && response.data) {
           setData(response.data)
 
-          if (response.data.customerBillBreakup?.length) {
+          if (response.data.selectedTable?.breakPlayers?.length) {
+            const data = response.data as CustomerInvoiceType
             setIsBreakBilling(true)
-            const players = data.selectedTable?.gameData?.players ?? []
-            setInvoiceTo(players)
+            const breakPlayersId = data.selectedTable.breakPlayers.map(player => player.customerId)
 
-            if (players.length > 1) {
-              let paymentMethodData = customerPaymentData
-              for (const customer of players) {
-                const customerBill = (
-                  (response.data.customerBillBreakup as {
-                    fullName: string
-                    customerId: string
-                    amount: number
-                  }[]) ?? []
-                ).find(bill => bill.customerId === customer.customerId)
+            const playersList = customersList.filter(customer => breakPlayersId.includes(customer.customerId))
 
-                paymentMethodData = {
-                  ...paymentMethodData,
-                  [(customer as CustomerListType).fullName ?? customer]: {
-                    ...customerPaymentData[(customer as CustomerListType).fullName ?? customer],
-                    ...(customerBill?.amount ? { amount: customerBill.amount } : {}),
-                    paymentMethod: 'CASH'
-                  }
+            setInvoiceTo(playersList)
+
+            let paymentMethodData = customerPaymentData
+            for (const customer of playersList) {
+              const breakPlayer = data.selectedTable.breakPlayers.find(
+                player => player.customerId === customer.customerId
+              )
+              paymentMethodData = {
+                ...paymentMethodData,
+                [(customer as CustomerListType).fullName ?? customer]: {
+                  ...customerPaymentData[(customer as CustomerListType).fullName ?? customer],
+                  paymentMethod: 'CASH',
+                  amount: breakPlayer?.billingAmount ?? undefined
                 }
               }
-              setCustomerPaymentData(paymentMethodData)
             }
+            setCustomerPaymentData(paymentMethodData)
           }
         }
       } catch (error: any) {
@@ -212,28 +209,6 @@ const TableBill = ({
           discount: happyHourDiscount
         })
       }
-    }
-
-    if (customersList && data.selectedTable?.breakPlayers?.length) {
-      const breakPlayersId = data.selectedTable.breakPlayers.map(player => player.customerId)
-
-      const playersList = customersList.filter(customer => breakPlayersId.includes(customer.customerId))
-
-      setInvoiceTo(playersList)
-
-      let paymentMethodData = customerPaymentData
-      for (const customer of playersList) {
-        const breakPlayer = data.selectedTable.breakPlayers.find(player => player.customerId === customer.customerId)
-        paymentMethodData = {
-          ...paymentMethodData,
-          [(customer as CustomerListType).fullName ?? customer]: {
-            ...customerPaymentData[(customer as CustomerListType).fullName ?? customer],
-            paymentMethod: 'CASH',
-            amount: breakPlayer?.billingAmount ?? undefined
-          }
-        }
-      }
-      setCustomerPaymentData(paymentMethodData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storeData, data])
