@@ -78,6 +78,7 @@ export type TableDataType = {
     nightAmt: number | null
   }>
   isBreakGame: boolean
+  isBreakHold: boolean
   deviceId: string
   nodeID: string
   isOccupied?: boolean

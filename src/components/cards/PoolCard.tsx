@@ -52,7 +52,6 @@ const PoolCard = ({
   const [showOnHoldBill, setShowOnHoldBill] = useState(false)
   const [isHoldButtonDisabled, setIsHoldButtonDisabled] = useState(false)
   const [showBreakBill, setShowBreakBill] = useState(false)
-  const [isBreakGameActive, setIsBreakGameActive] = useState(false)
   // let totalSeconds =
   //   tableData.gameData?.startTime && tableData.gameData?.endTime
   //     ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['seconds'])
@@ -211,32 +210,33 @@ const PoolCard = ({
   }
 
   const breakGame = async () => {
-    setShowBreakBill(true)
-    getAllTablesData()
-    setIsBreakGameActive(true)
-    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    // const token = localStorage.getItem('token')
-    // try {
-    //   const response = await axios.patch(
-    //     `${apiBaseUrl}/games/break/${tableData._id}`,
-    //     {},
-    //     {
-    //       headers: { 'auth-token': token }
-    //     }
-    //   )
+    if (tableData?.isBreakHold) {
+      setShowBreakBill(true)
+      return
+    }
 
-    //   if (response && response.data) {
-    //     setShowBreakBill(true)
-    //     getAllTablesData()
-    //     setIsBreakGameActive(true)
-    //     // toast.success(`${tableData.tableName} stopped`)
-    //   }
-    // } catch (error: any) {
-    //   if (error?.response?.status === 422) {
-    //     getAllTablesData()
-    //   }
-    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    // }
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.post(
+        `${apiBaseUrl}/games/break/${tableData._id}`,
+        {},
+        {
+          headers: { 'auth-token': token }
+        }
+      )
+
+      if (response && response.data) {
+        setShowBreakBill(true)
+        getAllTablesData()
+        // toast.success(`${tableData.tableName} stopped`)
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 422) {
+        getAllTablesData()
+      }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
   }
 
   const pauseGame = async () => {
@@ -363,7 +363,7 @@ const PoolCard = ({
                 ></span>
               </Tooltip>
             ) : tableData?.gameData?.gameType !== 'Countdown Billing' ? (
-              tableData?.gameData?.endTime ? (
+              !tableData?.isBreakHold && tableData?.gameData?.endTime ? (
                 <Tooltip title='Restart Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
                   <span className='ri-restart-line' onClick={restartGame}></span>
                 </Tooltip>
@@ -553,7 +553,7 @@ const PoolCard = ({
                 <></>
               )}
 
-              {tableData.gameData?.endTime ? (
+              {!tableData.isBreakHold && tableData.gameData?.endTime ? (
                 <p className='text-[10px]'>
                   End Time
                   <br />
@@ -565,7 +565,7 @@ const PoolCard = ({
                 <></>
               )}
 
-              {tableData.gameData?.startTime && tableData.gameData?.endTime ? (
+              {tableData.gameData?.startTime && tableData.gameData?.endTime && !tableData.isBreakHold ? (
                 <>
                   <Divider className='col-span-2' />
                   <p className='text-xs'>Total Time</p>
@@ -610,7 +610,7 @@ const PoolCard = ({
             <p className='text-xs'>Amount</p>
             <p className='text-xs'>400</p>
           </div> */}
-          {tableData.gameData?.endTime && tableData.isOccupied ? (
+          {!tableData.isBreakHold && tableData.gameData?.endTime && tableData.isOccupied ? (
             <>
               <div className='w-full grid grid-cols-2 gap-2 text-white border border-[#0FED11] px-4 py-2 bg-green-900 mt-1 shadow-[0.5px_0.5px_6px_1px_#0FED11] rounded-lg'>
                 <p className='text-xs'>Table Amount</p>
@@ -665,7 +665,7 @@ const PoolCard = ({
 
         <div className='grid gap-y-1 mb-3'>
           {tableData.isOccupied ? (
-            tableData.gameData?.endTime ? (
+            !tableData.isBreakHold && tableData.gameData?.endTime ? (
               <>
                 {storeData?.StoreData?.isHoldEnable ? (
                   <Button
@@ -709,7 +709,7 @@ const PoolCard = ({
                 {['Minute Billing', 'Slot Billing'].includes(gameType) && tableData.isBreakGame ? (
                   <Button variant='contained' className='bg-[#E73434] text-white h-8' onClick={breakGame}>
                     <span className='ri-file-damage-fill'></span>
-                    {`${isBreakGameActive ? 'Resume' : 'Break'}`}
+                    {`${tableData.isBreakHold ? 'Resume' : 'Break'}`}
                   </Button>
                 ) : (
                   <Button variant='contained' className='bg-[#E73434] text-white h-8' onClick={stopGame}>
@@ -759,7 +759,6 @@ const PoolCard = ({
           customersList={customersList}
           getAllTablesData={getAllTablesData}
           getCustomerData={getCustomerData}
-          setIsBreakGameActive={setIsBreakGameActive}
         />
       ) : (
         <></>

@@ -23,7 +23,6 @@ type BreakBillPropType = {
   customersList: CustomerListType[]
   getAllTablesData: () => void
   getCustomerData: () => void
-  setIsBreakGameActive: (value: boolean) => void
 }
 
 // const paymentMethods = ['CASH', 'UPI', 'CARD']
@@ -34,8 +33,7 @@ const BreakBill = ({
   tableData,
   customersList,
   getAllTablesData,
-  getCustomerData,
-  setIsBreakGameActive
+  getCustomerData
 }: BreakBillPropType) => {
   // States
   const [data, setData] = useState({} as CustomerInvoiceType)
@@ -129,7 +127,6 @@ const BreakBill = ({
 
       if (response && response.data) {
         getAllTablesData()
-        setIsBreakGameActive(false)
         handleClose()
         toast.success('Good Job!', { icon: <>👏</> })
       }
@@ -160,7 +157,6 @@ const BreakBill = ({
 
       if (response && response.data) {
         getAllTablesData()
-        setIsBreakGameActive(false)
         handleClose()
         toast.success(`${tableData.tableName} stopped`)
       }
@@ -339,7 +335,7 @@ const BreakBill = ({
             </Button>
 
             <Button variant='outlined' color='error' onClick={stopGame} disabled={isStopButtonDisabled || !invoiceTo}>
-              Stop Game
+              Checkout
             </Button>
           </div>
         </div>
