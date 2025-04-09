@@ -19,6 +19,7 @@ import { toast } from 'react-toastify'
 type BreakBillPropType = {
   open: boolean
   setOpen: (open: boolean) => void
+  setShowBill: (open: boolean) => void
   tableData: TableDataType
   customersList: CustomerListType[]
   getAllTablesData: () => void
@@ -30,6 +31,7 @@ type BreakBillPropType = {
 const BreakBill = ({
   open,
   setOpen,
+  setShowBill,
   tableData,
   customersList,
   getAllTablesData,
@@ -144,29 +146,7 @@ const BreakBill = ({
     setTimeout(() => setIsStopButtonDisabled(false), 3000)
 
     await handleSubmit()
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    const token = localStorage.getItem('token')
-    try {
-      const response = await axios.patch(
-        `${apiBaseUrl}/games/stopGame/${tableData._id}`,
-        {},
-        {
-          headers: { 'auth-token': token }
-        }
-      )
-
-      if (response && response.data) {
-        getAllTablesData()
-        handleClose()
-        toast.success(`${tableData.tableName} stopped`)
-      }
-    } catch (error: any) {
-      if (error?.response?.status === 422) {
-        getAllTablesData()
-        handleClose()
-      }
-      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-    }
+    setShowBill(true)
   }
 
   const handleCustomerChange = (value: CustomerListType) => {

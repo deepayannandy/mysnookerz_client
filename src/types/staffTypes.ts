@@ -117,8 +117,15 @@ export type CustomerInvoiceType = {
         customerId: string
       }[]
     }
+    breakPlayers: {
+      customerId: string
+      customerName: string
+      billingAmount: number
+      gameTime: number
+    }[]
   }
   billBreakup: { title: string; time: number; amount: number }[]
+
   totalBillAmt: number
   mealTotal: number
   netPay: number

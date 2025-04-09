@@ -213,8 +213,30 @@ const TableBill = ({
         })
       }
     }
+
+    if (customersList && data.selectedTable?.breakPlayers?.length) {
+      const breakPlayersId = data.selectedTable.breakPlayers.map(player => player.customerId)
+
+      const playersList = customersList.filter(customer => breakPlayersId.includes(customer.customerId))
+
+      setInvoiceTo(playersList)
+
+      let paymentMethodData = customerPaymentData
+      for (const customer of playersList) {
+        const breakPlayer = data.selectedTable.breakPlayers.find(player => player.customerId === customer.customerId)
+        paymentMethodData = {
+          ...paymentMethodData,
+          [(customer as CustomerListType).fullName ?? customer]: {
+            ...customerPaymentData[(customer as CustomerListType).fullName ?? customer],
+            paymentMethod: 'CASH',
+            amount: breakPlayer?.billingAmount ?? undefined
+          }
+        }
+      }
+      setCustomerPaymentData(paymentMethodData)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storeData])
+  }, [storeData, data])
 
   const handleClose = () => {
     setInputData({ discount: '', paymentMethod: paymentMethods[0], cashIn: '' })

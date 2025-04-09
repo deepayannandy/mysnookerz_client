@@ -755,6 +755,7 @@ const PoolCard = ({
         <BreakBill
           open={showBreakBill}
           setOpen={setShowBreakBill}
+          setShowBill={setShowBill}
           tableData={tableData}
           customersList={customersList}
           getAllTablesData={getAllTablesData}
