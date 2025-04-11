@@ -28,7 +28,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
   const [isHoldCheckoutSwitch, setIsHoldCheckoutSwitch] = useState(true)
   // const [isMultipleBillingSwitch, setIsMultipleBillingSwitch] = useState(true)
   const [isSelfStartSwitch, setIsSelfStartSwitch] = useState(true)
-  // const [isBreakGameSwitch, setIsBreakGameSwitch] = useState(true)
+  // const [isBreakSwitch, setisBreakSwitch] = useState(true)
   const [cancelMinutes, setCancelMinutes] = useState(1)
 
   //Hooks
@@ -55,7 +55,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
     setIsSwitchTableSwitch(!!storeData?.StoreData?.isSwitchTable)
     // setIsMultipleBillingSwitch(!!storeData?.StoreData?.isMultipleBilling)
     setIsSelfStartSwitch(!!storeData?.StoreData?.isSelfStart)
-    // setIsBreakGameSwitch(!!storeData?.StoreData?.isBreakGame)
+    // setisBreakSwitch(!!storeData?.StoreData?.isBreak)
     setCancelMinutes(storeData?.StoreData?.cancelMins ?? 1)
     setIsHoldCheckoutSwitch(!!storeData?.StoreData?.isHoldEnable)
   }, [storeData])
@@ -71,7 +71,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
       isSwitchTable: isSwitchTableSwitch,
       // isMultipleBilling: isMultipleBillingSwitch,
       isSelfStart: isSelfStartSwitch,
-      // isBreakGame: isBreakGameSwitch,
+      // isBreak: isBreakSwitch,
       cancelMins: isCancelGameSwitch ? cancelMinutes : 0,
       isHoldEnable: isHoldCheckoutSwitch
     }
@@ -189,8 +189,8 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
     // {
     //   name: 'Break Game',
     //   caption: '',
-    //   setMethod: setIsBreakGameSwitch,
-    //   value: isBreakGameSwitch
+    //   setMethod: setisBreakSwitch,
+    //   value: isBreakSwitch
     // }
   ]
 

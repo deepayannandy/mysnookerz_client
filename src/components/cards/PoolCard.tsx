@@ -706,7 +706,7 @@ const PoolCard = ({
                 ) : (
                   <></>
                 )}
-                {['Minute Billing', 'Slot Billing'].includes(gameType) && tableData.isBreakGame ? (
+                {['Minute Billing', 'Slot Billing'].includes(gameType) && tableData.isBreak ? (
                   <Button variant='contained' className='bg-[#E73434] text-white h-8' onClick={breakGame}>
                     <span className='ri-file-damage-fill'></span>
                     {`${tableData.isBreakHold ? 'Resume' : 'Break'}`}
