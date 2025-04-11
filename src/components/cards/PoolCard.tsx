@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import CountdownTimer from '../count-down-timer'
 import CountUpTimer from '../count-up-timer'
-import BreakBill from '../dialogs/break-bill'
+import BreakBill, { BreakBillType } from '../dialogs/break-bill'
 import OrderMeals from '../dialogs/order-meals'
 import SwitchTable from '../dialogs/switch-table'
 import TableBill from '../dialogs/table-bill'
@@ -52,6 +52,8 @@ const PoolCard = ({
   const [showOnHoldBill, setShowOnHoldBill] = useState(false)
   const [isHoldButtonDisabled, setIsHoldButtonDisabled] = useState(false)
   const [showBreakBill, setShowBreakBill] = useState(false)
+  const [breakData, setBreakData] = useState({} as BreakBillType)
+
   // let totalSeconds =
   //   tableData.gameData?.startTime && tableData.gameData?.endTime
   //     ? DateTime.fromISO(tableData.gameData.endTime).diff(DateTime.fromISO(tableData.gameData.startTime), ['seconds'])
@@ -210,11 +212,6 @@ const PoolCard = ({
   }
 
   const breakGame = async () => {
-    if (tableData?.isBreakHold) {
-      setShowBreakBill(true)
-      return
-    }
-
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
@@ -229,6 +226,7 @@ const PoolCard = ({
       if (response && response.data) {
         setShowBreakBill(true)
         getAllTablesData()
+        setBreakData(response.data)
         // toast.success(`${tableData.tableName} stopped`)
       }
     } catch (error: any) {
@@ -757,6 +755,7 @@ const PoolCard = ({
           setOpen={setShowBreakBill}
           setShowBill={setShowBill}
           tableData={tableData}
+          breakData={breakData}
           customersList={customersList}
           getAllTablesData={getAllTablesData}
           getCustomerData={getCustomerData}

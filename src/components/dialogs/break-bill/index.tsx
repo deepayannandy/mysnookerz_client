@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 // MUI Imports
 import { TableDataType } from '@/types/adminTypes'
-import { CustomerInvoiceType, CustomerListType } from '@/types/staffTypes'
+import { CustomerListType } from '@/types/staffTypes'
 import { getInitials } from '@/utils/getInitials'
 import { Autocomplete, Avatar, Chip, Divider, Drawer, TextField, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
@@ -13,7 +13,6 @@ import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
 import _ from 'lodash'
 import { DateTime } from 'luxon'
-import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 
 type BreakBillPropType = {
@@ -21,9 +20,21 @@ type BreakBillPropType = {
   setOpen: (open: boolean) => void
   setShowBill: (open: boolean) => void
   tableData: TableDataType
+  breakData: BreakBillType
   customersList: CustomerListType[]
   getAllTablesData: () => void
   getCustomerData: () => void
+}
+
+export type BreakBillType = {
+  gameData: {
+    players: CustomerListType[]
+    gameType: string
+    startTime: string
+    endTime: string
+  }
+  time: number
+  totalAmount: string
 }
 
 // const paymentMethods = ['CASH', 'UPI', 'CARD']
@@ -33,30 +44,22 @@ const BreakBill = ({
   setOpen,
   setShowBill,
   tableData,
+  breakData,
   customersList,
   getAllTablesData,
   getCustomerData
 }: BreakBillPropType) => {
   // States
-  const [data, setData] = useState({} as CustomerInvoiceType)
+  // const [data, setData] = useState({} as CustomerInvoiceType)
   const [invoiceTo, setInvoiceTo] = useState<CustomerListType | null>(null)
-
   const [errors, setErrors] = useState({} as { invoiceTo: string })
 
   const [isContinueButtonDisabled, setIsContinueButtonDisabled] = useState(false)
   const [isStopButtonDisabled, setIsStopButtonDisabled] = useState(false)
 
-  const { lang: locale } = useParams()
-  const pathname = usePathname()
-  const router = useRouter()
-
-  const totalSeconds =
-    data?.selectedTable?.gameData?.startTime && data?.selectedTable?.gameData?.endTime
-      ? DateTime.fromISO(data.selectedTable.gameData.endTime).diff(
-          DateTime.fromISO(data.selectedTable.gameData.startTime),
-          ['seconds']
-        ).seconds
-      : 0
+  // const { lang: locale } = useParams()
+  // const pathname = usePathname()
+  // const router = useRouter()
 
   // const totalMinutes = Math.ceil(totalSeconds / 60)
 
@@ -64,29 +67,29 @@ const BreakBill = ({
   // const hours = Math.floor(totalMinutes / 60) // full hours
   // const minutes = totalMinutes % 60
 
-  const getBillData = async () => {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
-    const token = localStorage.getItem('token')
-    if (open && tableData._id) {
-      try {
-        const response = await axios.get(`${apiBaseUrl}/games/getBilling/${tableData._id}`, {
-          headers: { 'auth-token': token }
-        })
-        if (response && response.data) {
-          setData(response.data)
-        }
-      } catch (error: any) {
-        if (error?.response?.status === 409) {
-          const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
-          return router.replace(redirectUrl)
-        }
-        toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
-      }
-    }
-  }
+  // const getBillData = async () => {
+  //   const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+  //   const token = localStorage.getItem('token')
+  //   if (open && tableData._id) {
+  //     try {
+  //       const response = await axios.get(`${apiBaseUrl}/games/getBilling/${tableData._id}`, {
+  //         headers: { 'auth-token': token }
+  //       })
+  //       if (response && response.data) {
+  //         setData(response.data)
+  //       }
+  //     } catch (error: any) {
+  //       if (error?.response?.status === 409) {
+  //         const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+  //         return router.replace(redirectUrl)
+  //       }
+  //       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+  //     }
+  //   }
+  // }
 
   useEffect(() => {
-    getBillData()
+    // getBillData()
     getCustomerData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tableData._id, open])
@@ -120,7 +123,7 @@ const BreakBill = ({
     const token = localStorage.getItem('token')
     try {
       const response = await axios.post(
-        `${apiBaseUrl}/games/break/${tableData._id}`,
+        `${apiBaseUrl}/games/resumeBreak/${tableData._id}`,
         { customerId: invoiceTo?.customerId },
         {
           headers: { 'auth-token': token }
@@ -155,7 +158,7 @@ const BreakBill = ({
 
   const getOptions = () => {
     const list = customersList.map(customer => {
-      if (data.selectedTable?.gameData?.players?.find(player => player.customerId === customer.customerId)) {
+      if (breakData?.gameData?.players?.find(player => player.customerId === customer.customerId)) {
         return {
           ...customer,
           group: 'Playing Customer'
@@ -189,50 +192,50 @@ const BreakBill = ({
       <Divider />
       <div className='p-5'>
         <div className='flex flex-col gap-3'>
-          {data?.selectedTable?.gameData?.gameType ? (
+          {breakData?.gameData?.gameType ? (
             <TextField
               disabled
               id='gameType'
               label='Billing'
               size='small'
-              defaultValue={data?.selectedTable?.gameData?.gameType}
+              defaultValue={breakData?.gameData?.gameType}
             ></TextField>
           ) : (
             <></>
           )}
 
-          {data.selectedTable?.gameData?.startTime ? (
+          {breakData?.gameData?.startTime ? (
             <div className='w-full grid grid-cols-2 gap-2 border p-3 rounded-lg'>
-              {data.selectedTable.gameData?.startTime ? (
+              {breakData?.gameData?.startTime ? (
                 <p>
                   Start Time
                   <br />
                   <span className='font-bold'>
-                    {DateTime.fromISO(data.selectedTable.gameData.startTime).toFormat('hh:mm:ss a')}
+                    {DateTime.fromISO(breakData.gameData.startTime).toFormat('hh:mm:ss a')}
                   </span>
                 </p>
               ) : (
                 <></>
               )}
 
-              {data.selectedTable.gameData?.endTime ? (
+              {breakData?.gameData?.endTime ? (
                 <p>
                   End Time
                   <br />
                   <span className='font-bold'>
-                    {DateTime.fromISO(data.selectedTable.gameData.endTime).toFormat('hh:mm:ss a')}
+                    {DateTime.fromISO(breakData.gameData.endTime).toFormat('hh:mm:ss a')}
                   </span>
                 </p>
               ) : (
                 <></>
               )}
 
-              {totalSeconds ? (
+              {breakData.time ? (
                 <>
                   <Divider className='col-span-2' />
                   <p>Total Time</p>
                   <p>
-                    {Math.floor(data.timeDelta / 60) || '00'}hrs {data.timeDelta % 60 || '00'}mins
+                    {Math.floor(breakData.time / 60) || '00'}hrs {breakData.time % 60 || '00'}mins
                   </p>
                 </>
               ) : (
@@ -243,11 +246,11 @@ const BreakBill = ({
             <></>
           )}
 
-          {data.selectedTable?.gameData?.endTime ? (
+          {breakData?.gameData?.endTime ? (
             <>
               <div className='w-full grid grid-cols-2 gap-2 border p-3 rounded-lg'>
                 <p>Table Amount</p>
-                <p>{`₹${data.totalBillAmt || 0}`}</p>
+                <p>{`₹${Number(breakData.totalAmount || 0)}`}</p>
               </div>
               {/* <div className='w-full bg-[#E73434] grid grid-cols-2 gap-2 border p-4 mt-2 rounded-lg'>
                 <p>Net Pay</p>
@@ -258,7 +261,7 @@ const BreakBill = ({
             <></>
           )}
 
-          {data.selectedTable?.gameData?.players ? (
+          {breakData?.gameData?.players ? (
             <Autocomplete
               size='small'
               disableClearable
@@ -269,7 +272,7 @@ const BreakBill = ({
               isOptionEqualToValue={(option, value) => option.fullName === value.fullName}
               // multiple
               // freeSolo
-              value={invoiceTo ? invoiceTo : undefined}
+              value={invoiceTo ?? getOptions()[0]}
               onChange={(_, value) => handleCustomerChange(value)}
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => {
@@ -311,7 +314,7 @@ const BreakBill = ({
 
           <div className='flex items-center gap-4'>
             <Button variant='contained' onClick={handleSubmit} disabled={isContinueButtonDisabled || !invoiceTo}>
-              Continue
+              Resume
             </Button>
 
             <Button variant='outlined' color='error' onClick={stopGame} disabled={isStopButtonDisabled || !invoiceTo}>

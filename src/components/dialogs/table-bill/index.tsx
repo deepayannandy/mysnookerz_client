@@ -142,6 +142,10 @@ const TableBill = ({
               }
             }
             setCustomerPaymentData(paymentMethodData)
+            setInputData({
+              ...inputData,
+              cashIn: (response.data.totalBillAmt - Number(response.data.discount ?? 0)).toFixed(2)
+            })
           }
         }
       } catch (error: any) {
@@ -353,7 +357,6 @@ const TableBill = ({
     ) {
       resetCashIn = { cashIn: '' }
     }
-
     setCustomerPaymentData({
       ...customerPaymentData,
       [fullName as string]: {
@@ -500,7 +503,7 @@ const TableBill = ({
           })
           setInputData({
             ...inputData,
-            cashIn: netPay ?? 0
+            cashIn: Number(netPay ?? 0)
           })
         }
       }
