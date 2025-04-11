@@ -475,6 +475,7 @@ const TableBill = ({
       for (const player of breakPlayers) {
         if ((player.billingAmount ?? 0) > bestOfAllAmount) {
           bestOfAllCustomerId = player.customerId
+          bestOfAllAmount = player.billingAmount
         }
       }
 
