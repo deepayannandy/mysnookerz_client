@@ -77,6 +77,8 @@ export type TableDataType = {
     dayAmt: number | null
     nightAmt: number | null
   }>
+  isBreak: boolean
+  isBreakHold: boolean
   deviceId: string
   nodeID: string
   isOccupied?: boolean
@@ -120,7 +122,7 @@ export type StoreDataType = {
     isSwitchTable: boolean
     isMultipleBilling: boolean
     isSelfStart: boolean
-    isBreakGame: boolean
+    isBreak: boolean
     isHoldEnable: boolean
   }
   SubscriptionData?: SubscriptionPlanType

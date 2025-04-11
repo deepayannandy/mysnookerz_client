@@ -58,6 +58,8 @@ const TableBill = ({
   const [data, setData] = useState({} as CustomerInvoiceType)
   const [storeData, setStoreData] = useState({} as StoreDataType)
   const [isAutoSplitSelected, setIsAutoSplitSelected] = useState(false)
+  const [isBestOfAllSelected, setIsBestOfAllSelected] = useState(false)
+  const [isBreakBilling, setIsBreakBilling] = useState(false)
 
   const [invoiceTo, setInvoiceTo] = useState(
     (data.selectedTable?.gameData?.players || []) as (CustomerListType | string)[]
@@ -115,6 +117,36 @@ const TableBill = ({
         })
         if (response && response.data) {
           setData(response.data)
+
+          if (response.data.selectedTable?.breakPlayers?.length) {
+            const data = response.data as CustomerInvoiceType
+            setIsBreakBilling(true)
+            const breakPlayersId = data.selectedTable.breakPlayers.map(player => player.customerId)
+
+            const playersList = customersList.filter(customer => breakPlayersId.includes(customer.customerId))
+
+            setInvoiceTo(playersList)
+
+            let paymentMethodData = customerPaymentData
+            for (const customer of playersList) {
+              const breakPlayer = data.selectedTable.breakPlayers.find(
+                player => player.customerId === customer.customerId
+              )
+              paymentMethodData = {
+                ...paymentMethodData,
+                [(customer as CustomerListType).fullName ?? customer]: {
+                  ...customerPaymentData[(customer as CustomerListType).fullName ?? customer],
+                  paymentMethod: 'CASH',
+                  amount: breakPlayer?.billingAmount ?? undefined
+                }
+              }
+            }
+            setCustomerPaymentData(paymentMethodData)
+            setInputData({
+              ...inputData,
+              cashIn: (response.data.totalBillAmt - Number(response.data.discount ?? 0)).toFixed(2)
+            })
+          }
         }
       } catch (error: any) {
         if (error?.response?.status === 409) {
@@ -184,7 +216,7 @@ const TableBill = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storeData])
+  }, [storeData, data])
 
   const handleClose = () => {
     setInputData({ discount: '', paymentMethod: paymentMethods[0], cashIn: '' })
@@ -325,7 +357,6 @@ const TableBill = ({
     ) {
       resetCashIn = { cashIn: '' }
     }
-
     setCustomerPaymentData({
       ...customerPaymentData,
       [fullName as string]: {
@@ -437,6 +468,48 @@ const TableBill = ({
     }
   }
 
+  const handleBestOfAll = (event: ChangeEvent<HTMLInputElement>) => {
+    setIsBestOfAllSelected(event.target.checked)
+
+    if (event.target.checked) {
+      const breakPlayers = data.selectedTable?.breakPlayers ?? []
+      let bestOfAllCustomerId = ''
+      let bestOfAllAmount = 0
+      for (const player of breakPlayers) {
+        if ((player.billingAmount ?? 0) > bestOfAllAmount) {
+          bestOfAllCustomerId = player.customerId
+          bestOfAllAmount = player.billingAmount
+        }
+      }
+
+      if (bestOfAllCustomerId) {
+        const bestOfAllCustomer = customersList.find(customer => customer.customerId === bestOfAllCustomerId)
+        if (bestOfAllCustomer) {
+          const value = Number(netPay ?? 0)
+          const name = bestOfAllCustomer.fullName
+
+          let resetCashIn = {}
+          if (Number(value ?? 0) < (Number(customerPaymentData[name]?.cashIn ?? 0) ?? 0)) {
+            resetCashIn = { cashIn: '' }
+          }
+          setInvoiceTo([bestOfAllCustomer])
+
+          setCustomerPaymentData({
+            name: {
+              amount: value.toFixed(2),
+              paymentMethod: 'CASH',
+              ...resetCashIn
+            }
+          })
+          setInputData({
+            ...inputData,
+            cashIn: Number(netPay ?? 0)
+          })
+        }
+      }
+    }
+  }
+
   const getOptions = () => {
     const list = customersList.map(customer => {
       if (data.selectedTable?.gameData?.players?.find(player => player.customerId === customer.customerId)) {
@@ -484,36 +557,12 @@ const TableBill = ({
           ) : (
             <></>
           )}
-          {/* {data.selectedTable?.gameData?.players ? (
-            <Autocomplete
-              disabled
-              clearIcon={false}
-              options={data.selectedTable.gameData.players}
-              freeSolo
-              multiple
-              value={data.selectedTable.gameData.players}
-              renderTags={(value, props) =>
-                value.map((option, index) => (
-                  <Chip
-                    size='small'
-                    variant='outlined'
-                    avatar={<Avatar>{getInitials(option.fullName)}</Avatar>}
-                    label={option.fullName}
-                    {...props({ index })}
-                    key={option.fullName}
-                  />
-                ))
-              }
-              renderInput={params => <TextField {...params} variant='outlined' label='Customers' />}
-            />
-          ) : (
-            <></>
-          )} */}
 
           {data.selectedTable?.gameData?.players ? (
             <Autocomplete
               size='small'
               disableClearable
+              disabled={isBreakBilling}
               options={getOptions()}
               getOptionLabel={option => (option as CustomerListType)?.fullName ?? option}
               groupBy={option => (option as CustomerListType & { group: string }).group}
@@ -562,10 +611,17 @@ const TableBill = ({
 
           {invoiceTo.length > 1 ? (
             <>
-              <FormControlLabel
-                label='Auto split'
-                control={<Checkbox checked={isAutoSplitSelected} onChange={event => handleAutoSplit(event)} />}
-              />
+              {tableData.isBreak ? (
+                <FormControlLabel
+                  label='Best of all'
+                  control={<Checkbox checked={isBestOfAllSelected} onChange={event => handleBestOfAll(event)} />}
+                />
+              ) : (
+                <FormControlLabel
+                  label='Auto split'
+                  control={<Checkbox checked={isAutoSplitSelected} onChange={event => handleAutoSplit(event)} />}
+                />
+              )}
               <div className='w-full grid grid-cols-1 border rounded-lg overflow-x-auto '>
                 <div className='w-full grid grid-cols-4 text-center font-bold border-b divide-x'>
                   <div className='size-full grid place-items-center  p-1 sm:p-2 '>

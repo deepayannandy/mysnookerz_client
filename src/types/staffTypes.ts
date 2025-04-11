@@ -117,6 +117,48 @@ export type CustomerInvoiceType = {
         customerId: string
       }[]
     }
+    breakPlayers: {
+      customerId: string
+      customerName: string
+      billingAmount: number
+      gameTime: number
+    }[]
+  }
+  billBreakup: { title: string; time: number; amount: number }[]
+
+  totalBillAmt: number
+  mealTotal: number
+  netPay: number
+  tax?: number
+  total: number
+  discount?: number | null
+  return?: number | null
+  paymentMethod?: string
+  productList?: {
+    customerDetails: { fullName: string; customerId: string }
+    orders: { productId: string; productName: string; productSalePrice: number; qnt: number; _id: string }[]
+    orderTotal: number
+    _id: string
+  }[]
+  customerBillBreakup: {
+    fullName: string
+    customerId: string
+    amount: number
+  }[]
+}
+
+export type BreakBillType = {
+  timeDelta: number
+  selectedTable: {
+    gameData: {
+      startTime: string
+      endTime: string
+      gameType: string
+      players: {
+        fullName: string
+        customerId: string
+      }[]
+    }
   }
   billBreakup: { title: string; time: number; amount: number }[]
   totalBillAmt: number
