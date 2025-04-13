@@ -224,9 +224,9 @@ const PoolCard = ({
       )
 
       if (response && response.data) {
-        setShowBreakBill(true)
         getAllTablesData()
         setBreakData(response.data)
+        setShowBreakBill(true)
         // toast.success(`${tableData.tableName} stopped`)
       }
     } catch (error: any) {

@@ -32,6 +32,8 @@ import type { ThemeColor } from '@core/types'
 
 // Style Imports
 
+import OptionMenu from '@/@core/components/option-menu'
+import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import SearchInput from '@/components/Search'
 import { TableDataType } from '@/types/adminTypes'
 import { HistoryDataType } from '@/types/staffTypes'
@@ -84,10 +86,12 @@ const columnHelper = createColumnHelper<HistoryDataWithAction>()
 const HistoryTable = () => {
   const [rowSelection, setRowSelection] = useState({})
   const [data, setData] = useState([] as HistoryDataType[])
+  const [historyData, setHistoryData] = useState({} as HistoryDataType)
   const [completeHistoryData, setCompleteHistoryData] = useState([] as HistoryDataType[])
   const [globalFilter, setGlobalFilter] = useState('')
   const [tableNameFilter, setTableNameFilter] = useState([] as string[])
   const [tableList, setTableList] = useState([] as string[])
+  const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -155,6 +159,33 @@ const HistoryTable = () => {
       setData(filteredData)
     } else if (completeHistoryData.length) {
       setData(completeHistoryData)
+    }
+  }
+
+  const openDeleteConfirmation = (history: HistoryDataType) => {
+    setHistoryData(history)
+    setDeleteConfirmationDialogOpen(true)
+  }
+
+  const deleteHistory = async () => {
+    const transactionId = historyData.transactionId
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.delete(`${apiBaseUrl}/history/${transactionId}`, {
+        headers: { 'auth-token': token }
+      })
+      if (response && response.data) {
+        getHistoryData()
+        setDeleteConfirmationDialogOpen(false)
+        toast.success('History deleted successfully')
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 409) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
   }
 
@@ -246,6 +277,34 @@ const HistoryTable = () => {
             />
           </div>
         )
+      }),
+      columnHelper.accessor('action', {
+        header: 'Actions',
+        cell: ({ row }) => (
+          <div className='flex items-center'>
+            {/* <IconButton size='small' onClick={() => editStaffData(row.original)}>
+              <i className='ri-edit-box-line text-[22px] text-textSecondary' />
+            </IconButton> */}
+            <OptionMenu
+              iconButtonProps={{ size: 'medium' }}
+              iconClassName='text-textSecondary text-[22px]'
+              options={[
+                // { text: 'Download', icon: 'ri-download-line', menuItemProps: { className: 'gap-2' } },
+                {
+                  text: 'Delete',
+                  icon: 'ri-delete-bin-7-line',
+                  menuItemProps: {
+                    className: 'gap-2',
+                    onClick: () => openDeleteConfirmation(row.original)
+                  }
+                }
+
+                //{ text: 'Duplicate', icon: 'ri-stack-line', menuItemProps: { className: 'gap-2' } }
+              ]}
+            />
+          </div>
+        ),
+        enableSorting: false
       })
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -390,6 +449,12 @@ const HistoryTable = () => {
           onRowsPerPageChange={e => table.setPageSize(Number(e.target.value))}
         />
       </Card>
+      <DeleteConfirmation
+        open={deleteConfirmationDialogOpen}
+        name={`transaction (${historyData.transactionId})`}
+        setOpen={setDeleteConfirmationDialogOpen}
+        deleteApiCall={deleteHistory}
+      />
     </>
   )
 }

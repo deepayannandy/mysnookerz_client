@@ -149,6 +149,7 @@ const BreakBill = ({
     setTimeout(() => setIsStopButtonDisabled(false), 3000)
 
     await handleSubmit()
+    getAllTablesData()
     setShowBill(true)
   }
 
