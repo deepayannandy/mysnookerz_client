@@ -49,13 +49,13 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
 
     setIsCancelGameSwitch(!!storeData?.StoreData?.isCancel)
     setIsPauseAndResumeSwitch(!!storeData?.StoreData?.isPauseResume)
-    setIsBillPrintSwitch(!!storeData?.StoreData?.isBillPrint)
+    setIsBillPrintSwitch(!!storeData?.StoreData?.isPrintEnable)
     setIsPrepaidModeSwitch(!!storeData?.StoreData?.isPrepaidMode)
     setIsRoundOffSwitch(!!storeData?.StoreData?.isRoundOff)
     setIsSwitchTableSwitch(!!storeData?.StoreData?.isSwitchTable)
     // setIsMultipleBillingSwitch(!!storeData?.StoreData?.isMultipleBilling)
     setIsSelfStartSwitch(!!storeData?.StoreData?.isSelfStart)
-    // setisBreakSwitch(!!storeData?.StoreData?.isBreak)
+    // setIsBreakSwitch(!!storeData?.StoreData?.isBreak)
     setCancelMinutes(storeData?.StoreData?.cancelMins ?? 1)
     setIsHoldCheckoutSwitch(!!storeData?.StoreData?.isHoldEnable)
   }, [storeData])
@@ -66,7 +66,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
       isCancel: isCancelGameSwitch,
       isPauseResume: isPauseAndResumeSwitch,
       isRoundOff: isRoundOffSwitch,
-      isBillPrint: isBillPrintSwitch,
+      isPrintEnable: isBillPrintSwitch,
       isPrepaidMode: isPrepaidModeSwitch,
       isSwitchTable: isSwitchTableSwitch,
       // isMultipleBilling: isMultipleBillingSwitch,

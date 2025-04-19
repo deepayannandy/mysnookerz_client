@@ -118,7 +118,7 @@ export type StoreDataType = {
     isCancel: boolean
     isPauseResume: boolean
     isRoundOff: boolean
-    isBillPrint: boolean
+    isPrintEnable: boolean
     isPrepaidMode: boolean
     isSwitchTable: boolean
     isMultipleBilling: boolean

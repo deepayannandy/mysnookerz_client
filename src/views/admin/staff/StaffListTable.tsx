@@ -271,8 +271,8 @@ const StaffListTable = () => {
                   }
                 },
                 {
-                  text: 'Suspend/Authorize',
-                  icon: 'ri-close-circle-line',
+                  text: `${row.original.userStatus ? 'Suspend' : 'Authorize'}`,
+                  icon: `${row.original.userStatus ? 'ri-close-circle-line' : 'ri-check-line'}`,
                   menuItemProps: {
                     className: 'gap-2',
                     onClick: () => openSuspendConfirmation(row.original)
