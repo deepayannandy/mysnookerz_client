@@ -10,7 +10,7 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
   const customerStats: CardStatsHorizontalWithAvatarProps[] = [
     {
       avatarIcon: 'ri-money-rupee-circle-line',
-      title: 'Dues',
+      title: 'Wallet',
       stats: `₹${Number(data?.customers?.credit ?? 0).toFixed(2)}`,
       avatarColor: 'primary'
     },

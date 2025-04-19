@@ -38,6 +38,7 @@ export type InvoiceType = {
 export type TableDataType = {
   _id: string
   tableName: string
+  tableType: string
   pauseTime: string
   pauseMin: number
   gameData?: {
@@ -241,3 +242,5 @@ export type ExpenseDataType = {
 }
 
 export type CategoryListType = { name: string; categoryId: string }
+
+export const TableTypes = ['Snooker', 'Pool', 'PlayStation', 'Table Tennis', 'Carrom', 'Chess']

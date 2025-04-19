@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 
 // MUI Imports
 import CustomIconButton from '@/@core/components/mui/IconButton'
+import { TableTypes } from '@/types/adminTypes'
 import { Checkbox, Divider, FormControlLabel } from '@mui/material'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -26,6 +27,7 @@ import { toast } from 'react-toastify'
 type EditTableDataType = {
   _id: string
   tableName: string
+  tableType: string
   gameTypes: string[]
   minuteWiseRules: Partial<{
     dayUptoMin: number | null
@@ -307,7 +309,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                   label='Countdown Billing'
                 />
               </Grid>
-              <Grid item xs={12} sm={5} alignContent='center'>
+              <Grid item xs={12} sm={5}>
                 <Controller
                   name='tableName'
                   control={control}
@@ -317,7 +319,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                       size='small'
                       fullWidth
                       label='Table Name'
-                      placeholder='Enter table name'
+                      placeholder='Enter Table Name'
                       value={value}
                       onChange={onChange}
                       {...(errors.tableName && {
@@ -325,6 +327,37 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                         helperText: errors.tableName.message || 'This field is required'
                       })}
                     />
+                  )}
+                />
+
+                <Controller
+                  name='tableType'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange } }) => (
+                    <TextField
+                      inputProps={{
+                        enterKeyHint: 'enter'
+                      }}
+                      className='mt-4'
+                      size='small'
+                      fullWidth
+                      select
+                      label='Table Type'
+                      placeholder='Table Type'
+                      value={value}
+                      onChange={onChange}
+                      {...(errors.tableType && {
+                        error: true,
+                        helperText: errors.tableType.message || 'This field is required'
+                      })}
+                    >
+                      {TableTypes?.map(type => (
+                        <MenuItem key={type} value={type}>
+                          {type}
+                        </MenuItem>
+                      ))}
+                    </TextField>
                   )}
                 />
               </Grid>
