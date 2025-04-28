@@ -8,7 +8,6 @@ import { toast } from 'react-toastify'
 import CountdownTimer from '../count-down-timer'
 import CountUpTimer from '../count-up-timer'
 import BreakBill, { BreakBillType } from '../dialogs/break-bill'
-import OrderMeals from '../dialogs/order-meals'
 import SwitchTable from '../dialogs/switch-table'
 import TableBill from '../dialogs/table-bill'
 
@@ -18,7 +17,9 @@ const PoolCard = ({
   allTablesData,
   storeData,
   getAllTablesData,
-  getCustomerData
+  getCustomerData,
+  setTableData,
+  setShowMealCart
 }: {
   tableData: TableDataType
   customersList: CustomerListType[]
@@ -26,6 +27,8 @@ const PoolCard = ({
   storeData: StoreDataType
   getAllTablesData: () => void
   getCustomerData: () => void
+  setTableData: (data: TableDataType) => void
+  setShowMealCart: (value: boolean) => void
 }) => {
   const gameTypes: string[] = tableData.gameData?.gameType ? tableData.gameTypes : []
   if (!tableData.gameData?.gameType) {
@@ -48,7 +51,6 @@ const PoolCard = ({
   const [billData, setBillData] = useState({} as CustomerInvoiceType)
   const [showSwitchTable, setShowSwitchTable] = useState(false)
   const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false)
-  const [showMealCart, setShowMealCart] = useState(false)
   const [showOnHoldBill, setShowOnHoldBill] = useState(false)
   const [isHoldButtonDisabled, setIsHoldButtonDisabled] = useState(false)
   const [showBreakBill, setShowBreakBill] = useState(false)
@@ -686,7 +688,10 @@ const PoolCard = ({
                 <Button
                   variant='contained'
                   className='bg-[#2E2E2E] text-white h-8'
-                  onClick={() => setShowMealCart(true)}
+                  onClick={() => {
+                    setShowMealCart(true)
+                    setTableData(tableData)
+                  }}
                 >
                   <span className='ri-restaurant-2-fill text-base'></span>
                   Add Meals
@@ -759,16 +764,6 @@ const PoolCard = ({
           customersList={customersList}
           getAllTablesData={getAllTablesData}
           getCustomerData={getCustomerData}
-        />
-      ) : (
-        <></>
-      )}
-      {showMealCart ? (
-        <OrderMeals
-          open={showMealCart}
-          setOpen={setShowMealCart}
-          tableData={tableData}
-          getAllTablesData={getAllTablesData}
         />
       ) : (
         <></>

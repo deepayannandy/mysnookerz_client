@@ -86,7 +86,6 @@ const EditStaffInfo = ({ open, setOpen, getStaffData, staffData }: EditStaffInfo
   })
 
   useEffect(() => {
-    console.log(staffData)
     resetForm({
       ..._.omit(staffData, 'password'),
       password: '',

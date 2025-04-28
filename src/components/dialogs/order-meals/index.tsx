@@ -12,12 +12,14 @@ import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { BillPrintPreviewDataType } from '../bill-print-preview'
 
 type OrderMealsPropType = {
   open: boolean
   setOpen: (open: boolean) => void
   tableData: TableDataType
-  getAllTablesData: () => void
+  setBillData: (data: BillPrintPreviewDataType) => void
+  setBillPrint: (value: boolean) => void
 }
 
 type MealCartType = {
@@ -28,25 +30,10 @@ type MealCartType = {
   }[]
 }
 
-//const paymentMethods = ['CASH', 'UPI', 'CARD']
-
-const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPropType) => {
+const OrderMeals = ({ open, setOpen, tableData, setBillData, setBillPrint }: OrderMealsPropType) => {
   // States
   const [productList, setProductList] = useState([] as ProductDataType[])
   const [fieldIndex, setFieldIndex] = useState(0)
-  // const [inputData, setInputData] = useState({
-  //   discount: '',
-  //   paymentMethod: paymentMethods[0],
-  //   cashIn: ''
-  // } as {
-  //   discount?: number | string
-  //   paymentMethod: string
-  //   cashIn?: number | string
-  // })
-
-  // const { lang: locale } = useParams()
-  // const pathname = usePathname()
-  // const router = useRouter()
 
   const {
     control,
@@ -158,13 +145,38 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
       toast.error('Please add items to place order')
       return
     }
+
+    const itemBillData = [] as {
+      name: string
+      category: string
+      amount: number
+    }[]
+
     const orders = data.order.map(ord => {
+      const itemPrice = Number(ord.product.salePrice) * Number(ord.quantity)
+      const itemBill = {
+        name: ord.product.productName,
+        category: ord.product.category?.name,
+        amount: itemPrice
+      }
+      itemBillData.push(itemBill)
+
       return {
         productId: ord.product._id,
         productName: ord.product.productName,
         productSalePrice: ord.product.salePrice,
         qnt: ord.quantity
       }
+    })
+
+    setBillData({
+      billNo: '#123123',
+      tableName: tableData.tableName,
+      server: localStorage.getItem('clientName') ?? '',
+      orderData: itemBillData,
+      subTotal,
+      tax,
+      total
     })
 
     const productList = {
@@ -184,9 +196,9 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
         }
       )
       if (response && response.data) {
-        getAllTablesData()
         handleClose()
         toast.success('Good Job!', { icon: <>👏</> })
+        setBillPrint(true)
       }
     } catch (error: any) {
       // if (error?.response?.status === 409) {
@@ -334,7 +346,7 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
 
                 {fields.slice(0, -1).map((orderItem, index) => (
                   <div
-                    key={fields[index].id}
+                    key={`${fields[index].id}_${index}`}
                     className={`w-full grid grid-cols-4 divide-x ${fields.slice(0, -1).length - 1 !== index ? 'border-b' : ''}`}
                   >
                     <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
@@ -385,27 +397,25 @@ const OrderMeals = ({ open, setOpen, tableData, getAllTablesData }: OrderMealsPr
                   </div>
                 </div>
 
-                {tableData.productList.map(orderItem => (
-                  <>
-                    {orderItem.orders?.map(order => (
-                      <div key={order._id} className={`w-full grid grid-cols-4 divide-x border-b`}>
-                        <>
-                          <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
-                            <p>{orderItem?.customerDetails?.fullName}</p>
-                          </div>
-                          <div className='size-full grid place-items-center p-1 sm:p-2'>
-                            <p>{order.productName}</p>
-                          </div>
-                          <div className='size-full grid place-items-center p-1 sm:p-2'>
-                            <p>{order.qnt}</p>
-                          </div>
-                          <div className='size-full grid place-items-center p-1 sm:p-2'>
-                            <p>{`₹${order.productSalePrice ?? 0}`}</p>
-                          </div>
-                        </>
+                {tableData.productList.map((orderItem, index) => (
+                  <div key={`${orderItem._id}_${index}`}>
+                    {orderItem.orders?.map((order, index) => (
+                      <div key={`${order._id}_${index}`} className={`w-full grid grid-cols-4 divide-x border-b`}>
+                        <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
+                          <p>{orderItem?.customerDetails?.fullName}</p>
+                        </div>
+                        <div className='size-full grid place-items-center p-1 sm:p-2'>
+                          <p>{order.productName}</p>
+                        </div>
+                        <div className='size-full grid place-items-center p-1 sm:p-2'>
+                          <p>{order.qnt}</p>
+                        </div>
+                        <div className='size-full grid place-items-center p-1 sm:p-2'>
+                          <p>{`₹${order.productSalePrice ?? 0}`}</p>
+                        </div>
                       </div>
                     ))}
-                  </>
+                  </div>
                 ))}
               </div>
             ) : (

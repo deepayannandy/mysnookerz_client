@@ -13,6 +13,7 @@ import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import BillPrintPreviewInfo, { BillPrintPreviewDataType } from '../bill-print-preview'
 
 type TakeawayFoodOrderPropType = {
   open: boolean
@@ -34,6 +35,8 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
   const [productList, setProductList] = useState([] as ProductDataType[])
   const [fieldIndex, setFieldIndex] = useState(0)
   const [customersList, setCustomersList] = useState([] as CustomerListType[])
+  const [billPrint, setBillPrint] = useState(false)
+  const [billData, setBillData] = useState({} as BillPrintPreviewDataType)
   const [inputData, setInputData] = useState({
     discount: '',
     paymentMethod: paymentMethods[0],
@@ -187,13 +190,38 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
       toast.error('Please add items to place order')
       return
     }
+
+    const itemBillData = [] as {
+      name: string
+      category: string
+      amount: number
+    }[]
+
     const orderItems = data.order.map(ord => {
+      const itemPrice = Number(ord.product.salePrice) * Number(ord.quantity)
+      const itemBill = {
+        name: ord.product.productName,
+        category: ord.product.category?.name,
+        amount: itemPrice
+      }
+      itemBillData.push(itemBill)
+
       return {
         productId: ord.product._id,
         productName: ord.product.productName,
         productSalePrice: ord.product.salePrice,
         qnt: ord.quantity
       }
+    })
+
+    setBillData({
+      billNo: '#123123',
+      server: localStorage.getItem('clientName') ?? '',
+      orderData: itemBillData,
+      subTotal,
+      tax,
+      total,
+      discount: inputData.discount
     })
 
     let customer = {}
@@ -224,6 +252,7 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
       if (response && response.data) {
         handleClose()
         toast.success('Order Placed!', { icon: <>👏</> })
+        setBillPrint(true)
       }
     } catch (error: any) {
       // if (error?.response?.status === 409) {
@@ -235,75 +264,48 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
   }
 
   return (
-    <Drawer
-      open={open}
-      anchor='right'
-      variant='temporary'
-      onClose={handleClose}
-      ModalProps={{ keepMounted: true }}
-      sx={{ '& .MuiDrawer-paper': { width: { xs: 340, sm: 400 } } }}
-    >
-      <div className='flex items-center justify-between pli-5 plb-4'>
-        <Typography variant='h5'>Order Food</Typography>
-        <IconButton size='small' onClick={handleClose}>
-          <i className='ri-close-line text-2xl' />
-        </IconButton>
-      </div>
-      <Divider />
-      <div className='p-5'>
-        <form onSubmit={handleSubmit(data => onSubmit(data))}>
-          <div className='flex flex-col gap-5'>
-            <Controller
-              name='customer'
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <Autocomplete
-                  onKeyPress={(e: React.KeyboardEvent<HTMLDivElement>) => {
-                    e.key === 'Enter' && e.preventDefault()
-                  }}
-                  options={customersList}
-                  getOptionLabel={option => ((option as CustomerListType).fullName ?? option)?.split('(').join(' (')}
-                  getOptionKey={option => (option as CustomerListType).customerId}
-                  freeSolo
-                  value={value}
-                  onChange={(_, value) => onChange(value)}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Customer'
-                      {...(errors.customer && {
-                        error: true,
-                        helperText: errors.customer.message || 'This field is required'
-                      })}
-                    />
-                  )}
-                />
-              )}
-            />
-
-            <div key={fields[fieldIndex]?.id} className='flex flex-col sm:flex-row items-start gap-3'>
+    <>
+      <Drawer
+        open={open}
+        anchor='right'
+        variant='temporary'
+        onClose={handleClose}
+        ModalProps={{ keepMounted: true }}
+        sx={{ '& .MuiDrawer-paper': { width: { xs: 340, sm: 400 } } }}
+      >
+        <div className='flex items-center justify-between pli-5 plb-4'>
+          <Typography variant='h5'>Order Food</Typography>
+          <IconButton size='small' onClick={handleClose}>
+            <i className='ri-close-line text-2xl' />
+          </IconButton>
+        </div>
+        <Divider />
+        <div className='p-5'>
+          <form onSubmit={handleSubmit(data => onSubmit(data))}>
+            <div className='flex flex-col gap-5'>
               <Controller
-                name={`order.${fieldIndex}.product`}
+                name='customer'
                 control={control}
+                rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <Autocomplete
-                    fullWidth
-                    disableClearable
-                    options={productList}
-                    getOptionLabel={option => `${option.productName} (₹${option.salePrice})`}
+                    onKeyPress={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                      e.key === 'Enter' && e.preventDefault()
+                    }}
+                    options={customersList}
+                    getOptionLabel={option => ((option as CustomerListType).fullName ?? option)?.split('(').join(' (')}
+                    getOptionKey={option => (option as CustomerListType).customerId}
+                    freeSolo
                     value={value}
-                    isOptionEqualToValue={(option, value) => option._id === value._id}
-                    onChange={(_, value) => handleProductChange(value, onChange)}
+                    onChange={(_, value) => onChange(value)}
                     renderInput={params => (
                       <TextField
                         {...params}
                         variant='outlined'
-                        label='Product'
-                        {...(errors.order?.[fieldIndex]?.product && {
+                        label='Customer'
+                        {...(errors.customer && {
                           error: true,
-                          helperText: errors.order?.[fieldIndex]?.product?.message || 'This field is required'
+                          helperText: errors.customer.message || 'This field is required'
                         })}
                       />
                     )}
@@ -311,173 +313,203 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
                 )}
               />
 
-              <Controller
-                name={`order.${fieldIndex}.quantity`}
-                control={control}
-                render={({ field: { value, onChange } }) => (
-                  <TextField
-                    fullWidth
-                    label='Quantity'
-                    inputProps={{ type: 'number', min: 0 }}
-                    value={value ?? ''}
-                    onChange={event => handleQuantityChange(event.target.value, onChange)}
-                    {...(errors.order?.[fieldIndex]?.quantity && {
-                      error: true,
-                      helperText: errors.order?.[fieldIndex]?.quantity?.message || 'This field is required'
-                    })}
-                  />
-                )}
-              />
+              <div key={fields[fieldIndex]?.id} className='flex flex-col sm:flex-row items-start gap-3'>
+                <Controller
+                  name={`order.${fieldIndex}.product`}
+                  control={control}
+                  render={({ field: { value, onChange } }) => (
+                    <Autocomplete
+                      fullWidth
+                      disableClearable
+                      options={productList}
+                      getOptionLabel={option => `${option.productName} (₹${option.salePrice})`}
+                      value={value}
+                      isOptionEqualToValue={(option, value) => option._id === value._id}
+                      onChange={(_, value) => handleProductChange(value, onChange)}
+                      renderInput={params => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          label='Product'
+                          {...(errors.order?.[fieldIndex]?.product && {
+                            error: true,
+                            helperText: errors.order?.[fieldIndex]?.product?.message || 'This field is required'
+                          })}
+                        />
+                      )}
+                    />
+                  )}
+                />
 
-              {/* {fields.length > 1 ? (
+                <Controller
+                  name={`order.${fieldIndex}.quantity`}
+                  control={control}
+                  render={({ field: { value, onChange } }) => (
+                    <TextField
+                      fullWidth
+                      label='Quantity'
+                      inputProps={{ type: 'number', min: 0 }}
+                      value={value ?? ''}
+                      onChange={event => handleQuantityChange(event.target.value, onChange)}
+                      {...(errors.order?.[fieldIndex]?.quantity && {
+                        error: true,
+                        helperText: errors.order?.[fieldIndex]?.quantity?.message || 'This field is required'
+                      })}
+                    />
+                  )}
+                />
+
+                {/* {fields.length > 1 ? (
                   <CustomIconButton onClick={() => remove(index)} className='min-is-fit'>
                     <i className='ri-close-line' />
                   </CustomIconButton>
                 ) : (
                   <></>
                 )} */}
-            </div>
-
-            <div className='flex justify-end'>
-              <Button
-                className='min-is-fit'
-                size='small'
-                variant='contained'
-                onClick={handleAddItem}
-                startIcon={<i className='ri-add-line' />}
-              >
-                Add Item
-              </Button>
-            </div>
-
-            {fields.slice(0, -1).length ? (
-              <div className='w-full grid grid-cols-1 border mt-2 rounded-lg overflow-x-auto '>
-                <div className='w-full text-center font-bold border-b p-1 sm:p-2'>Ordered Items</div>
-                <div className='w-full grid grid-cols-4 text-center font-bold border-b divide-x'>
-                  <div className='size-full grid place-items-center p-1 sm:p-2 '>
-                    <p>Item</p>
-                  </div>
-                  <div className='size-full grid place-items-center p-1 sm:p-2'>
-                    <p>Qty</p>
-                  </div>
-                  <div className='size-full grid place-items-center p-1 sm:p-2'>
-                    <p>Amount</p>
-                  </div>
-                  <div className='size-full grid place-items-center p-1 sm:p-2'>
-                    <p>Action</p>
-                  </div>
-                </div>
-
-                {fields.slice(0, -1).map((orderItem, index) => (
-                  <div
-                    key={fields[index].id}
-                    className={`w-full grid grid-cols-4 divide-x ${fields.slice(0, -1).length - 1 !== index ? 'border-b' : ''}`}
-                  >
-                    <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
-                      <p>{orderItem.product?.productName}</p>
-                    </div>
-                    <div className='size-full grid place-items-center p-1 sm:p-2'>
-                      <p>{orderItem.quantity}</p>
-                    </div>
-                    <div className='size-full grid place-items-center p-1 sm:p-2'>
-                      <p>{`₹${orderItem.product?.salePrice ?? 0}`}</p>
-                    </div>
-                    <div className='size-full grid place-items-center p-1 sm:p-2'>
-                      <i className='ri-close-line' onClick={() => removeItem(index)} />
-                    </div>
-                  </div>
-                ))}
               </div>
-            ) : (
-              <></>
-            )}
 
-            <div className='w-full grid grid-cols-3 gap-2 border p-4 mt-2 rounded-lg'>
-              <p className='col-span-2'>Sub Total</p>
-              <p>{`₹${subTotal.toFixed(2)}`}</p>
+              <div className='flex justify-end'>
+                <Button
+                  className='min-is-fit'
+                  size='small'
+                  variant='contained'
+                  onClick={handleAddItem}
+                  startIcon={<i className='ri-add-line' />}
+                >
+                  Add Item
+                </Button>
+              </div>
 
-              <p className='col-span-2'>Tax</p>
-              <p>{`₹${tax.toFixed(2)}`}</p>
+              {fields.slice(0, -1).length ? (
+                <div className='w-full grid grid-cols-1 border mt-2 rounded-lg overflow-x-auto '>
+                  <div className='w-full text-center font-bold border-b p-1 sm:p-2'>Ordered Items</div>
+                  <div className='w-full grid grid-cols-4 text-center font-bold border-b divide-x'>
+                    <div className='size-full grid place-items-center p-1 sm:p-2 '>
+                      <p>Item</p>
+                    </div>
+                    <div className='size-full grid place-items-center p-1 sm:p-2'>
+                      <p>Qty</p>
+                    </div>
+                    <div className='size-full grid place-items-center p-1 sm:p-2'>
+                      <p>Amount</p>
+                    </div>
+                    <div className='size-full grid place-items-center p-1 sm:p-2'>
+                      <p>Action</p>
+                    </div>
+                  </div>
 
-              {inputData.discount ? (
-                <>
-                  <p className='col-span-2'>Discount</p>
-                  <p>{`₹${inputData.discount}`}</p>
-                </>
+                  {fields.slice(0, -1).map((orderItem, index) => (
+                    <div
+                      key={fields[index].id}
+                      className={`w-full grid grid-cols-4 divide-x ${fields.slice(0, -1).length - 1 !== index ? 'border-b' : ''}`}
+                    >
+                      <div className='size-full grid place-items-center break-all p-1 sm:p-2'>
+                        <p>{orderItem.product?.productName}</p>
+                      </div>
+                      <div className='size-full grid place-items-center p-1 sm:p-2'>
+                        <p>{orderItem.quantity}</p>
+                      </div>
+                      <div className='size-full grid place-items-center p-1 sm:p-2'>
+                        <p>{`₹${orderItem.product?.salePrice ?? 0}`}</p>
+                      </div>
+                      <div className='size-full grid place-items-center p-1 sm:p-2'>
+                        <i className='ri-close-line' onClick={() => removeItem(index)} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <></>
               )}
 
-              <Divider className='border-dashed col-span-3' />
-              <p className='col-span-2'>Total</p>
-              <p>{`₹${total}`}</p>
-            </div>
+              <div className='w-full grid grid-cols-3 gap-2 border p-4 mt-2 rounded-lg'>
+                <p className='col-span-2'>Sub Total</p>
+                <p>{`₹${subTotal.toFixed(2)}`}</p>
 
-            <div className='w-full grid grid-cols-2 gap-2 mt-2 rounded-lg'>
-              <TextField
-                //placeholder='₹_._'
-                inputProps={{ type: 'number', min: 0, step: 'any' }}
-                label='Discount'
-                value={inputData.discount}
-                onChange={event =>
-                  setInputData({
-                    ...inputData,
-                    discount: event.target.value
-                  })
-                }
-              />
+                <p className='col-span-2'>Tax</p>
+                <p>{`₹${tax.toFixed(2)}`}</p>
 
-              <TextField
-                label='Payment Method'
-                select
-                value={inputData.paymentMethod}
-                onChange={e => {
-                  setInputData({ ...inputData, paymentMethod: e.target.value })
-                }}
-              >
-                {paymentMethods.map((paymentMethod, index) => (
-                  <MenuItem key={index} value={paymentMethod}>
-                    {paymentMethod}
-                  </MenuItem>
-                ))}
-              </TextField>
+                {inputData.discount ? (
+                  <>
+                    <p className='col-span-2'>Discount</p>
+                    <p>{`₹${inputData.discount}`}</p>
+                  </>
+                ) : (
+                  <></>
+                )}
 
-              <TextField
-                label='Cash In'
-                //placeholder='₹_._'
-                inputProps={{ type: 'number', min: 0, step: 'any' }}
-                value={inputData.cashIn}
-                onChange={event =>
-                  setInputData({
-                    ...inputData,
-                    cashIn: event.target.value
-                  })
-                }
-              />
-              <TextField
-                //className='w-full bg-[#E73434] rounded-lg'
-                label='Cash Out'
-                value={`₹${cashOut}`}
-                InputProps={
-                  {
-                    //startAdornment: <p className='m-1'>Net Pay</p>
+                <Divider className='border-dashed col-span-3' />
+                <p className='col-span-2'>Total</p>
+                <p>{`₹${total}`}</p>
+              </div>
+
+              <div className='w-full grid grid-cols-2 gap-2 mt-2 rounded-lg'>
+                <TextField
+                  //placeholder='₹_._'
+                  inputProps={{ type: 'number', min: 0, step: 'any' }}
+                  label='Discount'
+                  value={inputData.discount}
+                  onChange={event =>
+                    setInputData({
+                      ...inputData,
+                      discount: event.target.value
+                    })
                   }
-                }
-              />
-            </div>
+                />
 
-            <div className='flex items-center gap-4'>
-              <Button variant='contained' type='submit'>
-                Order
-              </Button>
-              <Button variant='outlined' color='error' type='reset' onClick={handleClose}>
-                Cancel
-              </Button>
+                <TextField
+                  label='Payment Method'
+                  select
+                  value={inputData.paymentMethod}
+                  onChange={e => {
+                    setInputData({ ...inputData, paymentMethod: e.target.value })
+                  }}
+                >
+                  {paymentMethods.map((paymentMethod, index) => (
+                    <MenuItem key={index} value={paymentMethod}>
+                      {paymentMethod}
+                    </MenuItem>
+                  ))}
+                </TextField>
+
+                <TextField
+                  label='Cash In'
+                  //placeholder='₹_._'
+                  inputProps={{ type: 'number', min: 0, step: 'any' }}
+                  value={inputData.cashIn}
+                  onChange={event =>
+                    setInputData({
+                      ...inputData,
+                      cashIn: event.target.value
+                    })
+                  }
+                />
+                <TextField
+                  //className='w-full bg-[#E73434] rounded-lg'
+                  label='Cash Out'
+                  value={`₹${cashOut}`}
+                  InputProps={
+                    {
+                      //startAdornment: <p className='m-1'>Net Pay</p>
+                    }
+                  }
+                />
+              </div>
+
+              <div className='flex items-center gap-4'>
+                <Button variant='contained' type='submit'>
+                  Order
+                </Button>
+                <Button variant='outlined' color='error' type='reset' onClick={handleClose}>
+                  Cancel
+                </Button>
+              </div>
             </div>
-          </div>
-        </form>
-      </div>
-    </Drawer>
+          </form>
+        </div>
+      </Drawer>
+      {billPrint ? <BillPrintPreviewInfo open={billPrint} setOpen={setBillPrint} data={billData} /> : <></>}
+    </>
   )
 }
 
