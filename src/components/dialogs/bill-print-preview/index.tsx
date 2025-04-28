@@ -91,7 +91,7 @@ const BillPrintPreviewInfo = ({ open, setOpen, data }: BillPrintPreviewProps) =>
 
   return (
     <>
-      <Dialog fullWidth open={open} onClose={handleClose} maxWidth='md' scroll='body'>
+      <Dialog fullWidth open={open} maxWidth='md' scroll='body'>
         <DialogContent className='overflow-visible pbs-0 sm:pli-16'>
           <IconButton onClick={handleClose} className='absolute block-start-4 inline-end-4'>
             <i className='ri-close-line text-textSecondary' />
