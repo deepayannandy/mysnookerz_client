@@ -138,7 +138,11 @@ const BookingPage = () => {
       ) : (
         <></>
       )}
-      {billPrint ? <BillPrintPreviewInfo open={billPrint} setOpen={setBillPrint} data={billData} /> : <></>}
+      {billPrint && storeData.StoreData?.isPrintEnable ? (
+        <BillPrintPreviewInfo open={billPrint} setOpen={setBillPrint} data={billData} />
+      ) : (
+        <></>
+      )}
       {/* <TableBill open={showBill} setOpen={setShowBill} tableData={tableData} getAllTablesData={getAllTablesData} /> */}
       {/* <StartTableDrawer
         open={showStartForm}

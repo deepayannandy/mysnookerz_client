@@ -126,7 +126,7 @@ const BillPrint = ({ data, storeData, style }: BillPrintProps) => {
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
-          <div style={{ width: '33.33%' }}>
+          <div>
             <div
               style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', textAlign: 'right', paddingRight: '0.5rem' }}
             >

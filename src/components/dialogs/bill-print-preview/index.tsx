@@ -60,6 +60,10 @@ const BillPrintPreviewInfo = ({ open, setOpen, data }: BillPrintPreviewProps) =>
     try {
       const response = await axios.get(`${apiBaseUrl}/store/${storeId}`, { headers: { 'auth-token': token } })
       if (response && response.data) {
+        if (!response.data.StoreData?.isPrintEnable) {
+          handleClose()
+          return
+        }
         setStoreData(response.data)
       }
     } catch (error: any) {
