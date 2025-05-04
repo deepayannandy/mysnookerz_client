@@ -34,11 +34,12 @@ import type { ThemeColor } from '@core/types'
 
 import OptionMenu from '@/@core/components/option-menu'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
+import EditGameHistoryInfo from '@/components/dialogs/edit-game-history'
 import SearchInput from '@/components/Search'
 import { TableDataType } from '@/types/adminTypes'
 import { HistoryDataType } from '@/types/staffTypes'
 import tableStyles from '@core/styles/table.module.css'
-import { CardContent, Checkbox, FormControl, InputLabel, MenuItem, Select, Tooltip } from '@mui/material'
+import { CardContent, Checkbox, FormControl, IconButton, InputLabel, MenuItem, Select, Tooltip } from '@mui/material'
 import Chip from '@mui/material/Chip'
 import axios from 'axios'
 import { DateTime } from 'luxon'
@@ -92,6 +93,7 @@ const HistoryTable = () => {
   const [tableNameFilter, setTableNameFilter] = useState([] as string[])
   const [tableList, setTableList] = useState([] as string[])
   const [deleteConfirmationDialogOpen, setDeleteConfirmationDialogOpen] = useState(false)
+  const [editHistoryDialogOpen, setEditHistoryDialogOpen] = useState(false)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -189,6 +191,11 @@ const HistoryTable = () => {
     }
   }
 
+  const editHistoryData = (rowData: HistoryDataType) => {
+    setHistoryData(rowData)
+    setEditHistoryDialogOpen(!editHistoryDialogOpen)
+  }
+
   const columns = useMemo<ColumnDef<HistoryDataWithAction, any>[]>(
     () => [
       // columnHelper.accessor('transactionId', {
@@ -282,9 +289,9 @@ const HistoryTable = () => {
         header: 'Actions',
         cell: ({ row }) => (
           <div className='flex items-center'>
-            {/* <IconButton size='small' onClick={() => editStaffData(row.original)}>
+            <IconButton size='small' onClick={() => editHistoryData(row.original)}>
               <i className='ri-edit-box-line text-[22px] text-textSecondary' />
-            </IconButton> */}
+            </IconButton>
             <OptionMenu
               iconButtonProps={{ size: 'medium' }}
               iconClassName='text-textSecondary text-[22px]'
@@ -454,6 +461,12 @@ const HistoryTable = () => {
         name={`transaction (${historyData.transactionId})`}
         setOpen={setDeleteConfirmationDialogOpen}
         deleteApiCall={deleteHistory}
+      />
+      <EditGameHistoryInfo
+        open={editHistoryDialogOpen}
+        setOpen={setEditHistoryDialogOpen}
+        getHistoryData={getHistoryData}
+        historyData={historyData}
       />
     </>
   )
