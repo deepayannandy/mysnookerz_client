@@ -134,6 +134,7 @@ export type SubscriptionPlanType = {
   subscriptionName: string
   subscriptionAmount: number
   subscriptionValidity: number
+  subscriptionGlobalPrice: number
   subscriptionId: string
   storeId: string
   startDate: string

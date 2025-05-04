@@ -18,6 +18,7 @@ import Typography from '@mui/material/Typography'
 
 // Style Imports
 import { SubscriptionPlanType, UserDataType } from '@/types/adminTypes'
+import { Checkbox, FormControlLabel } from '@mui/material'
 import axios from 'axios'
 import _ from 'lodash'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -54,9 +55,17 @@ const UpgradePlan = ({
 }: UpgradePlanProps) => {
   // States
   const [subscriptionList, setSubscriptionList] = useState(
-    [] as { _id: string; displayName: string; subscriptionName: string; subscriptionPrice: number }[]
+    [] as {
+      _id: string
+      displayName: string
+      subscriptionName: string
+      subscriptionPrice: number
+      subscriptionGlobalPrice: number
+    }[]
   )
   const [selectedPlanId, setSelectedPlanId] = useState(currentPlan?.subscriptionId ?? '')
+  const [isCurrencyUpdated, setIsCurrencyUpdated] = useState(false)
+  const [subscriptionData, setSubscriptionData] = useState([] as SubscriptionPlanType[])
 
   const selectedPlan = subscriptionList.find(subs => subs._id === selectedPlanId)
 
@@ -80,7 +89,14 @@ const UpgradePlan = ({
     try {
       const response = await axios.get(`${apiBaseUrl}/subscription`, { headers: { 'auth-token': token } })
       if (response && response.data) {
-        const list = [] as { _id: string; displayName: string; subscriptionName: string; subscriptionPrice: number }[]
+        setSubscriptionData(response.data)
+        const list = [] as {
+          _id: string
+          displayName: string
+          subscriptionName: string
+          subscriptionPrice: number
+          subscriptionGlobalPrice: number
+        }[]
 
         response.data.forEach((data: any) => {
           if (renewPlan || Number(data.subscriptionPrice ?? 0) >= Number(currentPlan?.subscriptionAmount ?? 0))
@@ -106,6 +122,30 @@ const UpgradePlan = ({
     getSubscriptions()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
+
+  const handleCurrencyUpdate = (checked: boolean) => {
+    setIsCurrencyUpdated(checked)
+    const list = [] as {
+      _id: string
+      displayName: string
+      subscriptionName: string
+      subscriptionPrice: number
+      subscriptionGlobalPrice: number
+    }[]
+
+    subscriptionData.forEach((data: any) => {
+      if (
+        renewPlan ||
+        Number((checked ? data.subscriptionGlobalPrice : data.subscriptionPrice) ?? 0) >=
+          Number(currentPlan?.subscriptionAmount ?? 0)
+      )
+        list.push({
+          ...data,
+          displayName: `${data.subscriptionName} - ${checked ? `$${data.subscriptionGlobalPrice ?? 0}` : `₹${data.subscriptionPrice ?? 0}`}`
+        })
+    })
+    setSubscriptionList(list)
+  }
 
   const createPaymentLogs = async (orderDetails: OrderDetailsType): Promise<{ success: boolean } | void> => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -177,11 +217,11 @@ const UpgradePlan = ({
     }
   }
 
-  const createOrderId = async (amount: number) => {
+  const createOrderId = async (amount: number, currency: string) => {
     try {
       const response = await axios.post(
         '/api/order',
-        { amount },
+        { amount, currency },
         {
           headers: {
             'Content-Type': 'application/json'
@@ -229,8 +269,8 @@ const UpgradePlan = ({
 
   const processPayment = async () => {
     try {
-      const amount = `${((selectedPlan?.subscriptionPrice || 0) + ((selectedPlan?.subscriptionPrice || 0) * 18) / 100).toFixed(2)}`
-      const orderDetails: OrderDetailsType = await createOrderId(Number(amount))
+      const amount = `${(((isCurrencyUpdated ? selectedPlan?.subscriptionGlobalPrice : selectedPlan?.subscriptionPrice) || 0) + (((isCurrencyUpdated ? selectedPlan?.subscriptionGlobalPrice : selectedPlan?.subscriptionPrice) || 0) * 18) / 100).toFixed(2)}`
+      const orderDetails: OrderDetailsType = await createOrderId(Number(amount), isCurrencyUpdated ? 'USD' : 'INR')
 
       if (orderDetails.orderId) {
         const options = {
@@ -275,6 +315,12 @@ const UpgradePlan = ({
             <i className='ri-close-line' />
           </IconButton>
           <div className='flex items-center gap-4 flex-col sm:flex-row'>
+            <FormControlLabel
+              control={
+                <Checkbox checked={isCurrencyUpdated} onChange={event => handleCurrencyUpdate(event.target.checked)} />
+              }
+              label='USD'
+            />
             <FormControl fullWidth size='small'>
               <InputLabel id='user-view-plans-select-label'>Choose Plan</InputLabel>
               <Select

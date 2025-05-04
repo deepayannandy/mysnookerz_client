@@ -8,8 +8,7 @@ const razorpay = new Razorpay({
 })
 
 export async function POST(request: Request) {
-  const { amount } = await request.json()
-  const currency = 'INR'
+  const { amount, currency } = await request.json()
 
   const options = {
     amount: amount * 100,
