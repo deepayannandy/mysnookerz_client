@@ -169,7 +169,7 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
     getAllProductsData()
     getAllCustomersData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [open])
 
   useEffect(() => {
     resetForm({
