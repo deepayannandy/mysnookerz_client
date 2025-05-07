@@ -315,12 +315,19 @@ const UpgradePlan = ({
             <i className='ri-close-line' />
           </IconButton>
           <div className='flex items-center gap-4 flex-col sm:flex-row'>
-            <FormControlLabel
-              control={
-                <Checkbox checked={isCurrencyUpdated} onChange={event => handleCurrencyUpdate(event.target.checked)} />
-              }
-              label='USD'
-            />
+            {!renewPlan ? (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={isCurrencyUpdated}
+                    onChange={event => handleCurrencyUpdate(event.target.checked)}
+                  />
+                }
+                label='USD'
+              />
+            ) : (
+              <></>
+            )}
             <FormControl fullWidth size='small'>
               <InputLabel id='user-view-plans-select-label'>Choose Plan</InputLabel>
               <Select
