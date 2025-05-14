@@ -224,6 +224,28 @@ export type CollectionReportDataType = {
   cashDrawerBalance: number
 }
 
+export type CafeReportDataType = {
+  transactionId: string
+  date: string
+  description: string
+  qty: number
+  discount: number
+  netPay: number
+  due: number
+  paid: number
+  paymentMethod?: string
+}
+
+export type CreditReportDataType = {
+  transactionId: string
+  date: string
+  description: string
+  netPay: number
+  due: number
+  received: number
+  paymentMethod?: string
+}
+
 export type ExpenseDataType = {
   _id: string
   userId: string

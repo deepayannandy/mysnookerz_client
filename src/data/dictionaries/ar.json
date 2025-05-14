@@ -30,6 +30,8 @@
     "reports": "التقارير",
     "transactionReport": "تقرير الصفقة",
     "collectionReport": "تقرير التحصيل",
+    "cafeReport": "تقرير المقهى",
+    "creditReport": "تقرير الائتمان",
     "expense": "حساب",
     "createCategory": "إنشاء فئة",
     "addExpense": "أضف النفقات",

@@ -30,6 +30,8 @@
     "reports": "Reports",
     "transactionReport": "Transaction Report",
     "collectionReport": "Collection Report",
+    "cafeReport": "Cafe Report",
+    "creditReport": "Credit Report",
     "expense": "Expense",
     "createCategory": "Create Category",
     "addExpense": "Add Expense",
