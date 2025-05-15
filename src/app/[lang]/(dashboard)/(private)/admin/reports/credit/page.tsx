@@ -24,7 +24,7 @@ const CreditReportPage = () => {
     const queryParams = dates?.startDate && dates.endDate ? `startDate=${dates.startDate}&endDate=${dates.endDate}` : ''
 
     try {
-      const response = await axios.get(`${apiBaseUrl}/reports/CreditReport/${storeId}/?${queryParams}`, {
+      const response = await axios.get(`${apiBaseUrl}/reports/duesReport/${storeId}/?${queryParams}`, {
         headers: { 'auth-token': token }
       })
       if (response && response.data) {

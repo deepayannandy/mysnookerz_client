@@ -228,12 +228,17 @@ export type CafeReportDataType = {
   transactionId: string
   date: string
   description: string
-  qty: number
   discount: number
   netPay: number
   due: number
   paid: number
   paymentMethod?: string
+  orderItems: {
+    productId: string
+    productName: string
+    productSalePrice: number
+    qnt: number
+  }[]
 }
 
 export type CreditReportDataType = {
@@ -241,7 +246,7 @@ export type CreditReportDataType = {
   date: string
   description: string
   netPay: number
-  due: number
+  credit: number
   received: number
   paymentMethod?: string
 }

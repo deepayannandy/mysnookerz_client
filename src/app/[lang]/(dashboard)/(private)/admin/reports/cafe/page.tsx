@@ -24,7 +24,7 @@ const CafeReportPage = () => {
     const queryParams = dates?.startDate && dates.endDate ? `startDate=${dates.startDate}&endDate=${dates.endDate}` : ''
 
     try {
-      const response = await axios.get(`${apiBaseUrl}/reports/CafeReport/${storeId}/?${queryParams}`, {
+      const response = await axios.get(`${apiBaseUrl}/reports/cafeReport/${storeId}/?${queryParams}`, {
         headers: { 'auth-token': token }
       })
       if (response && response.data) {

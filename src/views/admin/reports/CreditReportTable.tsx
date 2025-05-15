@@ -163,9 +163,9 @@ const CreditReportTable = ({
         header: 'Net Pay',
         cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.netPay || 0}`}</Typography>
       }),
-      columnHelper.accessor('due', {
+      columnHelper.accessor('credit', {
         header: 'Dues',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.due || 0}`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.credit || 0}`}</Typography>
       }),
       columnHelper.accessor('received', {
         header: 'Received',
@@ -261,7 +261,7 @@ const CreditReportTable = ({
         if (descriptionArr?.length) {
           const paymentMethod = descriptionArr[descriptionArr.length - 1]
 
-          return filterValuesArray.some(value => paymentMethod.includes(value))
+          return filterValuesArray.some(value => paymentMethod.includes(value) && reportData.received)
         }
 
         return false

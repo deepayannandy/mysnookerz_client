@@ -159,9 +159,9 @@ const CafeReportTable = ({
         header: 'Description',
         cell: ({ row }) => <Typography color='text.primary'>{getDescription(row.original.description)}</Typography>
       }),
-      columnHelper.accessor('qty', {
+      columnHelper.accessor('orderItems', {
         header: 'Quantity',
-        cell: ({ row }) => <Typography color='text.primary'>{`₹${row.original.qty || 0}`}</Typography>
+        cell: ({ row }) => <Typography color='text.primary'>{row.original.orderItems?.length ?? 0}</Typography>
       }),
       columnHelper.accessor('discount', {
         header: 'Discount',
@@ -269,7 +269,7 @@ const CafeReportTable = ({
         if (descriptionArr?.length) {
           const paymentMethod = descriptionArr[descriptionArr.length - 1]
 
-          return filterValuesArray.some(value => paymentMethod.includes(value))
+          return filterValuesArray.some(value => paymentMethod.includes(value) && reportData.paid)
         }
 
         return false
