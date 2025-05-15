@@ -169,16 +169,6 @@ const OrderMeals = ({ open, setOpen, tableData, setBillData, setBillPrint }: Ord
       }
     })
 
-    setBillData({
-      billNo: '#123123',
-      tableName: tableData.tableName,
-      server: localStorage.getItem('clientName') ?? '',
-      orderData: itemBillData,
-      subTotal,
-      tax,
-      total
-    })
-
     const productList = {
       customerDetails: data.customer,
       orders,
@@ -198,6 +188,16 @@ const OrderMeals = ({ open, setOpen, tableData, setBillData, setBillPrint }: Ord
       if (response && response.data) {
         handleClose()
         toast.success('Good Job!', { icon: <>👏</> })
+
+        setBillData({
+          billNo: response.data.transactionId ?? '#123123',
+          tableName: tableData.tableName,
+          server: localStorage.getItem('clientName') ?? '',
+          orderData: itemBillData,
+          subTotal,
+          tax,
+          total
+        })
         setBillPrint(true)
       }
     } catch (error: any) {

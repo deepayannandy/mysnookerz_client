@@ -214,16 +214,6 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
       }
     })
 
-    setBillData({
-      billNo: '#123123',
-      server: localStorage.getItem('clientName') ?? '',
-      orderData: itemBillData,
-      subTotal,
-      tax,
-      total,
-      discount: inputData.discount
-    })
-
     let customer = {}
     if (typeof data.customer === 'string') {
       customer = { fullName: data.customer }
@@ -252,6 +242,16 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
       if (response && response.data) {
         handleClose()
         toast.success('Order Placed!', { icon: <>👏</> })
+
+        setBillData({
+          billNo: response.data.transactionId ?? '#123123',
+          server: localStorage.getItem('clientName') ?? '',
+          orderData: itemBillData,
+          subTotal,
+          tax,
+          total,
+          discount: inputData.discount
+        })
         setBillPrint(true)
       }
     } catch (error: any) {
