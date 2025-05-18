@@ -82,6 +82,7 @@ const TableBill = ({
     {} as { [x: string]: { paid?: number | string; paymentMethod?: string } }
   )
   const [isCheckoutButtonDisabled, setIsCheckoutButtonDisabled] = useState(false)
+  const [isAddToWalletButtonDisabled, setIsAddToWalletButtonDisabled] = useState(false)
   const [isHappyHour, setIsHappyHour] = useState(false)
   const [happyHourDiscount, setHappyHourDiscount] = useState(0)
 
@@ -339,6 +340,44 @@ const TableBill = ({
       // }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
+  }
+
+  const handleAddToWallet = async () => {
+    setIsAddToWalletButtonDisabled(true)
+    setTimeout(() => setIsAddToWalletButtonDisabled(false), 3000)
+
+    if (invoiceTo.length < 1) {
+      setErrors({ invoiceTo: 'This field is required' })
+      return
+    }
+
+    setGameType(tableData.gameTypes[0] || '')
+    setCustomers(['CASH'])
+    getAllTablesData()
+    handleClose()
+    toast.success('Good Job!', { icon: <>👏</> })
+
+    // const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    // const token = localStorage.getItem('token')
+    // try {
+    //   const response = await axios.patch(`${apiBaseUrl}/games/checkoutTable/${tableData._id}`, requestData, {
+    //     headers: { 'auth-token': token }
+    //   })
+
+    //   if (response && response.data) {
+    //     setGameType(tableData.gameTypes[0] || '')
+    //     setCustomers(['CASH'])
+    //     getAllTablesData()
+    //     handleClose()
+    //     toast.success('Good Job!', { icon: <>👏</> })
+    //   }
+    // } catch (error: any) {
+    //   // if (error?.response?.status === 409) {
+    //   //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+    //   //   return router.replace(redirectUrl)
+    //   // }
+    //   toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    // }
   }
 
   const handleCustomerPaymentDataChange = ({
@@ -984,6 +1023,14 @@ const TableBill = ({
 
             <Button variant='outlined' color='error' onClick={handleClose}>
               Cancel
+            </Button>
+
+            <Button
+              variant='contained'
+              onClick={handleAddToWallet}
+              disabled={isAddToWalletButtonDisabled || (invoiceTo?.length > 1 && Number(cashOut) !== 0)}
+            >
+              Add To Wallet
             </Button>
           </div>
         </div>

@@ -5,7 +5,7 @@ import type { MouseEvent } from 'react'
 import { useEffect, useRef, useState } from 'react'
 
 // Next Imports
-import { useParams, usePathname, useRouter } from 'next/navigation'
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 // MUI Imports
 import type { PrimaryColorConfig } from '@configs/primaryColorConfig'
@@ -32,9 +32,12 @@ import type { Locale } from '@configs/i18n'
 import { useSettings } from '@core/hooks/useSettings'
 
 // Util Imports
+import PlanUpgradeNotification from '@/components/dialogs/plan-upgrade-notification'
+import { StoreDataType } from '@/types/adminTypes'
 import { DailyCollectionDataType, UserDetailsType } from '@/types/userTypes'
 import { getLocalizedUrl } from '@/utils/i18n'
 import DailyCollectionData from '@/views/admin/DailyCollectionData'
+import { DateTime } from 'luxon'
 
 // Styled component for badge content
 const BadgeContentSpan = styled('span')({
@@ -80,6 +83,9 @@ const UserDropdown = () => {
   const [userDetails, setUserDetails] = useState({} as UserDetailsType)
   const [dailyCollectionData, setDailyCollectionData] = useState({} as DailyCollectionDataType)
   const [showDailyCollectionData, setShowDailyCollectionData] = useState(false)
+  const [planUpgradeNotificationOpen, setPlanUpgradeNotificationOpen] = useState(false)
+  const [daysRemaining, setDaysRemaining] = useState(0)
+  const [storeData, setStoreData] = useState({} as StoreDataType & { clientName: string })
 
   // Refs
   const anchorRef = useRef<HTMLDivElement>(null)
@@ -89,6 +95,7 @@ const UserDropdown = () => {
   const { lang: locale } = useParams()
   const pathname = usePathname()
   const { settings, updateSettings } = useSettings()
+  const searchParams = useSearchParams()
 
   const handleDropdownOpen = () => {
     !open ? setOpen(true) : setOpen(false)
@@ -168,6 +175,50 @@ const UserDropdown = () => {
     getUserDetails()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const getStoreData = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    const storeId = localStorage.getItem('storeId')
+    const clientName = localStorage.getItem('clientName')
+
+    try {
+      const response = await axios.get(`${apiBaseUrl}/store/${storeId}`, { headers: { 'auth-token': token } })
+      if (
+        response &&
+        response.data &&
+        response.data.SubscriptionData &&
+        typeof response.data.SubscriptionData === 'object' &&
+        response.data.SubscriptionData.startDate
+      ) {
+        setStoreData({ ...response.data, clientName })
+        const daysPast = Math.round(
+          DateTime.now().diff(DateTime.fromISO(response.data.SubscriptionData.startDate), 'days').days
+        )
+
+        const daysRemaining = (response.data.SubscriptionData.subscriptionValidity ?? 0) - daysPast
+
+        if (daysRemaining <= 7) {
+          setPlanUpgradeNotificationOpen(true)
+          setDaysRemaining(daysRemaining)
+        }
+      }
+    } catch (error: any) {
+      if (error?.response?.status === 409) {
+        const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+        return router.replace(redirectUrl)
+      }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
+  }
+
+  useEffect(() => {
+    if (searchParams.get('login') === 'success') {
+      getStoreData()
+      router.replace(pathname)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
 
   return (
     <>
@@ -254,6 +305,13 @@ const UserDropdown = () => {
         data={dailyCollectionData}
         open={showDailyCollectionData}
         setOpen={setShowDailyCollectionData}
+      />
+      <PlanUpgradeNotification
+        open={planUpgradeNotificationOpen}
+        setOpen={setPlanUpgradeNotificationOpen}
+        daysRemaining={daysRemaining}
+        storeData={storeData}
+        getStoreData={getStoreData}
       />
     </>
   )

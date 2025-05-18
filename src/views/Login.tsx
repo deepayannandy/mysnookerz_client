@@ -127,8 +127,7 @@ const Login = ({ mode }: { mode: Mode }) => {
           localStorage.removeItem('clientPassword')
         }
         const redirectURL = searchParams.get('redirectTo') ?? '/'
-
-        router.replace(getLocalizedUrl(redirectURL, locale as Locale))
+        router.replace(`${getLocalizedUrl(redirectURL, locale as Locale)}?login=success`)
       } else if (response.status !== 200) {
         if (response?.data?.error) {
           const error = JSON.parse(response?.data?.error)
