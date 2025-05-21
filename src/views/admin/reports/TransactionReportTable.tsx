@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography'
 
 // Third-party Imports
 import * as matchSortedUtils from '@tanstack/match-sorter-utils'
-import type { ColumnDef, FilterFn } from '@tanstack/react-table'
+import type { ColumnDef, FilterFn, Row } from '@tanstack/react-table'
 import {
   createColumnHelper,
   flexRender,
@@ -115,6 +115,52 @@ const TransactionReportTable = ({
   useEffect(() => {
     setTransactionData(data)
   }, [data])
+
+  const exportToCSV = () => {
+    const headers = table
+      .getAllColumns()
+      .filter(col => col.getIsVisible())
+      .map(col => col.columnDef.header as string)
+
+    const rows = table.getRowModel().rows as Row<TransactionReportTableDataType>[]
+
+    const rowData = rows.map(row => {
+      return {
+        transactionId: row.original.transactionId,
+        date: DateTime.fromISO(row.original.date).toFormat('dd LLL yyyy hh:mm:ss a'),
+        description: row.original.description,
+        netPay: row.original.netPay || 0,
+        discount: row.original.discount || 0,
+        due: row.original.due || 0,
+        paid: row.original.paid || 0,
+        paymentMethod: getPaymentMethod(row.original)
+      }
+    })
+
+    const csvRowData = rowData.map(item => {
+      return [
+        item.transactionId,
+        item.date,
+        item.description,
+        item.netPay,
+        item.discount,
+        item.due,
+        item.paid,
+        item.paymentMethod
+      ].join(',')
+    })
+
+    const csvRows = [headers.join(','), ...csvRowData]
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', 'transaction-data.csv')
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 
   const getPaymentMethod = (rowData: TransactionReportTableDataType): string => {
     if (!rowData.paid) {
@@ -369,6 +415,14 @@ const TransactionReportTable = ({
               ))}
             </Select>
           </FormControl>
+          <Button
+            variant='contained'
+            startIcon={<i className='ri-upload-2-line'></i>}
+            onClick={exportToCSV}
+            sx={{ mb: 2 }}
+          >
+            Export
+          </Button>
         </CardContent>
         <div className='overflow-x-auto'>
           <table className={tableStyles.table}>

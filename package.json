@@ -59,6 +59,7 @@
     "cmdk": "1.0.0",
     "date-fns": "3.6.0",
     "emoji-mart": "5.6.0",
+    "export-to-csv": "^1.4.0",
     "input-otp": "1.2.4",
     "keen-slider": "6.8.6",
     "lodash": "^4.17.21",
