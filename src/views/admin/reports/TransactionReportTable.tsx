@@ -122,12 +122,12 @@ const TransactionReportTable = ({
       .filter(col => col.getIsVisible())
       .map(col => col.columnDef.header as string)
 
-    const rows = table.getRowModel().rows as Row<TransactionReportTableDataType>[]
+    const rows = table.getFilteredRowModel().rows as Row<TransactionReportTableDataType>[]
 
     const rowData = rows.map(row => {
       return {
         transactionId: row.original.transactionId,
-        date: DateTime.fromISO(row.original.date).toFormat('dd LLL yyyy hh:mm:ss a'),
+        date: DateTime.fromISO(row.original.date).toFormat('dd/MM/yyyy hh:mm:ss a'),
         description: row.original.description,
         netPay: row.original.netPay || 0,
         discount: row.original.discount || 0,
