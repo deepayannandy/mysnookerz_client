@@ -40,7 +40,8 @@ import { toast } from 'react-toastify'
 
 const EditProduct = ({ productId }: { productId: string }) => {
   const [quantity, setQuantity] = useState<string | number>('')
-  const [inStockSwitch, setInStockSwitch] = useState(true)
+  const [inStockSwitch, setInStockSwitch] = useState(false)
+  const [isStockRequiredSwitch, setIsStockRequiredSwitch] = useState(false)
   const [categoryList, setCategoryList] = useState([] as CategoryListType[])
 
   // const [files, setFiles] = useState<File[]>([])
@@ -112,7 +113,8 @@ const EditProduct = ({ productId }: { productId: string }) => {
       salePrice: '',
       tax: '',
       quantity: '',
-      isOutOfStock: false
+      isOutOfStock: false,
+      isStockRequired: false
     }
   })
 
@@ -126,6 +128,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
         resetForm(response.data)
         setQuantity(response.data.quantity)
         setInStockSwitch(!response.data.isOutOfStock)
+        setIsStockRequiredSwitch(response.data.isStockRequired)
       }
     } catch (error: any) {
       if (error?.response?.status === 409) {
@@ -171,6 +174,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
   const onSubmit = async (data: NewProductDataType) => {
     data.quantity = quantity
     data.isQntRequired = inStockSwitch
+    data.isStockRequired = isStockRequiredSwitch
 
     let category = {}
     if (typeof data.category === 'string') {
@@ -304,7 +308,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
                         rules={{ required: true }}
                         render={({ field: { value, onChange } }) => (
                           <Autocomplete
-                            onKeyPress={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
                               e.key === 'Enter' && e.preventDefault()
                             }}
                             options={categoryList}
@@ -486,8 +490,20 @@ const EditProduct = ({ productId }: { productId: string }) => {
 
                   <Divider className='mlb-2' />
                   <div className='flex items-center justify-between'>
-                    <Typography>In stock</Typography>
-                    <Switch checked={inStockSwitch} onChange={event => setInStockSwitch(event.target.checked)} />
+                    {isStockRequiredSwitch ? (
+                      <>
+                        <Typography>In stock</Typography>
+                        <Switch checked={inStockSwitch} onChange={event => setInStockSwitch(event.target.checked)} />
+                      </>
+                    ) : (
+                      <></>
+                    )}
+
+                    <Typography>Stock Required</Typography>
+                    <Switch
+                      checked={isStockRequiredSwitch}
+                      onChange={event => setIsStockRequiredSwitch(event.target.checked)}
+                    />
                   </div>
                 </CardContent>
               </Card>

@@ -187,6 +187,7 @@ export type NewProductDataType = {
   quantity: number | string
   isOutOfStock?: boolean
   isQntRequired?: boolean
+  isStockRequired?: boolean
 }
 
 export type TransactionReportDataType = {

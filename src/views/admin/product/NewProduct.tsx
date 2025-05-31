@@ -41,6 +41,7 @@ import { toast } from 'react-toastify'
 const NewProduct = () => {
   const [quantity, setQuantity] = useState<string | number>('')
   const [inStockSwitch, setInStockSwitch] = useState(true)
+  const [isStockRequiredSwitch, setIsStockRequiredSwitch] = useState(true)
   const [categoryList, setCategoryList] = useState([] as CategoryListType[])
 
   // const [files, setFiles] = useState<File[]>([])
@@ -153,6 +154,7 @@ const NewProduct = () => {
   const onSubmit = async (data: NewProductDataType) => {
     data.quantity = quantity
     data.isQntRequired = inStockSwitch
+    data.isStockRequired = isStockRequiredSwitch
 
     let category = {}
     if (typeof data.category === 'string') {
@@ -286,7 +288,7 @@ const NewProduct = () => {
                         rules={{ required: true }}
                         render={({ field: { value, onChange } }) => (
                           <Autocomplete
-                            onKeyPress={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
                               e.key === 'Enter' && e.preventDefault()
                             }}
                             options={categoryList}
@@ -470,8 +472,20 @@ const NewProduct = () => {
 
                   <Divider className='mlb-2' />
                   <div className='flex items-center justify-between'>
-                    <Typography>In stock</Typography>
-                    <Switch checked={inStockSwitch} onChange={event => setInStockSwitch(event.target.checked)} />
+                    {isStockRequiredSwitch ? (
+                      <>
+                        <Typography>In stock</Typography>
+                        <Switch checked={inStockSwitch} onChange={event => setInStockSwitch(event.target.checked)} />
+                      </>
+                    ) : (
+                      <></>
+                    )}
+
+                    <Typography>Stock Required</Typography>
+                    <Switch
+                      checked={isStockRequiredSwitch}
+                      onChange={event => setIsStockRequiredSwitch(event.target.checked)}
+                    />
                   </div>
                 </CardContent>
               </Card>

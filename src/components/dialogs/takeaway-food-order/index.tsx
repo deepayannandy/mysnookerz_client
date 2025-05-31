@@ -289,7 +289,7 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
                 rules={{ required: true }}
                 render={({ field: { value, onChange } }) => (
                   <Autocomplete
-                    onKeyPress={(e: React.KeyboardEvent<HTMLDivElement>) => {
+                    onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
                       e.key === 'Enter' && e.preventDefault()
                     }}
                     options={customersList}
