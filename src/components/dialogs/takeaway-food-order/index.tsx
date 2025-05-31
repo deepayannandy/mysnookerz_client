@@ -13,7 +13,8 @@ import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import BillPrintPreviewInfo, { BillPrintPreviewDataType } from '../bill-print-preview'
+import BillPrintPreviewInfo from '../bill-print-preview'
+import { BillPrintDataType } from '@/components/BillPrint'
 
 type TakeawayFoodOrderPropType = {
   open: boolean
@@ -36,7 +37,7 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
   const [fieldIndex, setFieldIndex] = useState(0)
   const [customersList, setCustomersList] = useState([] as CustomerListType[])
   const [billPrint, setBillPrint] = useState(false)
-  const [billData, setBillData] = useState({} as BillPrintPreviewDataType)
+  const [billData, setBillData] = useState({} as BillPrintDataType)
   const [inputData, setInputData] = useState({
     discount: '',
     paymentMethod: paymentMethods[0],

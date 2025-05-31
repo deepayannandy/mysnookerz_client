@@ -203,7 +203,7 @@ const BillPreviewCard = ({
                   <Typography>Total:</Typography>
                   <Typography className='font-medium' color='text.primary'>
                     {/* + (data.totalBillAmt - (data.discount ?? 0) * data.tax) / 100} */}₹{' '}
-                    {data.totalBillAmt - (inputData.discount ?? 0)}
+                    {Number(data.totalBillAmt || 0) - (inputData.discount ?? 0)}
                   </Typography>
                 </div>
               </div>
