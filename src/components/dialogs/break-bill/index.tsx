@@ -22,6 +22,7 @@ type BreakBillPropType = {
   tableData: TableDataType
   breakData: BreakBillType
   customersList: CustomerListType[]
+  setTableData: (data: TableDataType) => void
   getAllTablesData: () => void
   getCustomerData: () => void
 }
@@ -46,6 +47,7 @@ const BreakBill = ({
   tableData,
   breakData,
   customersList,
+  setTableData,
   getAllTablesData,
   getCustomerData
 }: BreakBillPropType) => {
@@ -150,6 +152,7 @@ const BreakBill = ({
 
     await handleSubmit()
     getAllTablesData()
+    setTableData(tableData)
     setShowBill(true)
   }
 

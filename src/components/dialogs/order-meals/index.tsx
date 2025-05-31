@@ -12,13 +12,13 @@ import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { BillPrintPreviewDataType } from '../bill-print-preview'
+import { BillPrintDataType } from '@/components/BillPrint'
 
 type OrderMealsPropType = {
   open: boolean
   setOpen: (open: boolean) => void
   tableData: TableDataType
-  setBillData: (data: BillPrintPreviewDataType) => void
+  setBillData: (data: BillPrintDataType) => void
   setBillPrint: (value: boolean) => void
 }
 

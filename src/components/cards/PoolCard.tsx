@@ -7,9 +7,8 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import CountdownTimer from '../count-down-timer'
 import CountUpTimer from '../count-up-timer'
-import BreakBill, { BreakBillType } from '../dialogs/break-bill'
+import { BreakBillType } from '../dialogs/break-bill'
 import SwitchTable from '../dialogs/switch-table'
-import TableBill from '../dialogs/table-bill'
 
 const PoolCard = ({
   tableData,
@@ -17,9 +16,12 @@ const PoolCard = ({
   allTablesData,
   storeData,
   getAllTablesData,
-  getCustomerData,
   setTableData,
-  setShowMealCart
+  setShowMealCart,
+  setShowBill,
+  setShowOnHoldBill,
+  setShowBreakBill,
+  setBreakData
 }: {
   tableData: TableDataType
   customersList: CustomerListType[]
@@ -29,6 +31,10 @@ const PoolCard = ({
   getCustomerData: () => void
   setTableData: (data: TableDataType) => void
   setShowMealCart: (value: boolean) => void
+  setShowBill: (value: boolean) => void
+  setShowOnHoldBill: (value: boolean) => void
+  setShowBreakBill: (value: boolean) => void
+  setBreakData: (data: BreakBillType) => void
 }) => {
   const gameTypes: string[] = tableData.gameData?.gameType ? tableData.gameTypes : []
   if (!tableData.gameData?.gameType) {
@@ -43,7 +49,6 @@ const PoolCard = ({
     })
   }
 
-  const [showBill, setShowBill] = useState(false)
   const [gameType, setGameType] = useState(tableData.gameData?.gameType || gameTypes[0])
   const [customers, setCustomers] = useState(
     (tableData.gameData?.players?.length ? tableData.gameData.players : []) as (string | CustomerListType)[]
@@ -51,10 +56,7 @@ const PoolCard = ({
   const [billData, setBillData] = useState({} as CustomerInvoiceType)
   const [showSwitchTable, setShowSwitchTable] = useState(false)
   const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false)
-  const [showOnHoldBill, setShowOnHoldBill] = useState(false)
   const [isHoldButtonDisabled, setIsHoldButtonDisabled] = useState(false)
-  const [showBreakBill, setShowBreakBill] = useState(false)
-  const [breakData, setBreakData] = useState({} as BreakBillType)
 
   // let totalSeconds =
   //   tableData.gameData?.startTime && tableData.gameData?.endTime
@@ -228,6 +230,7 @@ const PoolCard = ({
       if (response && response.data) {
         getAllTablesData()
         setBreakData(response.data)
+        setTableData(tableData)
         setShowBreakBill(true)
         // toast.success(`${tableData.tableName} stopped`)
       }
@@ -341,6 +344,11 @@ const PoolCard = ({
       // }
       toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
     }
+  }
+
+  const checkout = async () => {
+    setTableData(tableData)
+    setShowBill(true)
   }
 
   return (
@@ -679,7 +687,7 @@ const PoolCard = ({
                 ) : (
                   <></>
                 )}
-                <Button variant='contained' className='bg-[#FFCA00] text-black h-6' onClick={() => setShowBill(true)}>
+                <Button variant='contained' className='bg-[#FFCA00] text-black h-6' onClick={() => checkout()}>
                   <span className='ri-bank-card-fill text-base -rotate-45 mr-1'></span>Checkout
                 </Button>
               </>
@@ -738,7 +746,7 @@ const PoolCard = ({
         className='background-image-snooker-table bg-cover bg-no-repeat min-h-96 min-w-48'
         style={{ backgroundImage: 'url(' + '/images/snooker-table/snooker-table-updated.svg' + ')' }}
       ></div> */}
-      {showBill ? (
+      {/* {showBill ? (
         <TableBill
           open={showBill}
           setOpen={setShowBill}
@@ -753,21 +761,8 @@ const PoolCard = ({
         />
       ) : (
         <></>
-      )}
-      {showBreakBill ? (
-        <BreakBill
-          open={showBreakBill}
-          setOpen={setShowBreakBill}
-          setShowBill={setShowBill}
-          tableData={tableData}
-          breakData={breakData}
-          customersList={customersList}
-          getAllTablesData={getAllTablesData}
-          getCustomerData={getCustomerData}
-        />
-      ) : (
-        <></>
-      )}
+      )} */}
+
       {showSwitchTable ? (
         <SwitchTable
           open={showSwitchTable}

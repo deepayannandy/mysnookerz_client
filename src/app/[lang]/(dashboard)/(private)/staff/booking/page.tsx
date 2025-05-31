@@ -1,9 +1,12 @@
 'use client'
 
 import useVerticalNav from '@/@menu/hooks/useVerticalNav'
+import { BillPrintDataType } from '@/components/BillPrint'
 import PoolCard from '@/components/cards/PoolCard'
-import BillPrintPreviewInfo, { BillPrintPreviewDataType } from '@/components/dialogs/bill-print-preview'
+import BillPrintPreviewInfo from '@/components/dialogs/bill-print-preview'
+import BreakBill, { BreakBillType } from '@/components/dialogs/break-bill'
 import OrderMeals from '@/components/dialogs/order-meals'
+import TableBill from '@/components/dialogs/table-bill'
 import { StoreDataType, TableDataType } from '@/types/adminTypes'
 import { CustomerDataType, CustomerListType } from '@/types/staffTypes'
 import axios from 'axios'
@@ -22,7 +25,11 @@ const BookingPage = () => {
   const [tableData, setTableData] = useState({} as TableDataType)
   const [showMealCart, setShowMealCart] = useState(false)
   const [billPrint, setBillPrint] = useState(false)
-  const [billData, setBillData] = useState({} as BillPrintPreviewDataType)
+  const [billData, setBillData] = useState({} as BillPrintDataType)
+  const [showBill, setShowBill] = useState(false)
+  const [showOnHoldBill, setShowOnHoldBill] = useState(false)
+  const [showBreakBill, setShowBreakBill] = useState(false)
+  const [breakData, setBreakData] = useState({} as BreakBillType)
 
   // Hooks
   const { lang: locale } = useParams()
@@ -122,6 +129,10 @@ const BookingPage = () => {
                 getCustomerData={getCustomerData}
                 setTableData={setTableData}
                 setShowMealCart={setShowMealCart}
+                setShowBill={setShowBill}
+                setShowOnHoldBill={setShowOnHoldBill}
+                setShowBreakBill={setShowBreakBill}
+                setBreakData={setBreakData}
               />
             ))}
           </>
@@ -138,6 +149,40 @@ const BookingPage = () => {
       ) : (
         <></>
       )}
+
+      {showBill ? (
+        <TableBill
+          open={showBill}
+          setOpen={setShowBill}
+          isOnHoldBill={showOnHoldBill}
+          setShowOnHoldBill={setShowOnHoldBill}
+          tableData={tableData}
+          customersList={customersList}
+          getAllTablesData={getAllTablesData}
+          getCustomerData={getCustomerData}
+          setBillData={setBillData}
+          setBillPrint={setBillPrint}
+        />
+      ) : (
+        <></>
+      )}
+
+      {showBreakBill ? (
+        <BreakBill
+          open={showBreakBill}
+          setOpen={setShowBreakBill}
+          setShowBill={setShowBill}
+          tableData={tableData}
+          breakData={breakData}
+          customersList={customersList}
+          setTableData={setTableData}
+          getAllTablesData={getAllTablesData}
+          getCustomerData={getCustomerData}
+        />
+      ) : (
+        <></>
+      )}
+
       {billPrint && storeData.StoreData?.isPrintEnable ? (
         <BillPrintPreviewInfo open={billPrint} setOpen={setBillPrint} data={billData} />
       ) : (

@@ -26,6 +26,7 @@ import _ from 'lodash'
 import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
+import { BillPrintDataType } from '@/components/BillPrint'
 
 type TableBillPropType = {
   open: boolean
@@ -35,9 +36,11 @@ type TableBillPropType = {
   tableData: TableDataType
   customersList: CustomerListType[]
   getAllTablesData: () => void
-  setGameType: (value: string) => void
-  setCustomers: (value: string[]) => void
+  setGameType?: (value: string) => void
+  setCustomers?: (value: string[]) => void
   getCustomerData: () => void
+  setBillData: (value: BillPrintDataType) => void
+  setBillPrint: (value: boolean) => void
 }
 
 const paymentMethods = ['CASH', 'UPI', 'CARD']
@@ -50,9 +53,11 @@ const TableBill = ({
   tableData,
   customersList,
   getAllTablesData,
-  setGameType,
-  setCustomers,
-  getCustomerData
+  // setGameType,
+  // setCustomers,
+  getCustomerData,
+  setBillData,
+  setBillPrint
 }: TableBillPropType) => {
   // States
   const [data, setData] = useState({} as CustomerInvoiceType)
@@ -86,7 +91,7 @@ const TableBill = ({
   const [isHappyHour, setIsHappyHour] = useState(false)
   const [happyHourDiscount, setHappyHourDiscount] = useState(0)
 
-  const netPay = (data.totalBillAmt - Number(inputData.discount ?? 0)).toFixed(2)
+  const netPay = (Number(data.totalBillAmt || 0) - Number(inputData.discount ?? 0)).toFixed(2)
   const cashOut = (Number(inputData.cashIn ?? 0) - Number(netPay ?? 0)).toFixed(2)
 
   const { lang: locale } = useParams()
@@ -309,6 +314,15 @@ const TableBill = ({
       })
     }
 
+    const itemBillData = {
+      startTime: DateTime.fromISO(data.selectedTable.gameData.startTime).toFormat('hh:mm:ss a'),
+      endTime: DateTime.fromISO(data.selectedTable.gameData.endTime).toFormat('hh:mm:ss a'),
+      totalTime: `${Math.floor(data.timeDelta / 60) || '00'}hrs ${data.timeDelta % 60 || '00'}mins`,
+      gameType: data?.selectedTable?.gameData?.gameType,
+      gameAmount: data?.totalBillAmt,
+      mealAmount: data?.mealTotal
+    }
+
     const inputDetails = _.omit(inputData, 'paymentMethod')
     const requestData = {
       ...inputDetails,
@@ -327,11 +341,23 @@ const TableBill = ({
       })
 
       if (response && response.data) {
-        setGameType(tableData.gameTypes[0] || '')
-        setCustomers(['CASH'])
+        // setGameType(tableData.gameTypes[0] || '')
+        // setCustomers(['CASH'])
         getAllTablesData()
         handleClose()
         toast.success('Good Job!', { icon: <>👏</> })
+
+        setBillData({
+          billNo: response.data.transactionId ?? '#123123',
+          tableName: tableData.tableName,
+          server: localStorage.getItem('clientName') ?? '',
+          isTableBilling: true,
+          tableBillData: itemBillData,
+          subTotal: Number(data?.totalBillAmt || 0) + Number(data?.mealTotal || 0),
+          discount: inputData.discount,
+          total: `${Number(data?.totalBillAmt || 0) + Number(data?.mealTotal || 0) - Number(inputData.discount || 0)}`
+        })
+        setBillPrint(true)
       }
     } catch (error: any) {
       // if (error?.response?.status === 409) {
@@ -351,8 +377,8 @@ const TableBill = ({
       return
     }
 
-    setGameType(tableData.gameTypes[0] || '')
-    setCustomers(['CASH'])
+    // setGameType(tableData.gameTypes[0] || '')
+    // setCustomers(['CASH'])
     getAllTablesData()
     handleClose()
     toast.success('Good Job!', { icon: <>👏</> })

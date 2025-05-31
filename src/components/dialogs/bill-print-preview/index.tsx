@@ -1,6 +1,6 @@
 'use client'
 
-import BillPrint from '@/components/BillPrint'
+import BillPrint, { BillPrintDataType } from '@/components/BillPrint'
 import { StoreDataType } from '@/types/adminTypes'
 import { Button, Dialog, DialogActions, DialogContent, IconButton } from '@mui/material'
 import axios from 'axios'
@@ -12,25 +12,10 @@ import { useReactToPrint } from 'react-to-print'
 // MUI Imports
 import { toast } from 'react-toastify'
 
-export type BillPrintPreviewDataType = {
-  tableName?: string
-  billNo: string
-  server: string
-  orderData: {
-    name: string
-    category: string
-    amount: number
-  }[]
-  subTotal: number
-  tax: number
-  discount?: string | number
-  total: string
-}
-
 type BillPrintPreviewProps = {
   open: boolean
   setOpen: (open: boolean) => void
-  data: BillPrintPreviewDataType
+  data: BillPrintDataType
   getTableData?: () => void
 }
 

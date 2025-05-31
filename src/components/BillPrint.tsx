@@ -8,15 +8,24 @@ export type BillPrintDataType = {
   tableName?: string
   billNo: string
   server: string
-  orderData: {
+  orderData?: {
     name: string
     category: string
     amount: number
   }[]
   subTotal: number
-  tax: number
+  tax?: number
   discount?: string | number
   total: string
+  isTableBilling?: boolean
+  tableBillData?: {
+    startTime: string
+    endTime: string
+    totalTime: string
+    gameType: string
+    gameAmount: string
+    mealAmount: number
+  }
 }
 
 type BillPrintProps = {
@@ -63,10 +72,31 @@ const BillPrint = ({ data, storeData, style }: BillPrintProps) => {
           </div>
         </div>
 
-        <div style={{ display: 'flex', marginTop: '8px' }}>
-          <span style={{ fontWeight: 'bold', marginRight: '4px' }}>Server:</span>
-          {data.server}
-        </div>
+        {data.isTableBilling ? (
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
+            <div>
+              {data.tableBillData?.startTime ? (
+                <>
+                  <span style={{ fontWeight: 'bold', marginRight: '4px' }}>Start Time:</span>
+                  {data.tableBillData?.startTime}
+                </>
+              ) : null}
+            </div>
+            <div>
+              {data.tableBillData?.endTime ? (
+                <>
+                  <span style={{ fontWeight: 'bold', marginRight: '4px' }}>End Time:</span>
+                  {data.tableBillData?.endTime}
+                </>
+              ) : null}
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', marginTop: '8px' }}>
+            <span style={{ fontWeight: 'bold', marginRight: '4px' }}>Server:</span>
+            {data.server}
+          </div>
+        )}
 
         <div style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '20px', marginTop: '16px' }}>INVOICE</div>
 
@@ -95,34 +125,95 @@ const BillPrint = ({ data, storeData, style }: BillPrintProps) => {
           >
             Amount
           </div>
-          {data.orderData?.map((item, index) => (
-            <React.Fragment key={index}>
-              <div
-                style={{
-                  fontWeight: 'bold',
-                  textAlign: 'left',
-                  paddingRight: '0.5rem',
-                  paddingLeft: '0.5rem',
-                  marginBottom: '0.5rem',
-                  borderBottom: '1px solid #ccc'
-                }}
-              >
-                {item.name} <br />
-                <span style={{ fontWeight: 'normal', fontStyle: 'italic' }}>{item.category}</span>
-              </div>
-              <div
-                style={{
-                  textAlign: 'right',
-                  paddingRight: '0.5rem',
-                  paddingLeft: '0.5rem',
-                  marginBottom: '0.5rem',
-                  borderBottom: '1px solid #ccc'
-                }}
-              >
-                {item.amount}
-              </div>
-            </React.Fragment>
-          ))}
+          <>
+            {data.isTableBilling ? (
+              <>
+                <React.Fragment>
+                  <div
+                    style={{
+                      fontWeight: 'bold',
+                      textAlign: 'left',
+                      paddingRight: '0.5rem',
+                      paddingLeft: '0.5rem',
+                      marginBottom: '0.5rem',
+                      borderBottom: '1px solid #ccc'
+                    }}
+                  >
+                    {data.tableBillData?.gameType} <br />
+                    <span style={{ fontWeight: 'normal', fontStyle: 'italic' }}>{data.tableBillData?.totalTime}</span>
+                  </div>
+                  <div
+                    style={{
+                      textAlign: 'right',
+                      paddingRight: '0.5rem',
+                      paddingLeft: '0.5rem',
+                      marginBottom: '0.5rem',
+                      borderBottom: '1px solid #ccc'
+                    }}
+                  >
+                    {data.tableBillData?.gameAmount}
+                  </div>
+                </React.Fragment>
+                <React.Fragment>
+                  <div
+                    style={{
+                      fontWeight: 'bold',
+                      textAlign: 'left',
+                      paddingRight: '0.5rem',
+                      paddingLeft: '0.5rem',
+                      marginBottom: '0.5rem',
+                      borderBottom: '1px solid #ccc'
+                    }}
+                  >
+                    Meal <br />
+                    {/* <span style={{ fontWeight: 'normal', fontStyle: 'italic' }}>{item.category}</span> */}
+                  </div>
+                  <div
+                    style={{
+                      textAlign: 'right',
+                      paddingRight: '0.5rem',
+                      paddingLeft: '0.5rem',
+                      marginBottom: '0.5rem',
+                      borderBottom: '1px solid #ccc'
+                    }}
+                  >
+                    {data.tableBillData?.mealAmount || 0}
+                  </div>
+                </React.Fragment>
+              </>
+            ) : (
+              <>
+                {data.orderData?.map((item, index) => (
+                  <React.Fragment key={index}>
+                    <div
+                      style={{
+                        fontWeight: 'bold',
+                        textAlign: 'left',
+                        paddingRight: '0.5rem',
+                        paddingLeft: '0.5rem',
+                        marginBottom: '0.5rem',
+                        borderBottom: '1px solid #ccc'
+                      }}
+                    >
+                      {item.name} <br />
+                      <span style={{ fontWeight: 'normal', fontStyle: 'italic' }}>{item.category}</span>
+                    </div>
+                    <div
+                      style={{
+                        textAlign: 'right',
+                        paddingRight: '0.5rem',
+                        paddingLeft: '0.5rem',
+                        marginBottom: '0.5rem',
+                        borderBottom: '1px solid #ccc'
+                      }}
+                    >
+                      {item.amount}
+                    </div>
+                  </React.Fragment>
+                ))}
+              </>
+            )}
+          </>
         </div>
 
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
@@ -132,11 +223,13 @@ const BillPrint = ({ data, storeData, style }: BillPrintProps) => {
             >
               <span>Sub Total:</span> {data.subTotal?.toFixed(2)}
             </div>
-            <div
-              style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', textAlign: 'right', paddingRight: '0.5rem' }}
-            >
-              <span>Tax:</span> {data.tax?.toFixed(2)}
-            </div>
+            {data.tax ? (
+              <div
+                style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', textAlign: 'right', paddingRight: '0.5rem' }}
+              >
+                <span>Tax:</span> {data.tax?.toFixed(2)}
+              </div>
+            ) : null}
             {data.discount && (
               <div
                 style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', textAlign: 'right', paddingRight: '0.5rem' }}
