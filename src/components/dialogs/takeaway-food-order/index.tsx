@@ -15,6 +15,7 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import BillPrintPreviewInfo from '../bill-print-preview'
 import { BillPrintDataType } from '@/components/BillPrint'
+import { getPlanAccessControl } from '@/utils/Utils'
 
 type TakeawayFoodOrderPropType = {
   open: boolean
@@ -264,6 +265,8 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
     }
   }
 
+  const planAccessControl = getPlanAccessControl()
+
   return (
     <>
       <Drawer
@@ -509,7 +512,11 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
           </form>
         </div>
       </Drawer>
-      {billPrint ? <BillPrintPreviewInfo open={billPrint} setOpen={setBillPrint} data={billData} /> : <></>}
+      {billPrint && planAccessControl.billPrint ? (
+        <BillPrintPreviewInfo open={billPrint} setOpen={setBillPrint} data={billData} />
+      ) : (
+        <></>
+      )}
     </>
   )
 }

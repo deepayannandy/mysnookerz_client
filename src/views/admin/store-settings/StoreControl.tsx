@@ -15,6 +15,7 @@ import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { getPlanAccessControl } from '@/utils/Utils'
 
 const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; getStoreData: () => void }) => {
   const [requiredCustomerCount, setRequiredCustomerCount] = useState(1)
@@ -124,7 +125,7 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
     }
   }
 
-  const controlFields = [
+  let controlFields = [
     {
       name: 'Required Customer Name',
       caption: 'Once enabled, the selected number of customer names must be filled in to start the table.',
@@ -193,6 +194,20 @@ const StoreControl = ({ storeData, getStoreData }: { storeData: StoreDataType; g
     //   value: isBreakSwitch
     // }
   ]
+
+  const planAccessControl = getPlanAccessControl()
+
+  controlFields = controlFields.filter(fields => {
+    return (
+      (fields.name !== 'Game Cancellation Timeout' || planAccessControl.cancelGame) &&
+      (fields.name !== 'Pause Resume Billing Timer' || planAccessControl.pauseResume) &&
+      (fields.name !== 'Enabling this rounds off the amount based on the selected type:' ||
+        planAccessControl.roundOff) &&
+      (fields.name !== 'Print Receipt' || planAccessControl.billPrint) &&
+      (fields.name !== 'Hold Checkout' || planAccessControl.holdCheckout) &&
+      (fields.name !== 'Self Start' || planAccessControl.selfStart)
+    )
+  })
 
   return (
     <>

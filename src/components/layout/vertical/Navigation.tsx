@@ -29,6 +29,7 @@ import { getLocalizedUrl } from '@/utils/i18n'
 
 // Style Imports
 import navigationCustomStyles from '@core/styles/vertical/navigationCustomStyles'
+import { getPlanAccessControl } from '@/utils/Utils'
 
 type Props = {
   dictionary: Awaited<ReturnType<typeof getDictionary>>
@@ -65,6 +66,8 @@ const Navigation = (props: Props) => {
   const { mode: muiMode, systemMode: muiSystemMode } = useColorScheme()
   const theme = useTheme()
   const userDesignation = localStorage.getItem('userDesignation')
+
+  const planAccessControl = getPlanAccessControl()
 
   // Refs
   const shadowRef = useRef(null)
@@ -136,7 +139,12 @@ const Navigation = (props: Props) => {
         )}
       </NavHeader>
       <StyledBoxForShadow ref={shadowRef} />
-      <VerticalMenu dictionary={dictionary} scrollMenu={scrollMenu} userDesignation={userDesignation} />
+      <VerticalMenu
+        dictionary={dictionary}
+        scrollMenu={scrollMenu}
+        userDesignation={userDesignation}
+        planAccessControl={planAccessControl}
+      />
     </VerticalNav>
   )
 }

@@ -1,8 +1,9 @@
 'use client'
 
 import { CreditReportDataType } from '@/types/adminTypes'
+import { getPlanAccessControl } from '@/utils/Utils'
 import CreditReportTable from '@/views/admin/reports/CreditReportTable'
-import { Grid } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -44,12 +45,20 @@ const CreditReportPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const planAccessControl = getPlanAccessControl()
+
   return (
-    <Grid container spacing={6}>
-      <Grid item xs={12}>
-        <CreditReportTable data={reportData ?? []} getReportData={getReportData} />
-      </Grid>
-    </Grid>
+    <>
+      {planAccessControl.reportTableCustomerDuesRevenueCafe ? (
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <CreditReportTable data={reportData ?? []} getReportData={getReportData} />
+          </Grid>
+        </Grid>
+      ) : (
+        <Typography className='text-center'>You are not allowed to access this page.</Typography>
+      )}
+    </>
   )
 }
 

@@ -25,6 +25,7 @@ import StyledVerticalNavExpandIcon from '@menu/styles/vertical/StyledVerticalNav
 // Style Imports
 import menuItemStyles from '@core/styles/vertical/menuItemStyles'
 import menuSectionStyles from '@core/styles/vertical/menuSectionStyles'
+import { PlanAccessType } from '@/types/adminTypes'
 
 // Menu Data Imports
 // import menuData from '@/data/navigation/verticalMenuData'
@@ -38,6 +39,7 @@ type Props = {
   dictionary: Awaited<ReturnType<typeof getDictionary>>
   scrollMenu: (container: any, isPerfectScrollbar: boolean) => void
   userDesignation?: string | null
+  planAccessControl?: PlanAccessType
 }
 
 const RenderExpandIcon = ({ open, transitionDuration }: RenderExpandIconProps) => (
@@ -46,7 +48,7 @@ const RenderExpandIcon = ({ open, transitionDuration }: RenderExpandIconProps) =
   </StyledVerticalNavExpandIcon>
 )
 
-const VerticalMenu = ({ dictionary, scrollMenu, userDesignation }: Props) => {
+const VerticalMenu = ({ dictionary, scrollMenu, userDesignation, planAccessControl }: Props) => {
   // Hooks
   const theme = useTheme()
   const verticalNavOptions = useVerticalNav()
@@ -100,10 +102,14 @@ const VerticalMenu = ({ dictionary, scrollMenu, userDesignation }: Props) => {
             <MenuItem href={`/${locale}/admin/analytics`}>{dictionary['navigation'].analytics}</MenuItem>
             <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
 
-            <SubMenu label={dictionary['navigation'].cafeManagement} icon={<i className='ri-shopping-bag-3-line' />}>
-              <MenuItem href={`/${locale}/admin/product-list`}>{dictionary['navigation'].productList}</MenuItem>
-              <MenuItem href={`/${locale}/admin/new-product`}>{dictionary['navigation'].newProduct}</MenuItem>
-            </SubMenu>
+            {planAccessControl?.cafeManagement ? (
+              <SubMenu label={dictionary['navigation'].cafeManagement} icon={<i className='ri-shopping-bag-3-line' />}>
+                <MenuItem href={`/${locale}/admin/product-list`}>{dictionary['navigation'].productList}</MenuItem>
+                <MenuItem href={`/${locale}/admin/new-product`}>{dictionary['navigation'].newProduct}</MenuItem>
+              </SubMenu>
+            ) : (
+              <></>
+            )}
 
             {/* <SubMenu label={dictionary['navigation'].expense} icon={<i className='ri-bill-line' />}>
               <MenuItem href={`/${locale}/admin/expense/create-category`}>

@@ -2,6 +2,7 @@
 
 import CardStatVertical from '@/components/card-statistics/Vertical'
 import { DashboardDataType } from '@/types/staffTypes'
+import { getPlanAccessControl } from '@/utils/Utils'
 // MUI Imports
 import Award from '@/views/admin/dashboard/Award'
 import Transactions from '@/views/admin/dashboard/Transactions'
@@ -63,38 +64,60 @@ const DashboardDetails = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const planAccessControl = getPlanAccessControl()
+
   return (
     <>
       {dashboardData?.sales >= 0 ? (
         <Grid container spacing={4}>
-          <Grid item xs={12} md={3}>
-            <Award data={dashboardData.sales || 0} />
-          </Grid>
-          <Grid item xs={12} sm={6} md={5.5}>
-            <Transactions data={dashboardData} />
-          </Grid>
-          <Grid item xs={12} sm={3} md={1.75}>
-            <CardStatVertical
-              title='Discount'
-              stats={`₹${dashboardData.discount || 0}`}
-              avatarIcon='ri-discount-percent-line'
-              avatarColor='warning'
-              // subtitle='Revenue Increase'
-              // trendNumber='42%'
-              // trend='positive'
-            />
-          </Grid>
-          <Grid item xs={12} sm={3} md={1.75}>
-            <CardStatVertical
-              title='Credit'
-              stats={`₹${dashboardData.credit || 0}`}
-              avatarIcon='ri-refund-2-line'
-              avatarColor='error'
-              // subtitle='Revenue Increase'
-              // trendNumber='42%'
-              // trend='positive'
-            />
-          </Grid>
+          {planAccessControl.dashboardCardsTodayRevenueTransactionsCredit ? (
+            <Grid item xs={12} md={3}>
+              <Award data={dashboardData.sales || 0} />
+            </Grid>
+          ) : (
+            <></>
+          )}
+
+          {planAccessControl.dashboardCardsTodayRevenueTransactionsCredit ? (
+            <Grid item xs={12} sm={6} md={5.5}>
+              <Transactions data={dashboardData} />
+            </Grid>
+          ) : (
+            <></>
+          )}
+
+          {planAccessControl.dashboardCardsDiscountReceivedAmountExpenseProfit ? (
+            <Grid item xs={12} sm={3} md={1.75}>
+              <CardStatVertical
+                title='Discount'
+                stats={`₹${dashboardData.discount || 0}`}
+                avatarIcon='ri-discount-percent-line'
+                avatarColor='warning'
+                // subtitle='Revenue Increase'
+                // trendNumber='42%'
+                // trend='positive'
+              />
+            </Grid>
+          ) : (
+            <></>
+          )}
+
+          {planAccessControl.dashboardCardsTodayRevenueTransactionsCredit ? (
+            <Grid item xs={12} sm={3} md={1.75}>
+              <CardStatVertical
+                title='Credit'
+                stats={`₹${dashboardData.credit || 0}`}
+                avatarIcon='ri-refund-2-line'
+                avatarColor='error'
+                // subtitle='Revenue Increase'
+                // trendNumber='42%'
+                // trend='positive'
+              />
+            </Grid>
+          ) : (
+            <></>
+          )}
+
           {/* <Grid item xs={12}>
             <DueAmountTable data={dashboardData.creditHistoryToday ?? []} getDashboardData={getDashboardData} />
           </Grid> */}

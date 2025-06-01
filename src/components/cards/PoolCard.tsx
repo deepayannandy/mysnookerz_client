@@ -9,6 +9,7 @@ import CountdownTimer from '../count-down-timer'
 import CountUpTimer from '../count-up-timer'
 import { BreakBillType } from '../dialogs/break-bill'
 import SwitchTable from '../dialogs/switch-table'
+import { getPlanAccessControl } from '@/utils/Utils'
 
 const PoolCard = ({
   tableData,
@@ -57,6 +58,8 @@ const PoolCard = ({
   const [showSwitchTable, setShowSwitchTable] = useState(false)
   const [isStartButtonDisabled, setIsStartButtonDisabled] = useState(false)
   const [isHoldButtonDisabled, setIsHoldButtonDisabled] = useState(false)
+
+  const planAccessControl = getPlanAccessControl()
 
   // let totalSeconds =
   //   tableData.gameData?.startTime && tableData.gameData?.endTime
@@ -371,11 +374,11 @@ const PoolCard = ({
                 ></span>
               </Tooltip>
             ) : tableData?.gameData?.gameType !== 'Countdown Billing' ? (
-              !tableData?.isBreakHold && tableData?.gameData?.endTime ? (
+              !tableData?.isBreakHold && tableData?.gameData?.endTime && planAccessControl.restartTable ? (
                 <Tooltip title='Restart Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
                   <span className='ri-restart-line' onClick={restartGame}></span>
                 </Tooltip>
-              ) : storeData.StoreData?.isSwitchTable ? (
+              ) : storeData.StoreData?.isSwitchTable && planAccessControl.switchTable ? (
                 <Tooltip title='Switch Table' placement='top' className='cursor-pointer text-xl text-center pt-6'>
                   <span className='ri-arrow-left-right-line' onClick={() => setShowSwitchTable(true)}></span>
                 </Tooltip>
@@ -675,7 +678,7 @@ const PoolCard = ({
           {tableData.isOccupied ? (
             !tableData.isBreakHold && tableData.gameData?.endTime ? (
               <>
-                {storeData?.StoreData?.isHoldEnable ? (
+                {storeData?.StoreData?.isHoldEnable && planAccessControl.holdCheckout ? (
                   <Button
                     variant='contained'
                     disabled={isHoldButtonDisabled || tableData.isHold}
@@ -704,7 +707,7 @@ const PoolCard = ({
                   <span className='ri-restaurant-2-fill text-base'></span>
                   Add Meals
                 </Button>
-                {storeData?.StoreData?.isPauseResume ? (
+                {storeData?.StoreData?.isPauseResume && planAccessControl.pauseResume ? (
                   tableData?.pauseTime ? (
                     <Button variant='contained' className='bg-[#FFCA00] text-black h-8' onClick={resumeGame}>
                       <span className='ri-play-mini-fill'></span>Resume

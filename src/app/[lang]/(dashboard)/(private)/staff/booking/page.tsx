@@ -9,6 +9,7 @@ import OrderMeals from '@/components/dialogs/order-meals'
 import TableBill from '@/components/dialogs/table-bill'
 import { StoreDataType, TableDataType } from '@/types/adminTypes'
 import { CustomerDataType, CustomerListType } from '@/types/staffTypes'
+import { getPlanAccessControl } from '@/utils/Utils'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -109,6 +110,8 @@ const BookingPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const planAccessControl = getPlanAccessControl()
+
   return (
     <>
       <div
@@ -183,7 +186,7 @@ const BookingPage = () => {
         <></>
       )}
 
-      {billPrint && storeData.StoreData?.isPrintEnable ? (
+      {billPrint && storeData.StoreData?.isPrintEnable && planAccessControl.billPrint ? (
         <BillPrintPreviewInfo open={billPrint} setOpen={setBillPrint} data={billData} />
       ) : (
         <></>

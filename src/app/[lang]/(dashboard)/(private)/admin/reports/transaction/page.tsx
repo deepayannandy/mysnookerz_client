@@ -2,8 +2,9 @@
 
 import ReportCard from '@/components/cards/ReportCard'
 import { TransactionReportDataType } from '@/types/adminTypes'
+import { getPlanAccessControl } from '@/utils/Utils'
 import TransactionReportTable from '@/views/admin/reports/TransactionReportTable'
-import { Grid } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -83,15 +84,23 @@ const TransactionReportPage = () => {
     }
   ]
 
+  const planAccessControl = getPlanAccessControl()
+
   return (
-    <Grid container spacing={6}>
-      <Grid item xs={12}>
-        <ReportCard data={reportCardData ?? []} />
-      </Grid>
-      <Grid item xs={12}>
-        <TransactionReportTable data={reportData.allTransaction ?? []} getReportData={getReportData} />
-      </Grid>
-    </Grid>
+    <>
+      {planAccessControl.reportTransaction ? (
+        <Grid container spacing={6}>
+          <Grid item xs={12}>
+            <ReportCard data={reportCardData ?? []} />
+          </Grid>
+          <Grid item xs={12}>
+            <TransactionReportTable data={reportData.allTransaction ?? []} getReportData={getReportData} />
+          </Grid>
+        </Grid>
+      ) : (
+        <Typography className='text-center'>You are not allowed to access this page.</Typography>
+      )}
+    </>
   )
 }
 

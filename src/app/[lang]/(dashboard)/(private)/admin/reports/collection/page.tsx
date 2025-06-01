@@ -1,8 +1,9 @@
 'use client'
 
 import { CollectionReportDataType } from '@/types/adminTypes'
+import { getPlanAccessControl } from '@/utils/Utils'
 import CollectionReportTable from '@/views/admin/reports/CollectionReportTable'
-import { Grid } from '@mui/material'
+import { Grid, Typography } from '@mui/material'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -81,16 +82,23 @@ const CollectionReportPage = () => {
   //     icon: 'ri-money-dollar-circle-line'
   //   }
   // ]
+  const planAccessControl = getPlanAccessControl()
 
   return (
-    <Grid container spacing={6}>
-      {/* <Grid item xs={12}>
+    <>
+      {planAccessControl.reportCollection ? (
+        <Grid container spacing={6}>
+          {/* <Grid item xs={12}>
         <ReportCard data={reportCardData ?? []} />
       </Grid> */}
-      <Grid item xs={12}>
-        <CollectionReportTable data={reportData ?? []} />
-      </Grid>
-    </Grid>
+          <Grid item xs={12}>
+            <CollectionReportTable data={reportData ?? []} />
+          </Grid>
+        </Grid>
+      ) : (
+        <Typography className='text-center'>You are not allowed to access this page.</Typography>
+      )}
+    </>
   )
 }
 

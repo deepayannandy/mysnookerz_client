@@ -27,6 +27,7 @@ import { DateTime } from 'luxon'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
 import { BillPrintDataType } from '@/components/BillPrint'
+import { getPlanAccessControl } from '@/utils/Utils'
 
 type TableBillPropType = {
   open: boolean
@@ -90,6 +91,8 @@ const TableBill = ({
   const [isAddToWalletButtonDisabled, setIsAddToWalletButtonDisabled] = useState(false)
   const [isHappyHour, setIsHappyHour] = useState(false)
   const [happyHourDiscount, setHappyHourDiscount] = useState(0)
+
+  const planAccessControl = getPlanAccessControl()
 
   const netPay = (Number(data.totalBillAmt || 0) - Number(inputData.discount ?? 0)).toFixed(2)
   const cashOut = (Number(inputData.cashIn ?? 0) - Number(netPay ?? 0)).toFixed(2)
@@ -196,7 +199,8 @@ const TableBill = ({
       storeData?.StoreData?.happyHrsEndTime &&
       storeData?.StoreData?.happyHrsDiscount &&
       data?.totalBillAmt &&
-      data.selectedTable?.gameData?.startTime
+      data.selectedTable?.gameData?.startTime &&
+      planAccessControl.happyHours
     ) {
       const tableStartTime = DateTime.fromISO(data.selectedTable.gameData.startTime)
       const formattedStartDate = tableStartTime.toFormat('dd-MM-yyyy')
@@ -951,6 +955,7 @@ const TableBill = ({
               //placeholder='₹_._'
               inputProps={{ type: 'number', min: 0, step: 'any' }}
               label='Discount'
+              disabled={!planAccessControl.discount}
               size='small'
               value={inputData.discount}
               onChange={event =>

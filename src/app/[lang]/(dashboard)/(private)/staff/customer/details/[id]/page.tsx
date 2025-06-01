@@ -21,6 +21,8 @@ import CustomerDetailsHeader from '@/views/staff/customer/details/CustomerDetail
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
+import { getPlanAccessControl } from '@/utils/Utils'
+import { Typography } from '@mui/material'
 
 // Vars
 const tabContentList = (customerData: CustomerDetailsDataType): { [key: string]: ReactElement } => ({
@@ -110,47 +112,55 @@ const CustomerDetails = ({ params }: { params: { id: string } }) => {
     }
   }
 
+  const planAccessControl = getPlanAccessControl()
+
   return (
     <>
-      <Grid container spacing={6}>
-        <Grid item xs={12}>
-          <CustomerDetailsHeader
-            boardingDate={customerData?.customers?.onBoardingDate}
-            customerData={customerData}
+      {planAccessControl.customerProfile ? (
+        <>
+          <Grid container spacing={6}>
+            <Grid item xs={12}>
+              <CustomerDetailsHeader
+                boardingDate={customerData?.customers?.onBoardingDate}
+                customerData={customerData}
+                getCustomerData={getCustomerData}
+                setCreditLimitDialogOpen={setCreditLimitDialogOpen}
+                setOldCreditDialogOpen={setOldCreditDialogOpen}
+                setDeleteConfirmationDialogOpen={setDeleteConfirmationDialogOpen}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <CustomerLeftOverview customerData={customerData} getCustomerData={getCustomerData} />
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <CustomerRight tabContentList={tabContentList(customerData)} />
+            </Grid>
+            <Grid item xs={12}>
+              <CustomerPaymentHistoryTable paymentHistoryData={paymentHistoryData} />
+            </Grid>
+          </Grid>
+          <SetCreditLimit
+            open={creditLimitDialogOpen}
+            setOpen={setCreditLimitDialogOpen}
             getCustomerData={getCustomerData}
-            setCreditLimitDialogOpen={setCreditLimitDialogOpen}
-            setOldCreditDialogOpen={setOldCreditDialogOpen}
-            setDeleteConfirmationDialogOpen={setDeleteConfirmationDialogOpen}
+            customerData={customerData}
           />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <CustomerLeftOverview customerData={customerData} getCustomerData={getCustomerData} />
-        </Grid>
-        <Grid item xs={12} md={8}>
-          <CustomerRight tabContentList={tabContentList(customerData)} />
-        </Grid>
-        <Grid item xs={12}>
-          <CustomerPaymentHistoryTable paymentHistoryData={paymentHistoryData} />
-        </Grid>
-      </Grid>
-      <SetCreditLimit
-        open={creditLimitDialogOpen}
-        setOpen={setCreditLimitDialogOpen}
-        getCustomerData={getCustomerData}
-        customerData={customerData}
-      />
-      <AddOldCredit
-        open={oldCreditDialogOpen}
-        setOpen={setOldCreditDialogOpen}
-        getCustomerData={getCustomerData}
-        customerData={customerData}
-      />
-      <DeleteConfirmation
-        open={deleteConfirmationDialogOpen}
-        name={`customer (${customerData?.customers?.fullName})`}
-        setOpen={setDeleteConfirmationDialogOpen}
-        deleteApiCall={deleteCustomer}
-      />
+          <AddOldCredit
+            open={oldCreditDialogOpen}
+            setOpen={setOldCreditDialogOpen}
+            getCustomerData={getCustomerData}
+            customerData={customerData}
+          />
+          <DeleteConfirmation
+            open={deleteConfirmationDialogOpen}
+            name={`customer (${customerData?.customers?.fullName})`}
+            setOpen={setDeleteConfirmationDialogOpen}
+            deleteApiCall={deleteCustomer}
+          />
+        </>
+      ) : (
+        <Typography className='text-center'>You are not allowed to access this page.</Typography>
+      )}
     </>
   )
 }

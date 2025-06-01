@@ -273,3 +273,73 @@ export type ExpenseDataType = {
 export type CategoryListType = { name: string; categoryId: string }
 
 export const TableTypes = ['Snooker', 'Pool', 'PlayStation', 'Table Tennis', 'Carrom', 'Chess']
+
+export enum BillingTypeEnum {
+  ONE = 'ONE',
+  TWO = 'TWO',
+  ALL = 'ALL'
+}
+
+export type TournamentAccess = 'paid' | 'limitedOrPaid'
+export type SmsAccess = 'paid'
+export type WhatsappAccess = 'paid' | 'limited'
+
+export type PlanAccessType = {
+  billingType: BillingTypeEnum
+  switchTable: boolean
+  restartTable: boolean
+  holdCheckout: boolean
+  discount: boolean
+  happyHours: boolean
+  defaultCustomer: boolean
+  cancelGame: boolean
+  pauseResume: boolean
+  roundOff: boolean
+  billPrint: boolean
+  selfStart: boolean
+  dayNightBilling: boolean
+  customerListing: boolean
+  customerProfile: boolean
+  gameHistory: boolean
+  cafeHistory: boolean
+  cafeManagement: boolean
+  cafeOrders: boolean
+  advanceBooking: boolean
+  shiftManagement: boolean
+  blacklistedCustomer: boolean
+  dashboardCardsTodayRevenueTransactionsCredit: boolean
+  dashboardCardsDiscountReceivedAmountExpenseProfit: boolean
+  reportTransaction: boolean
+  reportCollection: boolean
+  reportTableCustomerDuesRevenueCafe: boolean
+  referral: boolean
+  notifications: boolean
+  staffManagement: boolean
+  staffAttendanceSalary: boolean
+  expense: boolean
+  analytics: boolean
+  membership: boolean
+  clubExpenseBar: boolean
+  tableServicesNotification: boolean
+  tournaments: TournamentAccess
+  multiClubOperations: boolean
+  sms: SmsAccess
+  whatsapp: WhatsappAccess
+  terminalManagement: boolean
+  advancedBilling: boolean
+  advancedAnalytics: boolean
+}
+
+export type PlanAccessControlType = {
+  [PlanEnum.STARTER]: PlanAccessType
+  [PlanEnum.PROFESSIONAL]: PlanAccessType
+  [PlanEnum.ULTIMATE]: PlanAccessType
+  [PlanEnum.ENTERPRISE]: PlanAccessType
+}
+
+export enum PlanEnum {
+  STARTER = 'starter',
+  PROFESSIONAL = 'professional',
+  ULTIMATE = 'ultimate',
+  ENTERPRISE = 'enterprise'
+}

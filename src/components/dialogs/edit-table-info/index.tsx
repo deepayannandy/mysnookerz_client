@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 
 // MUI Imports
 import CustomIconButton from '@/@core/components/mui/IconButton'
-import { TableTypes } from '@/types/adminTypes'
+import { BillingTypeEnum, TableTypes } from '@/types/adminTypes'
 import { Checkbox, Divider, FormControlLabel } from '@mui/material'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
@@ -23,6 +23,7 @@ import axios from 'axios'
 import _ from 'lodash'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { getPlanAccessControl } from '@/utils/Utils'
 
 type EditTableDataType = {
   _id: string
@@ -87,6 +88,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   // const { lang: locale } = useParams()
   // const pathname = usePathname()
   // const router = useRouter()
+  const planAccessControl = getPlanAccessControl()
 
   const {
     control,
@@ -162,6 +164,16 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
 
     if (!gameTypes.length) {
       toast.error('Please select at least one billing type')
+      return
+    }
+
+    if (planAccessControl.billingType === BillingTypeEnum.ONE && gameTypes.length > 1) {
+      toast.error('Please select only one billing type')
+      return
+    }
+
+    if (planAccessControl.billingType === BillingTypeEnum.TWO && gameTypes.length > 2) {
+      toast.error('Please select only two billing type')
       return
     }
 

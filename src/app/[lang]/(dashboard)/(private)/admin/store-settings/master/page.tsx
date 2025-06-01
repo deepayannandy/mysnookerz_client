@@ -1,6 +1,7 @@
 'use client'
 
 import { StoreDataType } from '@/types/adminTypes'
+import { getPlanAccessControl } from '@/utils/Utils'
 // MUI Imports
 import HappyHours from '@/views/admin/store-settings/master/HappyHours'
 import NightTime from '@/views/admin/store-settings/master/NightTime'
@@ -63,13 +64,15 @@ const MasterDetails = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const planAccessControl = getPlanAccessControl()
+
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
       <div className='border rounded-lg'>
         <NightTime storeData={data} submitData={submitData} />
       </div>
       <div className='border rounded-lg'>
-        <HappyHours storeData={data} submitData={submitData} />
+        {planAccessControl.happyHours ? <HappyHours storeData={data} submitData={submitData} /> : <></>}
       </div>
       {/* <div className='border rounded-lg'>
         <ProductInformation />
