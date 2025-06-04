@@ -34,9 +34,13 @@ type EditTableDataType = {
     dayUptoMin: number | null
     dayMinAmt: number | null
     dayPerMin: number | null
+    dayUpToPerson: number | null
+    dayExtraAmount: number | null
     nightUptoMin: number | null
     nightMinAmt: number | null
     nightPerMin: number | null
+    nightUpToPerson: number | null
+    nightExtraAmount: number | null
   }>
   slotWiseRules: Partial<{
     uptoMin: number | null
@@ -457,6 +461,46 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     )}
                   />
                 </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='minuteWiseRules.dayUpToPerson'
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Up To Person'
+                        inputProps={{ type: 'number', min: 0 }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.minuteWiseRules?.dayUpToPerson && {
+                          error: true,
+                          helperText: errors.minuteWiseRules?.dayUpToPerson?.message || 'This field is required'
+                        })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='minuteWiseRules.dayExtraAmount'
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Extra Amount'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.minuteWiseRules?.dayExtraAmount && {
+                          error: true,
+                          helperText: errors.minuteWiseRules?.dayExtraAmount?.message || 'This field is required'
+                        })}
+                      />
+                    )}
+                  />
+                </Grid>
                 <Grid item xs={12}>
                   <Divider>
                     <span className='mx-3 font-bold'>Night</span>
@@ -517,6 +561,46 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                         {...(errors.minuteWiseRules?.nightPerMin && {
                           error: true,
                           helperText: errors.minuteWiseRules?.nightPerMin?.message
+                        })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='minuteWiseRules.nightUpToPerson'
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Up To Person'
+                        inputProps={{ type: 'number', min: 0 }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.minuteWiseRules?.nightUpToPerson && {
+                          error: true,
+                          helperText: errors.minuteWiseRules?.nightUpToPerson?.message || 'This field is required'
+                        })}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Controller
+                    name='minuteWiseRules.nightExtraAmount'
+                    control={control}
+                    render={({ field: { value, onChange } }) => (
+                      <TextField
+                        size='small'
+                        fullWidth
+                        label='Extra Amount'
+                        inputProps={{ type: 'number', min: 0, step: 'any' }}
+                        value={value}
+                        onChange={onChange}
+                        {...(errors.minuteWiseRules?.nightExtraAmount && {
+                          error: true,
+                          helperText: errors.minuteWiseRules?.nightExtraAmount?.message || 'This field is required'
                         })}
                       />
                     )}
