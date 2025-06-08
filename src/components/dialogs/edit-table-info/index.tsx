@@ -35,11 +35,15 @@ type EditTableDataType = {
     dayMinAmt: number | null
     dayPerMin: number | null
     dayUpToPerson: number | null
+    dayExtraChargeCondition: string
+    isDayExtraChargePerPerson?: boolean
     dayExtraAmount: number | null
     nightUptoMin: number | null
     nightMinAmt: number | null
     nightPerMin: number | null
     nightUpToPerson: number | null
+    nightExtraChargeCondition: string
+    isNightExtraChargePerPerson?: boolean
     nightExtraAmount: number | null
   }>
   slotWiseRules: Partial<{
@@ -67,6 +71,22 @@ type EditTableInfoProps = {
   tableData: EditTableDataType
   getTableData: () => void
 }
+
+const enum ExtraChargeConditionEnum {
+  'PER_PERSON' = 'PER_PERSON',
+  'PER_MINUTE' = 'PER_MINUTE'
+}
+
+const extraChargeConditionMap = [
+  {
+    displayValue: 'Per Person',
+    value: ExtraChargeConditionEnum.PER_PERSON
+  },
+  {
+    displayValue: 'Per Minute',
+    value: ExtraChargeConditionEnum.PER_MINUTE
+  }
+]
 
 // const status = ['Status', 'Active', 'Inactive', 'Suspended']
 
@@ -122,7 +142,18 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
   })
 
   useEffect(() => {
-    resetForm(_.omit(tableData, 'deviceId', 'nodeID', 'gameType'))
+    resetForm({
+      ..._.omit(tableData, 'deviceId', 'nodeID', 'gameType'),
+      minuteWiseRules: {
+        ...tableData.minuteWiseRules,
+        dayExtraChargeCondition: tableData.minuteWiseRules?.isDayExtraChargePerPerson
+          ? ExtraChargeConditionEnum.PER_PERSON
+          : ExtraChargeConditionEnum.PER_MINUTE,
+        nightExtraChargeCondition: tableData.minuteWiseRules?.isNightExtraChargePerPerson
+          ? ExtraChargeConditionEnum.PER_PERSON
+          : ExtraChargeConditionEnum.PER_MINUTE
+      }
+    })
     setDeviceId(tableData.deviceId)
     setNodeId(tableData.nodeID)
     setIsMinuteBillingSelected(isMinuteBilling)
@@ -183,6 +214,15 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
 
     if (!isMinuteBillingSelected) {
       data.minuteWiseRules = {}
+    } else {
+      data.minuteWiseRules = Object.assign({}, data.minuteWiseRules, {
+        isDayExtraChargePerPerson:
+          data.minuteWiseRules?.dayExtraChargeCondition === ExtraChargeConditionEnum.PER_PERSON,
+        isNightExtraChargePerPerson:
+          data.minuteWiseRules?.nightExtraChargeCondition === ExtraChargeConditionEnum.PER_PERSON
+      })
+
+      data.minuteWiseRules = _.omit(data.minuteWiseRules, ['dayExtraChargeCondition', 'nightExtraChargeCondition'])
     }
 
     if (!isSlotBillingSelected) {
@@ -297,7 +337,6 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                 <FormControlLabel
                   control={
                     <Checkbox
-                      defaultChecked
                       checked={isBreakBillingSelected}
                       onChange={event => setIsBreakBillingSelected(event.target.checked)}
                     />
@@ -481,6 +520,27 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     )}
                   />
                 </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <FormControl fullWidth>
+                    <InputLabel>Extra Charge applicable</InputLabel>
+                    <Controller
+                      name='minuteWiseRules.dayExtraChargeCondition'
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <Select size='small' label='Extra Charge applicable' value={value} onChange={onChange}>
+                          {extraChargeConditionMap.map((condition, index) => (
+                            <MenuItem key={index} value={condition.value}>
+                              {condition.displayValue}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+
                 <Grid item xs={12} sm={4}>
                   <Controller
                     name='minuteWiseRules.dayExtraAmount'
@@ -586,6 +646,27 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                     )}
                   />
                 </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <FormControl fullWidth>
+                    <InputLabel>Extra Charge applicable</InputLabel>
+                    <Controller
+                      name='minuteWiseRules.nightExtraChargeCondition'
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <Select size='small' label='Extra Charge applicable' value={value} onChange={onChange}>
+                          {extraChargeConditionMap.map((condition, index) => (
+                            <MenuItem key={index} value={condition.value}>
+                              {condition.displayValue}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+
                 <Grid item xs={12} sm={4}>
                   <Controller
                     name='minuteWiseRules.nightExtraAmount'

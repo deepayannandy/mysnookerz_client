@@ -23,6 +23,7 @@ import axios from 'axios'
 import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { getPlanAccessControl } from '@/utils/Utils'
+import _ from 'lodash'
 
 type NewTableCreationDataType = Partial<{
   tableName: string
@@ -33,11 +34,13 @@ type NewTableCreationDataType = Partial<{
     dayMinAmt: number | null
     dayPerMin: number | null
     dayUpToPerson: number | null
+    dayExtraChargeCondition: string
     dayExtraAmount: number | null
     nightUptoMin: number | null
     nightMinAmt: number | null
     nightPerMin: number | null
     nightUpToPerson: number | null
+    nightExtraChargeCondition: string
     nightExtraAmount: number | null
   }>
   slotWiseRules: {
@@ -69,6 +72,22 @@ type NewTableCreationProps = {
 // const status = ['Status', 'Active', 'Inactive', 'Suspended']
 
 // const languages = ['English', 'Spanish', 'French', 'German', 'Hindi']
+
+const enum ExtraChargeConditionEnum {
+  'PER_PERSON' = 'PER_PERSON',
+  'PER_MINUTE' = 'PER_MINUTE'
+}
+
+const extraChargeConditionMap = [
+  {
+    displayValue: 'Per Person',
+    value: ExtraChargeConditionEnum.PER_PERSON
+  },
+  {
+    displayValue: 'Per Minute',
+    value: ExtraChargeConditionEnum.PER_MINUTE
+  }
+]
 
 const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps) => {
   //const [userData, setUserData] = useState([] as NewTableCreationDataType)
@@ -103,9 +122,15 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
         dayUptoMin: null,
         dayMinAmt: null,
         dayPerMin: null,
+        dayUpToPerson: null,
+        dayExtraChargeCondition: extraChargeConditionMap[1].value,
+        dayExtraAmount: null,
         nightUptoMin: null,
         nightMinAmt: null,
-        nightPerMin: null
+        nightPerMin: null,
+        nightUpToPerson: null,
+        nightExtraChargeCondition: extraChargeConditionMap[1].value,
+        nightExtraAmount: null
       },
       slotWiseRules: [
         {
@@ -194,6 +219,15 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
 
     if (!isMinuteBillingSelected) {
       data.minuteWiseRules = {}
+    } else {
+      data.minuteWiseRules = Object.assign({}, data.minuteWiseRules, {
+        isDayExtraChargePerPerson:
+          data.minuteWiseRules?.dayExtraChargeCondition === ExtraChargeConditionEnum.PER_PERSON,
+        isNightExtraChargePerPerson:
+          data.minuteWiseRules?.nightExtraChargeCondition === ExtraChargeConditionEnum.PER_PERSON
+      })
+
+      data.minuteWiseRules = _.omit(data.minuteWiseRules, ['dayExtraChargeCondition', 'nightExtraChargeCondition'])
     }
 
     if (!isSlotBillingSelected) {
@@ -209,7 +243,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     }
 
     data.isBreak = isBreakBillingSelected
-
     data.deviceId = deviceId
     data.nodeID = nodeId
 
@@ -287,7 +320,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                 <FormControlLabel
                   control={
                     <Checkbox
-                      defaultChecked
                       checked={isMinuteBillingSelected}
                       onChange={event => setIsMinuteBillingSelected(event.target.checked)}
                     />
@@ -297,7 +329,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                 <FormControlLabel
                   control={
                     <Checkbox
-                      defaultChecked
                       checked={isSlotBillingSelected}
                       onChange={event => setIsSlotBillingSelected(event.target.checked)}
                     />
@@ -307,7 +338,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                 <FormControlLabel
                   control={
                     <Checkbox
-                      defaultChecked
                       checked={isBreakBillingSelected}
                       onChange={event => setIsBreakBillingSelected(event.target.checked)}
                     />
@@ -317,7 +347,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                 <FormControlLabel
                   control={
                     <Checkbox
-                      defaultChecked
                       checked={isFixedBillingSelected}
                       onChange={event => setIsFixedBillingSelected(event.target.checked)}
                     />
@@ -327,7 +356,6 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                 <FormControlLabel
                   control={
                     <Checkbox
-                      defaultChecked
                       checked={isCountdownBillingSelected}
                       onChange={event => setIsCountdownBillingSelected(event.target.checked)}
                     />
@@ -480,6 +508,27 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     )}
                   />
                 </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <FormControl fullWidth>
+                    <InputLabel>Extra Charge applicable</InputLabel>
+                    <Controller
+                      name='minuteWiseRules.dayExtraChargeCondition'
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <Select size='small' label='Extra Charge applicable' value={value} onChange={onChange}>
+                          {extraChargeConditionMap.map((condition, index) => (
+                            <MenuItem key={index} value={condition.value}>
+                              {condition.displayValue}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+                  </FormControl>
+                </Grid>
+
                 <Grid item xs={12} sm={4}>
                   <Controller
                     name='minuteWiseRules.dayExtraAmount'
@@ -584,6 +633,26 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                       />
                     )}
                   />
+                </Grid>
+
+                <Grid item xs={12} sm={4}>
+                  <FormControl fullWidth>
+                    <InputLabel>Extra Charge applicable</InputLabel>
+                    <Controller
+                      name='minuteWiseRules.nightExtraChargeCondition'
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <Select size='small' label='Extra Charge applicable' value={value} onChange={onChange}>
+                          {extraChargeConditionMap.map((condition, index) => (
+                            <MenuItem key={index} value={condition.value}>
+                              {condition.displayValue}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+                  </FormControl>
                 </Grid>
                 <Grid item xs={12} sm={4}>
                   <Controller
