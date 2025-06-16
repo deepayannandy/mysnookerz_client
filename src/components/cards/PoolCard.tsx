@@ -368,6 +368,7 @@ const PoolCard = ({
                 <span
                   className='ri-bill-line'
                   onClick={() => {
+                    setTableData(tableData)
                     setShowOnHoldBill(true)
                     setShowBill(true)
                   }}
