@@ -5,6 +5,13 @@ export type UserDetailsType = {
   userDesignation: string
   mobile: string
   subscription: string
+  secondaryStoreId: SecondaryStoreDataType[]
+}
+
+export type SecondaryStoreDataType = {
+  storeId: string
+  storeName: string
+  _id: string
 }
 
 export type DailyCollectionDataType = {
