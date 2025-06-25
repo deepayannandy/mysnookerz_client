@@ -14,13 +14,41 @@ import NavToggle from './NavToggle'
 import { verticalLayoutClasses } from '@layouts/utils/layoutClasses'
 import TakeawayFoodOrderDrawer from '../shared/TakeawayFoodOrderDrawer'
 import SwitchStore from '../shared/SwitchStore'
-import primaryColorConfig from '@/configs/primaryColorConfig'
+import { PrimaryColorConfig } from '@/configs/primaryColorConfig'
 import { UserDetailsType } from '@/types/userTypes'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useSettings } from '@core/hooks/useSettings'
+
+// Primary color config object
+const primaryColorConfig: Record<string, PrimaryColorConfig> = {
+  Starter: {
+    name: 'primary-1',
+    light: '#A379FF',
+    main: '#008000',
+    dark: '#7E4EE6'
+  },
+  Professional: {
+    name: 'primary-2',
+    light: '#4EB0B1',
+    main: '#8C57FF',
+    dark: '#096B6C'
+  },
+  Ultimate: {
+    name: 'primary-3',
+    light: '#F0718D',
+    main: '#D37F00',
+    dark: '#AC2D48'
+  },
+  Enterprise: {
+    name: 'primary-4',
+    light: '#FFC25A',
+    main: '#FF4500',
+    dark: '#BA7D15'
+  }
+}
 
 const NavbarContent = () => {
   const [userDetails, setUserDetails] = useState({} as UserDetailsType)
@@ -29,8 +57,7 @@ const NavbarContent = () => {
   const router = useRouter()
   const { lang: locale } = useParams()
   const pathname = usePathname()
-  const { settings, updateSettings } = useSettings()
-  const searchParams = useSearchParams()
+  const { updateSettings } = useSettings()
 
   const getUserDetails = async () => {
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL

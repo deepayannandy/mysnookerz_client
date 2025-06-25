@@ -8,7 +8,6 @@ import { useEffect, useRef, useState } from 'react'
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation'
 
 // MUI Imports
-import type { PrimaryColorConfig } from '@configs/primaryColorConfig'
 import Avatar from '@mui/material/Avatar'
 import Badge from '@mui/material/Badge'
 import Button from '@mui/material/Button'
@@ -49,35 +48,7 @@ const BadgeContentSpan = styled('span')({
   boxShadow: '0 0 0 2px var(--mui-palette-background-paper)'
 })
 
-// Primary color config object
-const primaryColorConfig: Record<string, PrimaryColorConfig> = {
-  Starter: {
-    name: 'primary-1',
-    light: '#A379FF',
-    main: '#008000',
-    dark: '#7E4EE6'
-  },
-  Professional: {
-    name: 'primary-2',
-    light: '#4EB0B1',
-    main: '#8C57FF',
-    dark: '#096B6C'
-  },
-  Ultimate: {
-    name: 'primary-3',
-    light: '#F0718D',
-    main: '#D37F00',
-    dark: '#AC2D48'
-  },
-  Enterprise: {
-    name: 'primary-4',
-    light: '#FFC25A',
-    main: '#FF4500',
-    dark: '#BA7D15'
-  }
-}
-
-const UserDropdown = ({ userDetails }: { userDetails: UserDetailsType }) => {
+const UserDropdown = ({ userDetails }: { userDetails?: UserDetailsType }) => {
   // States
   const [open, setOpen] = useState(false)
   const [dailyCollectionData, setDailyCollectionData] = useState({} as DailyCollectionDataType)
@@ -184,8 +155,8 @@ const UserDropdown = ({ userDetails }: { userDetails: UserDetailsType }) => {
       >
         <Avatar
           ref={anchorRef}
-          alt={userDetails.fullName || ''}
-          src={userDetails.profileImage || ''}
+          alt={userDetails?.fullName || ''}
+          src={userDetails?.profileImage || ''}
           onClick={handleDropdownOpen}
           className='cursor-pointer bs-[38px] is-[38px]'
         />
@@ -209,12 +180,12 @@ const UserDropdown = ({ userDetails }: { userDetails: UserDetailsType }) => {
               <ClickAwayListener onClickAway={e => handleDropdownClose(e as MouseEvent | TouchEvent)}>
                 <MenuList>
                   <div className='flex items-center plb-2 pli-4 gap-2' tabIndex={-1}>
-                    <Avatar alt={userDetails.fullName || ''} src={userDetails.profileImage || ''} />
+                    <Avatar alt={userDetails?.fullName || ''} src={userDetails?.profileImage || ''} />
                     <div className='flex items-start flex-col'>
                       <Typography className='font-medium' color='text.primary'>
-                        {userDetails.fullName || ''}
+                        {userDetails?.fullName || ''}
                       </Typography>
-                      <Typography variant='caption'>{userDetails.email || ''}</Typography>
+                      <Typography variant='caption'>{userDetails?.email || ''}</Typography>
                     </div>
                   </div>
                   <Divider className='mlb-1' />
