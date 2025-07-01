@@ -40,6 +40,8 @@ import { toast } from 'react-toastify'
 
 const EditProduct = ({ productId }: { productId: string }) => {
   const [quantity, setQuantity] = useState<string | number>('')
+  const [restockQuantity, setRestockQuantity] = useState<string | number>('')
+
   const [inStockSwitch, setInStockSwitch] = useState(false)
   const [isStockRequiredSwitch, setIsStockRequiredSwitch] = useState(false)
   const [categoryList, setCategoryList] = useState([] as CategoryListType[])
@@ -170,6 +172,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
   }, [])
 
   const gross = Number(getValues('basePrice') || 0) * Number(quantity || 0)
+  const restockGross = Number(getValues('basePrice') || 0) * Number(restockQuantity || 0)
 
   const onSubmit = async (data: NewProductDataType) => {
     data.quantity = quantity
@@ -218,6 +221,12 @@ const EditProduct = ({ productId }: { productId: string }) => {
     resetForm()
     const redirectUrl = `/${locale}/admin/product-list`
     return router.replace(redirectUrl)
+  }
+
+  const handleReStock = () => {
+    const updatedQuantity = Number(quantity ?? 0) + Number(restockQuantity ?? 0)
+    setQuantity(updatedQuantity)
+    setRestockQuantity('')
   }
 
   return (
@@ -417,6 +426,31 @@ const EditProduct = ({ productId }: { productId: string }) => {
                       />
                     </CardContent>
                   </Card>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12}>
+              <Card>
+                <CardHeader title='Re-Stock' />
+                <CardContent>
+                  <TextField
+                    fullWidth
+                    className='mbe-5'
+                    label='Quantity'
+                    inputProps={{ type: 'number', min: 0 }}
+                    value={restockQuantity}
+                    onChange={event => setRestockQuantity(Number(event.target.value) ? Number(event.target.value) : '')}
+                  />
+                  <TextField
+                    disabled
+                    fullWidth
+                    className='mbe-5'
+                    label='Gross'
+                    value={restockGross ? restockGross : ''}
+                  />
+                  <Button variant='contained' onClick={handleReStock}>
+                    ReStock
+                  </Button>
                 </CardContent>
               </Card>
             </Grid>
