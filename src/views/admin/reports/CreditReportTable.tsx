@@ -32,7 +32,7 @@ import classnames from 'classnames'
 // Style Imports
 
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
-import { CreditReportDataType } from '@/types/adminTypes'
+import { CreditReportTableDataType } from '@/types/adminTypes'
 import tableStyles from '@core/styles/table.module.css'
 import * as mui from '@mui/material'
 import { Button, CardContent, Checkbox, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
@@ -60,7 +60,7 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed
 }
 
-const columnHelper = createColumnHelper<CreditReportDataType>()
+const columnHelper = createColumnHelper<CreditReportTableDataType>()
 
 const DebouncedInput = ({
   value: initialValue,
@@ -99,7 +99,7 @@ const CreditReportTable = ({
   data,
   getReportData
 }: {
-  data: CreditReportDataType[]
+  data: CreditReportTableDataType[]
   getReportData: (dates?: { startDate: string; endDate: string }) => void
 }) => {
   const [rowSelection, setRowSelection] = useState({})
@@ -117,7 +117,7 @@ const CreditReportTable = ({
     setCreditData(data)
   }, [data])
 
-  const getPaymentMethod = (rowData: CreditReportDataType): string => {
+  const getPaymentMethod = (rowData: CreditReportTableDataType): string => {
     if (!rowData.received) {
       return 'DUE'
     }
@@ -141,7 +141,7 @@ const CreditReportTable = ({
     return description
   }
 
-  const columns = useMemo<ColumnDef<CreditReportDataType, any>[]>(
+  const columns = useMemo<ColumnDef<CreditReportTableDataType, any>[]>(
     () => [
       columnHelper.accessor('transactionId', {
         header: 'Transaction ID',
@@ -181,7 +181,7 @@ const CreditReportTable = ({
   )
 
   const table = useReactTable({
-    data: creditData as CreditReportDataType[],
+    data: creditData as CreditReportTableDataType[],
     columns,
     filterFns: {
       fuzzy: fuzzyFilter

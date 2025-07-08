@@ -243,6 +243,13 @@ export type CafeReportDataType = {
 }
 
 export type CreditReportDataType = {
+  cafeDue: number
+  tableDue: number
+  totaldue: number
+  lineItems: CreditReportTableDataType[]
+}
+
+export type CreditReportTableDataType = {
   transactionId: string
   date: string
   description: string

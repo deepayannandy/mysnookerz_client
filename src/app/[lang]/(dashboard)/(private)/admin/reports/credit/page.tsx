@@ -1,5 +1,6 @@
 'use client'
 
+import ReportCard from '@/components/cards/ReportCard'
 import { CreditReportDataType } from '@/types/adminTypes'
 import { getPlanAccessControl } from '@/utils/Utils'
 import CreditReportTable from '@/views/admin/reports/CreditReportTable'
@@ -10,7 +11,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 const CreditReportPage = () => {
-  const [reportData, setReportData] = useState({} as CreditReportDataType[])
+  const [reportData, setReportData] = useState({} as CreditReportDataType)
 
   //Hooks
   const { lang: locale } = useParams()
@@ -45,6 +46,24 @@ const CreditReportPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const reportCardData: { title: string; subtitle: string; icon: string }[] = [
+    {
+      title: `₹${reportData.cafeDue ?? 0}`,
+      subtitle: 'Cafe Due',
+      icon: 'ri-user-3-line'
+    },
+    {
+      title: `₹${reportData.tableDue ?? 0}`,
+      subtitle: 'Table Due',
+      icon: 'ri-pages-line'
+    },
+    {
+      title: `₹${reportData.totaldue ?? 0}`,
+      subtitle: 'Total Due',
+      icon: 'ri-wallet-line'
+    }
+  ]
+
   const planAccessControl = getPlanAccessControl()
 
   return (
@@ -52,7 +71,10 @@ const CreditReportPage = () => {
       {planAccessControl.reportTableCustomerDuesRevenueCafe ? (
         <Grid container spacing={6}>
           <Grid item xs={12}>
-            <CreditReportTable data={reportData ?? []} getReportData={getReportData} />
+            <ReportCard data={reportCardData ?? []} />
+          </Grid>
+          <Grid item xs={12}>
+            <CreditReportTable data={reportData.lineItems ?? []} getReportData={getReportData} />
           </Grid>
         </Grid>
       ) : (
