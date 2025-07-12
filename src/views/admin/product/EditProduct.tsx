@@ -45,54 +45,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
   const [inStockSwitch, setInStockSwitch] = useState(false)
   const [isStockRequiredSwitch, setIsStockRequiredSwitch] = useState(false)
   const [categoryList, setCategoryList] = useState([] as CategoryListType[])
-
-  // const [files, setFiles] = useState<File[]>([])
-
-  // Hooks
-  //const theme = useTheme()
-
-  // Hooks
-  // const { getRootProps, getInputProps } = useDropzone({
-  //   onDrop: (acceptedFiles: File[]) => {
-  //     setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
-  //   }
-  // })
-
-  // const renderFilePreview = (file: FileProp) => {
-  //   if (file.type.startsWith('image')) {
-  //     return <img width={38} height={38} alt={file.name} src={URL.createObjectURL(file as any)} />
-  //   } else {
-  //     return <i className='ri-file-text-line' />
-  //   }
-  // }
-
-  // const handleRemoveFile = (file: FileProp) => {
-  //   const uploadedFiles = files
-  //   const filtered = uploadedFiles.filter((i: FileProp) => i.name !== file.name)
-
-  //   setFiles([...filtered])
-  // }
-
-  // const fileList = files.map((file: FileProp) => (
-  //   <ListItem key={file.name} className='pis-4 plb-3'>
-  //     <div className='file-details'>
-  //       <div className='file-preview'>{renderFilePreview(file)}</div>
-  //       <div>
-  //         <Typography className='file-name font-medium' color='text.primary'>
-  //           {file.name}
-  //         </Typography>
-  //         <Typography className='file-size' variant='body2'>
-  //           {Math.round(file.size / 100) / 10 > 1000
-  //             ? `${(Math.round(file.size / 100) / 10000).toFixed(1)} mb`
-  //             : `${(Math.round(file.size / 100) / 10).toFixed(1)} kb`}
-  //         </Typography>
-  //       </div>
-  //     </div>
-  //     <IconButton onClick={() => handleRemoveFile(file)}>
-  //       <i className='ri-close-line text-xl' />
-  //     </IconButton>
-  //   </ListItem>
-  // ))
+  const [restockDescription, setRestockDescription] = useState('')
 
   const { lang: locale } = useParams()
   const pathname = usePathname()
@@ -223,10 +176,38 @@ const EditProduct = ({ productId }: { productId: string }) => {
     return router.replace(redirectUrl)
   }
 
-  const handleReStock = () => {
-    const updatedQuantity = Number(quantity ?? 0) + Number(restockQuantity ?? 0)
-    setQuantity(updatedQuantity)
-    setRestockQuantity('')
+  const handleReStock = async () => {
+    // const updatedQuantity = Number(quantity ?? 0) + Number(restockQuantity ?? 0)
+    // setQuantity(updatedQuantity)
+    // setRestockQuantity('')
+
+    const requestData = {
+      purchasePrice: restockGross,
+      quantity: restockQuantity,
+      description: restockDescription
+    }
+
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
+    const token = localStorage.getItem('token')
+    try {
+      const response = await axios.patch(`${apiBaseUrl}/products/restock/${productId}`, requestData, {
+        headers: { 'auth-token': token }
+      })
+
+      if (response && response.data && response.status === 201) {
+        toast.success('Product stock updated successfully')
+        setRestockQuantity('')
+        setRestockDescription('')
+
+        getProductData()
+      }
+    } catch (error: any) {
+      // if (error?.response?.status === 409) {
+      //   const redirectUrl = `/${locale}/login?redirectTo=${pathname}`
+      //   return router.replace(redirectUrl)
+      // }
+      toast.error(error?.response?.data?.message ?? error?.message, { hideProgressBar: false })
+    }
   }
 
   return (
@@ -448,9 +429,21 @@ const EditProduct = ({ productId }: { productId: string }) => {
                     label='Gross'
                     value={restockGross ? restockGross : ''}
                   />
-                  <Button variant='contained' onClick={handleReStock}>
-                    ReStock
-                  </Button>
+
+                  <TextField
+                    fullWidth
+                    multiline
+                    className='mbe-5'
+                    rows={4}
+                    placeholder='Please provide description'
+                    value={restockDescription}
+                    onChange={event => setRestockDescription(event.target.value)}
+                  />
+                  <div className='flex justify-end'>
+                    <Button variant='contained' onClick={handleReStock}>
+                      ReStock
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </Grid>
@@ -548,6 +541,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
                   <CardHeader title='Stock' />
                   <CardContent>
                     <TextField
+                      disabled
                       fullWidth
                       className='mbe-5'
                       label='Quantity'
