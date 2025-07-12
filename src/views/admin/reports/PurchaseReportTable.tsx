@@ -34,8 +34,8 @@ import classnames from 'classnames'
 import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
 import { PurchaseReportTableDataType } from '@/types/adminTypes'
 import tableStyles from '@core/styles/table.module.css'
-import * as mui from '@mui/material'
-import { Button, CardContent, Checkbox, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+// import * as mui from '@mui/material'
+import { Button, CardContent, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
 import { DateTime } from 'luxon'
 
 declare module '@tanstack/table-core' {
@@ -62,34 +62,34 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 
 const columnHelper = createColumnHelper<PurchaseReportTableDataType>()
 
-const DebouncedInput = ({
-  value: initialValue,
-  onChange,
-  debounce = 500,
-  ...props
-}: {
-  value: string | number
-  onChange: (value: string | number) => void
-  debounce?: number
-} & Omit<mui.TextFieldProps, 'onChange'>) => {
-  // States
-  const [value, setValue] = useState(initialValue)
+// const DebouncedInput = ({
+//   value: initialValue,
+//   onChange,
+//   debounce = 500,
+//   ...props
+// }: {
+//   value: string | number
+//   onChange: (value: string | number) => void
+//   debounce?: number
+// } & Omit<mui.TextFieldProps, 'onChange'>) => {
+//   // States
+//   const [value, setValue] = useState(initialValue)
 
-  useEffect(() => {
-    setValue(initialValue)
-  }, [initialValue])
+//   useEffect(() => {
+//     setValue(initialValue)
+//   }, [initialValue])
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value)
-    }, debounce)
+//   useEffect(() => {
+//     const timeout = setTimeout(() => {
+//       onChange(value)
+//     }, debounce)
 
-    return () => clearTimeout(timeout)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
+//     return () => clearTimeout(timeout)
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [value])
 
-  return <TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
-}
+//   return <TextField {...props} value={value} onChange={e => setValue(e.target.value)} size='small' />
+// }
 
 const storeName = localStorage.getItem('storeName')
 
@@ -110,7 +110,7 @@ const PurchaseReportTable = ({
   const [endDate, setEndDate] = useState(null as Date | null)
   const [isDateFilterApplied, setIsDateFilterApplied] = useState(false)
   const [selectedStoreName, setSelectedStoreName] = useState(storeName)
-  const [paymentMethodFilter, setPaymentMethodFilter] = useState([] as string[])
+  // const [paymentMethodFilter, setPaymentMethodFilter] = useState([] as string[])
   const [purchaseData, setPurchaseData] = useState(data)
 
   useEffect(() => {
@@ -263,27 +263,27 @@ const PurchaseReportTable = ({
     // getReportData({ startDate, endDate })
   }
 
-  const applyFilter = (filterValue: string | string[]) => {
-    const filterValuesArray = typeof filterValue === 'string' ? filterValue.split(',') : filterValue
-    setPaymentMethodFilter(filterValuesArray)
+  // const applyFilter = (filterValue: string | string[]) => {
+  //   const filterValuesArray = typeof filterValue === 'string' ? filterValue.split(',') : filterValue
+  //   // setPaymentMethodFilter(filterValuesArray)
 
-    if (filterValuesArray.length) {
-      const filteredData = data.filter(reportData => {
-        const descriptionArr = reportData.description?.split(' ')
-        if (descriptionArr?.length) {
-          const paymentMethod = descriptionArr[descriptionArr.length - 1]
+  //   if (filterValuesArray.length) {
+  //     const filteredData = data.filter(reportData => {
+  //       const descriptionArr = reportData.description?.split(' ')
+  //       if (descriptionArr?.length) {
+  //         const paymentMethod = descriptionArr[descriptionArr.length - 1]
 
-          return filterValuesArray.some(value => paymentMethod.includes(value))
-        }
+  //         return filterValuesArray.some(value => paymentMethod.includes(value))
+  //       }
 
-        return false
-      })
+  //       return false
+  //     })
 
-      setPurchaseData(filteredData)
-    } else if (data.length) {
-      setPurchaseData(data)
-    }
-  }
+  //     setPurchaseData(filteredData)
+  //   } else if (data.length) {
+  //     setPurchaseData(data)
+  //   }
+  // }
 
   return (
     <>

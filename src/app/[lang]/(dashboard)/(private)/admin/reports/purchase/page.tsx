@@ -1,9 +1,8 @@
 'use client'
 
 import ReportCard from '@/components/cards/ReportCard'
-import { CreditReportDataType, PurchaseReportDataType } from '@/types/adminTypes'
+import { PurchaseReportDataType } from '@/types/adminTypes'
 import { getPlanAccessControl } from '@/utils/Utils'
-import CreditReportTable from '@/views/admin/reports/CreditReportTable'
 import PurchaseReportTable from '@/views/admin/reports/PurchaseReportTable'
 import { Grid, Typography } from '@mui/material'
 import axios from 'axios'
