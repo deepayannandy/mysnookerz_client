@@ -127,6 +127,7 @@ const VerticalMenu = ({ dictionary, scrollMenu, userDesignation, planAccessContr
               </MenuItem>
               <MenuItem href={`/${locale}/admin/reports/cafe`}>{dictionary['navigation'].cafeReport}</MenuItem>
               <MenuItem href={`/${locale}/admin/reports/credit`}>{dictionary['navigation'].creditReport}</MenuItem>
+              <MenuItem href={`/${locale}/admin/reports/purchase`}>{dictionary['navigation'].purchaseReport}</MenuItem>
             </SubMenu>
             <SubMenu label={dictionary['navigation'].storeSettings} icon={<i className='ri-shopping-bag-3-line' />}>
               <MenuItem href={`/${locale}/admin/store-settings/table`}>{dictionary['navigation'].table}</MenuItem>

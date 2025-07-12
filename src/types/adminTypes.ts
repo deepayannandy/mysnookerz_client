@@ -259,6 +259,31 @@ export type CreditReportTableDataType = {
   paymentMethod?: string
 }
 
+export type PurchaseReportDataType = {
+  totalAmount: number
+  totalPo: number
+  lineItems: PurchaseReportTableDataType[]
+}
+
+export type PurchaseReportTableDataType = {
+  _id: string
+  category: {
+    categoryId: string
+    name: string
+  }
+  productName: string
+  productId: string
+  storeId: string
+  description: string
+  sku: string
+  purchasePrice: number
+  quantity: number
+  salePrice: number
+  tax: number
+  poValue: number
+  purchaseDate: string
+}
+
 export type ExpenseDataType = {
   _id: string
   userId: string
