@@ -1,3 +1,5 @@
+import { MembershipDataType } from './adminTypes'
+
 export type HistoryDataType = {
   _id: string
   date: string
@@ -57,6 +59,7 @@ export type CustomerDetailsDataType = {
     membershipName: string
     membershipMin: string
   }
+  membershipData: MembershipDataType & { balanceMinuteLeft: number }
 }
 
 export type CustomerListType = { fullName: string; customerId: string }
@@ -215,4 +218,19 @@ export type FoodOrderHistoryDataType = {
   netPay: number
   status: string
   transactionId: string
+}
+
+export type PaymentHistoryDataType = {
+  transactionId: string
+  date: string
+  customerName: string
+  description: string
+  quantity: number
+  startTime: string
+  endTime: string
+  netPay: number
+  discount: number
+  paid: number
+  due: number
+  paidBy: string
 }

@@ -41,6 +41,7 @@ import type { ThemeColor } from '@core/types'
 // Style Imports
 import tableStyles from '@core/styles/table.module.css'
 import { DateTime } from 'luxon'
+import { PaymentHistoryDataType } from '@/types/staffTypes'
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
@@ -72,21 +73,6 @@ export const statusChipColor: { [key: string]: StatusChipColorType } = {
   'Out for Delivery': { color: 'primary' },
   'Ready to Pickup': { color: 'info' },
   Dispatched: { color: 'warning' }
-}
-
-type PaymentHistoryDataType = {
-  transactionId: string
-  date: string
-  customerName: string
-  description: string
-  quantity: number
-  startTime: string
-  endTime: string
-  netPay: number
-  discount: number
-  paid: number
-  due: number
-  paidBy: string
 }
 
 type PaymentHistoryDataTypeWithAction = PaymentHistoryDataType & {

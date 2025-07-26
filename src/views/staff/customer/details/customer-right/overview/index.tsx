@@ -1,12 +1,19 @@
 // MUI Imports
 import { CardStatsHorizontalWithAvatarProps } from '@/types/pages/widgetTypes'
-import { CustomerDetailsDataType } from '@/types/staffTypes'
+import { CustomerDetailsDataType, PaymentHistoryDataType } from '@/types/staffTypes'
 import Grid from '@mui/material/Grid'
 import CustomerStatisticsCard from './CustomerStatisticsCard'
+import CustomerPaymentHistoryTable from './CustomerPaymentHistoryTable'
 
 // Component Imports
 
-const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
+const Overview = ({
+  data,
+  paymentHistoryData
+}: {
+  data: CustomerDetailsDataType
+  paymentHistoryData: PaymentHistoryDataType[]
+}) => {
   const customerStats: CardStatsHorizontalWithAvatarProps[] = [
     {
       avatarIcon: 'ri-money-rupee-circle-line',
@@ -76,6 +83,9 @@ const Overview = ({ data }: { data: CustomerDetailsDataType }) => {
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <CustomerStatisticsCard data={customerStats} />
+      </Grid>
+      <Grid item xs={12}>
+        <CustomerPaymentHistoryTable paymentHistoryData={paymentHistoryData} />
       </Grid>
     </Grid>
   )

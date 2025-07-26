@@ -6,6 +6,7 @@ import Grid from '@mui/material/Grid'
 // Component Imports
 import { CustomerDetailsDataType } from '@/types/staffTypes'
 import CustomerDetails from './CustomerDetails'
+import CustomerMembership from './CustomerMembership'
 
 const CustomerLeftOverview = ({
   customerData,
@@ -19,9 +20,9 @@ const CustomerLeftOverview = ({
       <Grid item xs={12}>
         <CustomerDetails customerData={customerData} getCustomerData={getCustomerData} />
       </Grid>
-      {/* <Grid item xs={12}>
-        <CustomerPlan />
-      </Grid> */}
+      <Grid item xs={12}>
+        <CustomerMembership customerData={customerData} getCustomerData={getCustomerData} />
+      </Grid>
     </Grid>
   )
 }

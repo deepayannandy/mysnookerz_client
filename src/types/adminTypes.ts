@@ -11,6 +11,20 @@ export type StaffDataType = {
   userDesignation: string
 }
 
+export type MembershipDataType = {
+  _id: string
+  storeId: string
+  membershipName: string
+  type: string
+  balanceMinute: number
+  validity: number
+  startTime?: string
+  endTime?: string
+  amount: number
+  dailyLimit: number
+  cafeItems: { itemName: string; itemId: string; itemCount: number }[]
+}
+
 export type InvoiceType = {
   registrationId: string
   name: string

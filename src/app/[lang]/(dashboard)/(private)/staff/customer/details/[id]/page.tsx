@@ -12,11 +12,10 @@ import Grid from '@mui/material/Grid'
 import AddOldCredit from '@/components/dialogs/add-old-credit'
 import DeleteConfirmation from '@/components/dialogs/delete-confirmation'
 import SetCreditLimit from '@/components/dialogs/set-credit-limit'
-import { CustomerDetailsDataType } from '@/types/staffTypes'
+import { CustomerDetailsDataType, PaymentHistoryDataType } from '@/types/staffTypes'
 import CustomerLeftOverview from '@/views/staff/customer/details/customer-left-overview'
 import CustomerRight from '@/views/staff/customer/details/customer-right'
 import Overview from '@/views/staff/customer/details/customer-right/overview'
-import CustomerPaymentHistoryTable from '@/views/staff/customer/details/customer-right/overview/OrderListTable'
 import CustomerDetailsHeader from '@/views/staff/customer/details/CustomerDetailsHeader'
 import axios from 'axios'
 import { useParams, usePathname, useRouter } from 'next/navigation'
@@ -25,8 +24,11 @@ import { getPlanAccessControl } from '@/utils/Utils'
 import { Typography } from '@mui/material'
 
 // Vars
-const tabContentList = (customerData: CustomerDetailsDataType): { [key: string]: ReactElement } => ({
-  overview: <Overview data={customerData} />
+const tabContentList = (
+  customerData: CustomerDetailsDataType,
+  paymentHistoryData: PaymentHistoryDataType[]
+): { [key: string]: ReactElement } => ({
+  overview: <Overview data={customerData} paymentHistoryData={paymentHistoryData} />
   //   security: <SecurityTab />,
   //   addressBilling: <AddressBillingTab />,
   //   notifications: <NotificationsTab />
@@ -133,10 +135,7 @@ const CustomerDetails = ({ params }: { params: { id: string } }) => {
               <CustomerLeftOverview customerData={customerData} getCustomerData={getCustomerData} />
             </Grid>
             <Grid item xs={12} md={8}>
-              <CustomerRight tabContentList={tabContentList(customerData)} />
-            </Grid>
-            <Grid item xs={12}>
-              <CustomerPaymentHistoryTable paymentHistoryData={paymentHistoryData} />
+              <CustomerRight tabContentList={tabContentList(customerData, paymentHistoryData)} />
             </Grid>
           </Grid>
           <SetCreditLimit

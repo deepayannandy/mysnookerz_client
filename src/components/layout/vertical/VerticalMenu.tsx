@@ -101,6 +101,7 @@ const VerticalMenu = ({ dictionary, scrollMenu, userDesignation, planAccessContr
             <MenuItem href={`/${locale}/admin/dashboard`}>{dictionary['navigation'].dashboard}</MenuItem>
             <MenuItem href={`/${locale}/admin/analytics`}>{dictionary['navigation'].analytics}</MenuItem>
             <MenuItem href={`/${locale}/admin/staff`}>{dictionary['navigation'].staff}</MenuItem>
+            <MenuItem href={`/${locale}/admin/membership`}>{dictionary['navigation'].membership}</MenuItem>
 
             {planAccessControl?.cafeManagement ? (
               <SubMenu label={dictionary['navigation'].cafeManagement} icon={<i className='ri-shopping-bag-3-line' />}>
