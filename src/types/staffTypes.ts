@@ -59,7 +59,7 @@ export type CustomerDetailsDataType = {
     membershipName: string
     membershipMin: string
   }
-  membershipData: MembershipDataType & { balanceMinuteLeft: number }
+  membershipData: MembershipDataType & { balanceMinuteLeft: number; startDay: string; endDay: string }
 }
 
 export type CustomerListType = { fullName: string; customerId: string }

@@ -13,6 +13,7 @@ import OpenDialogOnElementClick from '@components/dialogs/OpenDialogOnElementCli
 import UpgradeMembership from '@/components/dialogs/upgrade-membership'
 import { CustomerDetailsDataType } from '@/types/staffTypes'
 import { Chip, LinearProgress } from '@mui/material'
+import { DateTime } from 'luxon'
 
 const Button = styled(MuiButton)<ButtonProps>(() => ({
   backgroundColor: 'var(--mui-palette-common-white) !important',
@@ -56,10 +57,28 @@ const CustomerMembership = ({
             </div>
           </div>
           <div className='flex flex-col gap-2'>
-            {customerData?.membershipData?.validity ? (
+            {customerData?.membershipData?.startTime && customerData?.membershipData?.endTime ? (
               <div className='flex items-center gap-2'>
                 <i className='ri-circle-fill text-[10px] text-textSecondary' />
-                <Typography component='span'>{`Validity: ${customerData?.membershipData?.validity} days`}</Typography>
+                <Typography component='span'>{`Timing: ${DateTime.fromISO(customerData?.membershipData?.startTime).toFormat('hh:mm a')} - ${DateTime.fromISO(customerData?.membershipData?.endTime).toFormat('hh:mm a')}`}</Typography>
+              </div>
+            ) : (
+              <></>
+            )}
+
+            {customerData?.membershipData?.startDay ? (
+              <div className='flex items-center gap-2'>
+                <i className='ri-circle-fill text-[10px] text-textSecondary' />
+                <Typography component='span'>{`Start Day: ${DateTime.fromISO(customerData?.membershipData?.startDay).toFormat('dd LLL yyyy HH:mm:ss')}`}</Typography>
+              </div>
+            ) : (
+              <></>
+            )}
+
+            {customerData?.membershipData?.endDay ? (
+              <div className='flex items-center gap-2'>
+                <i className='ri-circle-fill text-[10px] text-textSecondary' />
+                <Typography component='span'>{`End Day: ${DateTime.fromISO(customerData?.membershipData?.endDay).toFormat('dd LLL yyyy HH:mm:ss')}`}</Typography>
               </div>
             ) : (
               <></>

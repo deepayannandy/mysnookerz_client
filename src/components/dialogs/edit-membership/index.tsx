@@ -183,7 +183,7 @@ const EditMembership = ({ open, setOpen, membershipData, getMembershipData }: Ed
       cafeItems = { cafeItems: items }
     }
 
-    let request = _.omit(data, 'startTime', 'endTime', 'order')
+    const request = _.omit(data, 'startTime', 'endTime', 'order')
 
     if (!isDailyLimitSelected) {
       request.dailyLimit = ''
