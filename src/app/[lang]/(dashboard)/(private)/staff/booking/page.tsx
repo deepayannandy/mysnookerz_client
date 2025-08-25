@@ -69,7 +69,8 @@ const BookingPage = () => {
         response.data.forEach((customer: CustomerDataType) => {
           data.push({
             customerId: customer._id,
-            fullName: `${customer.fullName}(${customer.contact})`
+            fullName: `${customer.fullName}(${customer.contact})`,
+            balanceMinuteLeft: customer.balanceMinuteLeft
           })
         })
 

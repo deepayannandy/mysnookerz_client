@@ -349,6 +349,20 @@ const PoolCard = ({
     }
   }
 
+  const getRenderOption = (props: any, option: CustomerListType | string) => {
+    console.log(option)
+    const showBadge = (option as CustomerListType)?.balanceMinuteLeft
+      ? ((option as CustomerListType)?.balanceMinuteLeft ?? 0) < 5000
+      : false
+
+    return (
+      <li {...props} key={(option as CustomerListType).customerId}>
+        {showBadge && <i className='ri-donut-chart-fill' style={{ marginRight: 6 }} />}
+        {((option as CustomerListType)?.fullName ?? option)?.split('(').join(' (')}
+      </li>
+    )
+  }
+
   const checkout = async () => {
     setTableData(tableData)
     setShowBill(true)
@@ -493,6 +507,7 @@ const PoolCard = ({
               onChange={(_, value) => {
                 setCustomers(value)
               }}
+              renderOption={(props, option) => getRenderOption(props, option)}
               renderTags={(value, getTagProps) =>
                 value.map((option, index) => {
                   const { key, ...tagProps } = getTagProps({ index })

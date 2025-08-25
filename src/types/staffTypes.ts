@@ -28,6 +28,7 @@ export type CustomerDataType = {
   reasonOfBlackList: string
   dateOfBlackList: string
   storeId: string
+  balanceMinuteLeft: number
 }
 
 export type CustomerDetailsDataType = {
@@ -62,7 +63,7 @@ export type CustomerDetailsDataType = {
   membershipData: MembershipDataType & { balanceMinuteLeft: number; startDay: string; endDay: string }
 }
 
-export type CustomerListType = { fullName: string; customerId: string }
+export type CustomerListType = { fullName: string; customerId: string; balanceMinuteLeft?: number }
 
 export type DashboardDataType = {
   sales: number
