@@ -350,14 +350,13 @@ const PoolCard = ({
   }
 
   const getRenderOption = (props: any, option: CustomerListType | string) => {
-    console.log(option)
     const showBadge = (option as CustomerListType)?.balanceMinuteLeft
       ? ((option as CustomerListType)?.balanceMinuteLeft ?? 0) < 5000
       : false
 
     return (
       <li {...props} key={(option as CustomerListType).customerId}>
-        {showBadge && <i className='ri-donut-chart-fill' style={{ marginRight: 6 }} />}
+        {showBadge && <i className='ri-water-flash-fill' style={{ marginRight: 6, background: '#FF0000' }} />}
         {((option as CustomerListType)?.fullName ?? option)?.split('(').join(' (')}
       </li>
     )
