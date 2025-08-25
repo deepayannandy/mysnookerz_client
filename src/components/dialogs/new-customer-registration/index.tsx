@@ -23,6 +23,7 @@ type NewCustomerRegistrationDataType = {
   profileImage?: string
   dob?: Date | null
   city?: string | null
+  oldCredit?: number | null | string
 }
 
 type NewCustomerRegistrationProps = {
@@ -42,7 +43,8 @@ const schema: yup.ObjectSchema<NewCustomerRegistrationDataType> = yup.object().s
     .email('Please enter a valid email address'),
   profileImage: yup.string(),
   dob: yup.date().notRequired(),
-  city: yup.string().notRequired()
+  city: yup.string().notRequired(),
+  oldCredit: yup.number().notRequired()
 })
 
 const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomerRegistrationProps) => {
@@ -64,7 +66,8 @@ const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomer
       contact: '',
       email: '',
       dob: new Date(),
-      city: ''
+      city: '',
+      oldCredit: ''
     }
   })
 
@@ -204,6 +207,24 @@ const NewCustomerRegistration = ({ open, setOpen, getCustomerData }: NewCustomer
                   value={value}
                   onChange={onChange}
                   {...(errors.city && { error: true, helperText: errors.city.message })}
+                />
+              )}
+            />
+
+            <Controller
+              name='oldCredit'
+              control={control}
+              render={({ field: { value, onChange } }) => (
+                <TextField
+                  fullWidth
+                  label='Old Credit'
+                  inputProps={{ type: 'number', min: 0 }}
+                  value={value}
+                  onChange={onChange}
+                  {...(errors.oldCredit && {
+                    error: true,
+                    helperText: errors.oldCredit?.message || 'This field is required'
+                  })}
                 />
               )}
             />

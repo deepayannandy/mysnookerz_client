@@ -182,14 +182,18 @@ const ProductListTable = () => {
         header: 'Category',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.category?.name ?? ''}</Typography>
       }),
+      columnHelper.accessor('_id', {
+        header: 'Product Id',
+        cell: ({ row }) => <Typography color='text.primary'>{row.original._id ?? ''}</Typography>
+      }),
       columnHelper.accessor('quantity', {
         header: 'Stock',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.quantity}</Typography>
       }),
-      columnHelper.accessor('sku', {
-        header: 'SKU',
-        cell: ({ row }) => <Typography color='text.primary'>{row.original.sku}</Typography>
-      }),
+      // columnHelper.accessor('sku', {
+      //   header: 'SKU',
+      //   cell: ({ row }) => <Typography color='text.primary'>{row.original.sku}</Typography>
+      // }),
       columnHelper.accessor('salePrice', {
         header: 'Price',
         cell: ({ row }) => <Typography color='text.primary'>{row.original.salePrice}</Typography>

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 // MUI Imports
 import { ProductDataType } from '@/types/adminTypes'
 import { CustomerDataType, CustomerListType } from '@/types/staffTypes'
-import { Autocomplete, Divider, Drawer, MenuItem, TextField, Typography } from '@mui/material'
+import { Autocomplete, Chip, Divider, Drawer, MenuItem, TextField, Typography } from '@mui/material'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import axios from 'axios'
@@ -296,12 +296,24 @@ const TakeawayFoodOrder = ({ open, setOpen }: TakeawayFoodOrderPropType) => {
                     onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
                       e.key === 'Enter' && e.preventDefault()
                     }}
+                    multiple
                     options={customersList}
                     getOptionLabel={option => ((option as CustomerListType).fullName ?? option)?.split('(').join(' (')}
                     getOptionKey={option => (option as CustomerListType).customerId}
                     freeSolo
-                    value={value}
-                    onChange={(_, value) => onChange(value)}
+                    value={value ? [value] : []} // single value in an array
+                    onChange={(_, newValue) => onChange(newValue[0] ?? null)} // keep only 1
+                    renderTags={(tagValue, getTagProps) =>
+                      tagValue.map((option, index) => (
+                        <Chip
+                          {...getTagProps({ index })}
+                          key={(option as CustomerListType).customerId}
+                          label={(option as CustomerListType).fullName ?? option}
+                          size='small'
+                          variant='outlined'
+                        />
+                      ))
+                    }
                     renderInput={params => (
                       <TextField
                         {...params}
