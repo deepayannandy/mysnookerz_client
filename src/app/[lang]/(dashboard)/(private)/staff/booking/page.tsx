@@ -149,6 +149,7 @@ const BookingPage = () => {
           tableData={tableData}
           setBillData={setBillData}
           setBillPrint={setBillPrint}
+          getAllTablesData={getAllTablesData}
         />
       ) : (
         <></>

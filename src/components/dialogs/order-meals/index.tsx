@@ -20,6 +20,7 @@ type OrderMealsPropType = {
   tableData: TableDataType
   setBillData: (data: BillPrintDataType) => void
   setBillPrint: (value: boolean) => void
+  getAllTablesData: () => void
 }
 
 type MealCartType = {
@@ -30,7 +31,7 @@ type MealCartType = {
   }[]
 }
 
-const OrderMeals = ({ open, setOpen, tableData, setBillData, setBillPrint }: OrderMealsPropType) => {
+const OrderMeals = ({ open, setOpen, tableData, setBillData, setBillPrint, getAllTablesData }: OrderMealsPropType) => {
   // States
   const [productList, setProductList] = useState([] as ProductDataType[])
   const [fieldIndex, setFieldIndex] = useState(0)
@@ -188,6 +189,7 @@ const OrderMeals = ({ open, setOpen, tableData, setBillData, setBillPrint }: Ord
       if (response && response.data) {
         handleClose()
         toast.success('Good Job!', { icon: <>👏</> })
+        getAllTablesData()
 
         setBillData({
           billNo: response.data.transactionId ?? '#123123',
