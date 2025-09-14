@@ -413,7 +413,7 @@ const OrderMeals = ({ open, setOpen, tableData, setBillData, setBillPrint, getAl
                           <p>{order.qnt}</p>
                         </div>
                         <div className='size-full grid place-items-center p-1 sm:p-2'>
-                          <p>{`₹${order.productSalePrice ?? 0}`}</p>
+                          <p>{`₹${(order.productSalePrice ?? 0) * (order.qnt ?? 0)}`}</p>
                         </div>
                       </div>
                     ))}
