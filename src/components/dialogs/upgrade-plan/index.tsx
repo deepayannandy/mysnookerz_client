@@ -270,11 +270,14 @@ const UpgradePlan = ({
   const processPayment = async () => {
     try {
       const amount = `${(((isCurrencyUpdated ? selectedPlan?.subscriptionGlobalPrice : selectedPlan?.subscriptionPrice) || 0) + (((isCurrencyUpdated ? selectedPlan?.subscriptionGlobalPrice : selectedPlan?.subscriptionPrice) || 0) * 18) / 100).toFixed(2)}`
-      const orderDetails: OrderDetailsType = await createOrderId(Number(amount), isCurrencyUpdated ? 'USD' : 'INR')
+      const orderDetails: OrderDetailsType = await createOrderId(
+        Math.round(Number(amount)),
+        isCurrencyUpdated ? 'USD' : 'INR'
+      )
 
       if (orderDetails.orderId) {
         const options = {
-          key: process.env.RAZORPAY_KEY_ID,
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
           amount: orderDetails.amount,
           currency: orderDetails.currency,
           name: 'CueKeeper Subscription',
@@ -289,6 +292,7 @@ const UpgradePlan = ({
           //   color: '#3399cc'
           // }
         }
+        console.log(options)
         const paymentObject = new (window as any).Razorpay(options)
         paymentObject.on('payment.failed', function (response: any) {
           toast.error(response.error.description)

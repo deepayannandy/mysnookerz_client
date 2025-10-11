@@ -52,6 +52,10 @@ type NewTableCreationDataType = Partial<{
     uptoMin: number | null
     countdownDayCharge: number | null
     countdownNightCharge: number | null
+    dayUpToPerson: number | null
+    nightUpToPerson: number | null
+    dayExtraAmount: number | null
+    nightExtraAmount: number | null
   }[]
   fixedBillingRules: Partial<{
     dayAmt: number | null
@@ -143,7 +147,11 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
         {
           uptoMin: null,
           countdownDayCharge: null,
-          countdownNightCharge: null
+          countdownNightCharge: null,
+          dayUpToPerson: null,
+          nightUpToPerson: null,
+          dayExtraAmount: null,
+          nightExtraAmount: null
         }
       ],
       fixedBillingRules: {
@@ -774,7 +782,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                 <div className='grid place-content-center w-full font-bold text-lg'>Countdown Billing</div>
                 <Grid item xs={12}>
                   {countdownFields.map((field, index) => (
-                    <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
+                    <div key={field.id} className='grid grid-cols-1 sm:grid-cols-3 items-start gap-3 mb-4'>
                       <Controller
                         name={`countdownRules.${index}.uptoMin`}
                         control={control}
@@ -837,6 +845,86 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                         )}
                       />
 
+                      <Controller
+                        name={`countdownRules.${index}.dayUpToPerson`}
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Day Up To Person'
+                            inputProps={{ type: 'number', min: 0 }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.countdownRules?.[index]?.dayUpToPerson && {
+                              error: true,
+                              helperText:
+                                errors.countdownRules?.[index]?.dayUpToPerson?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`countdownRules.${index}.dayExtraAmount`}
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Day Extra Amount'
+                            inputProps={{ type: 'number', min: 0, step: 'any' }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.countdownRules?.[index]?.dayExtraAmount && {
+                              error: true,
+                              helperText:
+                                errors.countdownRules?.[index]?.dayExtraAmount?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`countdownRules.${index}.nightUpToPerson`}
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Night Up To Person'
+                            inputProps={{ type: 'number', min: 0 }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.countdownRules?.[index]?.nightUpToPerson && {
+                              error: true,
+                              helperText:
+                                errors.countdownRules?.[index]?.nightUpToPerson?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      <Controller
+                        name={`countdownRules.${index}.nightExtraAmount`}
+                        control={control}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Night Extra Amount'
+                            inputProps={{ type: 'number', min: 0, step: 'any' }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.countdownRules?.[index]?.nightExtraAmount && {
+                              error: true,
+                              helperText:
+                                errors.countdownRules?.[index]?.nightExtraAmount?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
                       {countdownFields.length > 1 ? (
                         <CustomIconButton onClick={() => countdownRemove(index)} className='min-is-fit'>
                           <i className='ri-close-line' />
@@ -851,7 +939,15 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     size='small'
                     variant='contained'
                     onClick={() =>
-                      countdownAppend({ uptoMin: null, countdownDayCharge: null, countdownNightCharge: null })
+                      countdownAppend({
+                        uptoMin: null,
+                        countdownDayCharge: null,
+                        countdownNightCharge: null,
+                        dayUpToPerson: null,
+                        dayExtraAmount: null,
+                        nightUpToPerson: null,
+                        nightExtraAmount: null
+                      })
                     }
                     startIcon={<i className='ri-add-line' />}
                   >
