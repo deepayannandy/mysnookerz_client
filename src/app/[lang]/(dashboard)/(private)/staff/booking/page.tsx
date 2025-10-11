@@ -71,7 +71,7 @@ const BookingPage = () => {
             customerId: customer._id,
             fullName: `${customer.fullName}(${customer.contact})`,
             showBadge: (customer.maxCredit ?? 0) - (customer.credit ?? 0) <= 100,
-            wallet: customer.wallet ?? 20
+            wallet: customer.wallet ?? 0
           })
         })
 
