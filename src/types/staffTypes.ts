@@ -29,6 +29,7 @@ export type CustomerDataType = {
   dateOfBlackList: string
   storeId: string
   maxCredit: number
+  wallet: number
 }
 
 export type CustomerDetailsDataType = {
@@ -63,7 +64,7 @@ export type CustomerDetailsDataType = {
   membershipData: MembershipDataType & { balanceMinuteLeft: number; startDay: string; endDay: string }
 }
 
-export type CustomerListType = { fullName: string; customerId: string; showBadge?: boolean }
+export type CustomerListType = { fullName: string; customerId: string; showBadge?: boolean; wallet?: number }
 
 export type DashboardDataType = {
   sales: number

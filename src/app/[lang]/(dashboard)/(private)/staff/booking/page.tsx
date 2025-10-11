@@ -70,7 +70,8 @@ const BookingPage = () => {
           data.push({
             customerId: customer._id,
             fullName: `${customer.fullName}(${customer.contact})`,
-            showBadge: (customer.maxCredit ?? 0) - (customer.credit ?? 0) <= 100
+            showBadge: (customer.maxCredit ?? 0) - (customer.credit ?? 0) <= 100,
+            wallet: customer.wallet ?? 20
           })
         })
 

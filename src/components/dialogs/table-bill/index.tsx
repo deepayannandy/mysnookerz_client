@@ -91,10 +91,23 @@ const TableBill = ({
   const [isAddToWalletSelected, setIsAddToWalletSelected] = useState(false)
   const [isHappyHour, setIsHappyHour] = useState(false)
   const [happyHourDiscount, setHappyHourDiscount] = useState(0)
+  const [isDeductFromWalletSelected, setIsDeductFromWalletSelected] = useState(false)
 
   const planAccessControl = getPlanAccessControl()
 
-  const netPay = (Number(data.totalBillAmt || 0) - Number(inputData.discount ?? 0)).toFixed(2)
+  if (invoiceTo.length > 1 && isDeductFromWalletSelected) {
+    setIsDeductFromWalletSelected(false)
+  }
+
+  let netPay = (Number(data.totalBillAmt || 0) - Number(inputData.discount ?? 0)).toFixed(2)
+  if (isDeductFromWalletSelected) {
+    netPay = (
+      ((invoiceTo as CustomerListType[])[0]?.wallet ?? 0) > Number(netPay)
+        ? 0
+        : Number(netPay) - ((invoiceTo as CustomerListType[])[0]?.wallet ?? 0)
+    ).toFixed(2)
+  }
+
   const cashOut = (Number(inputData.cashIn ?? 0) - Number(netPay ?? 0)).toFixed(2)
 
   const { lang: locale } = useParams()
@@ -327,6 +340,15 @@ const TableBill = ({
       mealAmount: data?.mealTotal
     }
 
+    const netPayable = Number(data.totalBillAmt || 0) - Number(inputData.discount ?? 0)
+    let amountPaidFromWallet = 0
+    if (isDeductFromWalletSelected) {
+      amountPaidFromWallet =
+        ((invoiceTo as CustomerListType[])[0]?.wallet ?? 0) > netPayable
+          ? netPayable
+          : ((invoiceTo as CustomerListType[])[0]?.wallet ?? 0)
+    }
+
     const inputDetails = _.omit(inputData, 'paymentMethod')
     const requestData = {
       ...inputDetails,
@@ -336,6 +358,7 @@ const TableBill = ({
       checkoutPlayers,
       mealSettlement,
       addToWallet: isAddToWalletSelected,
+      amountPaidFromWallet,
       ...(isOnHoldBill ? { fromHold: true } : {})
     }
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
@@ -589,7 +612,6 @@ const TableBill = ({
           ) : (
             <></>
           )}
-
           {data.selectedTable?.gameData?.players ? (
             <Autocomplete
               size='small'
@@ -640,7 +662,6 @@ const TableBill = ({
           ) : (
             <></>
           )}
-
           {invoiceTo.length > 1 ? (
             <>
               {tableData.isBreak ? (
@@ -770,7 +791,6 @@ const TableBill = ({
           ) : (
             <></>
           )}
-
           {data.selectedTable?.gameData?.startTime ? (
             <div className='w-full grid grid-cols-2 gap-2 border p-3 rounded-lg'>
               {data.selectedTable.gameData?.startTime ? (
@@ -812,7 +832,6 @@ const TableBill = ({
           ) : (
             <></>
           )}
-
           {data.productList?.length ? (
             <div className='w-full grid grid-cols-1 border rounded-lg overflow-x-auto '>
               <div className='w-full text-center font-bold border-b p-1 sm:p-2'>Meal Order Details</div>
@@ -884,7 +903,6 @@ const TableBill = ({
           ) : (
             <></>
           )}
-
           {data.selectedTable?.gameData?.endTime ? (
             <>
               <div className='w-full grid grid-cols-2 gap-2 border p-3 rounded-lg'>
@@ -912,7 +930,6 @@ const TableBill = ({
           ) : (
             <></>
           )}
-
           <div className='w-full grid grid-cols-2 gap-2 rounded-lg'>
             <TextField
               //placeholder='₹_._'
@@ -1012,6 +1029,19 @@ const TableBill = ({
                 <Checkbox
                   checked={isAddToWalletSelected}
                   onChange={event => setIsAddToWalletSelected(event.target.checked)}
+                />
+              }
+            />
+          ) : (
+            <></>
+          )}
+          {invoiceTo.length === 1 && (invoiceTo as CustomerListType[])?.[0]?.wallet ? (
+            <FormControlLabel
+              label='Deduct from Wallet'
+              control={
+                <Checkbox
+                  checked={isDeductFromWalletSelected}
+                  onChange={event => setIsDeductFromWalletSelected(event.target.checked)}
                 />
               }
             />
