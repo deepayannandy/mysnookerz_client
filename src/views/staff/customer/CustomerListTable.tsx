@@ -238,7 +238,7 @@ const CustomerListTable = () => {
         cell: ({ row }) => <Typography color='text.primary'>{row.original.rewards}</Typography>
       }),
       columnHelper.accessor('credit', {
-        header: 'Credit',
+        header: 'Wallet',
         cell: ({ row }) => (
           <Typography color='text.primary'>{`₹${row.original.credit ? row.original.credit.toFixed(2) : 0}`}</Typography>
         )
