@@ -64,8 +64,8 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
   }
 
   const onSubmit = async (data: PayDueDataType) => {
-    let credit = Number(customerData?.credit ?? 0) - (Number(data.amount) ? Number(data.amount) : 0)
-    if (credit < 0) {
+    let credit = Number(customerData?.credit ?? 0) + (Number(data.amount) ? Number(data.amount) : 0)
+    if (credit > 0) {
       toast.error('Amount cannot be more than due')
       return
     }
@@ -74,7 +74,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
     if (isSettleAmount) {
       credit = 0
       settlementAmount = {
-        settlementAmount: (Number(customerData?.credit ?? 0) - Number(watch('amount') ?? 0)).toFixed(2)
+        settlementAmount: Math.abs(Number(customerData?.credit ?? 0) + Number(watch('amount') ?? 0)).toFixed(2)
       }
     }
 
@@ -174,7 +174,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
             label='Settle Amount'
           />
           {isSettleAmount ? (
-            <Typography>{`Settlement amount is ${(Number(customerData?.credit ?? 0) - Number(watch('amount') ?? 0)).toFixed(2)}`}</Typography>
+            <Typography>{`Settlement amount is ${Math.abs(Number(customerData?.credit ?? 0) + Number(watch('amount') ?? 0)).toFixed(2)}`}</Typography>
           ) : (
             <></>
           )}

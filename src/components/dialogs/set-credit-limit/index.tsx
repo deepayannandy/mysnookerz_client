@@ -58,9 +58,13 @@ const SetCreditLimit = ({ open, setOpen, getCustomerData, customerData }: SetCre
     const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL
     const token = localStorage.getItem('token')
     try {
-      const response = await axios.patch(`${apiBaseUrl}/customer/${customerData?.customers?._id}`, data, {
-        headers: { 'auth-token': token }
-      })
+      const response = await axios.patch(
+        `${apiBaseUrl}/customer/${customerData?.customers?._id}`,
+        { maxCredit: -data.maxCredit },
+        {
+          headers: { 'auth-token': token }
+        }
+      )
 
       if (response && response.data) {
         getCustomerData()
@@ -83,7 +87,7 @@ const SetCreditLimit = ({ open, setOpen, getCustomerData, customerData }: SetCre
       <DialogTitle variant='h4' className='flex gap-2 flex-col text-center sm:items-start pb-0'>
         <div className='text-center sm:text-start'>Credit Limit</div>
         <Typography component='span' className='flex flex-col text-center'>
-          {`Current Limit: ₹${customerData?.customers?.maxCredit ?? 0}`}
+          {`Current Limit: ₹${Math.abs(customerData?.customers?.maxCredit ?? 0)}`}
         </Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit(data => onSubmit(data))}>

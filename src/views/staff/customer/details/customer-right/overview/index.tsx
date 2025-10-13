@@ -19,7 +19,7 @@ const Overview = ({
       avatarIcon: 'ri-money-rupee-circle-line',
       title: 'Wallet',
       stats: `₹${Number(data?.customers?.credit ?? 0).toFixed(2)}`,
-      avatarColor: 'primary'
+      avatarColor: `${Number(data?.customers?.credit ?? 0) > 0 ? 'success' : 'error'}`
     },
     {
       avatarIcon: 'ri-gift-line',
@@ -66,7 +66,7 @@ const Overview = ({
     {
       avatarIcon: 'ri-vip-crown-line',
       title: 'Credit Limit',
-      stats: `₹${(data?.customers?.maxCredit !== undefined ? Number(data.customers.maxCredit) : 0).toFixed(2)}`,
+      stats: `₹${(data?.customers?.maxCredit !== undefined ? Math.abs(Number(data.customers.maxCredit)) : 0).toFixed(2)}`,
       avatarColor: 'warning'
     }
     // {

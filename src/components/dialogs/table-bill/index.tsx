@@ -102,9 +102,9 @@ const TableBill = ({
   let netPay = (Number(data.totalBillAmt || 0) - Number(inputData.discount ?? 0)).toFixed(2)
   if (isDeductFromWalletSelected) {
     netPay = (
-      ((invoiceTo as CustomerListType[])[0]?.wallet ?? 0) > Number(netPay)
+      ((invoiceTo as CustomerListType[])[0]?.credit ?? 0) > Number(netPay)
         ? 0
-        : Number(netPay) - ((invoiceTo as CustomerListType[])[0]?.wallet ?? 0)
+        : Number(netPay) - ((invoiceTo as CustomerListType[])[0]?.credit ?? 0)
     ).toFixed(2)
   }
 
@@ -344,9 +344,9 @@ const TableBill = ({
     let amountPaidFromWallet = 0
     if (isDeductFromWalletSelected) {
       amountPaidFromWallet =
-        ((invoiceTo as CustomerListType[])[0]?.wallet ?? 0) > netPayable
+        ((invoiceTo as CustomerListType[])[0]?.credit ?? 0) > netPayable
           ? netPayable
-          : ((invoiceTo as CustomerListType[])[0]?.wallet ?? 0)
+          : ((invoiceTo as CustomerListType[])[0]?.credit ?? 0)
     }
 
     const inputDetails = _.omit(inputData, 'paymentMethod')
@@ -1035,7 +1035,7 @@ const TableBill = ({
           ) : (
             <></>
           )}
-          {invoiceTo.length === 1 && ((invoiceTo as CustomerListType[])?.[0]?.wallet ?? 0) > 0 ? (
+          {invoiceTo.length === 1 && ((invoiceTo as CustomerListType[])?.[0]?.credit ?? 0) > 0 ? (
             <FormControlLabel
               label='Deduct from Wallet'
               control={
