@@ -1035,7 +1035,7 @@ const TableBill = ({
           ) : (
             <></>
           )}
-          {invoiceTo.length === 1 && (invoiceTo as CustomerListType[])?.[0]?.wallet ? (
+          {invoiceTo.length === 1 && ((invoiceTo as CustomerListType[])?.[0]?.wallet ?? 0) > 0 ? (
             <FormControlLabel
               label='Deduct from Wallet'
               control={
