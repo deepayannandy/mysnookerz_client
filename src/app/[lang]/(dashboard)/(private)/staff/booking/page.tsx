@@ -70,7 +70,7 @@ const BookingPage = () => {
           data.push({
             customerId: customer._id,
             fullName: `${customer.fullName}(${customer.contact})`,
-            showBadge: (customer.maxCredit ?? 0) - (customer.credit ?? 0) <= 100,
+            showBadge: Math.abs(customer.maxCredit ?? 0) - Math.abs(customer.credit ?? 0) <= 100,
             credit: customer.credit ?? 0
           })
         })
