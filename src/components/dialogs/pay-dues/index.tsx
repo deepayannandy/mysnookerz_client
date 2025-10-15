@@ -84,7 +84,13 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
     try {
       const response = await axios.patch(
         `${apiBaseUrl}/customer/${customerData?.customerId}`,
-        { credit, paymentMethods: data.paymentMethod, description, ...settlementAmount },
+        {
+          credit,
+          paymentMethods: data.paymentMethod,
+          description,
+          ...settlementAmount,
+          deltaAmount: Number(data.amount ?? 0)
+        },
         {
           headers: { 'auth-token': token }
         }
@@ -129,6 +135,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
                 render={({ field: { value, onChange } }) => (
                   <TextField
                     size='small'
+                    disabled={Number(customerData?.credit ?? 0) >= 0}
                     inputProps={{ type: 'number', min: 0, step: 'any' }}
                     value={value}
                     onChange={onChange}
@@ -149,7 +156,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
                   control={control}
                   rules={{ required: true }}
                   render={({ field }) => (
-                    <TextField select size='small' {...field}>
+                    <TextField select size='small' {...field} disabled={Number(customerData?.credit ?? 0) >= 0}>
                       {paymentMethods.map((method, index) => (
                         <MenuItem key={index} value={method}>
                           {method}
@@ -167,6 +174,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
             control={
               <Checkbox
                 defaultChecked
+                disabled={Number(customerData?.credit ?? 0) >= 0}
                 checked={isSettleAmount}
                 onChange={event => setIsSettleAmount(event.target.checked)}
               />
@@ -183,7 +191,7 @@ const PayDue = ({ open, setOpen, getCustomerData, customerData }: PayDueInfoProp
           <Button size='small' variant='outlined' color='secondary' type='reset' onClick={handleClose}>
             Cancel
           </Button>
-          <Button size='small' variant='contained' type='submit'>
+          <Button size='small' variant='contained' type='submit' disabled={Number(customerData?.credit ?? 0) >= 0}>
             Submit
           </Button>
         </DialogActions>
