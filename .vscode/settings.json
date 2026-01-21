@@ -49,5 +49,8 @@
     "customizer",
     "iconify",
     "tanstack"
-  ]
+  ],
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint"
+  }
 }

@@ -24,6 +24,8 @@ import { Controller, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { getPlanAccessControl } from '@/utils/Utils'
 import _ from 'lodash'
+import AppReactDatepicker from '@/libs/styles/AppReactDatepicker'
+import { DateTime } from 'luxon'
 
 type NewTableCreationDataType = Partial<{
   tableName: string
@@ -48,6 +50,14 @@ type NewTableCreationDataType = Partial<{
     slotCharge: number | null
     nightSlotCharge: number | null
   }[]
+  slotWiseMinuteRules: Partial<{
+    data: Partial<{
+      startTime: string | Date
+      endTime: string | Date
+      amount: number | null
+    }>[],
+    defaultAmount: number | null
+  }>
   countdownRules: {
     uptoMin: number | null
     countdownDayCharge: number | null
@@ -104,6 +114,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
   const [isCountdownBillingSelected, setIsCountdownBillingSelected] = useState(true)
   const [isFixedBillingSelected, setIsFixedBillingSelected] = useState(true)
   const [isBreakBillingSelected, setIsBreakBillingSelected] = useState(true)
+  const [isSlotWiseMinuteBillingSelected, setIsSlotWiseMinuteBillingSelected] = useState(true)
 
   // States
   // const { lang: locale } = useParams()
@@ -143,6 +154,14 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
           nightSlotCharge: null
         }
       ],
+      slotWiseMinuteRules: {
+        data: [{
+          startTime: new Date(),
+          endTime: new Date(),
+          amount: null,
+        }],
+        defaultAmount: null,
+      },
       countdownRules: [
         {
           uptoMin: null,
@@ -173,6 +192,16 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     name: 'slotWiseRules' // unique name for your Field Array
   })
 
+
+    const {
+    fields: slotWiseMinuteFields,
+    append: slotWiseMinuteAppend,
+    remove: slotWiseMinuteRemove
+  } = useFieldArray({
+    control, // control props comes from useForm (optional: if you are using FormProvider)
+    name: 'slotWiseMinuteRules.data' // unique name for your Field Array
+  })
+
   const {
     fields: countdownFields,
     append: countdownAppend,
@@ -191,6 +220,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     setIsCountdownBillingSelected(true)
     setIsFixedBillingSelected(true)
     setIsBreakBillingSelected(true)
+    setIsSlotWiseMinuteBillingSelected(true)
     getTableData()
     setOpen(false)
   }
@@ -208,6 +238,9 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
     }
     if (isFixedBillingSelected) {
       gameTypes.push('Fixed Billing')
+    }
+    if( isSlotWiseMinuteBillingSelected){
+      gameTypes.push('Slot Wise Minute Billing')
     }
 
     if (!gameTypes.length) {
@@ -240,6 +273,23 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
 
     if (!isSlotBillingSelected) {
       data.slotWiseRules = []
+    }
+
+    if (!isSlotWiseMinuteBillingSelected) {
+      data.slotWiseMinuteRules = {}
+    } else {
+      const ruleData = data.slotWiseMinuteRules?.data?.map((rule) => {
+          return {  
+            startTime:  DateTime.fromJSDate(rule.startTime as Date).toFormat('HH:mm'),
+            endTime: DateTime.fromJSDate(rule.endTime as Date).toFormat('HH:mm'),
+            amount: rule.amount,
+          };
+        })
+
+        data.slotWiseMinuteRules = {
+          data: ruleData || [],
+          defaultAmount: data.slotWiseMinuteRules?.defaultAmount || null,
+        }
     }
 
     if (!isCountdownBillingSelected) {
@@ -369,6 +419,15 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                     />
                   }
                   label='Countdown Billing'
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isSlotWiseMinuteBillingSelected}
+                      onChange={event => setIsSlotWiseMinuteBillingSelected(event.target.checked)}
+                    />
+                  }
+                  label='Slot Wise Minute Billing'
                 />
               </Grid>
               <Grid item xs={12} sm={5}>
@@ -771,6 +830,134 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                   >
                     Add Item
                   </Button>
+                </Grid>
+              </Grid>
+            ) : (
+              <></>
+            )}
+
+
+            {isSlotWiseMinuteBillingSelected ? (
+              <Grid container item rowGap={2} columnSpacing={2} className='border-2 p-4'>
+                <div className='grid place-content-center w-full font-bold text-lg'>Slot Wise Minute Billing</div>
+                <Grid item xs={12}>
+                  {slotWiseMinuteFields.map((field, index) => (
+                    <div key={field.id} className='flex flex-col sm:flex-row items-start mbe-4 gap-3'>
+                      <Controller
+                        name={`slotWiseMinuteRules.data.${index}.startTime`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                        <AppReactDatepicker
+                            showTimeSelect
+                            timeIntervals={15}
+                            showTimeSelectOnly
+                            dateFormat='hh:mm aa'
+                            boxProps={{ className: 'is-full' }}
+                            selected={value as Date}
+                            onChange={onChange}
+                            customInput={
+                              <TextField
+                                label='Start Time'
+                                size='small'
+                                fullWidth
+                                {...(errors.slotWiseMinuteRules?.data?.[index]?.startTime && {
+                                  error: true,
+                                  helperText: errors.slotWiseMinuteRules?.data?.[index]?.startTime?.message || 'This field is required'
+                                })}
+                          />
+                      }
+                    />
+                        )}
+                      />
+
+                      <Controller
+                        name={`slotWiseMinuteRules.data.${index}.endTime`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <AppReactDatepicker
+                            showTimeSelect
+                            timeIntervals={15}
+                            showTimeSelectOnly
+                            dateFormat='hh:mm aa'
+                            boxProps={{ className: 'is-full' }}
+                            selected={value as Date}
+                            onChange={onChange}
+                            customInput={
+                              <TextField
+                                label='End Time'
+                                size='small'
+                                fullWidth
+                                {...(errors.slotWiseMinuteRules?.data?.[index]?.endTime && {
+                                  error: true,
+                                  helperText: errors.slotWiseMinuteRules?.data?.[index]?.endTime?.message || 'This field is required'
+                                })}
+                              />
+                            }
+                            />
+                        )}
+                      />
+
+                      <Controller
+                        name={`slotWiseMinuteRules.data.${index}.amount`}
+                        control={control}
+                        rules={{ required: true }}
+                        render={({ field: { value, onChange } }) => (
+                          <TextField
+                            size='small'
+                            fullWidth
+                            label='Amount'
+                            inputProps={{ type: 'number', min: 0, step: 'any' }}
+                            value={value}
+                            onChange={onChange}
+                            {...(errors.slotWiseMinuteRules?.data?.[index]?.amount && {
+                              error: true,
+                              helperText:
+                                errors.slotWiseMinuteRules?.data?.[index]?.amount?.message || 'This field is required'
+                            })}
+                          />
+                        )}
+                      />
+
+                      {slotWiseMinuteFields.length > 1 ? (
+                        <CustomIconButton onClick={() => slotWiseMinuteRemove(index)} className='min-is-fit'>
+                          <i className='ri-close-line' />
+                        </CustomIconButton>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                  ))}
+                  <div className='flex flex-col sm:flex-row justify-between gap-3'>
+                    <Button
+                      className='min-is-fit'
+                      size='small'
+                      variant='contained'
+                      onClick={() => slotWiseMinuteAppend({ startTime: new Date(), endTime: new Date(), amount: null })}
+                      startIcon={<i className='ri-add-line' />}
+                    >
+                      Add Item
+                    </Button>
+                    <Controller
+                      name={`slotWiseMinuteRules.defaultAmount`}
+                      control={control}
+                      rules={{ required: true }}
+                      render={({ field: { value, onChange } }) => (
+                        <TextField
+                          size='small'
+                          label='Default Amount'
+                          placeholder='Enter Default Amount'
+                          value={value}
+                          onChange={onChange}
+                          {...(errors.slotWiseMinuteRules?.defaultAmount && {
+                            error: true,
+                            helperText: errors.slotWiseMinuteRules?.defaultAmount?.message || 'This field is required'
+                          })}
+                        />
+                      )}
+                    />
+                </div>
                 </Grid>
               </Grid>
             ) : (
