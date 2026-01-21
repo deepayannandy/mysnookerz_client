@@ -79,6 +79,14 @@ export type TableDataType = {
     slotCharge: number | null
     nightSlotCharge: number | null
   }>[]
+  slotWiseMinuteRules: Partial<{
+    data: Partial<{
+      startTime: string | Date
+      endTime: string | Date
+      amount: number | null
+    }>[],
+    defaultAmount: number | null
+  }>
   countdownRules: Partial<{
     uptoMin: number | null
     countdownDayCharge: number | null
