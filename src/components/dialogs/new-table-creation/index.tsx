@@ -929,7 +929,7 @@ const NewTableCreation = ({ open, setOpen, getTableData }: NewTableCreationProps
                       )}
                     </div>
                   ))}
-                  <div className='flex flex-col sm:flex-row justify-between gap-3'>
+                  <div className={`flex flex-col sm:flex-row justify-between gap-3 ${slotWiseMinuteFields.length > 1 ? 'sm:mr-12' : ''}`}>
                     <Button
                       className='min-is-fit'
                       size='small'

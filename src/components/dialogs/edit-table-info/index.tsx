@@ -434,6 +434,16 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                   }
                   label='Countdown Billing'
                 />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={isSlotWiseMinuteBillingSelected}
+                      onChange={event => setIsSlotWiseMinuteBillingSelected(event.target.checked)}
+                    />
+                  }
+                  label='Slot Wise Minute Billing'
+                />
               </Grid>
               <Grid item xs={12} sm={5}>
                 <Controller
@@ -946,7 +956,7 @@ const EditTableInfo = ({ open, setOpen, getTableData, tableData }: EditTableInfo
                       )}
                     </div>
                   ))}
-                  <div className='flex flex-col sm:flex-row justify-between gap-3'>
+                  <div className={`flex flex-col sm:flex-row justify-between gap-3 ${slotWiseMinuteFields.length > 1 ? 'sm:mr-12' : ''}`}>
                     <Button
                       className='min-is-fit'
                       size='small'
